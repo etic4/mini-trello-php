@@ -99,20 +99,24 @@ main {
     padding: .5em;
 }
 
+
+/* icons */
+
 .login form .form-row label {
     display: block;
     background-color: #e5e5e5;
     padding: 10px;
-    border-top: 1px solid #000000;
-    border-left: 1px solid #000000;
-    border-bottom: 1px solid #000000;
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
     border-radius: 4px 0 0 4px;
+    color: #666666;
 }
 
 .login form .form-row input {
     width: 340px;
     border-radius: 0 4px 4px 0;
-    border: 1px solid #000000;
+    border: 1px solid #cccccc;
     padding-left: 10px;
 }
 
