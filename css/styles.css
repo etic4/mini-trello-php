@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+/***  GLOBAL SETTINGS  ***/
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+/* elements'absolute position within their container*/
+
+div,
+article,
+section,
+header,
+main,
+footer,
+nav,
+figure,
+li {
+    position: relative;
+}
+
+main {
+    display: flex;
+}
+
+
+/***  MENU  ***/
+
+.menu {
+    height: 75px;
+    background-color: #0099ff;
+    color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* title */
+
+.menu .left {
+    padding-left: 25px;
+    font-size: 20px;
+}
+
+
+/* icons */
+
+.menu .right {
+    padding-right: 25px;
+}
+
+.menu .right i[class~="fas"] {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0 5px;
+}
+
+
+/***  FORM LOGIN SIGNUP  ***/
+
+.login {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login form {
+    margin-top: 25px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    width: 430px;
+}
+
+.login form h2 {
+    font-size: 30px;
+    padding: 25px 0;
+    text-align: center;
+}
+
+.login form hr {
+    margin: 0 20px;
+    border: 1px solid #cccccc;
+}
+
+.login form .wrapper {
+    margin-top: 25px;
+    list-style-type: none;
+}
+
+.login form .form-row {
+    display: flex;
+    justify-content: center;
+    padding: .5em;
+}
+
+.login form .form-row label {
+    display: block;
+    background-color: #e5e5e5;
+    padding: 10px;
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-radius: 4px 0 0 4px;
+}
+
+.login form .form-row input {
+    width: 340px;
+    border-radius: 0 4px 4px 0;
+    border: 1px solid #000000;
+    padding-left: 10px;
+}
+
+.login form .form-row input[type=submit] {
+    width: 390px;
+    padding: 11px;
+    border-radius: 4px;
+    background-color: #0099ff;
+    border: 1px solid #0099ff;
+    margin-bottom: 35px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+/***  ERRORS  ***/
+
+.errors {
+    display: block;
+    background-color: #ffe0e5;
+    color: #851414;
+    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+}
