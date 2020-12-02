@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-/***  GLOBAL SETTINGS  ***/
+/***  ===GLOBAL SETTINGS===  ***/
 
 * {
     margin: 0;
@@ -28,24 +28,24 @@ main {
 }
 
 
-/***  MENU  ***/
+/**** =========MENU========= ***/
 
 .menu {
     height: 75px;
-    background-color: #0099ff;
-    color: #ffffff;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    background-color: #0066CC;
+    color: #ffffff;
 }
 
 
 /* title */
 
 .menu .left {
-    padding-left: 25px;
     font-size: 20px;
+    padding-left: 25px;
 }
 
 
@@ -56,13 +56,16 @@ main {
 }
 
 .menu .right i[class~="fas"] {
-    color: #ffffff;
     text-decoration: none;
     padding: 0 5px;
+    color: #ffffff;
 }
 
 
-/***  FORM LOGIN SIGNUP  ***/
+/***  ========FORMS=======   ***/
+
+
+/* signup & login */
 
 .login {
     flex-direction: column;
@@ -71,16 +74,16 @@ main {
 }
 
 .login form {
-    margin-top: 25px;
-    border: 1px solid #cccccc;
-    border-radius: 4px;
     width: 430px;
+    margin-top: 25px;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
 }
 
 .login form h2 {
     font-size: 30px;
-    padding: 25px 0;
     text-align: center;
+    padding: 25px 0;
 }
 
 .login form hr {
@@ -89,14 +92,14 @@ main {
 }
 
 .login form .wrapper {
-    margin-top: 25px;
     list-style-type: none;
+    margin-top: 25px;
 }
 
 .login form .form-row {
+    padding: .5em;
     display: flex;
     justify-content: center;
-    padding: .5em;
 }
 
 
@@ -104,41 +107,160 @@ main {
 
 .login form .form-row label {
     display: block;
-    background-color: #e5e5e5;
     padding: 10px;
+    border-radius: 4px 0 0 4px;
     border-top: 1px solid #cccccc;
     border-left: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
-    border-radius: 4px 0 0 4px;
+    background-color: #e5e5e5;
     color: #666666;
 }
 
 .login form .form-row input {
     width: 340px;
+    padding-left: 10px;
     border-radius: 0 4px 4px 0;
     border: 1px solid #cccccc;
-    padding-left: 10px;
 }
 
 .login form .form-row input[type=submit] {
     width: 390px;
-    padding: 11px;
-    border-radius: 4px;
-    background-color: #0099ff;
-    border: 1px solid #0099ff;
-    margin-bottom: 35px;
-    color: #ffffff;
     font-size: 15px;
     font-weight: bold;
+    padding: 11px;
+    margin-bottom: 35px;
+    border-radius: 4px;
+    border: 1px solid #0066CC;
+    background-color: #0066CC;
+    color: #ffffff;
 }
 
 
-/***  ERRORS  ***/
+/* ADD */
+
+.add input[type=text] {
+    font-size: 20px;
+    width: 210px;
+    margin-top: 17px;
+    margin-left: -10px;
+    padding: 10px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #cccccc;
+    color: #666666;
+}
+
+.add input[type=submit] {
+    margin-top: 17px;
+    padding: 12px;
+    border-radius: 0 4px 4px 0;
+    border: 1px solid#0066CC;
+    background-color: #0066CC;
+    color: #0066CC;
+}
+
+
+/* positionning icon */
+
+.add {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    padding: 0.5em;
+}
+
+.add:after {
+    font-family: 'FontAwesome';
+    content: '\f067';
+    position: absolute;
+    right: 22px;
+    bottom: 22px;
+    color: #ffffff;
+}
+
+
+/***  ========ERRORS=======  ***/
 
 .errors {
     display: block;
-    background-color: #ffe0e5;
     color: #851414;
+    background-color: #ffe0e5;
     border-top: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
+}
+
+
+/***  ========LISTS========  ***/
+
+.list {
+    flex-direction: column;
+}
+
+.list article {
+    padding: 25px;
+}
+
+.list article h2 {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.list .up .displayBoards {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    flex-wrap: wrap;
+}
+
+.list .up .yourBoards,
+.list .down .otherBoards {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    flex-wrap: wrap;
+}
+
+.list .up .yourBoards li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.list .up .yourBoards li a,
+.list .down .otherBoards li a {
+    font-size: 20px;
+    text-decoration: none;
+    text-align: center;
+    width: 250px;
+    margin-right: 25px;
+    margin-top: 17px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.list .up .yourBoards li a {
+    background-color: #0066CC;
+    color: #0066CC;
+    border: 1px solid#0066CC;
+    color: #ffffff;
+}
+
+.list .down .otherBoards li a {
+    display: block;
+    color: #ffffff;
+    background-color: #009900;
+    border: 1px solid #009900;
+}
+
+
+/***  ======RESOLUTION=====  ***/
+
+@media screen and (max-width: 620px) {
+    .list .up {
+        width: 300px;
+    }
+    .list {
+        justify-content: center;
+        align-items: center;
+    }
 }
