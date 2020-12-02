@@ -256,7 +256,8 @@ main {
 /***  ======RESOLUTION=====  ***/
 
 @media screen and (max-width: 620px) {
-    .list .up {
+    .list .up,
+    .list.down {
         width: 300px;
     }
     .list {
