@@ -7,7 +7,7 @@
     récupère le titre du board et l'affiche ds le title -->
     <!-- <title>Boards <?= $board->title ?></title> -->
     <title>Boards php titre</title>
-    <!--<base href="<?= $web_root ?>"/>-->
+    <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
