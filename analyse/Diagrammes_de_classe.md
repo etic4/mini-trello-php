@@ -1,6 +1,7 @@
 # Diagrammes de classe
 Test diagramme de classe
 
+<<<<<<< HEAD
 
 ```plantuml
 @startuml
@@ -29,6 +30,12 @@ class UserValidator {
 
 }
  
+=======
+```plantuml
+@startuml
+abstract Class Validator
+boolean : isShorterThan(String str, int strLen)
+>>>>>>> dev
 
 @enduml
 ```
