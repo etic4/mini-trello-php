@@ -4,7 +4,6 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 # Ne pas suivre dev.ini
-.gitignore
 .htaccess
 database/data
 dev.ini
