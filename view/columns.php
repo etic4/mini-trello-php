@@ -42,8 +42,8 @@
             </section>
             <footer>   
                 <form class="add" action="card/add" method="post">
-                    <input type="text" name="title" placeholder="Add a card"/>
-                    <input type="submit" value="&#xf067" class="fas fa-plus"/>
+                    <input type="text" name="title" placeholder="Add a card">
+                    <input type="submit" value="&#xf067" class="fas fa-plus">
                 </form>
             </footer>
         </section>

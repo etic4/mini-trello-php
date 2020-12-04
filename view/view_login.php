@@ -27,7 +27,7 @@
                         <input type="password" name="password" placeholder="Password">
                     </li>
                     <li class="form-row">
-                        <input type="submit" value="Login"/>
+                        <input type="submit" value="Login">
                     </li>
                 </ul>
             </form>

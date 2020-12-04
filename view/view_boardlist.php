@@ -23,8 +23,8 @@
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
-                        <input type="text" name="title" placeholder="Add a board"/>
-                        <input type="submit" value="&#xf067" class="fas fa-plus"/>
+                        <input type="text" name="title" placeholder="Add a board">
+                        <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
                 </div>
             </article>

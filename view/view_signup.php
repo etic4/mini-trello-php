@@ -35,7 +35,7 @@
                         <input type="password" name="confirm" placeholder="Confirm your password">
                     </li>
                     <li class="form-row">
-                        <input type="submit" value="Sign Up"/>
+                        <input type="submit" value="Sign Up">
                     </li>
                 </ul>
             </form>
