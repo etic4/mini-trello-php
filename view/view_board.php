@@ -33,13 +33,13 @@
                         </li>
                     </ul>
                 </div>
-                <p class="credit">Created 'code php time' ago by <strong>'code php fullname'</strong>. 'code php modified'</p>
+                <p class="credit">Created 'code php time' ago by <strong>'<?= $board->owner->fullname ?>'</strong>. 'code php modified'</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>
                 <aside class="column_form">
-                    <form class="add" action="board/add_column" method="post">
-                        <input type="text" name="title_column" placeholder="Add a column"/>
+                    <form class="add" action="column/add" method="post">
+                        <input type="text" name="title" placeholder="Add a column"/>
                         <input type="submit" value="&#xf067" class="fas fa-plus"/>
                     </form>
                 </aside>

@@ -1,10 +1,9 @@
-<!-- code php
-boucle foreach -> 1 card = 1 section  class card -->
 <ul class="display_cards">
+    <?php foreach($cards as $card): ?>  
     <li>
         <section class="card">
             <header>
-                <h4>code php titre card</h4>
+                <h4><?= $card->ititle ?></h4>
             </header>
             <footer>
                 <ul class="icons">
@@ -66,4 +65,5 @@ boucle foreach -> 1 card = 1 section  class card -->
             </footer> 
         </section>
     </li>
+    <?php endforeach; ?>
 </ul>

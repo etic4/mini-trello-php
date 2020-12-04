@@ -23,8 +23,8 @@
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
-                        <input type="text" name="new" placeholder="Add a board"/>
-                        <input type="submit" value="xx"/>
+                        <input type="text" name="title" placeholder="Add a board"/>
+                        <input type="submit" value="&#xf067" class="fas fa-plus"/>
                     </form>
                 </div>
             </article>
@@ -32,7 +32,7 @@
                 <h2>Others' boards</h2>
                     <ul class="otherBoards">
                     <?php foreach($others as $other): ?>
-                        <li><a href="board/board/<?= $other->id ?>"><b><?= $other->title ?></b><br/>by <?= $other->owner ?></a></li>
+                        <li><a href="board/board/<?= $other->id ?>"><b><?= $other->title ?></b><br/>by <?= $other->owner->fullname ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>

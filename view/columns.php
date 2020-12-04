@@ -1,10 +1,9 @@
-<!-- code php
-boucle foreach -> 1 colonne = 1 section class column -->  
 <ul class="column_display">
+    <?php foreach($columns as $column): ?>
     <li>
         <section class="column">
             <header>
-                <h3>code php titre colonne</h3>
+                <h3><?= $column->title ?></h3>
                 <ul class="icons">
                     <li>
                         <form class='link' action='column/edit' method='post'>
@@ -49,4 +48,5 @@ boucle foreach -> 1 colonne = 1 section class column -->
             </footer>
         </section>
     </li>
+    <?php endforeach; ?>
 </ul>
