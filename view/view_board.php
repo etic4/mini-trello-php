@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="assets/logo.png" />
-    <!-- code php
-    récupère le titre du board et l'affiche ds le title -->
-    <!-- <title>Boards <?= $board->title ?></title> -->
-    <title>Boards php titre</title>
+    <title>Boards <?= $board->title ?></title>
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
@@ -19,7 +16,24 @@
 	<main class="board">
         <article>
             <header>
-            <?php include("title.php"); ?>
+                <div class="title">
+                    <h2>Board "<?= $board->title ?>"</h2>
+                    <ul class="icons">
+                        <li>
+                            <form class='link' action='board/edit' method='post'>
+                                <input type='text' name='id' value='<?= $board->id ?>' hidden>
+                                <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
+                            </form>
+                        </li>
+                        <li>
+                            <form class='link' action='board/delete' method='post'>
+                                <input type='text' name='id' value='<?= $board->id ?>' hidden>
+                                <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <p class="credit">Created 'code php time' ago by <strong>'code php fullname'</strong>. 'code php modified'</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>

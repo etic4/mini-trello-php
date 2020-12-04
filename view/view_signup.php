@@ -20,19 +20,19 @@
                 <ul class="wrapper">
                     <li class="form-row">
                         <label for="email"><i class="fas fa-at"></i></label>
-                        <input type="email" name="email" id="email" placeholder="Email"/>
+                        <input type="email" name="email" placeholder="Email">
                     </li>
                     <li class="form-row">
                         <label for="fullname"><i class="fas fa-user"></i></label>
-                        <input type="text" name="fullname" id="fullname" placeholder="Full Name"/>
+                        <input type="text" name="fullname" placeholder="Full Name">
                     </li>
                     <li class="form-row">
                         <label for="password"><i class="fas fa-lock"></i></label>
-                        <input type="password" name="password" id="password" placeholder="Password"/>
+                        <input type="password" name="password" placeholder="Password">
                     </li>
                     <li class="form-row">
                         <label for="confirm"><i class="fas fa-lock"></i></label>
-                        <input type="password" name="confirm" id="confirm" placeholder="Confirm your password"/>
+                        <input type="password" name="confirm" placeholder="Confirm your password">
                     </li>
                     <li class="form-row">
                         <input type="submit" value="Sign Up"/>

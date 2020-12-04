@@ -5,35 +5,37 @@ boucle foreach -> 1 colonne = 1 section class column -->
         <section class="column">
             <header>
                 <h3>code php titre colonne</h3>
-                <!-- code php
-                pas de left pour la première
-                pas de right pour la dernière -->
-                <!-- <input type='text' name='id_column' value='<?= $column->id ?>' hidden> -->
                 <ul class="icons">
                     <li>
                         <form class='link' action='column/edit' method='post'>
-                            <input type='text' name='id_column' value='php' hidden>
+                            <input type='text' name='id' value='<?= $column->id ?>' hidden>
                             <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='column/delete' method='post'>
-                            <input type='text' name='id_column' value='php' hidden>
+                            <input type='text' name='id' value='<?= $column->id ?>' hidden>
                             <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                         </form>
                     </li>
+                    <!-- pas de left pour la première colonne -->
+                    <?php if($column->position > 0): ?>
                     <li>
                         <form class='link' action='column/left' method='post'>
-                            <input type='text' name='id_column' value='php' hidden>
+                            <input type='text' name='id' value='<?= $column->id ?>' hidden>
                             <input type='submit' value="&#xf0a8" class="fas fa-arrow-circle-left" style="background:none">
                         </form>
                     </li>
+                    <?php endif; ?>
+                    <!-- pas de right pour la dernière colonne -->
+                    <?php if($column->position != end($columns)->position): ?>
                     <li>
                         <form class='link' action='card/right' method='post'>
-                            <input type='text' name='id_column' value='php' hidden>
+                            <input type='text' name='id' value='<?= $column->id ?>' hidden>
                             <input type='submit' value="&#xf0a9" class="fas fa-arrow-circle-right" style="background:none">
                         </form>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </header>
             <section>
@@ -41,7 +43,7 @@ boucle foreach -> 1 colonne = 1 section class column -->
             </section>
             <footer>   
                 <form class="add" action="card/add" method="post">
-                    <input type="text" name="title_card" placeholder="Add a card"/>
+                    <input type="text" name="title" placeholder="Add a card"/>
                     <input type="submit" value="&#xf067" class="fas fa-plus"/>
                 </form>
             </footer>

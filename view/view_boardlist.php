@@ -17,24 +17,23 @@
             <article class="up">
                 <h2>Your boards</h2>
                 <div class="displayBoards">
-                    <!-- code php -> boucle foreach yourBoards
-                    id récupéré ds le lien + titre -->
                     <ul class="yourBoards">
-                        <li><a href="board/board/code php id"><b>code php titre</b></a></li>
+                    <?php foreach($yours as $your): ?>
+                        <li><a href="board/board/<?= $your->id ?>"><b><?= $your->title ?></b></a></li>
+                    <?php endforeach; ?>
                     </ul>
-                    <form class="add" action="board/add_board" method="post">
-                        <input type="text" name="new_board" placeholder="Add a board"/>
-                        <!--<label for="addBoard">Add a board</label>-->
+                    <form class="add" action="board/add" method="post">
+                        <input type="text" name="new" placeholder="Add a board"/>
                         <input type="submit" value="xx"/>
                     </form>
                 </div>
             </article>
             <article class="down">
                 <h2>Others' boards</h2>
-                    <!-- code php -> boucle foreach otherBoards
-                    id récupéré ds le lien + titre + author-->
                     <ul class="otherBoards">
-                        <li><a href="board/board/code php id"><b>code php titre</b><br/>by code php author</a></li>
+                    <?php foreach($others as $other): ?>
+                        <li><a href="board/board/<?= $other->id ?>"><b><?= $other->title ?></b><br/>by <?= $other->owner ?></a></li>
+                    <?php endforeach; ?>
                     </ul>
             </article>
         </main>
