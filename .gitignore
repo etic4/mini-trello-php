@@ -4,6 +4,7 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 # setup linux
+.htaccess
 config/dev.ini
 database/data
 
