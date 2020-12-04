@@ -19,28 +19,7 @@
 	<main class="board">
         <article>
             <header>
-                <div class="board_title">
-                    <!-- <h2>Board "<?= $board->title ?>"</h2> -->
-                    <h2>Board ''code php titre''</h2>
-                    <!-- code php
-                    id board pour delete et edit (?) -->
-                    <!-- <input type='text' name='id_board' value='<?= $board->id ?>' hidden> -->
-                    <ul class="icons">
-                        <li>
-                            <form class='link' action='board/edit' method='post'>
-                                <input type='text' name='id_board' value='php' hidden>
-                                <input type='submit' value="&#xf044"class="fas fa-edit">
-                            </form>
-                        </li>
-                        <li>
-                            <form class='link' action='board/delete' method='post'>
-                                <input type='text' name='id_board' value='php' hidden>
-                                <input type='submit' value="&#xf2ed" class="far fa-trash-alt">
-                            </form>
-                        </li>
-                    </ul>
-                </div>    
-                <p class="credit">Created 'code php time' ago by <strong>'code php fullname'</strong>. 'code php modified'</p>
+            <?php include("title.php"); ?>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>

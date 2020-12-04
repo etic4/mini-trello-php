@@ -257,6 +257,33 @@ ul {
 }
 
 
+/***  ========TITLE========  ***/
+
+.title {
+    padding-top: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.title h2 {
+    font-size: 30px;
+}
+
+.title .icons {
+    padding: 12px 0 0 10px;
+}
+
+.credit {
+    padding: 15px 0 25px 0;
+    color: #666666;
+}
+
+.credit strong {
+    color: #0066CC;
+}
+
+
 /***  ========BOARD========  ***/
 
 .board article {
@@ -285,67 +312,28 @@ ul {
 
 /* icons */
 
-.board .icons {
+.icons {
     display: flex;
     flex-direction: row;
     justify-content: start;
 }
 
-.board .icons li {
+.icons li {
     padding-left: 7px;
     margin-top: 2px;
 }
 
-.board .card .icons {
+.icons .link input[type=submit] {
+    border: none;
+}
+
+.card .icons {
     margin-left: -115px;
     margin-top: -30px;
 }
 
-.board .icons .link input[type=submit] {
-    border: none;
-}
-
-
-/* le background des icones des cartes restent en gris ??? */
-
-.board .card .icons .link input[type=submit],
-.board .board_title .icons .link input[type=submit] {
-    background-color: #ffffff;
-}
-
 .board .card .icons .link input[type=submit] {
     margin-top: 10px;
-}
-
-.board .column .icons .link input[type=submit] {
-    background-color: #e5e5e5;
-}
-
-
-/* board title */
-
-.board .board_title {
-    padding-top: 25px;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-}
-
-.board .board_title h2 {
-    font-size: 30px;
-}
-
-.board .board_title .icons {
-    padding: 12px 0 0 10px;
-}
-
-.board .credit {
-    padding: 15px 0 25px 0;
-    color: #666666;
-}
-
-.board .credit strong {
-    color: #0066CC;
 }
 
 

@@ -17,43 +17,43 @@ boucle foreach -> 1 card = 1 section  class card -->
                     <li>
                         <form class='link' action='card/view' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf06e" class="far fa-eye">
+                            <input type='submit' value="&#xf06e" class="far fa-eye" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/edit' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf044"class="fas fa-edit">
+                            <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/delete' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf2ed" class="far fa-trash-alt">
+                            <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/down' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf0ab" class="fas fa-arrow-circle-down">
+                            <input type='submit' value="&#xf0ab" class="fas fa-arrow-circle-down" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/up' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf0aa" class="fas fa-arrow-circle-up">
+                            <input type='submit' value="&#xf0aa" class="fas fa-arrow-circle-up" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/left' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf0a8" class="fas fa-arrow-circle-left">
+                            <input type='submit' value="&#xf0a8" class="fas fa-arrow-circle-left" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/left' method='post'>
                             <input type='text' name='id_card' value='php' hidden>
-                            <input type='submit' value="&#xf0a9" class="fas fa-arrow-circle-right">
+                            <input type='submit' value="&#xf0a9" class="fas fa-arrow-circle-right" style="background:none">
                         </form>
                     </li>
                 </ul>

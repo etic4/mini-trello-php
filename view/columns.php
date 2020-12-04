@@ -13,25 +13,25 @@ boucle foreach -> 1 colonne = 1 section class column -->
                     <li>
                         <form class='link' action='column/edit' method='post'>
                             <input type='text' name='id_column' value='php' hidden>
-                            <input type='submit' value="&#xf044"class="fas fa-edit">
+                            <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='column/delete' method='post'>
                             <input type='text' name='id_column' value='php' hidden>
-                            <input type='submit' value="&#xf2ed" class="far fa-trash-alt">
+                            <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='column/left' method='post'>
                             <input type='text' name='id_column' value='php' hidden>
-                            <input type='submit' value="&#xf0a8" class="fas fa-arrow-circle-left">
+                            <input type='submit' value="&#xf0a8" class="fas fa-arrow-circle-left" style="background:none">
                         </form>
                     </li>
                     <li>
                         <form class='link' action='card/right' method='post'>
                             <input type='text' name='id_column' value='php' hidden>
-                            <input type='submit' value="&#xf0a9" class="fas fa-arrow-circle-right">
+                            <input type='submit' value="&#xf0a9" class="fas fa-arrow-circle-right" style="background:none">
                         </form>
                     </li>
                 </ul>
