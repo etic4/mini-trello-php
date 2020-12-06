@@ -15,6 +15,9 @@ config/dev.ini
 database/data
 >>>>>>> view
 
+# VSCode
+package-lock.json
+
 # Node artifact files
 node_modules/
 dist/
