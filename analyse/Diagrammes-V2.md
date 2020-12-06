@@ -32,7 +32,7 @@ abstract class Dao extends Model {
     + {static} get_by_id(int id): <?>
     + add(<?>): int
     + update(<?>)
-    + remove(<?>)
+    + delete(<?>)
 }
 
 class UserDao extends Dao {
@@ -73,12 +73,13 @@ Board -[hidden]r Column
 Column -[hidden]r Card
 Card -[hidden]r Comment
 
+UserMngr *-u- User
 BoardMngr *-u- Board
 ColumnMngr *-u- Column
 CardMngr *-u- Card
 CommentMngr *-u- Comment
 
-User -[dotted]-> UserDao: <<use>>
+UserMngr -[dotted]-> UserDao: <<use>>
 BoardMngr -[dotted]-> BoardDao: <<use>>
 ColumnMngr -[dotted]-> ColumnDao: <<use>>
 CardMngr -[dotted]-> CardDao: <<use>>
@@ -97,7 +98,7 @@ package validator {
 
 class User {
     - final id
-    - String eMail
+    - String email
     - String fullName
     - String passwdHash
     - DateTime registeredAt
@@ -174,6 +175,15 @@ class Comment {
     + validate() : List<String>
 }
 
+class UserMngr {
+    + {static} get_by_id(int id): User
+    + {static} get_by_email(String email): User
+    + {static} get_new(email, fullname, password)
+    + add(User user)
+    + update(User user)
+    + delete(User user)
+}
+
 class BoardMngr {
     - User user
     + __construct(User user)
@@ -181,8 +191,8 @@ class BoardMngr {
     + get_others_boards()
     + add(Board board)
     + update(Board board)
-    + remove(Board board)
-    + remove_all()
+    + delete(Board board)
+    + delete_all()
     + size() : int
 }
 
@@ -193,8 +203,8 @@ class ColumnMngr {
     + move_down(Column col)
     + add(Column col)
     + update(Column col)
-    + remove(Column col)
-    + remove_all()
+    + delete(Column col)
+    + delete_all()
     + size() : int
     - set_position(Column col, int pos)
 }
@@ -208,8 +218,8 @@ class CardMngr {
     + move_right(Card card)
     + add(Card card)
     + update(Card card)
-    + remove(Card card)
-    + remove_all()
+    + delete(Card card)
+    + delete_all()
     + size() : int
     - set_position(Card card, int pos)
     - set_column(Card card, Column col)
@@ -220,8 +230,8 @@ class CommentMngr {
     + __construct(Card card)
     + add(Comment comm)
     + update(Comment comm)
-    + remove(Comment comm)
-    + remove_all()
+    + delete(Comment comm)
+    + delete_all()
     + size() : int
 }
 
@@ -299,7 +309,7 @@ class ControllerBoard {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 class ControllerColumn {
@@ -307,7 +317,7 @@ class ControllerColumn {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
     + left()
     + right()
 }
@@ -318,7 +328,7 @@ class ControllerCard {
     + add()
     + view()
     + edit()
-    + remove()
+    + delete()
     + nbComments()
     + down()
     + up()
@@ -331,7 +341,7 @@ class ControllerComment {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 @enduml

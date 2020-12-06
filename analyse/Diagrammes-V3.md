@@ -17,8 +17,8 @@ abstract class Manager extends Model {
     + {static} get_by_id(int id): <?>
     + add(?): int
     + update(?)
-    + remove(?)
-    + remove_all()
+    + delete(?)
+    + delete_all()
 }
 
 class UserMngr extends Manager {
@@ -62,7 +62,7 @@ class CommentMngr extends Manager {
 
 class User {
     - final id
-    - String eMail
+    - String email
     - String fullName
     - String passwdHash
     - DateTime registeredAt
@@ -214,7 +214,7 @@ class ControllerBoard {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 class ControllerColumn {
@@ -222,7 +222,7 @@ class ControllerColumn {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
     + left()
     + right()
 }
@@ -233,7 +233,7 @@ class ControllerCard {
     + add()
     + view()
     + edit()
-    + remove()
+    + delete()
     + nbComments()
     + down()
     + up()
@@ -246,7 +246,7 @@ class ControllerComment {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 @enduml
