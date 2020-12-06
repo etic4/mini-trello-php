@@ -8,6 +8,9 @@
 database/data
 dev.ini
 
+# VSCode
+package-lock.json
+
 # Node artifact files
 node_modules/
 dist/
