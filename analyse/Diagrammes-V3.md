@@ -13,8 +13,8 @@ CardMngr *-d- Card
 CommentMngr *-d- Comment
 
 abstract class Manager extends Model {
-    + {static} get_all(): List<?>
-    + {static} get_by_id(int id): <?>
+    + get_all(): List<?>
+    + get_by_id(int id): <?>
     + add(?): int
     + update(?)
     + delete(?)
@@ -22,7 +22,7 @@ abstract class Manager extends Model {
 }
 
 class UserMngr extends Manager {
-    + {static} get_by_email(String email) 
+    + get_by_email(String email) 
 }
 
 class BoardMngr extends Manager {
@@ -68,8 +68,6 @@ class User {
     - DateTime registeredAt
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_boards() : BoardMngr
     + check_password(String passw)
     + validate(String pass) : List<String>
@@ -82,8 +80,6 @@ class Board {
     - DateTime modifiedAt
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_columns() : ColumnMngr
     + get_owner() : User
     + validate() : List<String>
@@ -97,8 +93,6 @@ class Column {
     - DateTime modifiedAt
     - Board board
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_cards() : CardMngr
     + validate() : List<String>
 }
@@ -114,8 +108,6 @@ class Card {
     - User author
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_comments(): CommentMngr
     + get_author(): User
     + get_column(): Column
@@ -132,8 +124,6 @@ class Comment {
     - User author
 
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_author(): User
     + get_card(): Card
     + validate() : List<String>
@@ -150,13 +140,13 @@ class Comment {
 package validator {
 abstract class Validator {
     - List<String> errors
-    + {static} is_string(Object o, String errMsg)
-    + {static} is_shorter_than(String str, int strLen, String errMsg)
-    + {static} is_longer_than(String str, int length, String errMsg)
-    + {static} is_length_equal_to(String str, int length, String errMsg)
-    + {static} is_valid_email(String email, String errMsg)
-    + {static} regex_has_match(String str, String regex, String errMsg)
-    + {static} is_date_before(DateTime date, DateTime base)
+    + is_string(Object o, String errMsg)
+    + is_shorter_than(String str, int strLen, String errMsg)
+    + is_longer_than(String str, int length, String errMsg)
+    + is_length_equal_to(String str, int length, String errMsg)
+    + is_valid_email(String email, String errMsg)
+    + regex_has_match(String str, String regex, String errMsg)
+    + is_date_before(DateTime date, DateTime base)
     + validate() : List<String>: List<String>
 }
 
