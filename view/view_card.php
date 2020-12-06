@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="assets/logo.png" />
-    <title>Card</title>
+    <title>Card "<?= $card->title ?>"</title>
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
@@ -38,14 +38,14 @@
             </header>
             <div class="main_card">
                 <section class="display_card">
-                    <h2>Body</h2>
+                    <h3>Body</h3>
                     <div>
                         <p><?= $card->body ?></p>
                     </div>
                 </section>
                 <section class=comment>
                     <header>
-                        <h2>Comments</h2>
+                        <h3>Comments</h3>
                     </header>
                     <div class="main_comment">
                         <ul>

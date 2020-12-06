@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="assets/logo.png" />
-    <title>Boards <?= $board->title ?></title>
+    <title>Boards "<?= $board->title ?>"</title>
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
@@ -18,7 +18,6 @@
             <header>
                 <div class="title">
                     <h2>Board "<?= $board->title ?>"</h2>
-
                     <ul class="icons">
                         <li>
                             <form class='link' action='board/edit' method='post'>
