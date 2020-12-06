@@ -13,6 +13,11 @@
                             <input type='submit' value="&#xf06e" class="far fa-eye" style="background:none">
                         </form>
                     </li>
+                    <?php if(count($comments) > 0): ?>
+                    <li>
+                        <p class='button_comment'>&#x28;<?= count($comments) ?>&nbsp;<i class="far fa-comment"></i>&#x29;</p>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <form class='link' action='card/edit' method='post'>
                             <input type='text' name='id' value='<?= $card->id ?>' hidden>

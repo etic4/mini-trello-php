@@ -26,7 +26,7 @@
                     <input type='submit' value='Cancel'>
                 </li>
                 <li>
-                    <input type="text" name="id-card" value='php code id_card' hidden>
+                    <input type="text" name="id" value='php code id_card' hidden>
                     <input type='submit' value='Delete'>
                 </li>
             </ul>

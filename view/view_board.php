@@ -18,11 +18,12 @@
             <header>
                 <div class="title">
                     <h2>Board "<?= $board->title ?>"</h2>
+
                     <ul class="icons">
                         <li>
                             <form class='link' action='board/edit' method='post'>
                                 <input type='text' name='id' value='<?= $board->id ?>' hidden>
-                                <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
+                                <input type='submit' value="&#xf044" class="fas fa-edit" style="background:none">
                             </form>
                         </li>
                         <li>

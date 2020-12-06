@@ -133,7 +133,11 @@ strong {
     justify-content: start;
 }
 
-.icons li {
+.icons li:first-child {
+    padding-left: 3px;
+}
+
+.icons li .link input {
     padding-left: 7px;
     margin-top: 2px;
 }
@@ -143,12 +147,21 @@ strong {
 }
 
 .card .icons {
-    margin-left: -115px;
-    margin-top: -30px;
+    position: absolute;
+    margin-left: -130px;
+    margin-top: -32px;
 }
 
 .board .card .icons .link input[type=submit] {
     margin-top: 10px;
+}
+
+.icons li p {
+    font-size: 13px;
+    font-weight: 900;
+    padding-left: 7px;
+    margin-top: 8px;
+    color: #666666;
 }
 
 
@@ -479,6 +492,7 @@ strong {
 
 .one_card article header {
     padding-bottom: 15px;
+    white-space: nowrap;
 }
 
 .one_card article header p:last-child {
@@ -520,6 +534,7 @@ strong {
 
 .main_comment .display_one_comment p {
     padding-right: 5px;
+    white-space: nowrap;
 }
 
 .main_comment .display_one_comment p:first-child {
