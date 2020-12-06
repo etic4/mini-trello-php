@@ -103,8 +103,6 @@ class User {
     - DateTime registeredAt
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_boards() : BoardMngr
     + check_password(String passw)
     + validate(String pass) : List<String>
@@ -117,8 +115,6 @@ class Board {
     - DateTime modifiedAt
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_columns() : ColumnMngr
     + get_owner() : User
     + validate() : List<String>
@@ -132,8 +128,6 @@ class Column {
     - DateTime modifiedAt
     - Board board
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_cards() : CardMngr
     + validate() : List<String>
 }
@@ -149,8 +143,6 @@ class Card {
     - User author
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_comments(): CommentMngr
     + get_author(): User
     + get_column(): Column
@@ -167,8 +159,6 @@ class Comment {
     - User author
 
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_author(): User
     + get_card(): Card
     + validate() : List<String>
