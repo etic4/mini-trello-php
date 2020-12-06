@@ -1,4 +1,4 @@
-# Diagrammes de classe
+# Diagrammes de classe (V3)
 Version avec DAO et managers confondus.
 
 ## Managers et classes de base

@@ -1,4 +1,4 @@
-# Diagrammes de classe
+# Diagrammes de classe (V2)
 Version avec DAO. On sort toutes les opérations
 d'accès à la db des classes représentant les objets de base.
 

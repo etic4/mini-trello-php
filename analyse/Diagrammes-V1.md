@@ -1,4 +1,4 @@
-# Diagrammes de classe
+# Diagrammes de classe (V1)
 Manière "comme au cours", où les classes représentant les objets de base sont chargées
 des requêtes en db.
 
