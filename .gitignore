@@ -3,10 +3,17 @@
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
+<<<<<<< HEAD
 # Ne pas suivre dev.ini
 .htaccess
 database/data
 dev.ini
+=======
+# setup linux
+.htaccess
+config/dev.ini
+database/data
+>>>>>>> view
 
 # Node artifact files
 node_modules/
