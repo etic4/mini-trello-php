@@ -1,7 +1,7 @@
 <?php
 
 
-class Validator {
+abstract class Validator {
     private $errors;
 
     public function __construct() {
