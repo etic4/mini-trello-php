@@ -21,8 +21,16 @@ class Board extends BaseObject {
         return $this->id;
     }
 
+    public function set_id($id): void {
+        $this->id = $id;
+    }
+
     public function get_title() {
         return $this->title;
+    }
+
+    public function set_title($title) {
+        $this->title = $title;
     }
 
     public function get_owner() {
@@ -35,10 +43,6 @@ class Board extends BaseObject {
 
     public function get_modifiedAt(): DateTime {
         return $this->modifiedAt;
-    }
-
-    public function set_id($id): void {
-        $this->id = $id;
     }
 
     public function set_modifiedDate() {

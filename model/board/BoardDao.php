@@ -18,23 +18,19 @@ class BoardDao extends Dao {
     }
 
     public function prepare_insert($object): array {
-        $createdAt = $this->sql_date($object->createdAt);
-        $modifiedAt = $this->sql_date($object->modifiedAt);
-
-        $sql = "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) VALUES(:title, :owner, :createdAt, :modifiedAt)";
-        $params = array("title"=>$object->title, "owner"=>$object->owner, "createdAt"=>$createdAt, "modifiedAt"=>$modifiedAt);
+        $sql = "INSERT INTO board(Title, Owner) VALUES(:title, :owner)";
+        $params = array("title"=>$object->get_title(), "owner"=>$object->get_owner());
 
         return array("sql"=>$sql, "params"=>$params);
     }
 
     public function prepare_update($object): array {
         $object->set_modifiedDate();
-        $modifiedAt = $this->sql_date($object->modifiedAt);
-        $registeredAt = $this->sql_date($object->registeredAt);
+        $modifiedAt = $this->sql_date($object->get_modifiedAt());
 
-        $sql = "UPDATE board SET Title=:title, Owner=:owner, CreatedAt=:createdAt, ModifiedAt=:modifiedAt WHERE ID=:id";
-        $params = array("id"=>$object->id, "title"=>$object->title, "owner"=>$object->owner->get_id(),
-            "createdAt"=>$registeredAt, "modifiedAt"=>$modifiedAt);
+        $sql = "UPDATE board SET Title=:title, Owner=:owner, ModifiedAt=:modifiedAt WHERE ID=:id";
+        $params = array("id"=>$object->get_id(), "title"=>$object->get_title(), "owner"=>$object->get_owner(),
+            "modifiedAt"=>$modifiedAt);
 
         return array("sql"=>$sql, "params"=>$params);
     }

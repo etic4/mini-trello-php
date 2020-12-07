@@ -13,18 +13,15 @@ class UserDao extends Dao {
     }
 
     protected function prepare_insert($object): array {
-        $sql = "INSERT INTO user(Mail, FullName, Password, RegisteredAt) VALUES(:email,:fullName,:passwdHash,:registeredAt)";
-        $datetime = $this->sql_date($object->registeredAt);
-        $params = array("email"=>$object->email, "fullName"=>$object->fullName,"passwdHash"=>$object->passwdHash,
-            "registeredAt"=>$datetime);
+        $sql = "INSERT INTO user(Mail, FullName, Password) VALUES(:email, :fullName, :passwdHash)";
+        $params = array("email"=>$object->get_email(), "fullName"=>$object->get_fullName(),"passwdHash"=>$object->get_passwdHash());
         return array("sql"=>$sql, "params"=>$params);
     }
 
     protected  function prepare_update($object): array {
-        $registeredAt = $this->sql_date($object->RegisteredAt);
-        $sql = "UPDATE user SET Mail=:email, FullName=:fullName, Password=:passwdHash, RegisteredAt=:registeredAt WHERE ID=:id";
-        $params = array("id"=>$object->id, "email"=>$object->email, "fullName"=>$object->fullName,
-            "passwdHash"=>$object->passwdHash, "$registeredAt"=>$registeredAt);
+        $sql = "UPDATE user SET Mail=:email, FullName=:fullName, Password=:passwdHash WHERE ID=:id";
+        $params = array("id"=>$object->get_id(), "email"=>$object->get_email(), "fullName"=>$object->get_fullName(),
+            "passwdHash"=>$object->get_passwdHash());
         return array("sql"=>$sql, "params"=>$params);
     }
 

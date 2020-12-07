@@ -6,9 +6,12 @@ abstract class Dao extends Model {
     protected  abstract function prepare_insert($object);
     protected  abstract function prepare_update($object);
     protected abstract function get_instance($data);
+    protected function get_tableName() {
+        return $this->tableName;
+    }
 
     public function get_by_id($id) {
-        $sql = "SELECT * FROM ". $this->tableName . " WHERE ID=:id";
+        $sql = "SELECT * FROM ". $this->get_tableName() . " WHERE ID=:id";
         $query = $this->execute($sql, array("id"=>$id));
 
         return $this->fetch_one_and_get_instance($query);
@@ -27,7 +30,7 @@ abstract class Dao extends Model {
     }
 
     public function delete($object) {
-        $sql = "DELETE FROM " . $this->tableName . " WHERE ID = :id";
+        $sql = "DELETE FROM " . $this->get_tableName() . " WHERE ID = :id";
         $params = array("id"=>$object->id);
         $this->execute($sql, $params);
     }

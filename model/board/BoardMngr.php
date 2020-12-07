@@ -23,6 +23,10 @@ class BoardMngr {
         return $this->dao->get_others_boards($this->user);
     }
 
+    public function get_owner(): User {
+        return $this->user;
+    }
+
     public function get_columns($board): ColumnMngr {
         return new ColumnMngr($board);
     }
