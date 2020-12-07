@@ -2,7 +2,7 @@
     <?php foreach($columns as $column): ?>
     <li>
         <section class="column">
-            <header>
+            <header class="title_column">
                 <h3><?= $column->title ?></h3>
                 <ul class="icons">
                     <li>
