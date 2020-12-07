@@ -6,7 +6,10 @@
         <!-- code php 
         si user connecté -> fullname + logout
         else login + icone user+ (à définir) -->
-        <p><i class="fas fa-user"></i>&nbsp<?= $user->fullname ?>&nbsp<a href="user/logout"><i class="fas fa-sign-out-alt"></i></a></p>
-        <p><a href="user/login"><i class="fas fa-sign-in-alt"></i></a>&nbsp<i class="fas fa-user-plus"></i></p>
+        <?php if ($user): ?>
+            <p><i class="fas fa-user"></i><?= $user->get_fullname() ?><a href="user/logout"><i class="fas fa-sign-out-alt"></i></a></p>
+        <?php else: ?>
+            <p><a href="user/login"><i class="fas fa-sign-in-alt"></i></a>&nbsp<i class="fas fa-user-plus"></i></p>
+        <?php endif;?>
     </div>
 </div>
