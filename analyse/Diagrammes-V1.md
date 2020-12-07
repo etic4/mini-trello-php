@@ -8,6 +8,11 @@ Les managers sont chargés de toutes les opération sur les instances d'objets d
 ```plantuml
 @startuml
 
+User -[hidden]r- Board
+Board -[hidden]r- Column
+Column -[hidden]r- Card
+Card -[hidden]r- Comment
+
 BaseModel -[dotted]r-> validator : <<use>
 User -u-|> BaseModel
 Board -u-|> BaseModel
@@ -30,12 +35,12 @@ abstract class BaseModel extends Model {
     + get_by_id(int id): <?>
     + add(<?>): int
     + update(<?>)
-    + remove(<?>)
+    + delete(<?>)
 }
 
 class User {
     - final id
-    - String eMail
+    - String email
     - String fullName
     - String passwdHash
     - DateTime registeredAt
@@ -111,8 +116,8 @@ class BoardMngr {
     + get_others_boards()
     + add(Board board)
     + update(Board board)
-    + remove(Board board)
-    + remove_all()
+    + delete(Board board)
+    + delete_all()
     + size() : int
 }
 
@@ -123,8 +128,8 @@ class ColumnMngr {
     + move_down(Column col)
     + add(Column col)
     + update(Column col)
-    + remove(Column col)
-    + remove_all()
+    + delete(Column col)
+    + delete_all()
     + size() : int
     - set_position(Column col, int pos)
 }
@@ -138,8 +143,8 @@ class CardMngr {
     + move_right(Card card)
     + add(Card card)
     + update(Card card)
-    + remove(Card card)
-    + remove_all()
+    + delete(Card card)
+    + delete_all()
     + size() : int
     - set_position(Card card, int pos)
     - set_column(Card card, Column col)
@@ -150,8 +155,8 @@ class CommentMngr {
     + __construct(Card card)
     + add(Comment comm)
     + update(Comment comm)
-    + remove(Comment comm)
-    + remove_all()
+    + delete(Comment comm)
+    + delete_all()
     + size() : int
 }
 
@@ -160,50 +165,40 @@ class CommentMngr {
 
 
 ## Validation
-Les classes chargées de la validation
 
 ```plantuml
 @startuml
 package validator {
 abstract class Validator {
     - List<String> errors
-    + is_string(Object o, String errMsg)
-    + is_shorter_than(String str, int strLen, String errMsg)
-    + is_longer_than(String str, int length, String errMsg)
-    + is_length_equal_to(String str, int length, String errMsg)
-    + is_valid_email(String email, String errMsg)
-    + regex_has_match(String str, String regex, String errMsg)
-    + is_date_before(DateTime date, DateTime base)
-    + validate() : List<String>: List<String>
+    + str_longer_than(str, length)
+    + contains_capitals(str)
+    + contains_digits(str)
+    + contains_non_alpha(str)
+    + valid_email(email)
+    + add_error(errMsg)
+    + get_errors()
+    + validate() : List<String>
 }
 
 class UserValidator implements Validator {
-    - final User user
+    - User user
     + __construct(User user)
-    - validate_email()
-    - validate_fullName()
-    - validate_password()
-    - validate_unicity()
 }
 
 class BoardValidator implements Validator {
-    - final Board board
+    - Board board
     + __construct(Board board)
-    - validate_title()
 }
 
 class ColumnValidator implements Validator {
-    - final Column column
-    + __construct(Column column)
-    - validate_title()
-    - validate_position()
+    - Column column
+    + __construct(Column column))
 }
 
 class CardValidator implements Validator {
-    - final Card card
+    - Card card
     + __construct(Card card)
-    - validate_title()
-    - validate_position()
 }
 }
 @enduml
@@ -232,7 +227,7 @@ class ControllerBoard {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 class ControllerColumn {
@@ -240,7 +235,7 @@ class ControllerColumn {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
     + left()
     + right()
 }
@@ -251,7 +246,7 @@ class ControllerCard {
     + add()
     + view()
     + edit()
-    + remove()
+    + delete()
     + nbComments()
     + down()
     + up()
@@ -264,7 +259,7 @@ class ControllerComment {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 @enduml
