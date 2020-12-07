@@ -14,12 +14,13 @@
         <?php include('menu.php'); ?>
         </header>
         <main class="list">
+            <?php if($user): ?>;
             <article class="up">
                 <h2>Your boards</h2>
                 <div class="displayBoards">
                     <ul class="yourBoards">
-                    <?php foreach($yours as $your): ?>
-                        <li><a href="board/board/<?= $your->id ?>"><b><?= $your->title ?></b></a></li>
+                    <?php foreach($owners as $board): ?>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b></a></li>
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
@@ -31,11 +32,14 @@
             <article class="down">
                 <h2>Others' boards</h2>
                     <ul class="otherBoards">
-                    <?php foreach($others as $other): ?>
-                        <li><a href="board/board/<?= $other->id ?>"><b><?= $other->title ?></b><br/>by <?= $other->owner->fullname ?></a></li>
+                    <?php foreach($others as $board): ?>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b><br/>by <?= $board->get_owner()->get_fullName() ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>
+            <?php else:?>
+            <p>Hello guest ! Please <a href="user/login">login</a> or <a href="user/signup">signup</a>.</p>
+            <?php endif;?>
         </main>
     </body>
 </html>

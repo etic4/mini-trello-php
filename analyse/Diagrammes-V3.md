@@ -13,16 +13,16 @@ CardMngr *-d- Card
 CommentMngr *-d- Comment
 
 abstract class Manager extends Model {
-    + {static} get_all(): List<?>
-    + {static} get_by_id(int id): <?>
+    + get_all(): List<?>
+    + get_by_id(int id): <?>
     + add(?): int
     + update(?)
-    + remove(?)
-    + remove_all()
+    + delete(?)
+    + delete_all()
 }
 
 class UserMngr extends Manager {
-    + {static} get_by_email(String email) 
+    + get_by_email(String email) 
 }
 
 class BoardMngr extends Manager {
@@ -62,14 +62,12 @@ class CommentMngr extends Manager {
 
 class User {
     - final id
-    - String eMail
+    - String email
     - String fullName
     - String passwdHash
     - DateTime registeredAt
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_boards() : BoardMngr
     + check_password(String passw)
     + validate(String pass) : List<String>
@@ -82,8 +80,6 @@ class Board {
     - DateTime modifiedAt
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_columns() : ColumnMngr
     + get_owner() : User
     + validate() : List<String>
@@ -97,8 +93,6 @@ class Column {
     - DateTime modifiedAt
     - Board board
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_cards() : CardMngr
     + validate() : List<String>
 }
@@ -114,8 +108,6 @@ class Card {
     - User author
     
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_comments(): CommentMngr
     + get_author(): User
     + get_column(): Column
@@ -132,8 +124,6 @@ class Comment {
     - User author
 
     + __construct(attrs..)
-    + getters()
-    + setters()
     + get_author(): User
     + get_card(): Card
     + validate() : List<String>
@@ -150,43 +140,34 @@ class Comment {
 package validator {
 abstract class Validator {
     - List<String> errors
-    + {static} is_string(Object o, String errMsg)
-    + {static} is_shorter_than(String str, int strLen, String errMsg)
-    + {static} is_longer_than(String str, int length, String errMsg)
-    + {static} is_length_equal_to(String str, int length, String errMsg)
-    + {static} is_valid_email(String email, String errMsg)
-    + {static} regex_has_match(String str, String regex, String errMsg)
-    + {static} is_date_before(DateTime date, DateTime base)
-    + validate() : List<String>: List<String>
+    + str_longer_than(str, length)
+    + contains_capitals(str)
+    + contains_digits(str)
+    + contains_non_alpha(str)
+    + valid_email(email)
+    + add_error(errMsg)
+    + get_errors()
+    + validate() : List<String>
 }
 
 class UserValidator implements Validator {
-    - final User user
+    - User user
     + __construct(User user)
-    - validate_email()
-    - validate_fullName()
-    - validate_password()
-    - validate_unicity()
 }
 
 class BoardValidator implements Validator {
-    - final Board board
+    - Board board
     + __construct(Board board)
-    - validate_title()
 }
 
 class ColumnValidator implements Validator {
-    - final Column column
-    + __construct(Column column)
-    - validate_title()
-    - validate_position()
+    - Column column
+    + __construct(Column column))
 }
 
 class CardValidator implements Validator {
-    - final Card card
+    - Card card
     + __construct(Card card)
-    - validate_title()
-    - validate_position()
 }
 }
 @enduml
@@ -214,7 +195,7 @@ class ControllerBoard {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 class ControllerColumn {
@@ -222,7 +203,7 @@ class ControllerColumn {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
     + left()
     + right()
 }
@@ -233,7 +214,7 @@ class ControllerCard {
     + add()
     + view()
     + edit()
-    + remove()
+    + delete()
     + nbComments()
     + down()
     + up()
@@ -246,7 +227,7 @@ class ControllerComment {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 @enduml
