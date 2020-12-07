@@ -1,8 +1,9 @@
 <?php
-require_once "../BaseObject.php";
-require_once "BoardValidator.php";
 
-class Board extends BaseObject {
+require_once "BoardValidator.php";
+require_once "model/user/UserMngr.php";
+
+class Board {
     private $id;
     private $title;
     private $owner;
@@ -33,7 +34,7 @@ class Board extends BaseObject {
         $this->title = $title;
     }
 
-    public function get_owner() {
+    public function get_owner_id() {
         return $this->owner;
     }
 
@@ -54,5 +55,9 @@ class Board extends BaseObject {
         return $validator->validate();
     }
 
+    public function get_owner(): ?User {
+        $userMngr = new UserMngr();
+        return $userMngr->get_by_id($this->get_owner_id());
+    }
 
 }

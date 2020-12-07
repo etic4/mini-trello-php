@@ -6,6 +6,7 @@ abstract class Dao extends Model {
     protected  abstract function prepare_insert($object);
     protected  abstract function prepare_update($object);
     protected abstract function get_instance($data);
+
     protected function get_tableName() {
         return $this->tableName;
     }
@@ -48,7 +49,11 @@ abstract class Dao extends Model {
 
     protected function fetch_one_and_get_instance($query) {
         $data = $query->fetch();
-        return $this->get_instance($data);
+        if ($query->rowCount() == 0) {
+            return null;
+        } else {
+            return $this->get_instance($data);
+        }
     }
 
     protected function sql_date($datetime) {

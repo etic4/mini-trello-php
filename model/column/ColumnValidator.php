@@ -1,6 +1,6 @@
 <?php
 
-require_once "../Validator.php";
+require_once "model/Validator.php";
 
 class ColumnValidator extends Validator {
     private $column;

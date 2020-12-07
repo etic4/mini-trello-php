@@ -1,9 +1,11 @@
 <?php
 
-require_once "../Dao.php";
+require_once "Board.php";
+require_once "model/user/User.php";
+require_once "model/Dao.php";
 
 class BoardDao extends Dao {
-    protected $tableName;
+    protected $tableName = "board";
 
     public function get_owner_boards($user): array {
         $sql = "SELECT * from board WHERE Owner=:id";

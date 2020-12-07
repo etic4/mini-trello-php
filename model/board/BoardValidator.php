@@ -1,6 +1,6 @@
 <?php
 
-require_once "../Validator.php";
+require_once "model/Validator.php";
 
 class BoardValidator extends Validator {
     private $board;

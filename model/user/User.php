@@ -1,9 +1,8 @@
 <?php
 
-require_once "../BaseObject.php";
 require_once "UserValidator.php";
 
-class User extends BaseObject {
+class User {
     private $id;
     private $email;
     private $fullName;
@@ -44,7 +43,8 @@ class User extends BaseObject {
         $this->id = $id;
     }
 
-    public function check_password($clearPasswd) {
+    public function check_password($clearPasswd): bool {
+        print(Tools::my_hash($clearPasswd));
         return $this->passwdHash === Tools::my_hash($clearPasswd);
     }
 

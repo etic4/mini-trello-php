@@ -1,6 +1,8 @@
 <?php
 
-require_once "../Dao.php";
+require_once "Column.php";
+require_once "model/board/Board.php";
+require_once "model/Dao.php";
 
 class ColumnDao extends Dao {
     protected $tableName;

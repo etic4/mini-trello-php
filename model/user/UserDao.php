@@ -1,6 +1,7 @@
 <?php
 
-require_once "../Dao.php";
+require_once "model/Dao.php";
+require_once "User.php";
 
 class UserDao extends Dao {
     protected $tableName = "user";

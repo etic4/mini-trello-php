@@ -1,6 +1,8 @@
 <?php
 
 require_once "BoardDao.php";
+require_once "Board.php";
+require_once "model/column/ColumnMngr.php";
 
 class BoardMngr {
     private $user;
