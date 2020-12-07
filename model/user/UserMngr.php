@@ -40,7 +40,6 @@ class UserMngr {
         return new BoardMngr($user);
     }
 
-
     public function add($user): User {
         return $this->dao->insert($user);
     }
@@ -52,6 +51,5 @@ class UserMngr {
     public function delete($user) {
         $this->dao->delete($user);
     }
-
 
 }

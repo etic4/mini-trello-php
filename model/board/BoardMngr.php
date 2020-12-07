@@ -3,6 +3,7 @@
 require_once "BoardDao.php";
 require_once "Board.php";
 require_once "model/column/ColumnMngr.php";
+require_once "model/user/UserMngr.php";
 
 class BoardMngr {
     private $user;
@@ -17,16 +18,27 @@ class BoardMngr {
         return new Board($title, $owner, null, null, null);
     }
 
+    // Prépare la liste pour l'affichage
+    private function get_boards_for_view($board_array): array {
+        $boards = [];
+        foreach ($board_array as $board) {
+            $user = $this->get_owner($board);
+            $boards[] = array("id"=>$board->get_id(), "title"=>$board->get_title(), "fullName"=>$user->get_fullName());
+        }
+        return $boards;
+    }
+
     public function get_own_boards(): array {
-        return $this->dao->get_owner_boards($this->user);
+        return $this->get_boards_for_view($this->dao->get_owner_boards($this->user));
     }
 
     public function get_others_boards(): array {
-        return $this->dao->get_others_boards($this->user);
+        return $this->get_boards_for_view($this->dao->get_others_boards($this->user));
     }
 
-    public function get_owner(): User {
-        return $this->user;
+    public function get_owner($board): User {
+        $userMngr = new UserMngr();
+        return $userMngr->get_by_id($board->get_owner_id());
     }
 
     public function get_columns($board): ColumnMngr {

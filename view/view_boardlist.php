@@ -20,7 +20,7 @@
                 <div class="displayBoards">
                     <ul class="yourBoards">
                     <?php foreach($owners as $board): ?>
-                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b></a></li>
+                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b></a></li>
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
@@ -33,7 +33,7 @@
                 <h2>Others' boards</h2>
                     <ul class="otherBoards">
                     <?php foreach($others as $board): ?>
-                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b><br/>by <?= $board->get_owner()->get_fullName() ?></a></li>
+                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b><br/>by <?= $board['fullname'] ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>

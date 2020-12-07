@@ -7,10 +7,6 @@ abstract class Dao extends Model {
     protected  abstract function prepare_update($object);
     protected abstract function get_instance($data);
 
-    protected function get_tableName() {
-        return $this->tableName;
-    }
-
     public function get_by_id($id) {
         $sql = "SELECT * FROM ". $this->get_tableName() . " WHERE ID=:id";
         $query = $this->execute($sql, array("id"=>$id));
@@ -66,5 +62,9 @@ abstract class Dao extends Model {
         } catch (Exception $e) {
             print("Erreur lors de la conversion de la date: " . $sqlDate);
         }
+    }
+
+    protected function get_tableName() {
+        return $this->tableName;
     }
 }

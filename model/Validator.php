@@ -36,4 +36,6 @@ class Validator {
         return $this->errors;
     }
 
+    public abstract function validate();
+
 }
