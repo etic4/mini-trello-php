@@ -1,6 +1,6 @@
 <?php
 
-
+/**/
 abstract class Validator {
     private $errors;
 
