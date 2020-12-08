@@ -8,6 +8,11 @@ Les managers sont chargés de toutes les opération sur les instances d'objets d
 ```plantuml
 @startuml
 
+User -[hidden]r- Board
+Board -[hidden]r- Column
+Column -[hidden]r- Card
+Card -[hidden]r- Comment
+
 BaseModel -[dotted]r-> validator : <<use>
 User -u-|> BaseModel
 Board -u-|> BaseModel
@@ -30,12 +35,12 @@ abstract class BaseModel extends Model {
     + get_by_id(int id): <?>
     + add(<?>): int
     + update(<?>)
-    + remove(<?>)
+    + delete(<?>)
 }
 
 class User {
     - final id
-    - String eMail
+    - String email
     - String fullName
     - String passwdHash
     - DateTime registeredAt
@@ -111,8 +116,8 @@ class BoardMngr {
     + get_others_boards()
     + add(Board board)
     + update(Board board)
-    + remove(Board board)
-    + remove_all()
+    + delete(Board board)
+    + delete_all()
     + size() : int
 }
 
@@ -123,8 +128,8 @@ class ColumnMngr {
     + move_down(Column col)
     + add(Column col)
     + update(Column col)
-    + remove(Column col)
-    + remove_all()
+    + delete(Column col)
+    + delete_all()
     + size() : int
     - set_position(Column col, int pos)
 }
@@ -138,8 +143,8 @@ class CardMngr {
     + move_right(Card card)
     + add(Card card)
     + update(Card card)
-    + remove(Card card)
-    + remove_all()
+    + delete(Card card)
+    + delete_all()
     + size() : int
     - set_position(Card card, int pos)
     - set_column(Card card, Column col)
@@ -150,8 +155,8 @@ class CommentMngr {
     + __construct(Card card)
     + add(Comment comm)
     + update(Comment comm)
-    + remove(Comment comm)
-    + remove_all()
+    + delete(Comment comm)
+    + delete_all()
     + size() : int
 }
 
@@ -222,7 +227,7 @@ class ControllerBoard {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 class ControllerColumn {
@@ -230,7 +235,7 @@ class ControllerColumn {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
     + left()
     + right()
 }
@@ -241,7 +246,7 @@ class ControllerCard {
     + add()
     + view()
     + edit()
-    + remove()
+    + delete()
     + nbComments()
     + down()
     + up()
@@ -254,7 +259,7 @@ class ControllerComment {
     + index()
     + add()
     + edit()
-    + remove()
+    + delete()
 }
 
 @enduml

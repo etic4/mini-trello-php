@@ -110,6 +110,7 @@ main {
 .one_card h2,
 .title h2 {
     font-size: 30px;
+    padding-top: 2px;
 }
 
 .title .icons {
@@ -129,40 +130,32 @@ strong {
 /***  ========ICONS=======  ***/
 
 .icons {
+    height: 25px;
     display: flex;
     flex-direction: row;
     justify-content: start;
+    align-items: center;
 }
 
-.icons li:first-child {
-    padding-left: 3px;
-}
-
-.icons li .link input {
-    padding-left: 7px;
-    margin-top: 2px;
-}
-
-.icons .link input[type=submit] {
-    border: none;
-}
-
-.card .icons {
-    position: absolute;
-    margin-left: -130px;
-    margin-top: -32px;
-}
-
-.board .card .icons .link input[type=submit] {
-    margin-top: 10px;
+.icons {
+    margin: 0;
+    padding: 0;
 }
 
 .icons li p {
-    font-size: 13px;
+    height: 18px;
+    font-size: 15px;
     font-weight: 900;
-    padding-left: 7px;
-    margin-top: 8px;
-    color: #666666;
+}
+
+.icons li p,
+.icons .link input[type=submit] {
+    border: none;
+    margin-right: 5px;
+}
+
+.card .icons {
+    margin-left: 7px;
 }
 
 
@@ -421,9 +414,10 @@ strong {
     background-color: #e5e5e5;
 }
 
-.board .column header {
+.board .column .title_column {
+    width: 260px;
     font-size: 15px;
-    padding: 15px 10px 25px 10px;
+    padding: 15px 10px 25px 0;
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -431,18 +425,12 @@ strong {
 
 .board .column h3 {
     padding-right: 10px;
+    padding-top: 2px;
 }
 
 .board .column footer .add {
     margin-top: -20px;
     margin-left: 7px;
-}
-
-.board .column section ul {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
 }
 
 
@@ -478,7 +466,12 @@ strong {
 }
 
 .board .column .card {
+    min-height: 65px;
     width: 270px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    margin-bottom: 15px;
     border-radius: 4px;
     background-color: #ffffff;
 }
@@ -498,7 +491,7 @@ strong {
 }
 
 .one_card article header {
-    padding-bottom: 15px;
+    padding-bottom: 25px;
     white-space: nowrap;
 }
 
