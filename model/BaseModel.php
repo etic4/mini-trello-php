@@ -1,5 +1,5 @@
 <?php
-
+/**/
 require_once "framework/Model.php";
 
 abstract class BaseModel extends Model {
