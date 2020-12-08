@@ -2,6 +2,7 @@
 
 require_once "model/Validator.php";
 
+//
 class ColumnValidator extends Validator {
     private $column;
 
