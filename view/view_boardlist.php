@@ -1,6 +1,6 @@
 <!---->
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr"><!---->
     <head>
         <meta charset="UTF-8">
         <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
