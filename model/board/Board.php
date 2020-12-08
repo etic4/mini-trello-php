@@ -1,14 +1,26 @@
 <?php
 
+require_once "BoardModel.php";
 require_once "BoardValidator.php";
-require_once "model/user/UserMngr.php";
+require_once "model/user/User.php";
+require_once "model/column/Column.php";
 
-class Board {
+class Board extends BoardModel {
     private $id;
     private $title;
     private $owner;
     private $createdAt;
     private $modifiedAt;
+
+    protected static function get_tableName(): string {
+        return "board";
+    }
+
+    public static function delete_all($user) {
+        foreach (Board::get_users_boards($user) as $board) {
+            $board->delete();
+        }
+    }
 
     public function __construct($title, $owner, $id=null, $createdAt=null, $modifiedAt=null) {
         $this->id = $id;
@@ -16,6 +28,14 @@ class Board {
         $this->owner = $owner;
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
+    }
+
+    public function get_owner_inst(): ?User {
+        return User::get_by_id($this->owner);
+    }
+
+    public function get_columns(): array {
+        return Column::get_all($this);
     }
 
     public function get_id() {
@@ -34,7 +54,7 @@ class Board {
         $this->title = $title;
     }
 
-    public function get_owner_id() {
+    public function get_owner() {
         return $this->owner;
     }
 
@@ -55,9 +75,5 @@ class Board {
         return $validator->validate();
     }
 
-    public function get_owner(): ?User {
-        $userMngr = new UserMngr();
-        return $userMngr->get_by_id($this->get_owner_id());
-    }
 
 }

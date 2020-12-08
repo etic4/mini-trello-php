@@ -1,14 +1,26 @@
 <?php
 
+require_once "ColumnModel.php";
 require_once "ColumnValidator.php";
+//require_once "model/Card.php";
 
-class Column {
+class Column extends ColumnModel {
     private $id;
     private $title;
     private $position;
     private $createdAt;
     private $modifiedAt;
     private $board;
+
+    protected static function get_tableName(): string {
+        return "column";
+    }
+
+    public static function delete_all($board) {
+        foreach ($board->get_all() as $column) {
+            $column->delete();
+        }
+    }
 
     public function __construct($title, $position, $board, $id=null, $createdAt=null, $modifiedAt=null) {
         $this->id = $id;
@@ -17,6 +29,26 @@ class Column {
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->board = $board;
+    }
+
+    public function get_board_inst() {
+        return Board::get_by_id($this->board);
+    }
+
+/*    public function get_cards(): array {
+        return Card::get_all($this);
+    }*/
+
+    public function move_left() {
+        /**
+         * TODO implémenter column->move_left
+         */
+    }
+
+    public function move_right() {
+        /**
+         * TODO implémenter column->move_right
+         */
     }
 
     public function get_id() {
@@ -31,10 +63,6 @@ class Column {
         return $this->title;
     }
 
-    public function set_title($title) {
-        $this->title = $title;
-    }
-
     public function get_position() {
         return $this->position;
     }
@@ -43,17 +71,16 @@ class Column {
         $this->position = $position;
     }
 
-    public function get_created_at() {
+    public function get_createdAt() {
         return $this->createdAt;
     }
 
-
-    public function get_modified_at() {
+    public function get_modifiedAt() {
         return $this->modifiedAt;
     }
 
-    public function set_modified_at($modifiedAt) {
-        $this->modifiedAt = $modifiedAt;
+    public function set_modifiedDate() {
+        $this->modifiedAt = new DateTime("now");
     }
 
     public function get_board() {
@@ -64,7 +91,4 @@ class Column {
         $columnValidator = new ColumnValidator($this);
         return $columnValidator->validate();
     }
-
-
-
 }

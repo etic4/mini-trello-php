@@ -1,6 +1,7 @@
 <?php
 
-require_once "model/board/BoardMngr.php";
+require_once "framework/Controller.php";
+require_once "model/user/User.php";
 
 class ControllerBoard extends Controller {
 
@@ -10,10 +11,8 @@ class ControllerBoard extends Controller {
         $others = [];
 
         if ($user) {
-            $boardMngr = new BoardMngr($user);
-
-            $owners = $boardMngr->get_own_boards();
-            $others = $boardMngr->get_others_boards();
+            $owners = $user->get_own_boards();
+            $others = $user->get_others_boards();
         }
 
         (new View("boardlist"))->show(array("user"=>$user, "owners" => $owners,
