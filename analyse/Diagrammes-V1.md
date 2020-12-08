@@ -20,10 +20,6 @@ Column -u-|> BaseModel
 Card -u-|> BaseModel
 Comment -u-|> BaseModel
 
-BoardMngr *-u- Board
-ColumnMngr *-u- Column
-CardMngr *-u- Card
-CommentMngr *-u- Comment
 
 package validator {
 }
@@ -31,25 +27,32 @@ package validator {
 'note top of User : "Il faut passer le password\nen clair à validate()"
 
 abstract class BaseModel extends Model {
-    + get_all(): List<?>
-    + get_by_id(int id): <?>
+    + {static} get_all(): List<?>
+    + {static} get_by_id(int id): <?>
     + add(<?>): int
     + update(<?>)
     + delete(<?>)
+    + delete_all()
 }
 
 class User {
-    - final id
+    - id
     - String email
     - String fullName
     - String passwdHash
+    - String clearPasswd
     - DateTime registeredAt
-    + get_by_email(String email)
+
+    + {static} get_by_email(String email)
+    + {static} validate_login(email, passwd)
     
     + __construct(attrs..)
-    + get_boards() : BoardMngr
-    + check_password(String passw)
-    + validate(String pass) : List<String>
+    + getters()
+    + setters()
+    + get_own_board(): List<Board>
+    + get_others_boards(): List<Board>
+    + check_password(passw)
+    + validate() : List<String>
 }
 
 class Board {
@@ -57,11 +60,13 @@ class Board {
     - String title
     - DateTime createdAt
     - DateTime modifiedAt
+    - int Owner
     
     + __construct(attrs..)
-    + get_columns() : ColumnMngr
-    + get_owner() : User
-    + validate() : List<String>
+    + getters()
+    + setters()
+    + get_columns() : List<Column>
+    + get_owner_inst() : User
 }
 
 class Column {
@@ -72,7 +77,12 @@ class Column {
     - DateTime modifiedAt
     - Board board
     + __construct(attrs..)
-    + get_cards() : CardMngr
+    + getters()
+    + setters()
+    + get_board(): Board
+    + get_cards() : List<Card>
+    + move_up()
+    + move_down()
     + validate() : List<String>
 }
 
@@ -87,11 +97,15 @@ class Card {
     - User author
     
     + __construct(attrs..)
-
-    + get_comments(): CommentMngr
-    + get_author(): User
+    + getters()
+    + setters()
+    + get_comments(): List<Comment>
+    + get_author_inst(): User
     + get_column(): Column
-    + move_to(Column col, int pos)
+    + move_up()
+    + move_down()
+    + move_left()
+    + move_right()
     + validate() : List<String>
 }
 
@@ -104,60 +118,11 @@ class Comment {
     - User author
 
     + __construct(attrs..)
+    + getters()
+    + setters()
     + get_author(): User
     + get_card(): Card
     + validate() : List<String>
-}
-
-class BoardMngr {
-    - User user
-    + __construct(User user)
-    + get_own_board()
-    + get_others_boards()
-    + add(Board board)
-    + update(Board board)
-    + delete(Board board)
-    + delete_all()
-    + size() : int
-}
-
-class ColumnMngr {
-    - Board board
-    + __construct(Board board)
-    + move_up(Column col)
-    + move_down(Column col)
-    + add(Column col)
-    + update(Column col)
-    + delete(Column col)
-    + delete_all()
-    + size() : int
-    - set_position(Column col, int pos)
-}
-
-class CardMngr {
-    - Card card
-    + __construct(Column column)
-    + move_up(Card card)
-    + move_down(Card card)
-    + move_left(Card card)
-    + move_right(Card card)
-    + add(Card card)
-    + update(Card card)
-    + delete(Card card)
-    + delete_all()
-    + size() : int
-    - set_position(Card card, int pos)
-    - set_column(Card card, Column col)
-}
-
-class CommentMngr {
-    - Comment comment
-    + __construct(Card card)
-    + add(Comment comm)
-    + update(Comment comm)
-    + delete(Comment comm)
-    + delete_all()
-    + size() : int
 }
 
 @enduml
