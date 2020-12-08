@@ -14,11 +14,18 @@ Column -[hidden]r- Card
 Card -[hidden]r- Comment
 
 BaseModel -[dotted]r-> validator : <<use>
-User -u-|> BaseModel
-Board -u-|> BaseModel
-Column -u-|> BaseModel
-Card -u-|> BaseModel
-Comment -u-|> BaseModel
+
+User -u-|> UserModel
+Board -u-|> BoardModel
+Column -u-|> ColumnModel
+Card -u-|> CardModel
+Comment -u-|> CommentModel
+
+UserModel -u-|> BaseModel
+BoardModel -u-|> BaseModel
+ColumnModel -u-|> BaseModel
+CardModel -u-|> BaseModel
+CommentModel -u-|> BaseModel
 
 
 package validator {
@@ -40,6 +47,38 @@ abstract class BaseModel extends Model {
     + delete_all()
 }
 
+class UserModel {
+    + {static} get_by_email(String email)
+    + prepare_insert()
+    + prepare_update()
+    + get_instance()
+}
+
+class BoardModel {
+    + prepare_insert()
+    + prepare_update()
+    + get_instance()
+}
+
+class ColumnModel {
+    + prepare_insert()
+    + prepare_update()
+    + get_instance()
+}
+
+class CardModel {
+    + prepare_insert()
+    + prepare_update()
+    + get_instance()
+}
+
+class CommentModel {
+    + prepare_insert()
+    + prepare_update()
+    + get_instance()
+}
+
+
 class User {
     - id
     - String email
@@ -48,7 +87,6 @@ class User {
     - String clearPasswd
     - DateTime registeredAt
     
-    + {static} get_by_email(String email)
     + {static} validate_login(email, passwd)
     
     + __construct(attrs..)
