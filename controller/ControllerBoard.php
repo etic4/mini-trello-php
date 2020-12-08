@@ -19,8 +19,7 @@ class ControllerBoard extends Controller {
             "others" => $others));
     }
 
-    public function board($id) {
-
-
+    public function board() {
+        // A implémenter
     }
 }
