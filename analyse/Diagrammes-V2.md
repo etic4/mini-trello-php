@@ -28,11 +28,21 @@ Les Dao héritent de la  classe abstraite Dao qui elle-même hérite de Model
 @startuml
 
 abstract class Dao extends Model {
-    + get_all(): List<?>
-    + get_by_id(int id): <?>
-    + add(<?>): int
-    + update(<?>)
-    + remove(<?>)
+    + get_by_id(int id): Object
+
+    + insert(Object): Object
+    + update(Object)
+    + remove(Object)
+    
+    # get_many(sql, params)
+    # fetch_one_and_get_instance(query)
+    # sql_date(datetime)
+    # php_date(sqlDate)
+    # get_tableName()
+
+    # {abstract} prepare_insert()
+    # {abstract} prepare_update()
+    # {abstract} get_instance()
 }
 
 class UserDao extends Dao {
@@ -41,24 +51,27 @@ class UserDao extends Dao {
 
 class BoardDao extends Dao {
     - User user
-    + __construct(User user)
-    + get_user_boards(): BoardList
-    + get_others_boards(): BoardList
+    + __construct(User)
+    + get_owners_boards(): List<Board>
+    + get_others_boards(): List<Board>
 }
 
 class ColumnDao extends Dao {
-- Board board
-+ __construct(Board board)
+    - Board board
+    + __construct(Column)
+    + get_all(): List<Column>
 }
     
 class CardDao extends Dao {
-    - Column column
-    + __construct(Column column)
+    - Card card
+    + __construct(Card)
+    + get_all(): List<Card>
 }
 
 class CommentDao extends Dao {
-    - Card card
-    + __construct(Card card)
+    - Comment comment
+    + __construct(Comment)
+    + get_all(): List<Comment>
 }
 
 @enduml
@@ -73,12 +86,13 @@ Board -[hidden]r Column
 Column -[hidden]r Card
 Card -[hidden]r Comment
 
+UserMngr *-u- User
 BoardMngr *-u- Board
 ColumnMngr *-u- Column
 CardMngr *-u- Card
 CommentMngr *-u- Comment
 
-User -[dotted]-> UserDao: <<use>>
+UserMngr -[dotted]-> UserDao: <<use>>
 BoardMngr -[dotted]-> BoardDao: <<use>>
 ColumnMngr -[dotted]-> ColumnDao: <<use>>
 CardMngr -[dotted]-> CardDao: <<use>>
@@ -96,16 +110,18 @@ package validator {
 'note top of User : "Il faut passer le passwd\nen clair à validate()"
 
 class User {
-    - final id
+    - int id
     - String eMail
     - String fullName
     - String passwdHash
+    - String clearPasswd
     - DateTime registeredAt
     
     + __construct(attrs..)
-    + get_boards() : BoardMngr
-    + check_password(String passw)
-    + validate(String pass) : List<String>
+    + getters()
+    + setters()
+    + check_password(passw)
+    + validate() : List<String>
 }
 
 class Board {
@@ -113,10 +129,11 @@ class Board {
     - String title
     - DateTime createdAt
     - DateTime modifiedAt
+    - int owner
     
     + __construct(attrs..)
-    + get_columns() : ColumnMngr
-    + get_owner() : User
+    + getters()
+    + setters()
     + validate() : List<String>
 }
 
@@ -126,9 +143,11 @@ class Column {
     - int position
     - DateTime createdAt
     - DateTime modifiedAt
-    - Board board
+    - int board
+
     + __construct(attrs..)
-    + get_cards() : CardMngr
+    + getters()
+    + setters()
     + validate() : List<String>
 }
 
@@ -140,13 +159,11 @@ class Card {
     - DateTime createdAt
     - DateTime modifiedAt
     - Column column
-    - User author
+    - int author
     
     + __construct(attrs..)
-    + get_comments(): CommentMngr
-    + get_author(): User
-    + get_column(): Column
-    + move_to(Column col, int pos)
+    + getters()
+    + setters()
     + validate() : List<String>
 }
 
@@ -155,63 +172,77 @@ class Comment {
     - String body
     - DateTime createdAt
     - DateTime modifiedAt
-    - Card card
-    - User author
+    - int card
+    - int author
 
     + __construct(attrs..)
-    + get_author(): User
-    + get_card(): Card
+    + getters()
+    + setters()
     + validate() : List<String>
+}
+
+class UserMngr {
+    - UserDao dao
+    + new(): User
+    + get_by_email(email) : User
+    + validate_login(email, passwd): List<String>
+    + get_boards(User): BoardMngr
 }
 
 class BoardMngr {
     - User user
+    - Board dao
+
     + __construct(User user)
-    + get_own_board()
-    + get_others_boards()
-    + add(Board board)
-    + update(Board board)
-    + remove(Board board)
-    + remove_all()
-    + size() : int
+    + new(): Board
+    + get_own_board(): List<Board>
+    + get_others_boards(): List<Board>
+    + get_columns(Board): ColumnMngr
+    + get_owner(Board): User
 }
 
 class ColumnMngr {
     - Board board
-    + __construct(Board board)
-    + move_up(Column col)
-    + move_down(Column col)
-    + add(Column col)
-    + update(Column col)
-    + remove(Column col)
-    + remove_all()
-    + size() : int
-    - set_position(Column col, int pos)
+    - ColumnDao dao
+
+    + __construct(Board)
+    + new(): Board
+    + get_board(): Board
+    + get_cards(Column): CardMngr
+
+    + move_up(Column)
+    + move_down(Column)
+    - set_position(Column, pos)
 }
 
 class CardMngr {
-    - Card card
-    + __construct(Column column)
-    + move_up(Card card)
-    + move_down(Card card)
-    + move_left(Card card)
-    + move_right(Card card)
-    + add(Card card)
-    + update(Card card)
-    + remove(Card card)
-    + remove_all()
-    + size() : int
-    - set_position(Card card, int pos)
-    - set_column(Card card, Column col)
+    - Column column
+    - CardDao dao
+
+    + __construct(Column)
+    + new(title, body, author, column): Card
+    + get_author(Card): User
+    + get_column(): Column
+    + get_comments(): CommentMngr
+    + get_author(Card): User
+
+    + move_up(Card)
+    + move_down(Card)
+    + move_left(Card)
+    + move_right(Card)
+    - set_position(Card, pos)
+    - set_column(Card, Column)
 }
 
 class CommentMngr {
-    - Comment comment
-    + __construct(Card card)
-    + add(Comment comm)
-    + update(Comment comm)
-    + remove(Comment comm)
-    + remove_all()
+    - Card card
+    - CommenDao dao
+
+    + __construct(Card)
+    + new(title, body): Comment
+    + get_by_id(id): Comment
+    + get_card(): Card
+    + get_author(Comment): User
     + size() : int
 }
 
@@ -225,43 +256,34 @@ class CommentMngr {
 package validator {
 abstract class Validator {
     - List<String> errors
-    + is_string(Object o, String errMsg)
-    + is_shorter_than(String str, int strLen, String errMsg)
-    + is_longer_than(String str, int length, String errMsg)
-    + is_length_equal_to(String str, int length, String errMsg)
-    + is_valid_email(String email, String errMsg)
-    + regex_has_match(String str, String regex, String errMsg)
-    + is_date_before(DateTime date, DateTime base)
-    + validate() : List<String>: List<String>
+    + str_longer_than(str, length)
+    + contains_capitals(str)
+    + contains_digits(str)
+    + contains_non_alpha(str)
+    + valid_email(email)
+    + add_error(errMsg)
+    + get_errors()
+    + validate() : List<String>
 }
 
 class UserValidator implements Validator {
-    - final User user
+    - User user
     + __construct(User user)
-    - validate_email()
-    - validate_fullName()
-    - validate_password()
-    - validate_unicity()
 }
 
 class BoardValidator implements Validator {
-    - final Board board
+    - Board board
     + __construct(Board board)
-    - validate_title()
 }
 
 class ColumnValidator implements Validator {
-    - final Column column
-    + __construct(Column column)
-    - validate_title()
-    - validate_position()
+    - Column column
+    + __construct(Column column))
 }
 
 class CardValidator implements Validator {
-    - final Card card
+    - Card card
     + __construct(Card card)
-    - validate_title()
-    - validate_position()
 }
 }
 @enduml

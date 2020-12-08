@@ -140,43 +140,34 @@ class Comment {
 package validator {
 abstract class Validator {
     - List<String> errors
-    + is_string(Object o, String errMsg)
-    + is_shorter_than(String str, int strLen, String errMsg)
-    + is_longer_than(String str, int length, String errMsg)
-    + is_length_equal_to(String str, int length, String errMsg)
-    + is_valid_email(String email, String errMsg)
-    + regex_has_match(String str, String regex, String errMsg)
-    + is_date_before(DateTime date, DateTime base)
-    + validate() : List<String>: List<String>
+    + str_longer_than(str, length)
+    + contains_capitals(str)
+    + contains_digits(str)
+    + contains_non_alpha(str)
+    + valid_email(email)
+    + add_error(errMsg)
+    + get_errors()
+    + validate() : List<String>
 }
 
 class UserValidator implements Validator {
-    - final User user
+    - User user
     + __construct(User user)
-    - validate_email()
-    - validate_fullName()
-    - validate_password()
-    - validate_unicity()
 }
 
 class BoardValidator implements Validator {
-    - final Board board
+    - Board board
     + __construct(Board board)
-    - validate_title()
 }
 
 class ColumnValidator implements Validator {
-    - final Column column
-    + __construct(Column column)
-    - validate_title()
-    - validate_position()
+    - Column column
+    + __construct(Column column))
 }
 
 class CardValidator implements Validator {
-    - final Card card
+    - Card card
     + __construct(Card card)
-    - validate_title()
-    - validate_position()
 }
 }
 @enduml
