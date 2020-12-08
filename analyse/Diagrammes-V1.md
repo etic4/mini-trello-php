@@ -13,7 +13,6 @@ Board -[hidden]r- Column
 Column -[hidden]r- Card
 Card -[hidden]r- Comment
 
-BaseModel -[dotted]r-> validator : <<use>
 
 User -u-|> UserModel
 Board -u-|> BoardModel
@@ -21,63 +20,63 @@ Column -u-|> ColumnModel
 Card -u-|> CardModel
 Comment -u-|> CommentModel
 
-UserModel -u-|> BaseModel
-BoardModel -u-|> BaseModel
-ColumnModel -u-|> BaseModel
-CardModel -u-|> BaseModel
-CommentModel -u-|> BaseModel
-
+User -[dotted]r-> validator : <<use>
+Board  -[dotted]r-> validator : <<use>
+Column -[dotted]r-> validator : <<use>
+Card -[dotted]r-> validator : <<use>
+Comment -[dotted]r-> validator : <<use>
 
 package validator {
 }
 
 'note top of User : "Il faut passer le password\nen clair à validate()"
 
-abstract class BaseModel extends Model {
-    + {static} get_all(): List<?>
-    + {static} get_by_id(int id): <?>
-    + {static} fetch_one_and_get_instance(query): <?>
-    + {static} get_many(sql, params): List<?>
+abstract class DBTools {
     + {static} sql_date(datetime): str
     + {static} php_date(sqldate): Datetime
-    + {static} get_tableName()
-    + insert(): int
-    + update()
-    + delete()
-    + delete_all()
+
 }
 
 class UserModel {
     + {static} get_by_email(String email)
-    + prepare_insert()
-    + prepare_update()
-    + get_instance()
+    + {static} get_by_id(int id): <?>
+    + insert(): int
+    + update()
+    + delete()
 }
 
 class BoardModel {
-    + prepare_insert()
-    + prepare_update()
-    + get_instance()
+    + {static} get_users_boards(): List<board>
+    + {static} get_others_boards(): List<board>
+    + {static} get_by_id(int id): <?>
+    + insert(): int
+    + update()
+    + delete()
 }
 
 class ColumnModel {
-    + prepare_insert()
-    + prepare_update()
-    + get_instance()
+    + {static} get_all(Board): List<?>
+    + {static} get_by_id(int id): <?>
+    + insert(): int
+    + update()
+    + delete()
 }
 
 class CardModel {
-    + prepare_insert()
-    + prepare_update()
-    + get_instance()
+    + {static} get_all(Column): List<?>
+    + {static} get_by_id(int id): <?>
+    + insert(): int
+    + update()
+    + delete()
 }
 
 class CommentModel {
-    + prepare_insert()
-    + prepare_update()
-    + get_instance()
+    + {static} get_all(Card): List<?>
+    + {static} get_by_id(int id): <?>
+    + insert(): int
+    + update()
+    + delete()
 }
-
 
 class User {
     - id
@@ -121,6 +120,8 @@ class Column {
     - DateTime modifiedAt
     - Board board
 
+    + {static} delete_all(Board)
+
     + __construct(attrs..)
     + getters()
     + setters()
@@ -141,6 +142,8 @@ class Card {
     - DateTime modifiedAt
     - Column column
     - User author
+
+    + {static} delete_all(Column)
     
     + __construct(attrs..)
     + getters()
@@ -163,6 +166,8 @@ class Comment {
     - DateTime modifiedAt
     - Card card
     - User author
+
+    + {static} delete_all(Card)
 
     + __construct(attrs..)
     + getters()
