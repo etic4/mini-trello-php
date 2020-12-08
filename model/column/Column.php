@@ -12,10 +12,6 @@ class Column extends ColumnModel {
     private $modifiedAt;
     private $board;
 
-    protected static function get_tableName(): string {
-        return "column";
-    }
-
     public static function delete_all($board) {
         foreach ($board->get_all() as $column) {
             $column->delete();

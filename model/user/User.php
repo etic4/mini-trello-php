@@ -12,10 +12,6 @@ class User extends UserModel {
     private $clearPasswd; //Utilisé uniquement au moment du signup
     private $registeredAt;
 
-    protected static function get_tableName(): string {
-        return "user";
-    }
-
     public static function validate_login($email, $password): array {
         $errors = [];
         $user = User::get_by_email($email);

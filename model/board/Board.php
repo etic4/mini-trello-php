@@ -12,10 +12,6 @@ class Board extends BoardModel {
     private $createdAt;
     private $modifiedAt;
 
-    protected static function get_tableName(): string {
-        return "board";
-    }
-
     public static function delete_all($user) {
         foreach (Board::get_users_boards($user) as $board) {
             $board->delete();
