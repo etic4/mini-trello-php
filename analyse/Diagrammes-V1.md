@@ -29,9 +29,14 @@ package validator {
 abstract class BaseModel extends Model {
     + {static} get_all(): List<?>
     + {static} get_by_id(int id): <?>
-    + add(<?>): int
-    + update(<?>)
-    + delete(<?>)
+    + {static} fetch_one_and_get_instance(query): <?>
+    + {static} get_many(sql, params): List<?>
+    + {static} sql_date(datetime): str
+    + {static} php_date(sqldate): Datetime
+    + {static} get_tableName()
+    + insert(): int
+    + update()
+    + delete()
     + delete_all()
 }
 
@@ -42,7 +47,7 @@ class User {
     - String passwdHash
     - String clearPasswd
     - DateTime registeredAt
-
+    
     + {static} get_by_email(String email)
     + {static} validate_login(email, passwd)
     
@@ -67,6 +72,7 @@ class Board {
     + setters()
     + get_columns() : List<Column>
     + get_owner_inst() : User
+    + set_modifiedDate()
 }
 
 class Column {
@@ -76,13 +82,15 @@ class Column {
     - DateTime createdAt
     - DateTime modifiedAt
     - Board board
+
     + __construct(attrs..)
     + getters()
     + setters()
-    + get_board(): Board
+    + get_board_inst(): Board
     + get_cards() : List<Card>
     + move_up()
     + move_down()
+    + set_modifiedDate()
     + validate() : List<String>
 }
 
@@ -106,6 +114,7 @@ class Card {
     + move_down()
     + move_left()
     + move_right()
+    + set_modifiedDate()
     + validate() : List<String>
 }
 
@@ -122,6 +131,7 @@ class Comment {
     + setters()
     + get_author(): User
     + get_card(): Card
+    + set_modifiedDate()
     + validate() : List<String>
 }
 
