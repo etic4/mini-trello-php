@@ -1,7 +1,8 @@
 <?php
 /**/
 require_once "framework/Controller.php";
-require_once "model/user/User.php";
+require_once "model/User.php";
+require_once "model/Board.php";
 
 class ControllerBoard extends Controller {
 
@@ -20,6 +21,17 @@ class ControllerBoard extends Controller {
     }
 
     public function board() {
-        // A implémenter
+        $user = $this->get_user_or_false();
+        $board = [];
+        $columns = [];
+
+        if(isset($_GET["param1"])) {
+            $id = $_GET["param1"];
+            $board = Board::get_by_id($id);
+            $columns = $board->get_columns();
+        }
+
+        (new View("board"))->show(array("user"=>$user, "board" => $board, "columns" => $columns));   
+
     }
 }
