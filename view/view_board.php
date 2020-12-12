@@ -2,7 +2,7 @@
 <html lang="fr"><!---->
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
     <title>Boards "<?= $board->get_title() ?>"</title>
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +33,7 @@
                         </li>
                     </ul>
                 </div>
-                <p class="credit">Created 'code php time' ago by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. 'code php modified'</p>
+                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. <?= DBTools::laps($board->get_createdAt(), $board->get_modifiedAt()); ?></p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>

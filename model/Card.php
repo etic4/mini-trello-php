@@ -58,10 +58,10 @@ class Card extends Model {
         $data = $query->fetchAll();
 
         $cards = [];
-        foreach ($data as $row) {
-            $createdAt = DBTools::php_date($row["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($row["ModifiedAt"]);
-            $card = new Card($row["ID"], $row["Title"], $row["Body"], $row["Position"], $createdAt, $modifiedAt, User::get_by_id($row["Author"]), $row["Column"]);
+        foreach ($data as $rec) {
+            $createdAt = DBTools::php_date($rec["CreatedAt"]);
+            $modifiedAt = DBTools::php_date($rec["ModifiedAt"]);
+            $card = new Card($rec["ID"], $rec["Title"], $rec["Body"], $rec["Position"], $createdAt, $modifiedAt, User::get_by_id($rec["Author"]), $rec["Column"]);
             $card->comments = Comment::get_all_comments($card);
             array_push($cards, $card);
         }
