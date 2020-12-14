@@ -60,6 +60,31 @@ class Board extends Model {
         return Column::get_all_columns_from_board($this);
     }
 
+    public function move_left(Column $col) {
+        $pos = $col->get_position();
+
+        if ($pos > 0) {
+            $target = $this->columns[$pos-1];
+            $col->set_position($pos-1);
+            $target->set_position($pos);
+
+            $col->update();
+            $target->update();
+        }
+    }
+
+    public function move_right(Column $col) {
+        $pos = $col->get_position();
+
+        if ($pos < count($this->columns)-1) {
+            $target = $this->columns[$pos+1];
+            $col->set_position($pos+1);
+            $target->set_position($pos);
+
+            $col->update();
+            $target->update();;
+        }
+    }
     
     //    SETTERS    //
 
