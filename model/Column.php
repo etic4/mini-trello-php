@@ -6,7 +6,7 @@ require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Card.php";
 
-class Column extends Model {
+class Column extends Model implements Moveable {
     private $id;
     private $title;
     private $position;
