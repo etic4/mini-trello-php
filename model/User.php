@@ -79,29 +79,29 @@ class User extends Model {
     public function validate(): array {
         $errors = array();
         //email
-        if (!Validation::valid_email($this->user->email)) {
+        if (!Validation::valid_email($this->email)) {
             $errors[] = "Email non valide";
         }
 
         //fullName
-        if (!Validation::str_longer_than($this->user->fullName, 2)) {
+        if (!Validation::str_longer_than($this->fullName, 2)) {
             $errors[] = "Le nom doit comporter au moins 3 caractères";
         }
 
         //password
-        if (!Validation::str_longer_than($this->user->clearPasswd, 7)) {
+        if (!Validation::str_longer_than($this->clearPasswd, 7)) {
             $errors[] = "Le mot de passe doit comporter au moins 8 caractères";
         }
 
-        if (!Validation::contains_capitals($this->user->clearPasswd)) {
+        if (!Validation::contains_capitals($this->clearPasswd)) {
             $errors[] = "Le mot de passe doit contenir au moins une lettre capitale";
         }
 
-        if (!Validation::contains_digits($this->user->clearPasswd)) {
+        if (!Validation::contains_digits($this->clearPasswd)) {
             $errors[] = "Le mot de passe doit contenir au moins une chiffre capitale";
         }
 
-        if (!Validation::contains_non_alpha($this->user->clearPasswd)) {
+        if (!Validation::contains_non_alpha($this->clearPasswd)) {
             $errors[] = "Le mot de passe doit contenir au moins une caractère spécial";
         }
 
