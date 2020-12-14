@@ -1,7 +1,7 @@
 <?php
 
 //require_once "ColumnModel.php";
-//require_once "ColumnValidator.php";
+require_once "Validation.php";
 require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Card.php";
@@ -134,8 +134,11 @@ class Column extends Model {
     //    VALIDATION    //
 
     public function validate(): array {
-        $columnValidator = new Validator($this);
-        return $columnValidator->validate();
+        $errors = [];
+        if (!Validation::str_longer_than($this->title, 2)) {
+            $errors[] = "Le titre doit comporter au moins 3 caractères";
+        }
+        return $errors;
     }
 
 
