@@ -79,7 +79,7 @@ class Board extends Model {
     //    VALIDATION    //
 
     public function validate(): array {
-        $validator = new BoardValidator($this);
+        $validator = new Validator($this);
         return $validator->validate();
     }
 
@@ -96,7 +96,7 @@ class Board extends Model {
             return null;
         } else {
             $createdAt = DBTools::php_date($data["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($data["ModifiedAt"]);
+            $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
             $owner = User::get_by_id($data["Owner"]);
             return new Board($data["Title"], $owner, $data["ID"], $createdAt, $modifiedAt);
         }
@@ -111,7 +111,7 @@ class Board extends Model {
         $boards = array();
         foreach ($data as $rec) {
             $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($rec["ModifiedAt"]);
+            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
             $board = new Board($rec["Title"], $rec["Owner"], $rec["ID"], $createdAt, $modifiedAt);
             array_push($boards, $board);
         }
@@ -128,7 +128,7 @@ class Board extends Model {
         $boards = array();
         foreach ($data as $rec) {
             $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($rec["ModifiedAt"]);
+            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
             $board = new Board($rec["Title"], $rec["Owner"], $rec["ID"], $createdAt, $modifiedAt);
             array_push($boards, $board);
         }

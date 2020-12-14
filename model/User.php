@@ -77,7 +77,7 @@ class User extends Model {
     }
 
     public function validate(): array {
-        $validator = new UserValidator($this);
+        $validator = new Validator($this);
         return $validator->validate();
     }
 

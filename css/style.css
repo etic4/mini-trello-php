@@ -426,7 +426,7 @@ strong {
     justify-content: start;
 }
 
-.board .column h3 {
+.board .column .title_column h3 {
     padding-right: 10px;
     padding-top: 2px;
 }

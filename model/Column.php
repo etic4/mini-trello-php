@@ -84,7 +84,7 @@ class Column extends Model {
     //    VALIDATION    //
 
     public function validate(): array {
-        $columnValidator = new ColumnValidator($this);
+        $columnValidator = new Validator($this);
         return $columnValidator->validate();
     }
 
@@ -100,7 +100,7 @@ class Column extends Model {
             return null;
         } else {
             $createdAt = DBTools::php_date($data["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($data["ModifiedAt"]);
+            $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
             return new Column($data["Title"], $data["Position"], $data["Board"], $data["ID"], $createdAt, $modifiedAt);
         }
     }
@@ -114,7 +114,7 @@ class Column extends Model {
         $columns = array();
         foreach ($data as $rec) {
             $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($rec["ModifiedAt"]);
+            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
             $column = new Column($rec["Title"], $rec["Position"], $rec["Board"], $rec["ID"], $createdAt, $modifiedAt);
             array_push($columns, $column);
         }
@@ -130,7 +130,7 @@ class Column extends Model {
         $columns = array();
         foreach ($data as $rec) {
             $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date($rec["ModifiedAt"]);
+            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
             $column = new Column($rec["Title"], $rec["Position"], $rec["Board"], $rec["ID"], $createdAt, $modifiedAt);
             $column->cards = Card::get_all_cards_from_column($column);
             array_push($columns, $column);
