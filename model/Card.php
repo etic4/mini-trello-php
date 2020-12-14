@@ -3,8 +3,9 @@
 require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Comment.php";
+require_once "Moveable.php";
 
-class Card extends Model {
+class Card extends Model implements Moveable {
     private $id;
     private $title;
     private $body;
@@ -39,6 +40,10 @@ class Card extends Model {
 
     public function get_position() {
         return $this->position;
+    }
+
+    public function set_position($pos) {
+        $this->position = $pos;
     }
 
     public function get_comments() {
