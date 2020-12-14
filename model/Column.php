@@ -114,6 +114,7 @@ class Column extends Model {
         if ($pos > 0) {
             $target = $this->get_board_inst()->get_columns()[$pos-1];
             $card->set_column($target->get_pos());
+            $card->set_position(count($target->get_cards()));
             $card->update();
         }
     }
@@ -125,6 +126,7 @@ class Column extends Model {
         if ($pos > count($colList)-1) {
             $target = $colList[$pos+1];
             $card->set_column($target->get_pos());
+            $card->set_position(count($target->get_cards()));
             $card->update();
         }
     }
