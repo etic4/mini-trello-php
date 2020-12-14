@@ -376,6 +376,17 @@ strong {
     border: 1px solid #009900;
 }
 
+.welcome {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 25px 0 0 20px;
+}
+
+.welcome a {
+    text-decoration: none;
+    color: #0066CC;
+}
+
 
 /***  ========BOARD========  ***/
 

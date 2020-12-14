@@ -21,7 +21,7 @@ class ControllerBoard extends Controller {
     }
 
     public function board() {
-        $user = $this->get_user_or_false();
+        $user = $this->get_user_or_redirect();
         $board = [];
         $columns = [];
 
