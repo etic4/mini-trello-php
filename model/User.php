@@ -64,10 +64,10 @@ class User extends Model {
         $user = User::get_by_email($email);
         if ($user) {
             if (!$user->check_password($password)) {
-                $errors[] = "Le mot de passe ne correspond pas";
+                $errors[] = "You have entered an invalid username or password";
             }
         } else {
-            $errors[] = "Aucun utilisateur '. $email . ' Enregistrez-vous SVP";
+            $errors[] = "You have entered an invalid username or password";
         }
         return $errors;
     }

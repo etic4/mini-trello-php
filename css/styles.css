@@ -166,10 +166,14 @@ strong {
 
 .errors {
     display: block;
+    text-align: center;
     color: #851414;
     background-color: #ffe0e5;
-    border-top: 1px solid #cccccc;
-    border-bottom: 1px solid #cccccc;
+    border-top: 2px solid #cccccc;
+    border-bottom: 2px solid #cccccc;
+    padding: 10px 0;
+    margin-top: 20px;
+    margin-bottom: -10px;
 }
 
 
