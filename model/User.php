@@ -1,7 +1,7 @@
 <?php
 
 //require_once "UserModel.php";
-//require_once "UserValidator.php";
+require_once "Validation.php";
 require_once "framework/Model.php";
 require_once "model/Board.php";
 
@@ -77,8 +77,35 @@ class User extends Model {
     }
 
     public function validate(): array {
-        $validator = new Validator($this);
-        return $validator->validate();
+        $errors = array();
+        //email
+        if (!Validation::valid_email($this->user->email)) {
+            $errors[] = "Email non valide";
+        }
+
+        //fullName
+        if (!Validation::str_longer_than($this->user->fullName, 2)) {
+            $errors[] = "Le nom doit comporter au moins 3 caractères";
+        }
+
+        //password
+        if (!Validation::str_longer_than($this->user->clearPasswd, 7)) {
+            $errors[] = "Le mot de passe doit comporter au moins 8 caractères";
+        }
+
+        if (!Validation::contains_capitals($this->user->clearPasswd)) {
+            $errors[] = "Le mot de passe doit contenir au moins une lettre capitale";
+        }
+
+        if (!Validation::contains_digits($this->user->clearPasswd)) {
+            $errors[] = "Le mot de passe doit contenir au moins une chiffre capitale";
+        }
+
+        if (!Validation::contains_non_alpha($this->user->clearPasswd)) {
+            $errors[] = "Le mot de passe doit contenir au moins une caractère spécial";
+        }
+
+        return $errors;
     }
 
 
