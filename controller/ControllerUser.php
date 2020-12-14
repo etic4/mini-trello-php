@@ -2,7 +2,7 @@
 
 /**/
 require_once "framework/Controller.php";
-require_once "model/user/User.php";
+require_once "model/User.php";
 
 class ControllerUser extends Controller {
 

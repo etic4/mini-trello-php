@@ -8,14 +8,14 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
-        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <header>
         <?php include('menu.php'); ?>
         </header>
+        <?php if($user): ?>;
         <main class="list">
-            <?php if($user): ?>;
             <article class="up">
                 <h2>Your boards</h2>
                 <div class="displayBoards">
@@ -38,9 +38,11 @@
                     <?php endforeach; ?>
                     </ul>
             </article>
-            <?php else:?>
-            <p>Hello guest ! Please <a href="user/login">login</a> or <a href="user/signup">signup</a>.</p>
-            <?php endif;?>
         </main>
+        <?php else:?>
+        <main class="welcome">
+            <p>Hello guest ! Please <a href="user/login">login</a> or <a href="user/signup">signup</a>.</p>
+        </main>
+        <?php endif;?>
     </body>
 </html>
