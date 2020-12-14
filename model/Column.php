@@ -6,7 +6,7 @@ require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Card.php";
 
-class Column extends Model implements Moveable {
+class Column extends Model {
     private $id;
     private $title;
     private $position;
@@ -80,6 +80,54 @@ class Column extends Model implements Moveable {
         $this->modifiedAt = new DateTime("now");
     }
 
+    // MOVE CARD
+
+    public function move_up(Card $card) {
+        $pos = $card->get_position();
+
+        if ($pos > 0) {
+            $target = $this->cards[$pos-1];
+            $card->set_position($pos-1);
+            $target->set_position($pos);
+
+            $card->update();
+            $target->update();
+        }
+    }
+
+    public function move_down(Card $card) {
+        $pos = $card->get_position();
+
+        if ($pos < count($this->cards)-1) {
+            $target = $this->cards[$pos+1];
+            $card->set_position($pos+1);
+            $target->set_position($pos);
+
+            $card->update();
+            $target->update();;
+        }
+    }
+
+    public function move_left(Card $card) {
+        $pos = $this->position;
+
+        if ($pos > 0) {
+            $target = $this->get_board_inst()->get_columns()[$pos-1];
+            $card->set_column($target->get_pos());
+            $card->update();
+        }
+    }
+
+    public function move_right(Card $card) {
+        $pos = $this->position;
+        $colList = $this->get_board_inst()->get_columns();
+
+        if ($pos > count($colList)-1) {
+            $target = $colList[$pos+1];
+            $card->set_column($target->get_pos());
+            $card->update();
+        }
+    }
 
     //    VALIDATION    //
 
