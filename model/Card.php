@@ -26,7 +26,7 @@ class Card extends Model{
         $this->modifiedAt=$modifiedAt;
         $this->author=$author;
         $this->column=$column;
-        $this->comments=null;
+        $this->comments=$this->get_comments();
     }
     /*
         getter & setter
@@ -55,9 +55,19 @@ class Card extends Model{
     public function get_column(){
         return $this->column;
     }
-    public function get_comments(){
-        return $this->comments;
+
+    public function get_column_inst(): Column {
+        $col = $this->get_column();
+        if (is_int(intval($col)) || is_null($col)) {
+            return Column::get_by_id($col);
+        }
+        return $col;
     }
+
+    public function get_comments(){
+        return Comment::get_comments_by_card($this);
+    }
+
     public function set_id($id){
         $this->id=$id;
     }
@@ -141,7 +151,7 @@ class Card extends Model{
     */
     public static function get_cards_by_column($idcolumn){
 
-        $sql="SELECT * FROM card WHERE `Column`=:id";
+        $sql="SELECT * FROM card WHERE `Column`=:id ORDER BY Position";
         $params=array("id"=>$idcolumn);
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -156,7 +166,7 @@ class Card extends Model{
         renvoie un tableu de carte trie dont la colonne est $column. chaque carte a son tableau de comment associe.
     */
     public static function get_all_cards_from_column($column): array {
-        $sql = "SELECT * FROM card WHERE `Column`=:column ORDER BY `Column`, Position";
+        $sql = "SELECT * FROM card WHERE `Column`=:column ORDER BY Position";
         $params = array("column"=>$column->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
