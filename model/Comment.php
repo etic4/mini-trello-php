@@ -22,7 +22,6 @@ class Comment extends Model {
         $this->card = $card;
     }
 
-
     public static function get_comments_by_card($card) {
         $sql = "SELECT * FROM comment WHERE Card=:card";
         $param = array("card"=>$card->get_id());

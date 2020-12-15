@@ -122,8 +122,15 @@ class Card extends Model{
         $sql="INSERT INTO card (Title, Body, Position, CreatedAt, ModifiedAt, Author, `Column`) 
         VALUES (:title, :body, :position, :createdAt, :modifiedAt, :author, :column)";
 
-        $params=array("title"=>$this->get_title(),"body"=>$this->get_body(),"position"=>$this->get_position(),"createdAt"=>$this->get_created_at(),
-            "modifiedAt"=>$this->get_modified_at(),"author"=>$this->get_author(),"column"=>$this->get_column());
+        $params=array(
+            "title"=>$this->get_title(),
+            "body"=>$this->get_body(),
+            "position"=>$this->get_position(),
+            "createdAt"=>DBTools::sql_date($this->get_created_at()),
+            "modifiedAt"=>$this->get_modified_at(),
+            "author"=>$this->get_author(),
+            "column"=>$this->get_column()
+        );
 
         $this->execute($sql, $params);
 
