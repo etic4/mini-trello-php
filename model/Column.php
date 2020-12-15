@@ -28,6 +28,7 @@ class Column extends Model {
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->board = $board;
+        $this->cards = $this->get_cards();
     }
 
     /*
@@ -71,7 +72,7 @@ class Column extends Model {
     }
 
     public function get_cards() {
-        return $this->cards;
+        return Card::get_cards_by_column($this->get_id());
     }
 
 
@@ -203,7 +204,7 @@ class Column extends Model {
     }
 
     public static function get_all_columns_from_board($board): array {
-        $sql = "SELECT * FROM `column` WHERE Board=:id";
+        $sql = "SELECT * FROM `column` WHERE Board=:id ORDER BY Position";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
