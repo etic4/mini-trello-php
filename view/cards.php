@@ -5,6 +5,7 @@
             <header>
                 <h4><?= $card->get_title() ?></h4>
             </header>
+            <?php echo "col " . $column->get_position() . " card " . $card->get_position()?>;
             <footer>
                 <ul class="icons">
                     <li>
@@ -58,7 +59,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de right pour les cartes de la dernière colonne -->
-                    <?php if($column->get_position() != count($column->get_cards())): ?>
+                    <?php if($column->get_position() < count($column->get_board_inst()->get_columns())-1): ?>
                     <li>
                         <form class='link' action='card/right' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
