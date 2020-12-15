@@ -91,7 +91,7 @@ class Card extends Model{
     */
     public function insert() {
 
-        $sql="INSERT INTO Card (Title, Body, Position, CreatedAt, ModifiedAt, Author, `Column`) 
+        $sql="INSERT INTO card (Title, Body, Position, CreatedAt, ModifiedAt, Author, `Column`) 
         VALUES (:title, :body, :position, :createdAt, :modifiedAt, :author, :column)";
 
         $params=array("title"=>$this->get_title(),"body"=>$this->get_body(),"position"=>$this->get_position(),"createdAt"=>$this->get_created_at(),
@@ -106,7 +106,7 @@ class Card extends Model{
     */
     public static function get_by_id($id) {
 
-        $sql = "SELECT * FROM Card WHERE ID=:id";
+        $sql = "SELECT * FROM card WHERE ID=:id";
         $query = self::execute($sql, array("id"=>$id));
 
         $data = $query->fetch();
@@ -131,7 +131,7 @@ class Card extends Model{
     public function update() {
 
         $this->set_modified_at(date('Y-m-d H:i:s'));
-        $sql = "UPDATE Card SET Title=:title, Body=:body, Position=:position, CreatedAt=:ca, ModifiedAt=:ma, Author=:author, `Column`=:column WHERE ID=:id";
+        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, CreatedAt=:ca, ModifiedAt=:ma, Author=:author, `Column`=:column WHERE ID=:id";
         $params = array("id"=>$this->get_id(), "title"=>$this->get_title(),"body"=>$this->get_body(), "position"=>$this->get_position(), "ca"=>$this->get_created_at(),
             "ma"=>$this->get_modified_at(), "author"=>$this->get_author(), "column"=>$this->get_column());
         $this->execute($sql, $params);
@@ -141,7 +141,7 @@ class Card extends Model{
     */
     public static function get_cards_by_column($idcolumn){
 
-        $sql="SELECT * FROM Card WHERE `Column`=:id";
+        $sql="SELECT * FROM card WHERE `Column`=:id";
         $params=array("id"=>$idcolumn);
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
