@@ -5,7 +5,6 @@
             <header>
                 <h4><?= $card->get_title() ?></h4>
             </header>
-            <?php echo "col " . $column->get_position() . " card " . $card->get_position()?>;
             <footer>
                 <ul class="icons">
                     <li>
