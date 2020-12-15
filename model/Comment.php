@@ -23,7 +23,7 @@ class Comment extends Model {
     }
 
 
-    public static function get_all_comments($card) {
+    public static function get_comments_by_card($card) {
         $sql = "SELECT * FROM comment WHERE Card=:card";
         $param = array("card"=>$card->get_id());
         $query = self::execute($sql, $param);
