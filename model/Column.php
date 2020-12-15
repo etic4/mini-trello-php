@@ -214,30 +214,4 @@ class Column extends Model {
         $params = array("id"=>$this->get_id());
         $this->execute($sql, $params);
     }
-
-    
-
-    public function move_left() {
-        /**
-         * TODO implémenter column->move_left
-         */
-    }
-
-    public function move_right() {
-        /**
-         * TODO implémenter column->move_right
-         */
-    }
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
 }
