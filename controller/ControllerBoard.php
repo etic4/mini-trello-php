@@ -29,9 +29,11 @@ class ControllerBoard extends Controller {
             $id = $_GET["param1"];
             $board = Board::get_by_id($id);
             $columns = $board->get_columns();
+            (new View("board"))->show(array("user"=>$user, "board" => $board, "columns" => $columns));
         }
-
-        (new View("board"))->show(array("user"=>$user, "board" => $board, "columns" => $columns));   
-
+        else {
+            $this->redirect("board", "index");
+        }
+           
     }
 }

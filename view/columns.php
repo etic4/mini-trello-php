@@ -41,7 +41,13 @@
                 <?php include("cards.php"); ?>
             </section>
             <footer>   
+<<<<<<< HEAD
                 <form class="add" action="column/add" method="post">
+=======
+                <form class="add" action="card/add" method="post">
+                    <input type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
+                    <input type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
+>>>>>>> feat_denis
                     <input type="text" name="title" placeholder="Add a card">
                     <input type="submit" value="&#xf067" class="fas fa-plus">
                 </form>

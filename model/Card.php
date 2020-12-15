@@ -28,15 +28,28 @@ class Card extends Model{
         $this->column=$column;
         $this->comments=$this->get_comments();
     }
+
+
     /*
-        getter & setter
+        "constructeur" de Card avec moins de paramètres
     */
-    public function get_id(){
+    public static function create_new($title, $author, $column) {
+        $body = "";
+        $position = Card::get_last_position($column) + 1;
+        $createdAt = new DateTime();
+        return new Card($title, $body, $position, $createdAt, $author, $column, null, null);
+    }
+
+
+    //    GETTERS    //
+
+    public function get_id() {
         return $this->id;
     }
     public function get_title(){
         return $this->title;
     }
+
     public function get_body(){
         return $this->body;
     }
@@ -68,6 +81,9 @@ class Card extends Model{
         return Comment::get_comments_by_card($this);
     }
 
+
+    //    SETTERS    //
+
     public function set_id($id){
         $this->id=$id;
     }
@@ -96,11 +112,13 @@ class Card extends Model{
         $this->comments=$comments;
     }
 
+
+    //    QUERIES    //
+
     /*
-        insere la carte dans la db, la carte recoit un nouvel id. renvoie un objet card avec l'id maj.
+        insère la carte dans la db, la carte recoit un nouvel id. renvoie un objet Card avec l'id maj.
     */
     public function insert() {
-
         $sql="INSERT INTO card (Title, Body, Position, CreatedAt, ModifiedAt, Author, `Column`) 
         VALUES (:title, :body, :position, :createdAt, :modifiedAt, :author, :column)";
 
@@ -111,11 +129,12 @@ class Card extends Model{
 
         return $this->get_by_id($this->lastInsertId());
     }
+
+
     /*
         renvoie un objet Card dont l'id est $id
     */
     public static function get_by_id($id) {
-
         $sql = "SELECT * FROM card WHERE ID=:id";
         $query = self::execute($sql, array("id"=>$id));
 
@@ -126,31 +145,36 @@ class Card extends Model{
             return static::get_instance($data);
         }
     }
+
+
     /*
-        renvoie un objet card dont les attributs ont pour valeur les donnee $data
+        renvoie un objet Card dont les attributs ont pour valeur les données $data
     */
     protected static function get_instance($data) :Card{
-
         return new Card($data["Title"],$data["Body"],$data["Position"],$data["Author"], $data["Column"],$data["ID"],
             $data["CreatedAt"], $data["ModifiedAt"]);
 
     }
+
+
     /*
         mets a jour la db avec les valeurs des attibuts actuels de l'objet card
     */
     public function update() {
-
         $this->set_modified_at(date('Y-m-d H:i:s'));
+
         $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, CreatedAt=:ca, ModifiedAt=:ma, Author=:author, `Column`=:column WHERE ID=:id";
         $params = array("id"=>$this->get_id(), "title"=>$this->get_title(),"body"=>$this->get_body(), "position"=>$this->get_position(), "ca"=>$this->get_created_at(),
             "ma"=>$this->get_modified_at(), "author"=>$this->get_author(), "column"=>$this->get_column());
+
         $this->execute($sql, $params);
     }
+
+
     /*
         renvoie un tableau de carte dont la colonne est idcolumn
     */
     public static function get_cards_by_column($idcolumn){
-
         $sql="SELECT * FROM card WHERE `Column`=:id ORDER BY Position";
         $params=array("id"=>$idcolumn);
         $query = self::execute($sql, $params);
@@ -162,8 +186,10 @@ class Card extends Model{
         }
         return $objects;
     }
+
+
     /*
-        renvoie un tableu de carte trie dont la colonne est $column. chaque carte a son tableau de comment associe.
+        renvoie un tableau de cartes triées dont la colonne est $column. chaque carte a son tableau de Comment associé.
     */
     public static function get_all_cards_from_column($column): array {
         $sql = "SELECT * FROM card WHERE `Column`=:column ORDER BY Position";
@@ -182,6 +208,21 @@ class Card extends Model{
         return $cards;
     }
 
+
+    /*
+        renvoie la position de la dernière Card de la Column.
+    */
+    public static function get_last_position($column_id) {
+        $sql = "SELECT MAX(Position) FROM card WHERE `Column`=:id";
+        $params= array("id"=>$column_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+        if ($query->rowCount() == 0) {
+            return -1;
+        } else {
+            return $data["MAX(Position)"];
+        }
+    }
+
 }
 
-?>

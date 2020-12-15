@@ -1,7 +1,7 @@
 <?php
 
 //require_once "ColumnModel.php";
-require_once "Validation.php";
+//require_once "ColumnValidator.php";
 require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Card.php";
@@ -28,7 +28,15 @@ class Column extends Model {
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->board = $board;
-        $this->cards = $this->get_cards();
+    }
+
+    /*
+        "constructeur" de Column avec moins de paramètres
+    */
+    public static function create_new($title, $author, $board) {
+        $position = Column::get_last_position($board) + 1;
+        $createdAt = new DateTime();
+        return new Column($title, $position, $board, null, $createdAt, null);
     }
 
 
@@ -63,7 +71,7 @@ class Column extends Model {
     }
 
     public function get_cards() {
-        return Card::get_cards_by_column($this->get_id());
+        return $this->cards;
     }
 
 
@@ -81,7 +89,9 @@ class Column extends Model {
         $this->modifiedAt = new DateTime("now");
     }
 
-    // MOVE CARD
+
+
+    //    MOVE CARD    //   
 
     public function move_up(Card $card) {
         $pos = $card->get_position();
@@ -139,6 +149,7 @@ class Column extends Model {
         }
     }
 
+
     //    VALIDATION    //
 
     public function validate(): array {
@@ -167,7 +178,7 @@ class Column extends Model {
     }
 
     public static function get_all($board): array {
-        $sql = "SELECT * from `column` WHERE Board=:id";
+        $sql = "SELECT * FROM `column` WHERE Board=:id";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -183,7 +194,7 @@ class Column extends Model {
     }
 
     public static function get_all_columns_from_board($board): array {
-        $sql = "SELECT * from `column` WHERE Board=:id ORDER BY Position";
+        $sql = "SELECT * FROM `column` WHERE Board=:id";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -197,6 +208,21 @@ class Column extends Model {
             array_push($columns, $column);
         }
         return $columns;
+    }
+
+    /*
+        position de la dernière Column du Board
+    */
+    public static function get_last_position($board_id) {
+        $sql = "SELECT MAX(Position) FROM `column` WHERE `Column`=:id";
+        $params= array("id"=>$board_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+        if ($query->rowCount() == 0) {
+            return -1;
+        } else {
+            return $data["MAX(Position)"];
+        }
     }
 
     public function insert() {
@@ -222,4 +248,5 @@ class Column extends Model {
         $params = array("id"=>$this->get_id());
         $this->execute($sql, $params);
     }
+
 }
