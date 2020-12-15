@@ -23,14 +23,24 @@ class Comment extends Model {
     }
 
 
-    public static function get_all_comments($card) {
-        $sql = "SELECT * FROM comment WHERE Card=:card";
-        $param = array("card"=>$card->get_id());
+    public static function get_comments_from_card($card_id) {
+        $sql = 
+            "SELECT * 
+             FROM comment 
+             WHERE Card=:card";
+        $param = array("card" => $card_id);
         $query = self::execute($sql, $param);
         $data = $query->fetchAll();
         $comments = array();
         foreach ($data as $rec) {
-            $comment = new Comment($rec["ID"], $rec["Body"], $rec["CreatedAt"], $rec["ModifiedAt"], $rec["Author"], $rec["Card"]);
+            $comment = new Comment(
+                $rec["ID"], 
+                $rec["Body"], 
+                $rec["CreatedAt"], 
+                $rec["ModifiedAt"], 
+                $rec["Author"], 
+                $rec["Card"]
+            );
             array_push($comments, $comment);
         }
         return $comments;
