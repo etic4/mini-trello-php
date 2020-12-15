@@ -4,6 +4,7 @@ require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "model/Board.php";
 
+
 class ControllerBoard extends Controller {
 
     public function index() {
@@ -16,8 +17,11 @@ class ControllerBoard extends Controller {
             $others = $user->get_others_boards();
         }
 
-        (new View("boardlist"))->show(array("user"=>$user, "owners" => $owners,
-            "others" => $others));
+        (new View("boardlist"))->show(array(
+            "user"=>$user, 
+            "owners" => $owners,
+            "others" => $others)
+        );
     }
 
     public function board() {
@@ -29,7 +33,12 @@ class ControllerBoard extends Controller {
             $id = $_GET["param1"];
             $board = Board::get_by_id($id);
             $columns = $board->get_columns();
-            (new View("board"))->show(array("user"=>$user, "board" => $board, "columns" => $columns));
+            
+            (new View("board"))->show(array(
+                "user"=>$user, 
+                "board" => $board, 
+                "columns" => $columns)
+            );
         }
         else {
             $this->redirect("board", "index");

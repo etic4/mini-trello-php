@@ -152,9 +152,6 @@ strong {
 }
 
 .icons li p,
-.fas, .far {
-    cursor: pointer;
-}
 .icons .link input[type=submit] {
     border: none;
     margin-right: 5px;

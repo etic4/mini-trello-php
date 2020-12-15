@@ -5,8 +5,9 @@ require_once "model/Column.php";
 require_once "model/User.php";
 
 class ControllerColumn extends Controller {
+
     public function index() {
-        // TODO: Implement index() method.
+        // TODO
     }
 
     public function right() {

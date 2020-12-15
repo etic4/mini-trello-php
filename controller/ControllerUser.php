@@ -28,7 +28,11 @@ class ControllerUser extends Controller {
                 $this->log_user(User::get_by_email($email));
             }
         }
-        (new View("login"))->show(array("email" => $email, "password" => $password, "errors" => $errors));
+        (new View("login"))->show(array(
+            "email" => $email, 
+            "password" => $password, 
+            "errors" => $errors)
+        );
     }
 
     public function logout() {

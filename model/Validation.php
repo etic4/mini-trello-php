@@ -2,7 +2,7 @@
 
 /**/
 class Validation {
-
+    
     public static function str_longer_than($str, $len): bool {
         return is_string($str) && strlen($str) > $len;
     }

@@ -73,4 +73,3 @@ class ControllerCard extends Controller {
     }
 
 }
-

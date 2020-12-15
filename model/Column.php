@@ -30,13 +30,17 @@ class Column extends Model {
         $this->board = $board;
     }
 
-    /*
-        "constructeur" de Column avec moins de paramètres
-    */
     public static function create_new($title, $author, $board) {
         $position = Column::get_last_position($board) + 1;
         $createdAt = new DateTime();
-        return new Column($title, $position, $board, null, $createdAt, null);
+        return new Column(
+            $title, 
+            $position, 
+            $board, 
+            null, 
+            $createdAt, 
+            null
+        );
     }
 
 
@@ -90,7 +94,156 @@ class Column extends Model {
     }
 
 
+    //    VALIDATION    //
 
+    public function validate(): array {
+        $errors = [];
+        if (!Validation::str_longer_than($this->title, 2)) {
+            $errors[] = "Le titre doit comporter au moins 3 caractères";
+        }
+        return $errors;
+    }
+
+
+    //    QUERIES    //
+
+    public static function get_by_id($id) {
+        $sql = 
+            "SELECT * 
+             FROM `column` 
+             WHERE ID=:id";
+        $query = self::execute($sql, array("id"=>$id));
+        $data = $query->fetch();
+
+        if ($query->rowCount() == 0) {
+            return null;
+        } else {
+            $createdAt = DBTools::php_date($data["CreatedAt"]);
+            $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
+            return new Column(
+                $data["Title"], 
+                $data["Position"], 
+                $data["Board"], 
+                $data["ID"], 
+                $createdAt, 
+                $modifiedAt
+            );
+        }
+    }
+
+    public static function get_all($board): array {
+        $sql = 
+            "SELECT * 
+             FROM `column` 
+             WHERE Board=:id";
+        $params= array("id"=>$board->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        $columns = array();
+        foreach ($data as $rec) {
+            $createdAt = DBTools::php_date($rec["CreatedAt"]);
+            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
+            $column = new Column(
+                $rec["Title"], 
+                $rec["Position"], 
+                $rec["Board"], 
+                $rec["ID"], 
+                $createdAt, 
+                $modifiedAt
+            );
+            array_push($columns, $column);
+        }
+        return $columns;
+    }
+
+    public static function get_columns_from_board($board_id): array {
+        $sql = 
+            "SELECT * 
+             FROM `column` 
+             WHERE Board=:id";
+        $params= array("id"=>$board_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        $columns = array();
+        foreach ($data as $rec) {
+            $createdAt = DBTools::php_date($rec["CreatedAt"]);
+            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
+            $column = new Column(
+                $rec["Title"], 
+                $rec["Position"], 
+                $rec["Board"], 
+                $rec["ID"], 
+                $createdAt, 
+                $modifiedAt
+            );
+            $column->cards = Card::get_cards_from_column($column->id);
+            array_push($columns, $column);
+        }
+        return $columns;
+    }
+
+    //position de la dernière Column du Board
+    public static function get_last_position($board_id) {
+        $sql = 
+            "SELECT MAX(Position) 
+             FROM `column` 
+             WHERE Board=:id";
+        $params= array("id"=>$board_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        if ($query->rowCount() == 0) {
+            return -1;
+        } 
+        else {
+            return $data["MAX(Position)"];
+        }
+    }
+
+    public function insert() {
+        $sql = 
+            "INSERT INTO `column`(Title, Position, Board) 
+             VALUES(:title, :position, :board)";
+        $params = array(
+            "title" => $this->get_title(), 
+            "position" => $this->get_position(), 
+            "board" => $this->get_board()
+        );
+        $this->execute($sql, $params);
+
+        return $this->get_by_id($this->lastInsertId());
+    }
+
+    public function update() {
+        $this->set_modifiedDate();
+        $modifiedAt = DBTools::sql_date($this->get_modifiedAt());
+
+        $sql = 
+            "UPDATE `column` 
+             SET Title=:title, Position=:position, Board=:board, ModifiedAt=:modifiedAt 
+             WHERE ID=:id";
+        $params = array(
+            "id" => $this->get_id(), 
+            "title" => $this->get_title(), 
+            "position" => $this->get_position(),
+            "board" => $this->get_board(), 
+            "modifiedAt" => $modifiedAt
+        );
+        $this->execute($sql, $params);
+    }
+
+    public function delete() {
+        $sql = 
+            "DELETE 
+             FROM `column` 
+             WHERE ID = :id";
+        $params = array("id"=>$this->get_id());
+        $this->execute($sql, $params);
+    }
+
+    
     //    MOVE CARD    //   
 
     public function move_up(Card $card) {
@@ -115,7 +268,7 @@ class Column extends Model {
             $target->set_position($pos);
 
             $card->update();
-            $target->update();;
+            $target->update();
         }
     }
 
@@ -132,7 +285,7 @@ class Column extends Model {
             $card->update();
 
             for ($i = ++$cardPos; $cardPos < sizeof($cards);  ++$i) {
-                $cards[$i]->set_position($cards[$i]->get_position()-1);
+                $cards[$i]->set_position($cards[$i]->get_position() - 1);
             }
         }
     }
@@ -149,104 +302,15 @@ class Column extends Model {
         }
     }
 
+    
 
-    //    VALIDATION    //
+    
 
-    public function validate(): array {
-        $errors = [];
-        if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Le titre doit comporter au moins 3 caractères";
-        }
-        return $errors;
-    }
+    
 
+    
 
-    //    QUERIES    //
+    
 
-    public static function get_by_id($id) {
-        $sql = "SELECT * FROM `column` WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$id));
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            $createdAt = DBTools::php_date($data["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
-            return new Column($data["Title"], $data["Position"], $data["Board"], $data["ID"], $createdAt, $modifiedAt);
-        }
-    }
-
-    public static function get_all($board): array {
-        $sql = "SELECT * FROM `column` WHERE Board=:id";
-        $params= array("id"=>$board->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $columns = array();
-        foreach ($data as $rec) {
-            $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
-            $column = new Column($rec["Title"], $rec["Position"], $rec["Board"], $rec["ID"], $createdAt, $modifiedAt);
-            array_push($columns, $column);
-        }
-        return $columns;
-    }
-
-    public static function get_all_columns_from_board($board): array {
-        $sql = "SELECT * FROM `column` WHERE Board=:id";
-        $params= array("id"=>$board->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $columns = array();
-        foreach ($data as $rec) {
-            $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
-            $column = new Column($rec["Title"], $rec["Position"], $rec["Board"], $rec["ID"], $createdAt, $modifiedAt);
-            $column->cards = Card::get_all_cards_from_column($column);
-            array_push($columns, $column);
-        }
-        return $columns;
-    }
-
-    /*
-        position de la dernière Column du Board
-    */
-    public static function get_last_position($board_id) {
-        $sql = "SELECT MAX(Position) FROM `column` WHERE `Column`=:id";
-        $params= array("id"=>$board_id);
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return -1;
-        } else {
-            return $data["MAX(Position)"];
-        }
-    }
-
-    public function insert() {
-        $sql = "INSERT INTO `column`(Title, Position, Board) VALUES(:title, :position, :board)";
-        $params = array("title"=>$this->get_title(), "position"=>$this->get_position(), "board"=>$this->get_board());
-        $this->execute($sql, $params);
-
-        return $this->get_by_id($this->lastInsertId());
-    }
-
-    public function update() {
-        $this->set_modifiedDate();
-        $modifiedAt = DBTools::sql_date($this->get_modifiedAt());
-
-        $sql = "UPDATE `column` SET Title=:title, Position=:position, Board=:board, ModifiedAt=:modifiedAt WHERE ID=:id";
-        $params = array("id"=>$this->get_id(), "title"=>$this->get_title(), "position"=>$this->get_position(),
-            "board"=>$this->get_board(), "modifiedAt"=>$modifiedAt);
-        $this->execute($sql, $params);
-    }
-
-    public function delete() {
-        $sql = "DELETE FROM `column` WHERE ID = :id";
-        $params = array("id"=>$this->get_id());
-        $this->execute($sql, $params);
-    }
 
 }
