@@ -165,7 +165,7 @@ class Card extends Model{
         foreach ($data as $rec) {
             $createdAt = DBTools::php_date($rec["CreatedAt"]);
             $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
-            $card = new Card($rec["ID"], $rec["Title"], $rec["Body"], $rec["Position"], $createdAt, $modifiedAt, User::get_by_id($rec["Author"]), $rec["Column"]);
+            $card = new Card($rec["Title"], $rec["Body"], $rec["Position"], User::get_by_id($rec["Author"]) ,$rec["Column"], $rec["ID"],  $createdAt, $modifiedAt, );
             $card->comments = Comment::get_comments_by_card($card);
             array_push($cards, $card);
         }
