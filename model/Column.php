@@ -98,7 +98,7 @@ class Column extends Model {
     public function move_down(Card $card) {
         $pos = $card->get_position();
 
-        if ($pos < count($this->cards)-1) {
+        if ($pos < sizeof($this->cards)-1) {
             $target = $this->cards[$pos+1];
             $card->set_position($pos+1);
             $target->set_position($pos);
@@ -114,7 +114,7 @@ class Column extends Model {
         if ($pos > 0) {
             $target = $this->get_board_inst()->get_columns()[$pos-1];
             $card->set_column($target->get_pos());
-            $card->set_position(count($target->get_cards()));
+            $card->set_position(sizeof($target->get_cards()));
             $card->update();
         }
     }
@@ -123,10 +123,10 @@ class Column extends Model {
         $pos = $this->position;
         $colList = $this->get_board_inst()->get_columns();
 
-        if ($pos > count($colList)-1) {
+        if ($pos > sizeof($colList)-1) {
             $target = $colList[$pos+1];
             $card->set_column($target->get_pos());
-            $card->set_position(count($target->get_cards()));
+            $card->set_position(sizeof($target->get_cards()));
             $card->update();
         }
     }

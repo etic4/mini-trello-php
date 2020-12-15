@@ -76,7 +76,7 @@ class Board extends Model {
     public function move_right(Column $col) {
         $pos = $col->get_position();
 
-        if ($pos < count($this->columns)-1) {
+        if ($pos < sizeof($this->columns)-1) {
             $target = $this->columns[$pos+1];
             $col->set_position($pos+1);
             $target->set_position($pos);
