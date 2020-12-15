@@ -175,7 +175,7 @@ class Column extends Model {
     }
 
     public static function get_all_columns_from_board($board): array {
-        $sql = "SELECT * from `column` WHERE Board=:id";
+        $sql = "SELECT * from `column` WHERE Board=:id ORDER BY Position";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
