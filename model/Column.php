@@ -114,15 +114,16 @@ class Column extends Model {
 
         if ($pos > 0) {
             $target = $this->get_board_inst()->get_columns()[$pos-1];
-            $cards = $target->get_cards();
             $cardPos = $card->get_position();
 
             $card->set_column($target->get_id());
-            $card->set_position(sizeof($cards));
+            $card->set_position(sizeof($target->get_cards()));
             $card->update();
 
-            for ($i = ++$cardPos; $cardPos < sizeof($cards);  ++$i) {
-                $cards[$i]->set_position($cards[$i]->get_position()-1);
+            $cards = $this->get_cards();
+            for ($i = $cardPos+1; $i < sizeof($cards);  ++$i) {
+                $cards[$i]->set_position($i-1);
+                $cards[$i]->update();
             }
         }
     }
@@ -133,11 +134,20 @@ class Column extends Model {
 
         if ($pos < sizeof($colList)-1) {
             $target = $colList[$pos+1];
+            $cardPos = $card->get_position();
+
             $card->set_column($target->get_id());
             $card->set_position(sizeof($target->get_cards()));
             $card->update();
+
+            $cards = $this->get_cards();
+            for ($i = $cardPos+1; $i < sizeof($cards);  ++$i) {
+                $cards[$i]->set_position($i-1);
+                $cards[$i]->update();
+            }
         }
     }
+
 
     //    VALIDATION    //
 
