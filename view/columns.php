@@ -42,6 +42,8 @@
             </section>
             <footer>   
                 <form class="add" action="card/add" method="post">
+                    <input type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
+                    <input type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
                     <input type="text" name="title" placeholder="Add a card">
                     <input type="submit" value="&#xf067" class="fas fa-plus">
                 </form>

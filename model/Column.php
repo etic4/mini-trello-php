@@ -30,6 +30,12 @@ class Column extends Model {
         $this->board = $board;
     }
 
+    public static function create_new($title, $author, $board) {
+        $position = Column::get_last_position($board) + 1;
+        $createdAt = new DateTime();
+        return new Column($title, $position, $board, null, $createdAt, null);
+    }
+
 
     //    GETTERS    //
 
@@ -106,7 +112,7 @@ class Column extends Model {
     }
 
     public static function get_all($board): array {
-        $sql = "SELECT * from `column` WHERE Board=:id";
+        $sql = "SELECT * FROM `column` WHERE Board=:id";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -122,7 +128,7 @@ class Column extends Model {
     }
 
     public static function get_all_columns_from_board($board): array {
-        $sql = "SELECT * from `column` WHERE Board=:id";
+        $sql = "SELECT * FROM `column` WHERE Board=:id";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -136,6 +142,19 @@ class Column extends Model {
             array_push($columns, $column);
         }
         return $columns;
+    }
+
+    //position de la dernière Column du Board
+    public static function get_last_position($board_id) {
+        $sql = "SELECT MAX(Position) FROM `column` WHERE Board=:id";
+        $params= array("id"=>$board_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+        if ($query->rowCount() == 0) {
+            return -1;
+        } else {
+            return $data["MAX(Position)"];
+        }
     }
 
     public function insert() {

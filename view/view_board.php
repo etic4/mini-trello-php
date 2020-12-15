@@ -39,6 +39,7 @@
                 <?php include("columns.php"); ?>
                 <aside class="column_form">
                     <form class="add" action="column/add" method="post">
+                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>

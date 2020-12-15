@@ -21,6 +21,7 @@ class Board extends Model {
         }
     }
 
+    // createdAt n'est jamais null...
     public function __construct($title, $owner, $id=null, $createdAt=null, $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
