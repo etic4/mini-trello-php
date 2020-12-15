@@ -231,10 +231,8 @@ class Board extends Model {
             $target->set_position($pos);
 
             $col->update();
-            $target->update();
+            $target->update();;
         }
     }
-
-    
 
 }

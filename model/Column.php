@@ -15,12 +15,6 @@ class Column extends Model {
     private $board;
     private $cards;
 
-    public static function delete_all($board) {
-        foreach ($board->get_all() as $column) {
-            $column->delete();
-        }
-    }
-
     public function __construct($title, $position, $board, $id=null, $createdAt=null, $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
@@ -28,7 +22,6 @@ class Column extends Model {
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->board = $board;
-        $this->cards = $this->get_cards();
     }
 
     public static function create_new($title, $author, $board) {
@@ -76,7 +69,7 @@ class Column extends Model {
     }
 
     public function get_cards() {
-        return Card::get_cards_by_column($this->get_id());
+        return $this->cards;
     }
 
 
@@ -157,7 +150,6 @@ class Column extends Model {
         }
         return $columns;
     }
-
 
     public static function get_columns_from_board($board_id): array {
         $sql = 
@@ -245,6 +237,13 @@ class Column extends Model {
         $this->execute($sql, $params);
     }
 
+    public static function delete_all($board) {
+        foreach ($board->get_all() as $column) {
+            $column->delete();
+        }
+    }
+
+
     
     //    MOVE CARD    //   
 
@@ -279,40 +278,40 @@ class Column extends Model {
 
         if ($pos > 0) {
             $target = $this->get_board_inst()->get_columns()[$pos-1];
+            $cards = $target->get_cards();
             $cardPos = $card->get_position();
 
             $card->set_column($target->get_id());
-            $card->set_position(sizeof($target->get_cards()));
+            $card->set_position(sizeof($cards));
             $card->update();
 
-            $cards = $this->get_cards();
-            for ($i = $cardPos+1; $i < sizeof($cards);  ++$i) {
-                $cards[$i]->set_position($i-1);
-                $cards[$i]->update();
+            for ($i = ++$cardPos; $cardPos < sizeof($cards);  ++$i) {
+                $cards[$i]->set_position($cards[$i]->get_position() - 1);
             }
         }
     }
 
-        
     public function move_right(Card $card) {
         $pos = $this->position;
         $colList = $this->get_board_inst()->get_columns();
 
         if ($pos < sizeof($colList)-1) {
             $target = $colList[$pos+1];
-            $cardPos = $card->get_position();
-
             $card->set_column($target->get_id());
             $card->set_position(sizeof($target->get_cards()));
             $card->update();
-
-            $cards = $this->get_cards();
-            for ($i = $cardPos+1; $i < sizeof($cards);  ++$i) {
-                $cards[$i]->set_position($i-1);
-                $cards[$i]->update();
-            }
         }
     }
 
-   
+    
+
+    
+
+    
+
+    
+
+    
+
+
 }
