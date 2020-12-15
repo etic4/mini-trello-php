@@ -27,6 +27,7 @@ class Board extends Model {
         $this->owner = $owner;
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
+        $this->columns = $this->get_columns();
     }
 
 
