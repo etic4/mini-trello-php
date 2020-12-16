@@ -28,7 +28,8 @@ class Card extends Model {
 
     public static function create_new($title, $author, $column) {
         $body = "";
-        $position = Card::get_last_position($column) + 1;
+        //$position = Card::get_last_position($column) + 1;
+        $position = self::get_card_count($column);
         $createdAt = new DateTime();
         return new Card($title, $body, $position, $createdAt, $author, $column, null, null);
     }
@@ -108,7 +109,7 @@ class Card extends Model {
     }
 
     public function set_modified_at($modifiedAt){
-        $this->modifiedAt=$modifiedAt;
+        $this->modifiedAt = new DateTime("now");
     }
 
     public function set_author($author){
@@ -215,6 +216,19 @@ class Card extends Model {
         }
     }
 
+    //nombre de cartes dans la colonne
+    public static function get_card_count($column_id) {
+        $sql =
+            "SELECT count(Position) 
+             FROM card 
+             WHERE `Column`=:id";
+        $params= array("id"=>$column_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+        return $data["count(Position)"];
+    }
+
+
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card{
         return new Card($data["Title"],$data["Body"],$data["Position"],$data["Author"], $data["Column"],$data["ID"],
@@ -245,10 +259,18 @@ class Card extends Model {
     //met à jour la db avec les valeurs des attibuts actuels de l'objet Card
     public function update() {
         $this->set_modified_at(date('Y-m-d H:i:s'));
+        $modifiedAt = DBTools::sql_date($this->get_modified_at());
 
-        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, CreatedAt=:ca, ModifiedAt=:ma, Author=:author, `Column`=:column WHERE ID=:id";
-        $params = array("id"=>$this->get_id(), "title"=>$this->get_title(),"body"=>$this->get_body(), "position"=>$this->get_position(), "ca"=>$this->get_created_at(),
-            "ma"=>$this->get_modified_at(), "author"=>$this->get_author(), "column"=>$this->get_column());
+        /*Obligé de faire ça pour le moment parce que c'est le bordel et qu'on sait pas si les attributs qui représentent
+        les clés étrangère en DB stockent une instance ou un string (qui représente un entier)*/
+        $author = $this->get_author();
+        if ($author instanceof User) {
+            $author = $author->get_id();
+        }
+
+        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=:ma, Author=:author, `Column`=:column WHERE ID=:id";
+        $params = array("id"=>$this->get_id(), "title"=>$this->get_title(),"body"=>$this->get_body(), "position"=>$this->get_position(),
+            "ma"=>$modifiedAt, "author"=>$author, "column"=>$this->get_column());
 
         $this->execute($sql, $params);
     }
