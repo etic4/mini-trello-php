@@ -13,8 +13,7 @@ class ControllerColumn extends Controller {
     public function right() {
         $user = $this->get_user_or_redirect();
         if (isset($_POST["id"])) {
-            $colId = $_POST["id"];
-            $col = Column::get_by_id($colId);
+            $col = Column::get_by_id($_POST["id"]);
             $board = $col->get_board_inst();
             $board->move_right($col);
 
@@ -25,8 +24,7 @@ class ControllerColumn extends Controller {
     public function left() {
         $user = $this->get_user_or_redirect();
         if (isset($_POST["id"])) {
-            $colId = $_POST["id"];
-            $col = Column::get_by_id($colId);
+            $col = Column::get_by_id($_POST["id"]);
             $board = $col->get_board_inst();
             $board->move_left($col);
 
@@ -41,7 +39,7 @@ class ControllerColumn extends Controller {
             $board = $_POST["id"];
             $author = $user->get_id();
             $column = Column::create_new($title, $author, $board); 
-            $column->insert(); 
+            $column->insert();
         }
         $this->redirect("board", "board", $board);
     }

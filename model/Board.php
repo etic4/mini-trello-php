@@ -213,7 +213,7 @@ class Board extends Model {
         $pos = $col->get_position();
 
         if ($pos > 0) {
-            $target = $this->columns[$pos-1];
+            $target = $this->get_columns()[$pos-1];
             $col->set_position($pos-1);
             $target->set_position($pos);
 
@@ -224,9 +224,10 @@ class Board extends Model {
 
     public function move_right(Column $col) {
         $pos = $col->get_position();
+        $columns = $this->get_columns();
 
-        if ($pos < sizeof($this->columns)-1) {
-            $target = $this->columns[$pos+1];
+        if ($pos < sizeof($columns)-1) {
+            $target = $columns[$pos+1];
             $col->set_position($pos+1);
             $target->set_position($pos);
 
