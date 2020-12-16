@@ -1,5 +1,5 @@
 <ul class="display_cards">
-<?php foreach($column->get_cards() as $card): ?>  
+ <?php foreach($column->get_cards() as $card): ?>
     <li>
         <section class="card">
             <header>
@@ -58,7 +58,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de right pour les cartes de la dernière colonne -->
-                    <?php if($column->get_position() != count($column->get_cards())): ?>
+                    <?php if($column->get_position() !=end($columns)->get_position()): ?>
                     <li>
                         <form class='link' action='card/right' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
