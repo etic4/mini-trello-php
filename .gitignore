@@ -60,4 +60,4 @@ Thumbs.db
 *.mov
 *.wmv
 
-/tools/*.cache
+.phpunit.result.cache

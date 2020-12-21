@@ -1,3 +1,6 @@
 # À propos des test
-lancer tous les tests (sur Linux) depuis de répertoire prwb_20201_a02:
-`tools/phpunit-9.0.phar --bootstrap autoload.php tests`
+Pour lancer tous les tests (sur Linux) depuis de répertoire prwb_20201_a02:
+`tools/phpunit.phar --bootstrap autoload.php tests`
+
+Sur Windows, il faut au préalable installer php sur le système, et associer les .phar à php.exe (pas sûr, c'est peut-être automatique à l'installation).
+
