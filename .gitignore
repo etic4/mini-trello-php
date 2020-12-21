@@ -9,6 +9,9 @@ database/data
 .htaccess
 config/dev.ini
 
+# phpunit
+.cache
+
 # VSCode
 package-lock.json
 
@@ -57,3 +60,4 @@ Thumbs.db
 *.mov
 *.wmv
 
+/tools/*.cache
