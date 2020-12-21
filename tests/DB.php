@@ -16,11 +16,11 @@ class DB {
     
     public function init() {
         $dbname = Configuration::get("dbname");
-        $sql = file_get_contents("database/{$dbname}.sql");
+        $sql = file_get_contents("tests/database/tests.sql");
         $query = $this->pdo->prepare($sql);
         $query->execute();
 
-        $sql = file_get_contents("database/{$dbname}_dump.sql");
+        $sql = file_get_contents("tests/database/tests_dump.sql");
         $query = $this->pdo->prepare($sql);
         $query->execute();
     }
