@@ -206,14 +206,23 @@ class Board extends Model {
         }
     }
 
-
+    /*  
+        renvoie l'id du propriétaire du board contenant la carte id_card
+    */
+    public static function get_board_owner($id_card){
+        $sql="SELECT Owner from Board b, `Column` co, Card ca where ca.id=:id_card AND co.id=ca.column AND co.Board=b.id";
+        $params=array("id_card"=>$id_card);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+        return $data["Owner"];
+    }
     //    TOOLBOX    //
 
     public function move_left(Column $col) {
         $pos = $col->get_position();
 
         if ($pos > 0) {
-            $target = $this->columns[$pos-1];
+            $target = $this->get_columns()[$pos-1];
             $col->set_position($pos-1);
             $target->set_position($pos);
 
@@ -224,9 +233,10 @@ class Board extends Model {
 
     public function move_right(Column $col) {
         $pos = $col->get_position();
+        $columns = $this->get_columns();
 
-        if ($pos < sizeof($this->columns)-1) {
-            $target = $this->columns[$pos+1];
+        if ($pos < sizeof($columns)-1) {
+            $target = $columns[$pos+1];
             $col->set_position($pos+1);
             $target->set_position($pos);
 

@@ -25,7 +25,8 @@ class Column extends Model {
     }
 
     public static function create_new($title, $author, $board) {
-        $position = Column::get_last_position($board) + 1;
+        //$position = Column::get_last_position($board);
+        $position = self::get_column_count($board);
         $createdAt = new DateTime();
         return new Column(
             $title, 
@@ -129,7 +130,7 @@ class Column extends Model {
         $sql = 
             "SELECT * 
              FROM `column` 
-             WHERE Board=:id";
+             WHERE Board=:id ORDER BY Position";
         $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -155,7 +156,7 @@ class Column extends Model {
         $sql = 
             "SELECT * 
              FROM `column` 
-             WHERE Board=:id";
+             WHERE Board=:id ORDER BY Position";
         $params= array("id"=>$board_id);
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
@@ -194,6 +195,19 @@ class Column extends Model {
         else {
             return $data["MAX(Position)"];
         }
+    }
+
+    //position de la dernière Column du Board
+    public static function get_column_count($board_id) {
+        $sql =
+            "SELECT count(Position) 
+             FROM `column` 
+             WHERE Board=:id";
+        $params= array("id"=>$board_id);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        return $data["count(Position)"];
     }
 
     public function insert() {
@@ -251,7 +265,7 @@ class Column extends Model {
         $pos = $card->get_position();
 
         if ($pos > 0) {
-            $target = $this->cards[$pos-1];
+            $target = Card::get_cards_from_column($this->id)[$pos-1];
             $card->set_position($pos-1);
             $target->set_position($pos);
 
@@ -262,14 +276,15 @@ class Column extends Model {
 
     public function move_down(Card $card) {
         $pos = $card->get_position();
+        $cards = Card::get_cards_from_column($this->id);
 
-        if ($pos < sizeof($this->cards)-1) {
-            $target = $this->cards[$pos+1];
+        if ($pos < sizeof($cards)-1) {
+            $target = $cards[$pos+1];
             $card->set_position($pos+1);
             $target->set_position($pos);
 
             $card->update();
-            $target->update();
+            $target->update();;
         }
     }
 
@@ -278,15 +293,14 @@ class Column extends Model {
 
         if ($pos > 0) {
             $target = $this->get_board_inst()->get_columns()[$pos-1];
-            $cards = $target->get_cards();
-            $cardPos = $card->get_position();
 
             $card->set_column($target->get_id());
-            $card->set_position(sizeof($cards));
+            $card->set_position(sizeof($target->get_cards()));
             $card->update();
 
-            for ($i = ++$cardPos; $cardPos < sizeof($cards);  ++$i) {
-                $cards[$i]->set_position($cards[$i]->get_position() - 1);
+            foreach (Card::get_cards_from_column($this->id) as $idx=>$card) {
+                $card->set_position($idx);
+                $card->update();
             }
         }
     }
@@ -297,21 +311,15 @@ class Column extends Model {
 
         if ($pos < sizeof($colList)-1) {
             $target = $colList[$pos+1];
+
             $card->set_column($target->get_id());
             $card->set_position(sizeof($target->get_cards()));
             $card->update();
+
+            foreach (Card::get_cards_from_column($this->id) as $idx=>$card) {
+                $card->set_position($idx);
+                $card->update();
+            }
         }
     }
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
 }

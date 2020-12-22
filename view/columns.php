@@ -1,5 +1,5 @@
 <ul class="column_display">
-    <?php foreach($columns as $column): ?>
+    <?php foreach($board->get_columns() as $column): ?>
     <li>
         <section class="column">
             <header class="title_column">
@@ -29,7 +29,7 @@
                     <!-- pas de right pour la dernière colonne -->
                     <?php if($column->get_position() != end($columns)->get_position()): ?>
                     <li>
-                        <form class='link' action='card/right' method='post'>
+                        <form class='link' action='column/right' method='post'>
                             <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                             <input type='submit' value="&#xf0a9" class="fas fa-arrow-circle-right" style="background:none">
                         </form>

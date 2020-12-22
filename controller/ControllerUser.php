@@ -23,7 +23,7 @@ class ControllerUser extends Controller {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $errors = User::validate_login($email, $password);
+            //$errors = User::validate_login($email, $password);
             if (empty($errors)) {
                 $this->log_user(User::get_by_email($email));
             }

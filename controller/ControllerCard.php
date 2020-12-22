@@ -72,4 +72,94 @@ class ControllerCard extends Controller {
         $this->redirect("board", "board", $board);
     }
 
+    public function delete(){
+        $user=$this->get_user_or_redirect();
+        
+        if(isset($_POST['id'])){            
+            $idcard=$_POST['id'];
+            $instance=Card::get_by_id($idcard);
+            $column=Column::get_by_id($instance->get_column());
+            $owner=Board::get_board_owner($idcard);
+            if(isset ($_POST['delete']) && ( $user->get_id()==$instance->get_author() || $user->get_id()==$owner)){
+                Card::update_card_position($instance);
+                $instance->delete();
+            }
+            
+            $this->redirect("board","board",$column->get_board());
+        }
+    }
+    
+    public function update(){
+        $user=$this->get_user_or_redirect();
+        $card=null;
+        $column=null;
+        if (isset($_POST['id'])) { 
+            $idcard=$_POST['id'];
+            $card=Card::get_by_id($idcard);
+            if(isset($_POST['body'])){
+                $card->set_body($_POST['body']);
+            }
+            if(isset($_POST['title'])){
+                $card->set_title($_POST['title']);
+            }
+            if( !($_REQUEST['edit']=="Cancel")){
+                $card->update();
+            }
+            $column=Column::get_by_id($card->get_column());
+        }
+        $this->redirect("board","board",$column->get_board()); 
+    }
+
+    public function delete_confirm(){
+        $user=$this->get_user_or_redirect();
+        $instance=null;
+        $cant_delete=true;
+        $owner=null;
+        if (isset($_POST['id'])) { 
+            $idcard=$_POST['id'];
+            $instance=Card::get_by_id($idcard);
+            $comments=Comment::get_comments_from_card($idcard);
+            $instance->set_comments($comments);
+            $owner=Board::get_board_owner($idcard);
+            if( $user->get_id()==$instance->get_author() || $user->get_id()==$owner) {
+                $cant_delete=false;
+            }
+        }
+        (new View("delete_confirm"))->show(array("user"=>$user, "instance"=>$instance, "cant_delete"=>$cant_delete));
+    }
+
+    public function edit(){
+
+        $user=$this->get_user_or_redirect();
+        $card=null;
+        $board=null;
+        $column=null;
+        if (isset($_POST['id'])) { 
+            $idcard=$_POST['id'];
+            $card=Card::get_by_id($idcard);
+            $column=Column::get_by_id($card->get_column());
+            $board=Board::get_by_id($column->get_board());
+            $comments=Comment::get_comments_from_card($idcard);
+            $card->set_comments($comments);
+        }
+        (new View("card_edit"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+    }
+
+    public function view(){
+
+        $user=$this->get_user_or_redirect();
+        $card=null;
+        $board=null;
+        $column=null;
+        if (isset($_POST['id'])) { 
+            $idcard=$_POST['id'];
+            $card=Card::get_by_id($idcard);
+            $column=Column::get_by_id($card->get_column());
+            $board=Board::get_by_id($column->get_board());
+            $comments=Comment::get_comments_from_card($idcard);
+            $card->set_comments($comments);
+        }
+        (new View("card"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+    } 
+    
 }

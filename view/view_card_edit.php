@@ -17,30 +17,31 @@
             <article>
                 <header>
                     <h2>Edit a card</h2>
-                    <p class="credit">Created by 'code php fullname' 'code php time' ago . Modified 'code php modified' ago</p>
+                    <p class="credit">Created <?=DBTools::intvl($card->get_created_at(), new DateTime()); ?> by <strong>'<?= $card->get_author_name()?>'</strong>. <?= DBTools::laps($card->get_created_at(), $card->get_modified_at()); ?></p>
                 </header>
                 <div class="main_card">
-                    <form id="edit_card" action="card/edit" method="post">
+                    <form id="edit_card" action="card/update" method="post">
                         <div>
                             <label for="title" >Title</label>
                             <!-- value renvoie la valeur de départ si user ne modifie pas le titre -->
-                            <input type="text" name="title" id="title" maxlength="128" value="code php title_card" placeholder="code php title_card">
+                            <input type="text" name="title" id="title" maxlength="128" value='<?= $card->get_title()?>' placeholder="code php title_card">
                         </div>
                         <div>
                             <label for="body">Body</label>
-                            <textarea name="body" rows="10">code php body</textarea>
+                            <textarea name="body" id="body" rows="10"><?= $card->get_body()    ?></textarea>
                         </div>
                         <div>
                             <label for="board">Board</label>
-                            <input type ="text" name="title_board" id="title_board" value="php code title_board" placeholder="php code title_board" disabled>
+                            <input type ="text" name="title_board" id="title_board" value='<?= $board->get_title() ?>'  placeholder="php code title_board" disabled>
                         </div>
                         <div>
                             <label for="title_column">Column</label>
-                            <input type ="text" name="title_column" id="title_column" value="php code title_column" placeholder="php code title_column" disabled>
+                            <input type ="text" name="title_column" id="title_column" value='<?= $column->get_title() ?>' placeholder="php code title_column" disabled>
                         </div>
                         <div>
-                            <input type="submit" value="Cancel" form="edit_card">
-                            <input type="submit" value="Edit this card" form="edit_card">
+                            <input type="text" name="id" value='<?= $card->get_id()?>' hidden>
+                            <input type="submit" value="Cancel" form="edit_card" name="edit">
+                            <input type="submit" value="Edit this card" form="edit_card" name="edit">
                         </div>
                     </form>
                 </div>
