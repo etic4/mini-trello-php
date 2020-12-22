@@ -274,6 +274,26 @@ class Card extends Model {
 
         $this->execute($sql, $params);
     }
-
-
+    /*
+        supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
+    */
+    public function delete(){
+       
+        $comments=Comment::get_comments_from_card($this->get_id());
+        foreach($comments as $com){
+            $com->delete();
+        }
+        $sql="DELETE FROM card WHERE Id=:id";
+        $param=array("id"=>$this->get_id());
+        $query = self::execute($sql, $param);
+    }
+    /*  
+        renvoie un string qui est le nom complet de l'auteur de la carte
+    */
+    public function get_author_name(){
+        $sql = "SELECT FullName FROM User WHERE ID=:id";
+        $query = self::execute($sql, array("id"=>$this->author));
+        $name=$query->fetch();
+        return $name["FullName"];
+    }
 }

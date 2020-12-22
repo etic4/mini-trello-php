@@ -25,7 +25,7 @@
                         </form>
                     </li>
                     <li>
-                        <form class='link' action='card/delete' method='post'>
+                        <form class='link' action='card/delete_confirm' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
                             <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                         </form>
