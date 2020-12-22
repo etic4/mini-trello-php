@@ -45,4 +45,17 @@ class ControllerBoard extends Controller {
         }
            
     }
+
+    public function add() {
+        //TODO validate title -> unique!!!
+        $user = $this->get_user_or_redirect();
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $board = new Board($title, $user, null, new DateTime(), null);
+            $board->insert();
+        }
+        $this->redirect("board", "index");
+    }
+
+
 }

@@ -152,12 +152,12 @@ class Column extends Model {
         return $columns;
     }
 
-    public static function get_columns_from_board($board_id): array {
+    public static function get_columns_from_board($board): array {
         $sql = 
             "SELECT * 
              FROM `column` 
              WHERE Board=:id ORDER BY Position";
-        $params= array("id"=>$board_id);
+        $params= array("id"=>$board->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -173,7 +173,7 @@ class Column extends Model {
                 $createdAt, 
                 $modifiedAt
             );
-            $column->cards = Card::get_cards_from_column($column->id);
+            $column->cards = Card::get_cards_from_column($column);
             array_push($columns, $column);
         }
         return $columns;
@@ -265,7 +265,7 @@ class Column extends Model {
         $pos = $card->get_position();
 
         if ($pos > 0) {
-            $target = Card::get_cards_from_column($this->id)[$pos-1];
+            $target = Card::get_cards_from_column($this)[$pos-1];
             $card->set_position($pos-1);
             $target->set_position($pos);
 
@@ -276,7 +276,7 @@ class Column extends Model {
 
     public function move_down(Card $card) {
         $pos = $card->get_position();
-        $cards = Card::get_cards_from_column($this->id);
+        $cards = Card::get_cards_from_column($this);
 
         if ($pos < sizeof($cards)-1) {
             $target = $cards[$pos+1];
@@ -298,7 +298,7 @@ class Column extends Model {
             $card->set_position(sizeof($target->get_cards()));
             $card->update();
 
-            foreach (Card::get_cards_from_column($this->id) as $idx=>$card) {
+            foreach (Card::get_cards_from_column($this) as $idx=>$card) {
                 $card->set_position($idx);
                 $card->update();
             }
@@ -316,7 +316,7 @@ class Column extends Model {
             $card->set_position(sizeof($target->get_cards()));
             $card->update();
 
-            foreach (Card::get_cards_from_column($this->id) as $idx=>$card) {
+            foreach (Card::get_cards_from_column($this) as $idx=>$card) {
                 $card->set_position($idx);
                 $card->update();
             }

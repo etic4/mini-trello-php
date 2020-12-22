@@ -156,13 +156,13 @@ class Card extends Model {
     }
 
     //renvoie un tableau de cartes triées dont la colonne est $column_id; chaque carte a son tableau de Comment associé.
-    public static function get_cards_from_column($column_id): array {
+    public static function get_cards_from_column($column): array {
         $sql = 
             "SELECT * 
              FROM card 
              WHERE `Column`=:column 
              ORDER BY `Column`, Position";
-        $params = array("column"=>$column_id);
+        $params = array("column"=>$column->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -187,9 +187,9 @@ class Card extends Model {
     }
 
     //renvoie un tableau de cartes dont la colonne est column_id
-    public static function get_cards_by_column($column_id){
+    public static function get_cards_by_column($column){
         $sql="SELECT * FROM card WHERE `Column`=:id ORDER BY Position";
-        $params=array("id" => $column_id);
+        $params=array("id" => $column->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 

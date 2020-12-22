@@ -44,11 +44,11 @@ class DBTools {
                 } else {
                     $laps = $intvl->d . " days ago";
                 }
-            } elseif ($intvl->H != 0) {
-                if($intvl->H == 1) {
+            } elseif ($intvl->h != 0) {
+                if($intvl->h == 1) {
                     $laps = "1 hour";
                 } else {
-                    $laps = $intvl->H . " hours ago";
+                    $laps = $intvl->h . " hours ago";
                 }
             } elseif ($intvl->i != 0) {
                 if($intvl->i == 1) {
