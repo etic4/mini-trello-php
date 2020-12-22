@@ -69,8 +69,23 @@ class Column extends Model {
         return Board::get_by_id($this->board);
     }
 
+    public function get_board_id() {
+        return $this->get_board_inst()->get_id();
+    }
+
     public function get_cards() {
         return $this->cards;
+    }
+
+    protected static function get_instance($data) :Column {
+        return new Column(
+            $data["Title"],
+            $data["Position"],
+            $data["Board"], 
+            $data["ID"],
+            $data["CreatedAt"], 
+            $data["ModifiedAt"]
+        );
     }
 
 
@@ -87,6 +102,11 @@ class Column extends Model {
     public function set_modifiedDate() {
         $this->modifiedAt = new DateTime("now");
     }
+
+    public function set_cards() {
+        $this->cards = Card::get_cards_from_column($this);
+    }
+
 
 
     //    VALIDATION    //
@@ -115,7 +135,7 @@ class Column extends Model {
         } else {
             $createdAt = DBTools::php_date($data["CreatedAt"]);
             $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
-            return new Column(
+            $column = new Column(
                 $data["Title"], 
                 $data["Position"], 
                 $data["Board"], 
@@ -123,6 +143,8 @@ class Column extends Model {
                 $createdAt, 
                 $modifiedAt
             );
+            $column->set_cards();
+            return $column;
         }
     }
 
@@ -210,6 +232,24 @@ class Column extends Model {
         return $data["count(Position)"];
     }
 
+    //liste des colonnes précédant la référence
+    public function get_previous_columns() {
+        $sql =
+            "SELECT *
+            FROM `column`
+            WHERE Board = :id
+            AND Position > :pos";
+        $params= array("id"=>$this->board, "pos"=>$this->position);
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        $columns = array();
+        foreach ($data as $rec) {
+            array_push($columns, self::get_instance($rec));
+        }
+        return $columns;
+    }
+
     public function insert() {
         $sql = 
             "INSERT INTO `column`(Title, Position, Board) 
@@ -243,6 +283,7 @@ class Column extends Model {
     }
 
     public function delete() {
+        Card::delete_all($this);
         $sql = 
             "DELETE 
              FROM `column` 
@@ -252,7 +293,7 @@ class Column extends Model {
     }
 
     public static function delete_all($board) {
-        foreach ($board->get_all() as $column) {
+        foreach ($board->get_columns() as $column) {
             $column->delete();
         }
     }
@@ -322,4 +363,15 @@ class Column extends Model {
             }
         }
     }
+
+    public function decrement_previous_columns_position() {
+        $columns = $this->get_previous_columns();
+        if(count($columns) != 0) {
+            foreach($columns as $column) {
+                $column->set_position(($column->position) - 1);
+                $column->update();
+            }
+        }
+    }
+    
 }

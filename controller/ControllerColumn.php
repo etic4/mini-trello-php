@@ -44,4 +44,28 @@ class ControllerColumn extends Controller {
         $this->redirect("board", "board", $board);
     }
 
+    //PRG ???
+    public function delete() {
+        $user = $this->get_user_or_redirect(); 
+        if(isset($_POST['id'])) {
+            $column_id = $_POST['id'];
+            $instance = Column::get_by_id($column_id);
+            $board_id = $instance->get_board_id(); 
+
+            if (isset($_POST["delete"]) || count($instance->get_cards()) == 0) { 
+                $instance->delete();
+                $instance->decrement_previous_columns_position();
+                $this->redirect("board", "board", $board_id);        
+            }
+
+            elseif (isset($_POST["cancel"])) {
+                $this->redirect("board", "board", $board_id);
+            }
+
+            else {
+                (new View("delete_confirm"))->show(array("instance" => $instance));
+            }  
+        }
+    }
+
 }

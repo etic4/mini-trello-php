@@ -193,6 +193,7 @@ class Board extends Model {
     }
     
     public function delete() {
+        Column::delete_all($this);
         $sql = 
             "DELETE FROM board 
              WHERE ID = :id";
@@ -216,6 +217,8 @@ class Board extends Model {
         $data = $query->fetch();
         return $data["Owner"];
     }
+
+    
     //    TOOLBOX    //
 
     public function move_left(Column $col) {
