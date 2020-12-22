@@ -231,8 +231,9 @@ class Card extends Model {
 
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card{
-        return new Card($data["Title"],$data["Body"],$data["Position"],$data["Author"], $data["Column"],$data["ID"],
-            $data["CreatedAt"], $data["ModifiedAt"]);
+        $ca = DBTools::php_date($data["CreatedAt"]);
+        $ma = DBTools::php_date_modified($data["ModifiedAt"],$data["CreatedAt"]);
+        return new Card($data["Title"],$data["Body"],$data["Position"],$ca,$data["Author"], $data["Column"],$data["ID"],$ma);
 
     }
 
@@ -295,5 +296,22 @@ class Card extends Model {
         $query = self::execute($sql, array("id"=>$this->author));
         $name=$query->fetch();
         return $name["FullName"];
+    }
+    /*
+        fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
+        on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 
+        l'utilisateur, mais juste une conqéquence d'une autre action
+    */
+    public static function update_card_position($card){
+
+        $sql="SELECT * from Card WHERE `column`=:column AND Position>=:pos order by position";
+        $params=array("column"=>$card->get_column(), "pos"=>$card->get_position()+1);
+        $querry=self::execute($sql,$params);
+        $data=$querry->fetchall();
+        foreach($data as $d){
+            $c=Card::get_instance($d);
+            $pos=$c->get_position()-1;
+            self::execute("UPDATE Card SET Position=:pos where id=:id",array("pos"=>$pos,"id"=>$c->get_id()));
+        }
     }
 }

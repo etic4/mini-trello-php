@@ -81,6 +81,7 @@ class ControllerCard extends Controller {
             $column=Column::get_by_id($instance->get_column());
             $owner=Board::get_board_owner($idcard);
             if(isset ($_POST['delete']) && ( $user->get_id()==$instance->get_author() || $user->get_id()==$owner)){
+                Card::update_card_position($instance);
                 $instance->delete();
             }
             
@@ -160,4 +161,5 @@ class ControllerCard extends Controller {
         }
         (new View("card"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
     } 
+    
 }
