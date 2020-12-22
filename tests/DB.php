@@ -25,10 +25,6 @@ class DB {
         $query->execute();
     }
 
-    public function get_pdo(): PDO {
-        return $this->pdo;
-    }
-
     public function execute($sql, $params=null) {
         $stmt =$this->pdo->prepare($sql);
         $stmt->execute($params);
