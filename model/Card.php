@@ -85,6 +85,25 @@ class Card extends Model {
         return Comment::get_comments_from_card($this->id);
     }
 
+    public function get_board_id() {
+        $column = $this->get_column_inst();
+        return $column->get_board_inst()->get_id();
+    }
+
+    //renvoie un objet Card dont les attributs ont pour valeur les données $data
+    protected static function get_instance($data) :Card {
+        return new Card(
+            $data["Title"],
+            $data["Body"],
+            $data["Position"],
+            $data["Author"], 
+            $data["Column"],
+            $data["ID"],
+            $data["CreatedAt"], 
+            $data["ModifiedAt"]
+        );
+    }
+
 
     //    SETTERS    //
 
@@ -156,13 +175,13 @@ class Card extends Model {
     }
 
     //renvoie un tableau de cartes triées dont la colonne est $column_id; chaque carte a son tableau de Comment associé.
-    public static function get_cards_from_column($column_id): array {
+    public static function get_cards_from_column($column): array {
         $sql = 
             "SELECT * 
              FROM card 
              WHERE `Column`=:column 
              ORDER BY `Column`, Position";
-        $params = array("column"=>$column_id);
+        $params = array("column"=>$column->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -187,9 +206,12 @@ class Card extends Model {
     }
 
     //renvoie un tableau de cartes dont la colonne est column_id
-    public static function get_cards_by_column($column_id){
-        $sql="SELECT * FROM card WHERE `Column`=:id ORDER BY Position";
-        $params=array("id" => $column_id);
+    public static function get_cards_by_column($column){
+        $sql =
+            "SELECT * 
+             FROM card WHERE `Column`=:id 
+             ORDER BY Position";
+        $params = array("id" => $column->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -206,7 +228,7 @@ class Card extends Model {
             "SELECT MAX(Position) 
              FROM card 
              WHERE `Column`=:id";
-        $params= array("id"=>$column_id);
+        $params = array("id"=>$column_id);
         $query = self::execute($sql, $params);
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
@@ -222,19 +244,10 @@ class Card extends Model {
             "SELECT count(Position) 
              FROM card 
              WHERE `Column`=:id";
-        $params= array("id"=>$column_id);
+        $params = array("id"=>$column_id);
         $query = self::execute($sql, $params);
         $data = $query->fetch();
         return $data["count(Position)"];
-    }
-
-
-    //renvoie un objet Card dont les attributs ont pour valeur les données $data
-    protected static function get_instance($data) :Card{
-        $ca = DBTools::php_date($data["CreatedAt"]);
-        $ma = DBTools::php_date_modified($data["ModifiedAt"],$data["CreatedAt"]);
-        return new Card($data["Title"],$data["Body"],$data["Position"],$ca,$data["Author"], $data["Column"],$data["ID"],$ma);
-
     }
 
     //insère la carte dans la db, la carte reçoit un nouvel id. renvoie un objet Card avec l'id maj.
@@ -270,33 +283,51 @@ class Card extends Model {
         }
 
         $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=:ma, Author=:author, `Column`=:column WHERE ID=:id";
-        $params = array("id"=>$this->get_id(), "title"=>$this->get_title(),"body"=>$this->get_body(), "position"=>$this->get_position(),
-            "ma"=>$modifiedAt, "author"=>$author, "column"=>$this->get_column());
+        $params = array(
+            "id" => $this->get_id(), 
+            "title" => $this->get_title(),
+            "body" => $this->get_body(), 
+            "position" => $this->get_position(),
+            "ma" => $modifiedAt, 
+            "author" => $author, 
+            "column" => $this->get_column()
+        );
 
         $this->execute($sql, $params);
     }
+
     /*
         supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
     */
-    public function delete(){
-       
-        $comments=Comment::get_comments_from_card($this->get_id());
-        foreach($comments as $com){
-            $com->delete();
-        }
-        $sql="DELETE FROM card WHERE Id=:id";
-        $param=array("id"=>$this->get_id());
-        $query = self::execute($sql, $param);
+      
+    public function delete() {
+        Comment::delete_all($this->id);
+        $sql = "DELETE FROM card 
+                WHERE ID = :id";
+        $param = array('id' => $this->id);
+        self::execute($sql, $param);
     }
+
+    public static function delete_all($column) {
+        foreach($column->get_cards() as $card) {
+            $card->delete();
+        }
+    }
+
+
     /*  
         renvoie un string qui est le nom complet de l'auteur de la carte
     */
     public function get_author_name(){
-        $sql = "SELECT FullName FROM User WHERE ID=:id";
+        $sql = 
+            "SELECT FullName 
+             FROM User 
+             WHERE ID=:id";
         $query = self::execute($sql, array("id"=>$this->author));
-        $name=$query->fetch();
+        $name = $query->fetch();
         return $name["FullName"];
     }
+
     /*
         fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
         on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 
@@ -304,14 +335,30 @@ class Card extends Model {
     */
     public static function update_card_position($card){
 
-        $sql="SELECT * from Card WHERE `column`=:column AND Position>=:pos order by position";
-        $params=array("column"=>$card->get_column(), "pos"=>$card->get_position()+1);
-        $querry=self::execute($sql,$params);
-        $data=$querry->fetchall();
+        $sql =
+            "SELECT * 
+             FROM Card 
+             WHERE `Column`=:column 
+             AND Position>=:pos 
+             ORDER BY Position";
+        $params = array(
+            "column" => $card->get_column(), 
+            "pos" => $card->get_position() + 1
+        );
+        $querry = self::execute($sql,$params);
+        $data = $querry->fetchall();
         foreach($data as $d){
-            $c=Card::get_instance($d);
-            $pos=$c->get_position()-1;
-            self::execute("UPDATE Card SET Position=:pos where id=:id",array("pos"=>$pos,"id"=>$c->get_id()));
+            $c = Card::get_instance($d);
+            $pos = $c->get_position() - 1;
+            self::execute(
+                "UPDATE Card 
+                 SET Position=:pos 
+                 WHERE id=:id",
+                 array(
+                     "pos"=>$pos,
+                     "id"=>$c->get_id()
+                     )
+                 );
         }
     }
 }

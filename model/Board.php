@@ -53,7 +53,7 @@ class Board extends Model {
     }
 
     public function get_columns(): array {
-        return Column::get_columns_from_board($this->id);
+        return Column::get_columns_from_board($this);
     }
 
     
@@ -167,7 +167,7 @@ class Board extends Model {
              VALUES(:title, :owner)";
         $params = array(
             "title"=>$this->get_title(),
-            "owner"=>$this->get_owner_inst()
+            "owner"=>$this->get_owner()->get_id()
             );
         $this->execute($sql, $params);
 
@@ -193,6 +193,7 @@ class Board extends Model {
     }
     
     public function delete() {
+        Column::delete_all($this);
         $sql = 
             "DELETE FROM board 
              WHERE ID = :id";
@@ -216,6 +217,8 @@ class Board extends Model {
         $data = $query->fetch();
         return $data["Owner"];
     }
+
+    
     //    TOOLBOX    //
 
     public function move_left(Column $col) {

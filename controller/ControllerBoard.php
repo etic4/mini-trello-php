@@ -45,4 +45,40 @@ class ControllerBoard extends Controller {
         }
            
     }
+
+    public function add() {
+        //TODO validate title -> unique!!!
+        $user = $this->get_user_or_redirect();
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $board = new Board($title, $user, null, new DateTime(), null);
+            $board->insert();
+        }
+        $this->redirect("board", "index");
+    }
+
+    public function delete() {
+        $user = $user = $this->get_user_or_redirect();
+        if(isset($_POST['id'])) {
+            $board_id = $_POST['id'];
+            $instance = Board::get_by_id($board_id);
+            $columns = $instance->get_columns();
+
+            if (isset($_POST["delete"]) || count($columns) == 0) { 
+                $instance->delete();
+                $this->redirect("board", "index");        
+            }
+
+            elseif (isset($_POST["cancel"])) {
+                $this->redirect("board", "index");
+            }
+
+            else {
+                (new View("delete_confirm"))->show(array("instance" => $instance));
+            } 
+        } 
+
+    }
+
+
 }

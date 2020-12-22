@@ -121,11 +121,18 @@ class ControllerCard extends Controller {
             $comments=Comment::get_comments_from_card($idcard);
             $instance->set_comments($comments);
             $owner=Board::get_board_owner($idcard);
+            /*
+            on peut supprimer toutes les cartes sans restriction de propriété
             if( $user->get_id()==$instance->get_author() || $user->get_id()==$owner) {
                 $cant_delete=false;
             }
+            */
         }
-        (new View("delete_confirm"))->show(array("user"=>$user, "instance"=>$instance, "cant_delete"=>$cant_delete));
+        (new View("delete_confirm"))->show(array(
+            "user"=>$user, 
+            "instance"=>$instance
+            //, "cant_delete"=>$cant_delete
+            ));
     }
 
     public function edit(){
