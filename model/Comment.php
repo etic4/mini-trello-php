@@ -153,6 +153,7 @@ class Comment extends Model{
         $this->set_modified_at(new DateTime("now"));
         $ma = DBTools::sql_date($this->get_modified_at());
         $ca=DBTools::sql_date($this->get_created_at());
+
         $sql = 
             "UPDATE Comment 
              SET Body=:body, CreatedAt=:ca, ModifiedAt=:ma, Author=:author, Card=:card 
@@ -200,7 +201,6 @@ class Comment extends Model{
         }
     }
 
-    
 }
 
 

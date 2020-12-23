@@ -8,16 +8,14 @@ require_once "model/User.php";
 require_once "model/Column.php";
 
 class Board extends Model {
-    private $id;
-    private $title;
-    private $owner;
-    private $createdAt;
-    private $modifiedAt;
-    private $columns;
+    private ?string $id;
+    private string $title;
+    private User $owner;
+    private DateTime $createdAt;
+    private ?DateTime $modifiedAt;
+    private array $columns;
 
-
-    // createdAt n'est jamais null...
-    public function __construct($title, $owner, $id=null, $createdAt=null, $modifiedAt=null) {
+    public function __construct(string $title, User $owner, ?string $id=null, DateTime $createdAt, ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
@@ -28,21 +26,28 @@ class Board extends Model {
 
     //    GETTERS    //
 
-    public function get_id() {
+    public function get_id(): string {
         return $this->id;
     }
 
-    public function get_title() {
+    public function get_title(): string {
         return $this->title;
     }
 
-    public function get_owner() {
+    public function get_owner(): User {
         return $this->owner;
     }
 
+    public function get_owner_id(): string {
+        return $this->owner->get_id();
+    }
+
+    /*
     public function get_owner_inst(): ?User {
         return User::get_by_id($this->owner);
     }
+    */
+    
 
     public function get_createdAt(): DateTime {
         return $this->createdAt;
@@ -56,18 +61,28 @@ class Board extends Model {
         return Column::get_columns_from_board($this);
     }
 
-    
+    protected static function get_instance($data): Board {
+        return new Board(
+            $data["Title"],
+            User::get_by_id($data["Owner"]),
+            $data["ID"],
+            DBTools::php_date($data["CreatedAt"]), 
+            DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"])
+        );
+    }
+
+
     //    SETTERS    //
 
-    public function set_id($id): void {
+    public function set_id(string $id): void {
         $this->id = $id;
     }
 
-    public function set_title($title) {
+    public function set_title(string $title): void {
         $this->title = $title;
     }
 
-    public function set_modifiedDate() {
+    public function set_modifiedDate(): void {
         $this->modifiedAt = new DateTime("now");
     }
 
@@ -85,7 +100,7 @@ class Board extends Model {
 
     //    QUERIES    //
 
-    public static function get_by_id($board_id) {
+    public static function get_by_id(string $board_id): Board {
         $sql = 
             "SELECT * 
              FROM board 
@@ -96,21 +111,15 @@ class Board extends Model {
 
         if ($query->rowCount() == 0) {
             return null;
-        } else {
-            $createdAt = DBTools::php_date($data["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
-            $owner = User::get_by_id($data["Owner"]);
-            return new Board(
-                $data["Title"], 
-                $owner, 
-                $data["ID"], 
-                $createdAt, 
-                $modifiedAt
-            );
+        } 
+
+        else {
+            $board = self::get_instance($data);
+            return $board;
         }
     }
 
-    public static function get_users_boards($user): array {
+    public static function get_users_boards(User $user): array {
         $sql = 
             "SELECT * 
              FROM board 
@@ -121,22 +130,14 @@ class Board extends Model {
 
         $boards = array();
         foreach ($data as $rec) {
-            $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
-            $board = new Board(
-                $rec["Title"], 
-                $rec["Owner"], 
-                $rec["ID"], 
-                $createdAt, 
-                $modifiedAt
-            );
+            $board = self::get_instance($rec);
             array_push($boards, $board);
         }
 
         return $boards;
     }
     
-    public static function get_others_boards($user): array {
+    public static function get_others_boards(User $user): array {
         $sql = 
             "SELECT * 
              FROM board 
@@ -147,34 +148,27 @@ class Board extends Model {
 
         $boards = array();
         foreach ($data as $rec) {
-            $createdAt = DBTools::php_date($rec["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($rec["ModifiedAt"], $rec["CreatedAt"]);
-            $board = new Board(
-                $rec["Title"], 
-                $rec["Owner"], 
-                $rec["ID"], 
-                $createdAt, 
-                $modifiedAt
-            );
+            $board = self::get_instance($rec);
             array_push($boards, $board);
         }
+
         return $boards;
     }
     
-    public function insert() {
+    public function insert(): Board {
         $sql = 
             "INSERT INTO board(Title, Owner) 
              VALUES(:title, :owner)";
         $params = array(
             "title"=>$this->get_title(),
-            "owner"=>$this->get_owner()->get_id()
+            "owner"=>$this->get_owner_id()
             );
         $this->execute($sql, $params);
 
         return $this->get_by_id($this->lastInsertId());
     }
 
-    public function update() {
+    public function update(): void {
         $this->set_modifiedDate();
         $modifiedAt = DBTools::sql_date($this->get_modifiedAt());
 
@@ -185,14 +179,14 @@ class Board extends Model {
         $params = array(
             "id"=>$this->get_id(), 
             "title"=>$this->get_title(), 
-            "owner"=>$this->get_owner_inst(),
+            "owner"=>$this->get_owner_id(),
             "modifiedAt"=>$modifiedAt
         );
         
         $this->execute($sql, $params);
     }
     
-    public function delete() {
+    public function delete(): void {
         Column::delete_all($this);
         $sql = 
             "DELETE FROM board 
@@ -201,32 +195,38 @@ class Board extends Model {
         $this->execute($sql, $params);
     }
 
-    public static function delete_all($user) {
+    public static function delete_all(User $user): void {
         foreach (Board::get_users_boards($user) as $board) {
             $board->delete();
         }
     }
 
     /*  
-        renvoie l'id du propriétaire du board contenant la carte id_card
+        renvoie le propriétaire du board contenant la carte id_card
     */
-    public static function get_board_owner($id_card){
-        $sql="SELECT Owner from Board b, `Column` co, Card ca where ca.id=:id_card AND co.id=ca.column AND co.Board=b.id";
-        $params=array("id_card"=>$id_card);
+    public static function get_board_owner(Card $card): User{
+        $sql=
+            "SELECT Owner 
+             FROM Board b, `Column` co, Card ca 
+             WHERE ca.id=:id_card 
+             AND co.id=ca.column 
+             AND co.Board=b.id";
+        $params=array("id_card" => $card->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetch();
-        return $data["Owner"];
+
+        return User::get_by_id($data["Owner"]);
     }
 
     
     //    TOOLBOX    //
 
-    public function move_left(Column $col) {
+    public function move_left(Column $col): void {
         $pos = $col->get_position();
 
         if ($pos > 0) {
-            $target = $this->get_columns()[$pos-1];
-            $col->set_position($pos-1);
+            $target = $this->get_columns()[$pos - 1];
+            $col->set_position($pos - 1);
             $target->set_position($pos);
 
             $col->update();
@@ -234,13 +234,13 @@ class Board extends Model {
         }
     }
 
-    public function move_right(Column $col) {
+    public function move_right(Column $col): void {
         $pos = $col->get_position();
         $columns = $this->get_columns();
 
-        if ($pos < sizeof($columns)-1) {
-            $target = $columns[$pos+1];
-            $col->set_position($pos+1);
+        if ($pos < sizeof($columns) - 1) {
+            $target = $columns[$pos + 1];
+            $col->set_position($pos + 1);
             $target->set_position($pos);
 
             $col->update();

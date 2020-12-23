@@ -23,7 +23,7 @@ class DBTools {
         return self::php_date($sqlDate);
     }
 
-    public static function intvl($firstDate, $secondDate) {
+    public static function intvl($firstDate, $secondDate): string {
         $intvl = $secondDate->diff($firstDate);
         if($intvl !== 0) {
             if ($intvl->y != 0) {
@@ -67,7 +67,7 @@ class DBTools {
         return $laps;
     }
     
-    public static function laps ($firstDate, $secondDate) {
+    public static function laps ($firstDate, $secondDate): string {
         if ($secondDate->diff($firstDate)->format('Y-m-d H:i:s') == "0-0-0 0:0:0") {
             return "Modified " . self::intvl($firstDate, $secondDate);
         }

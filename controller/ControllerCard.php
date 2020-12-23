@@ -79,8 +79,8 @@ class ControllerCard extends Controller {
             $idcard=$_POST['id'];
             $instance=Card::get_by_id($idcard);
             $column=Column::get_by_id($instance->get_column());
-            $owner=Board::get_board_owner($idcard);
-            if(isset ($_POST['delete']) && ( $user->get_id()==$instance->get_author() || $user->get_id()==$owner)){
+            $owner=Board::get_board_owner($instance);
+            if(isset ($_POST['delete']) && ( $user == $instance->get_author() || $user == $owner)){
                 Card::update_card_position($instance);
                 $instance->delete();
             }
@@ -120,10 +120,10 @@ class ControllerCard extends Controller {
             $instance=Card::get_by_id($idcard);
             $comments=Comment::get_comments_from_card($idcard);
             $instance->set_comments($comments);
-            $owner=Board::get_board_owner($idcard);
+            $owner=Board::get_board_owner($instance);
             /*
             on peut supprimer toutes les cartes sans restriction de propriété
-            if( $user->get_id()==$instance->get_author() || $user->get_id()==$owner) {
+            if( $user == $instance->get_author() || $user == $owner) {
                 $cant_delete=false;
             }
             */

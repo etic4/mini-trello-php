@@ -27,11 +27,16 @@ class Card extends Model {
     }
 
     public static function create_new($title, $author, $column) {
-        $body = "";
-        //$position = Card::get_last_position($column) + 1;
-        $position = self::get_card_count($column);
-        $createdAt = new DateTime();
-        return new Card($title, $body, $position, $createdAt, $author, $column, null, null);
+        return new Card(
+            $title, 
+            "", 
+            self::get_card_count($column), 
+            new DateTime(), 
+            $author, 
+            $column, 
+            null, 
+            null
+        );
     }
 
 

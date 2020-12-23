@@ -197,7 +197,7 @@ class User extends Model {
     private function get_boards_for_view($board_array): array {
         $boards = [];
         foreach ($board_array as $board) {
-            $user = $board->get_owner_inst();
+            $user = $board->get_owner();
             $boards[] = array("id"=>$board->get_id(), "title"=>$board->get_title(), "fullName"=>$user->get_fullName());
         }
         return $boards;

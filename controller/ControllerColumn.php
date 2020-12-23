@@ -36,12 +36,12 @@ class ControllerColumn extends Controller {
         $user = $this->get_user_or_redirect();
         if(!empty($_POST["title"])) {
             $title = $_POST["title"];
-            $board = $_POST["id"];
-            $author = $user->get_id();
-            $column = Column::create_new($title, $author, $board); 
+            $board_id = $_POST["id"];
+            $board = Board::get_by_id($board_id);
+            $column = Column::create_new($title, $board);
             $column->insert();
         }
-        $this->redirect("board", "board", $board);
+        $this->redirect("board", "board", $board_id);
     }
 
     //PRG ???
@@ -52,20 +52,41 @@ class ControllerColumn extends Controller {
             $instance = Column::get_by_id($column_id);
             $board_id = $instance->get_board_id(); 
 
-            if (isset($_POST["delete"]) || count($instance->get_cards()) == 0) { 
+            if(!isset($_POST["delete"])) {
+
+                if (count($instance->get_cards()) == 0) { 
+                    $instance->delete();
+                    $instance->decrement_previous_columns_position();
+                    $this->redirect("board", "board", $board_id);        
+                }
+
+                else {
+                    $this->redirect("column", "delete_confirm", $instance->get_id());
+                } 
+            }
+
+            else {
                 $instance->delete();
                 $instance->decrement_previous_columns_position();
                 $this->redirect("board", "board", $board_id);        
             }
-
-            elseif (isset($_POST["cancel"])) {
-                $this->redirect("board", "board", $board_id);
-            }
-
-            else {
-                (new View("delete_confirm"))->show(array("instance" => $instance));
-            }  
         }
+    }
+
+    public function delete_confirm() {
+        if (isset($_GET["param1"])) {
+            $column_id = $_GET["param1"];
+            $instance = Column::get_by_id($column_id);
+            if(!is_null($instance)) {
+                (new View("delete_confirm"))->show(array("instance" => $instance));
+            }
+            else {
+                $this->redirect("board", "board");
+            }
+        }
+         else {
+            $this->redirect("board", "board");
+         }
     }
 
 }
