@@ -13,7 +13,7 @@ class Board extends Model {
     private $owner;
     private $createdAt;
     private $modifiedAt;
-    private $columns;
+    private Column $columns;
 
 
     // createdAt n'est jamais null...
@@ -110,7 +110,7 @@ class Board extends Model {
         }
     }
 
-    public static function get_users_boards($user): array {
+    public static function get_users_boards(User $user): array {
         $sql = 
             "SELECT * 
              FROM board 

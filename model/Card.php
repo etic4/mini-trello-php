@@ -302,7 +302,7 @@ class Card extends Model {
         on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 
         l'utilisateur, mais juste une conqéquence d'une autre action
     */
-    public static function update_card_position($card){
+    public static function update_card_position(Card $card){
 
         $sql="SELECT * from Card WHERE `column`=:column AND Position>=:pos order by position";
         $params=array("column"=>$card->get_column(), "pos"=>$card->get_position()+1);

@@ -1,19 +1,20 @@
 <?php
 
-//require_once "UserModel.php";
 require_once "Validation.php";
 require_once "framework/Model.php";
 require_once "model/Board.php";
 
 class User extends Model {
-    private $id;
-    private $email;
-    private $fullName;
-    private $passwdHash;
-    private $clearPasswd; //Utilisé uniquement au moment du signup
-    private $registeredAt;
+    private ?string $id;
+    private string $email;
+    private string $fullName;
+    private ?string $passwdHash;
+    private ?string $clearPasswd; //Utilisé uniquement au moment du signup
+    private DateTime $registeredAt;
 
-    public function __construct($email, $fullName, $passwdHash, $id=null, $registeredAt=null, $clearPasswd=null) {
+
+    public function __construct(string $email, string $fullName, ?string $clearPasswd=null, ?string $passwdHash,
+                                ?string $id=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
         }
@@ -22,22 +23,22 @@ class User extends Model {
         $this->email = $email;
         $this->fullName = $fullName;
         $this->passwdHash = $passwdHash;
-        $this->registeredAt = $registeredAt;
+        $this->set_registeredAt($registeredAt);
         $this->clearPasswd = $clearPasswd;
     }
 
 
     //    GETTERS    //
 
-    public function get_id() {
+    public function get_id(): string {
         return $this->id;
     }
 
-    public function get_email() {
+    public function get_email(): string {
         return $this->email;
     }
 
-    public function get_fullName() {
+    public function get_fullName(): string {
         return $this->fullName;
     }
 
@@ -54,6 +55,13 @@ class User extends Model {
 
     public function set_id($id) {
         $this->id = $id;
+    }
+
+    public function set_registeredAt(?Datetime $registeredAt) {
+        if (is_null($registeredAt)){
+            $this->registeredAt = new Datetime("now");
+        }
+        $this->registeredAt = $registeredAt;
     }
 
 
@@ -111,7 +119,7 @@ class User extends Model {
 
     //    QUERIES    //
 
-    public static function get_by_id($id) {
+    public static function get_by_id($id): ?User {
         $sql = 
             "SELECT * 
              FROM user 
@@ -155,7 +163,7 @@ class User extends Model {
         }
     }
 
-    public function insert() {
+    public function insert(): User {
         $sql = 
             "INSERT INTO user(Mail, FullName, Password) 
              VALUES(:email, :fullName, :passwdHash)";
