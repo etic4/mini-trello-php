@@ -101,11 +101,11 @@ class Card extends Model {
             $data["Title"],
             $data["Body"],
             $data["Position"],
-            $data["Author"], 
+            DBTools::php_date($data["CreatedAt"]),
+            User::get_by_id($data["Author"]), 
             $data["Column"],
             $data["ID"],
-            $data["CreatedAt"], 
-            $data["ModifiedAt"]
+            DBTools::php_date($data["ModifiedAt"])
         );
     }
 
@@ -164,18 +164,7 @@ class Card extends Model {
         if ($query->rowCount() == 0) {
             return null;
         } else {
-            $createdAt = DBTools::php_date($data["CreatedAt"]);
-            $modifiedAt = DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"]);
-            return new Card(
-                $data["Title"], 
-                $data["Body"], 
-                $data["Position"], 
-                $createdAt, 
-                $data["Author"], 
-                $data["Column"], 
-                $data["ID"], 
-                $modifiedAt
-            );
+            return self::get_instance($data);
         }
     }
 
