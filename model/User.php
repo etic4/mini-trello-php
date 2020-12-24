@@ -12,6 +12,12 @@ class User extends Model {
     private DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
+    /* Retourne une instance de User à partir d'une colonne de la DB */
+    protected static function get_instance($data): User {
+        $registeredAt = DBTools::php_date($data["RegisteredAt"]);
+        return new User($data["Mail"], $data["FullName"], $data["ID"], $data["Password"],  $registeredAt);
+    }
+
 
     public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
