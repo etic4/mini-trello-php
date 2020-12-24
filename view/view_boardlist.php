@@ -14,19 +14,28 @@
         <header>
         <?php include('menu.php'); ?>
         </header>
-        <?php if($user): ?>;
+        <?php if($user): ?>
         <main class="list">
             <article class="up">
                 <h2>Your boards</h2>
                 <div class="displayBoards">
                     <ul class="yourBoards">
                     <?php foreach($owners as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b></a></li>
+                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?></a></li>
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
                         <input type="text" name="title" placeholder="Add a board">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
+                        <?php if (count($errors) != 0): ?>
+                        <div class='errors'>
+                            <ul>
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= $error ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </article>

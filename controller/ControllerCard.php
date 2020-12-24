@@ -63,9 +63,8 @@ class ControllerCard extends Controller {
         $user = $this->get_user_or_redirect();
         if(!empty($_POST["title"])) {
             $title = $_POST["title"];
-            $column = $_POST["column_id"];
-            $author = $user->get_id();
-            $card = Card::create_new($title, $author, $column); 
+            $column_id = $_POST["column_id"];
+            $card = Card::create_new($title, $user, $column_id); 
             $card->insert(); 
         }
         $board = $_POST["board_id"];

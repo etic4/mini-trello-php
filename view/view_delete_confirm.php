@@ -15,7 +15,7 @@
         </header>
         <main class="delete_confirm">
             <!-- code php delete board, delete column, delete card -->
-            <form action="<?= strtolower(get_class($instance)) ?>/delete/<?= $instance->get_id() ?>" method="post">
+            <form action="<?= strtolower(get_class($instance)) ?>/delete_confirm" method="post">
                 <h2><i class="far fa-trash-alt"></i></h2>
                 <p>Are you sure ?</p>
                 <hr>

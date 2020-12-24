@@ -198,7 +198,20 @@ class User extends Model {
         $boards = [];
         foreach ($board_array as $board) {
             $user = $board->get_owner();
-            $boards[] = array("id"=>$board->get_id(), "title"=>$board->get_title(), "fullName"=>$user->get_fullName());
+
+            if(count($board->get_columns()) > 1) {
+                $columns = "(" . count($board->get_columns()) . " columns)";
+            }
+            else {
+                $columns = "(" . count($board->get_columns()) . " column)";
+            }
+
+            $boards[] = array(
+                "id" => $board->get_id(), 
+                "title" => $board->get_title(), 
+                "fullName" => $user->get_fullName(), 
+                "columns" => $columns
+            );
         }
         return $boards;
     }

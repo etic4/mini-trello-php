@@ -5,17 +5,24 @@ require_once "DBTools.php";
 require_once "model/Comment.php";
 
 class Card extends Model {
-    private $id;
-    private $title;
-    private $body;
-    private $position;
-    private $createdAt;
-    private $modifiedAt;
-    private $author;
-    private $column;
-    private $comments;
+    private ?string $id;
+    private string $title;
+    private string $body;
+    private int $position;
+    private DateTime $createdAt;
+    private ?DateTime $modifiedAt;
+    private User $author;
+    private string $column;
+    private array $comments;
 
-    public function __construct($title, $body, $position, $createdAt, $author, $column, $id = null, $modifiedAt = null) {
+    public function __construct(string $title, 
+                                string $body, 
+                                int $position, 
+                                DateTime $createdAt, 
+                                User $author, 
+                                string $column, 
+                                ?string $id = null, 
+                                ?DateTime $modifiedAt = null) {
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;
@@ -26,7 +33,7 @@ class Card extends Model {
         $this->column = $column;
     }
 
-    public static function create_new($title, $author, $column) {
+    public static function create_new(string $title, $author, string $column) {
         return new Card(
             $title, 
             "", 
@@ -42,47 +49,47 @@ class Card extends Model {
 
     //    GETTERS    //
 
-    public function get_id() {
+    public function get_id(): ?string {
         return $this->id;
     }
 
-    public function get_title() {
+    public function get_title(): string {
         return $this->title;
     }
 
-    public function get_body() {
+    public function get_body(): string {
         return $this->body;
     }
 
-    public function get_position() {
+    public function get_position(): int {
         return $this->position;
     }
 
-    public function get_created_at() {
+    public function get_created_at(): DateTime {
         return $this->createdAt;
     }
 
-    public function get_modified_at(){
+    public function get_modified_at(): ?DateTime{
         return $this->modifiedAt;
     }
 
-    public function get_author() {
+    public function get_author(): User {
         return $this->author;
     }
 
-    public function get_column() {
+    public function get_column(): string {
         return $this->column;
     }
 
     public function get_column_inst(): Column {
-        $col = $this->get_column();
+        $col = $this->column;
         if (is_int(intval($col)) || is_null($col)) {
             return Column::get_by_id($col);
         }
         return $col;
     }
 
-    public function get_comments() {
+    public function get_comments(): array {
         return $this->comments;
     }
 
@@ -92,7 +99,7 @@ class Card extends Model {
 
     public function get_board_id() {
         $column = $this->get_column_inst();
-        return $column->get_board_inst()->get_id();
+        return $column->get_board_id();
     }
 
     //renvoie un objet Card dont les attributs ont pour valeur les données $data

@@ -70,9 +70,11 @@ main {
     color: #ffffff;
 }
 
-.fas, .far {
+.fas,
+.far {
     cursor: pointer;
 }
+
 
 /*** =========ADD========= ***/
 
@@ -165,7 +167,7 @@ strong {
 }
 
 
-/***  ========ERRORS=======  ***/
+/***  =======ERRORS======  ***/
 
 .errors {
     display: block;
@@ -175,8 +177,14 @@ strong {
     border-top: 2px solid #cccccc;
     border-bottom: 2px solid #cccccc;
     padding: 10px 0;
-    margin-top: 20px;
+    margin-top: 15px;
     margin-bottom: -10px;
+}
+
+.add .errors {
+    top: 55px;
+    right: 275px;
+    width: 275px;
 }
 
 

@@ -23,4 +23,8 @@ class Validation {
         return filter_var($str, FILTER_VALIDATE_EMAIL) == $str;
     }
 
+    public static function is_unique_title($board): bool {
+        return $board->get_by_title() == 0;
+    }
+
 }

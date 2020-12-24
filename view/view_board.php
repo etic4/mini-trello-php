@@ -18,6 +18,7 @@
             <header>
                 <div class="title">
                     <h2>Board "<?= $board->get_title() ?>"</h2>
+                    <?php if ($user == $board->get_owner()): ?>
                     <ul class="icons">
                         <li>
                             <form class='link' action='board/edit' method='post'>
@@ -32,6 +33,7 @@
                             </form>
                         </li>
                     </ul>
+                    <?php endif;?>
                 </div>
                 <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. <?= DBTools::laps($board->get_createdAt(), $board->get_modifiedAt()); ?>.</p>
             </header>

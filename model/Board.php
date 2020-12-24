@@ -41,14 +41,7 @@ class Board extends Model {
     public function get_owner_id(): string {
         return $this->owner->get_id();
     }
-
-    /*
-    public function get_owner_inst(): ?User {
-        return User::get_by_id($this->owner);
-    }
-    */
     
-
     public function get_createdAt(): DateTime {
         return $this->createdAt;
     }
@@ -86,13 +79,20 @@ class Board extends Model {
         $this->modifiedAt = new DateTime("now");
     }
 
+    public function set_columns(): void {
+        $this->columns = $this->get_columns();
+    }
+ 
 
     //    VALIDATION    //
 
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = "Le titre doit comporter au moins 3 caractères";
+            $errors[] = "Title must be at least 3 characters long";
+        }
+        if (!Validation::is_unique_title($this)) {
+            $errors[] = "A table by this title already exists";
         }
         return $errors;
     }
@@ -100,7 +100,7 @@ class Board extends Model {
 
     //    QUERIES    //
 
-    public static function get_by_id(string $board_id): Board {
+    public static function get_by_id(string $board_id): ?Board {
         $sql = 
             "SELECT * 
              FROM board 
@@ -131,6 +131,8 @@ class Board extends Model {
         $boards = array();
         foreach ($data as $rec) {
             $board = self::get_instance($rec);
+            $board->set_columns();
+
             array_push($boards, $board);
         }
 
@@ -153,6 +155,18 @@ class Board extends Model {
         }
 
         return $boards;
+    }
+
+    public function get_by_title(): int {
+        $sql = 
+            "SELECT * 
+             FROM board 
+             WHERE Title = :title";
+        $params= array("title"=>$this->get_title());
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        return count($data);
     }
     
     public function insert(): Board {
