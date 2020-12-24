@@ -137,14 +137,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return null;
         } else {
-            $registeredAt = DBTools::php_date($data["RegisteredAt"]);
-            return new User(
-                $data["Mail"], 
-                $data["FullName"], 
-                $data["Password"], 
-                $data["ID"],  
-                $registeredAt
-            );
+            return self::get_instance($data);
         }
     }
 
@@ -159,14 +152,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return null;
         } else {
-            $registeredAt = DBTools::php_date($data["RegisteredAt"]);
-            return new User(
-                $data["Mail"], 
-                $data["FullName"], 
-                $data["Password"], 
-                $data["ID"],  
-                $registeredAt
-            );
+            self::get_instance($data);
         }
     }
 
@@ -208,6 +194,7 @@ class User extends Model {
 
     //    TOOLBOX    //
 
+    // TODO: supprimer ça et passer la liste des boards telle quelle
     // Prépare la liste des boards pour l'affichage
     private function get_boards_for_view($board_array): array {
         $boards = [];
