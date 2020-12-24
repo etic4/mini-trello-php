@@ -41,7 +41,10 @@ CREATE TABLE `board` (
 
 LOCK TABLES `board` WRITE;
 /*!40000 ALTER TABLE `board` DISABLE KEYS */;
-INSERT INTO `board` VALUES (1,'Projet PRWB',1,'2020-10-11 17:48:59',NULL),(2,'Projet ANC3',3,'2020-10-11 17:48:59',NULL),(4,'Boulot',5,'2020-11-25 18:54:53',NULL);
+INSERT INTO `board` VALUES
+                           (1,'Projet PRWB',1,'2020-10-11 17:48:59','2020-10-11 17:48:59'),
+                           (2,'Projet ANC3',3,'2020-10-11 17:48:59','2020-10-11 17:48:59'),
+                           (4,'Boulot',5,'2020-11-25 18:54:53','2020-11-25 18:54:53');
 /*!40000 ALTER TABLE `board` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,7 +78,11 @@ CREATE TABLE `card` (
 
 LOCK TABLES `card` WRITE;
 /*!40000 ALTER TABLE `card` DISABLE KEYS */;
-INSERT INTO `card` VALUES (1,'Analyse conceptuelle','Faire l\'analyse conceptuelle de la base de données du projet.',1,'2020-10-11 17:56:40','2020-11-27 13:07:39',2,3),(2,'Mockups itération 1','Faire des prototypes d\'écrans pour les fonctionnalités de la première itération.',0,'2020-10-11 17:56:40','2020-11-27 13:07:40',1,2),(3,'Ecrire énoncé itération 1.','',1,'2020-10-11 17:58:37','2020-11-27 13:07:42',4,2),(4,'Echéances IT1 !','Décider des dates d\'échéance pour la première itération.',0,'2020-10-11 17:58:37','2020-11-27 13:07:34',1,3),(6,'Enoncé itération 2','',0,'2020-11-27 13:07:54',NULL,5,1);
+INSERT INTO `card` VALUES (1,'Analyse conceptuelle','Faire l\'analyse conceptuelle de la base de données du projet.',1,'2020-10-11 17:56:40','2020-11-27 13:07:39',2,3),
+                          (2,'Mockups itération 1','Faire des prototypes d\'écrans pour les fonctionnalités de la première itération.',0,'2020-10-11 17:56:40','2020-11-27 13:07:40',1,2),
+                          (3,'Ecrire énoncé itération 1.','',1,'2020-10-11 17:58:37','2020-11-27 13:07:42',4,2),
+                          (4,'Echéances IT1 !','Décider des dates d\'échéance pour la première itération.',0,'2020-10-11 17:58:37','2020-11-27 13:07:34',1,3),
+                          (6,'Enoncé itération 2','',0,'2020-11-27 13:07:54','2020-11-27 13:07:54',5,1);
 /*!40000 ALTER TABLE `card` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,7 +112,16 @@ CREATE TABLE `column` (
 
 LOCK TABLES `column` WRITE;
 /*!40000 ALTER TABLE `column` DISABLE KEYS */;
-INSERT INTO `column` VALUES (1,'A faire',0,'2020-10-11 17:51:59',NULL,1),(2,'En cours',1,'2020-10-11 17:51:59',NULL,1),(3,'Terminé',2,'2020-10-11 17:52:27',NULL,1),(4,'A faire',0,'2020-10-11 17:52:27',NULL,2),(5,'Fini',1,'2020-10-11 17:53:07',NULL,2),(6,'Abandonné',2,'2020-10-11 17:53:07',NULL,2),(11,'Pas urgent...',0,'2020-11-25 18:55:06',NULL,4),(12,'Ne pas perdre de vue',1,'2020-11-25 18:55:17',NULL,4),(13,'Pour hier',2,'2020-11-25 18:55:32',NULL,4),(15,'Trop tard',3,'2020-11-25 18:56:11',NULL,4);
+INSERT INTO `column` VALUES (1,'A faire',0,'2020-10-11 17:51:59','2020-10-11 17:51:59',1),
+                            (2,'En cours',1,'2020-10-11 17:51:59','2020-10-11 17:51:59',1),
+                            (3,'Terminé',2,'2020-10-11 17:52:27','2020-10-11 17:52:27',1),
+                            (4,'A faire',0,'2020-10-11 17:52:27','2020-10-11 17:52:27',2),
+                            (5,'Fini',1,'2020-10-11 17:53:07','2020-10-11 17:53:07',2),
+                            (6,'Abandonné',2,'2020-10-11 17:53:07','2020-10-11 17:53:07',2),
+                            (11,'Pas urgent...',0,'2020-11-25 18:55:06','2020-11-25 18:55:06',4),
+                            (12,'Ne pas perdre de vue',1,'2020-11-25 18:55:17','2020-11-25 18:55:17',4),
+                            (13,'Pour hier',2,'2020-11-25 18:55:32','2020-11-25 18:55:32',4),
+                            (15,'Trop tard',3,'2020-11-25 18:56:11','2020-11-25 18:56:11',4);
 /*!40000 ALTER TABLE `column` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -137,7 +153,9 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,'Ceci est un commentaire','2020-11-27 14:45:39',NULL,5,6),(2,'Voilà un autre commentaire','2020-11-27 14:46:02',NULL,1,6),(3,'Je dirais même plus : ceci est mon commentaire','2020-11-27 14:48:56',NULL,3,6);
+INSERT INTO `comment` VALUES (1,'Ceci est un commentaire','2020-11-27 14:45:39','2020-11-27 14:45:39',5,6),
+                             (2,'Voilà un autre commentaire','2020-11-27 14:46:02','2020-11-27 14:46:02',1,6),
+                             (3,'Je dirais même plus : ceci est mon commentaire','2020-11-27 14:48:56','2020-11-27 14:48:56',3,6);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +183,11 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'boverhaegen@epfc.eu','Boris Verhaegen','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:46:19'),(2,'bepenelle@epfc.eu','Benoît Penelle','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:46:19'),(3,'brlacroix@epfc.eu','Bruno Lacroix','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:47:20'),(4,'xapigeolet@epfc.eu','Xavier Pigeolet','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:47:20'),(5,'galagaffe@epfc.eu','Gaston Lagaffe','eeeefab96d4fcab9d3a5d46828587b3e','2020-11-25 18:46:55');
+INSERT INTO `user` VALUES (1,'boverhaegen@epfc.eu','Boris Verhaegen','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:46:19'),
+                          (2,'bepenelle@epfc.eu','Benoît Penelle','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:46:19'),
+                          (3,'brlacroix@epfc.eu','Bruno Lacroix','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:47:20'),
+                          (4,'xapigeolet@epfc.eu','Xavier Pigeolet','eeeefab96d4fcab9d3a5d46828587b3e','2020-10-11 17:47:20'),
+                          (5,'galagaffe@epfc.eu','Gaston Lagaffe','eeeefab96d4fcab9d3a5d46828587b3e','2020-11-25 18:46:55');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
