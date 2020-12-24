@@ -29,8 +29,12 @@ trait DateGetSetTrait {
         }
     }
 
-    public function set_modifiedDate_and_get_sql() {
+    public function set_modifiedDate() {
         $this->set_modifiedAt(new DateTime("now"));
+    }
+
+    public function set_modifiedDate_and_get_sql() {
+        $this->set_modifiedDate();
         return DBTools::sql_date($this->get_modifiedAt());
     }
 }
