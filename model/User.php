@@ -1,20 +1,20 @@
 <?php
 
-require_once "Validation.php";
 require_once "framework/Model.php";
-require_once "model/Board.php";
+require_once "Board.php";
+require_once "Validation.php";
 
 class User extends Model {
     private ?string $id;
     private string $email;
     private string $fullName;
     private ?string $passwdHash;
-    private ?string $clearPasswd; //Utilisé uniquement au moment du signup
     private DateTime $registeredAt;
+    private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
 
-    public function __construct(string $email, string $fullName, ?string $clearPasswd=null, ?string $passwdHash,
-                                ?string $id=null, ?DateTime $registeredAt=null) {
+    public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
+                                ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
         }
@@ -60,8 +60,9 @@ class User extends Model {
     public function set_registeredAt(?Datetime $registeredAt) {
         if (is_null($registeredAt)){
             $this->registeredAt = new Datetime("now");
+        } else {
+            $this->registeredAt = $registeredAt;
         }
-        $this->registeredAt = $registeredAt;
     }
 
 
