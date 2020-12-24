@@ -92,7 +92,7 @@ class Board extends Model {
             $errors[] = "Title must be at least 3 characters long";
         }
         if (!Validation::is_unique_title($this)) {
-            $errors[] = "A table by this title already exists";
+            $errors[] = "A board by this title already exists";
         }
         return $errors;
     }
@@ -162,7 +162,7 @@ class Board extends Model {
             "SELECT * 
              FROM board 
              WHERE Title = :title";
-        $params= array("title"=>$this->get_title());
+        $params= array("title" => $this->get_title());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 

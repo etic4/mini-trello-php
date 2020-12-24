@@ -76,4 +76,13 @@ class DBTools {
         }
     }
 
+    public static function breadcrumb() {
+        //$path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
+        //var_dump($path);
+        //echo ($path[2]);
+        $home = "<a href='board/index'>Board</a>";
+        echo $home;
+    }
+    
+
 }

@@ -50,8 +50,7 @@ class ControllerBoard extends Controller {
         }
         else {
             $this->redirect("board", "index");
-        }
-           
+        }   
     }
 
     public function add() {
@@ -97,7 +96,7 @@ class ControllerBoard extends Controller {
                 $instance->delete();
                 $this->redirect("board", "delete_board", $board_id);        
             }
-            
+
             (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
              
         } 
