@@ -7,6 +7,8 @@ require_once "DBTools.php";
 require_once "model/Card.php";
 
 class Column extends Model {
+    use DateGetSetTrait;
+
     private ?string $id;
     private string $title;
     private int $position;
@@ -19,9 +21,9 @@ class Column extends Model {
         $this->id = $id;
         $this->title = $title;
         $this->position = $position;
-        $this->createdAt = $createdAt;
-        $this->modifiedAt = $modifiedAt;
         $this->board = $board;
+        $this->set_createdAt($createdAt);
+        $this->set_modifiedAt($modifiedAt);
     }
 
     public static function create_new(string $title, Board $board) {
@@ -50,14 +52,6 @@ class Column extends Model {
         return $this->position;
     }
 
-    public function get_createdAt(): DateTime {
-        return $this->createdAt;
-    }
-
-    public function get_modifiedAt(): DateTime {
-        return $this->modifiedAt;
-    }
-
     public function get_board(): string {
         return $this->board;
     }
@@ -81,7 +75,7 @@ class Column extends Model {
             $data["Board"], 
             $data["ID"],
             DBTools::php_date($data["CreatedAt"]), 
-            DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"])
+            DBTools::php_date($data["ModifiedAt"])
         );
     }
 
@@ -94,10 +88,6 @@ class Column extends Model {
 
     public function set_position(int $position): void {
         $this->position = $position;
-    }
-
-    public function set_modifiedDate(): void {
-        $this->modifiedAt = new DateTime("now");
     }
 
     public function set_cards(): void {
@@ -119,7 +109,7 @@ class Column extends Model {
 
     //    QUERIES    //
 
-    public static function get_by_id(string $id): Column {
+    public static function get_by_id(string $id): ?Column {
         $sql = 
             "SELECT * 
              FROM `column` 
@@ -224,21 +214,22 @@ class Column extends Model {
 
     public function insert(): Column {
         $sql = 
-            "INSERT INTO `column`(Title, Position, Board) 
-             VALUES(:title, :position, :board)";
+            "INSERT INTO `column`(Title, Position, Board, CreatedAt, ModifiedAt) 
+             VALUES(:title, :position, :board, :createdAt, :modifiedAt)";
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
-            "board" => $this->get_board()
+            "board" => $this->get_board(),
+            "createdAt" => $this->get_createdAt(),
+            "modifiedAt" => $this->get_modifiedAt()
         );
+
         $this->execute($sql, $params);
 
         return $this->get_by_id($this->lastInsertId());
     }
 
     public function update(): void {
-        $this->set_modifiedDate();
-
         $sql = 
             "UPDATE `column` 
              SET Title=:title, Position=:position, Board=:board, ModifiedAt=:modifiedAt 
@@ -248,7 +239,7 @@ class Column extends Model {
             "title" => $this->get_title(), 
             "position" => $this->get_position(),
             "board" => $this->get_board(), 
-            "modifiedAt" => DBTools::sql_date($this->get_modifiedAt())
+            "modifiedAt" => $this->set_modifiedDate_and_get_sql()
         );
         $this->execute($sql, $params);
     }

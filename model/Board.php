@@ -1,13 +1,13 @@
 <?php
 
-//require_once "BoardModel.php";
-//require_once "BoardValidator.php";
 require_once "framework/Model.php";
 require_once "DBTools.php";
-require_once "model/User.php";
-require_once "model/Column.php";
+require_once "User.php";
+require_once "Column.php";
 
 class Board extends Model {
+    use DateGetSetTrait;
+
     private ?string $id;
     private string $title;
     private User $owner;
@@ -15,12 +15,12 @@ class Board extends Model {
     private ?DateTime $modifiedAt;
     private array $columns;
 
-    public function __construct(string $title, User $owner, ?string $id=null, DateTime $createdAt, ?DateTime $modifiedAt=null) {
+    public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
-        $this->createdAt = $createdAt;
-        $this->modifiedAt = $modifiedAt;
+        $this->set_createdAt($createdAt);
+        $this->set_modifiedAt($modifiedAt);
     }
 
 
@@ -41,26 +41,26 @@ class Board extends Model {
     public function get_owner_id(): string {
         return $this->owner->get_id();
     }
-    
-    public function get_createdAt(): DateTime {
-        return $this->createdAt;
-    }
 
-    public function get_modifiedAt(): DateTime {
-        return $this->modifiedAt;
+    /*
+    public function get_owner_inst(): ?User {
+        return User::get_by_id($this->owner);
     }
+    */
+
 
     public function get_columns(): array {
         return Column::get_columns_from_board($this);
     }
 
+    /*TODO: Je crois que l'usage (un des usages?) est de rassembler les méthodes statiques avant le constructeur */
     protected static function get_instance($data): Board {
         return new Board(
             $data["Title"],
             User::get_by_id($data["Owner"]),
             $data["ID"],
             DBTools::php_date($data["CreatedAt"]), 
-            DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"])
+            DBTools::php_date($data["ModifiedAt"])
         );
     }
 
@@ -75,24 +75,13 @@ class Board extends Model {
         $this->title = $title;
     }
 
-    public function set_modifiedDate(): void {
-        $this->modifiedAt = new DateTime("now");
-    }
-
-    public function set_columns(): void {
-        $this->columns = $this->get_columns();
-    }
- 
 
     //    VALIDATION    //
 
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Title must be at least 3 characters long";
-        }
-        if (!Validation::is_unique_title($this)) {
-            $errors[] = "A board by this title already exists";
+            $errors = "Le titre doit comporter au moins 3 caractères";
         }
         return $errors;
     }
@@ -131,8 +120,6 @@ class Board extends Model {
         $boards = array();
         foreach ($data as $rec) {
             $board = self::get_instance($rec);
-            $board->set_columns();
-
             array_push($boards, $board);
         }
 
@@ -156,26 +143,16 @@ class Board extends Model {
 
         return $boards;
     }
-
-    public function get_by_title(): int {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE Title = :title";
-        $params= array("title" => $this->get_title());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        return count($data);
-    }
     
     public function insert(): Board {
         $sql = 
-            "INSERT INTO board(Title, Owner) 
-             VALUES(:title, :owner)";
+            "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) 
+             VALUES(:title, :owner, :createdAt, :modifiedAt)";
         $params = array(
             "title"=>$this->get_title(),
-            "owner"=>$this->get_owner_id()
+            "owner"=>$this->get_owner_id(),
+            "createdAt" => $this->get_createdAt(),
+            "modifiedAt" => $this->get_modifiedAt()
             );
         $this->execute($sql, $params);
 
@@ -183,9 +160,6 @@ class Board extends Model {
     }
 
     public function update(): void {
-        $this->set_modifiedDate();
-        $modifiedAt = DBTools::sql_date($this->get_modifiedAt());
-
         $sql = 
             "UPDATE board 
              SET Title=:title, Owner=:owner, ModifiedAt=:modifiedAt 
@@ -194,7 +168,7 @@ class Board extends Model {
             "id"=>$this->get_id(), 
             "title"=>$this->get_title(), 
             "owner"=>$this->get_owner_id(),
-            "modifiedAt"=>$modifiedAt
+            "modifiedAt"=>$this->set_modifiedDate_and_get_sql()
         );
         
         $this->execute($sql, $params);
@@ -215,7 +189,7 @@ class Board extends Model {
         }
     }
 
-    /*  
+    /*  TODO: si on a des instances partout, on peut juste faire: $this->get_column()->get_board()->get_owner() et pas de fetch en DB
         renvoie le propriétaire du board contenant la carte id_card
     */
     public static function get_board_owner(Card $card): User{

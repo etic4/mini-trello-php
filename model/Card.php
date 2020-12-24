@@ -77,6 +77,10 @@ class Card extends Model {
         return $this->author;
     }
 
+    public function get_author_id(): string {
+        return $this->author->get_id();
+    }
+
     public function get_column(): string {
         return $this->column;
     }
@@ -319,12 +323,12 @@ class Card extends Model {
     /*  
         renvoie un string qui est le nom complet de l'auteur de la carte
     */
-    public function get_author_name(){
+    public function get_author_name(): string{
         $sql = 
             "SELECT FullName 
              FROM User 
              WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$this->author));
+        $query = self::execute($sql, array("id"=>$this->get_author_id()));
         $name = $query->fetch();
         return $name["FullName"];
     }
