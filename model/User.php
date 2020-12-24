@@ -1,4 +1,6 @@
+
 <?php
+/*TODO: se mettre d'accord sur l'organisation du code dans les classes (genre méthodes statiques après attributs, getters et setters ensemble ??*/
 
 require_once "framework/Model.php";
 require_once "Board.php";
@@ -11,6 +13,7 @@ class User extends Model {
     private ?string $passwdHash;
     private DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
+
 
     /* Retourne une instance de User à partir d'une colonne de la DB */
     protected static function get_instance($data): User {
@@ -136,9 +139,8 @@ class User extends Model {
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
             return null;
-        } else {
-            return self::get_instance($data);
         }
+        return self::get_instance($data);
     }
 
     public static function get_by_email($email): ?User {
@@ -151,19 +153,19 @@ class User extends Model {
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
             return null;
-        } else {
-            self::get_instance($data);
         }
+        return self::get_instance($data);
     }
 
     public function insert(): User {
         $sql = 
-            "INSERT INTO user(Mail, FullName, Password) 
-             VALUES(:email, :fullName, :passwdHash)";
+            "INSERT INTO user(Mail, FullName, Password, RegisteredAt) 
+             VALUES(:email, :fullName, :passwdHash, :registeredAt)";
         $params = array(
             "email" => $this->get_email(), 
             "fullName" => $this->get_fullName(),
-            "passwdHash" => $this->get_passwdHash()
+            "passwdHash" => $this->get_passwdHash(),
+            "registeredAt" => DBTools::sql_date($this->get_registeredAt())
         );
         $this->execute($sql, $params);
 
