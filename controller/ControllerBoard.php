@@ -37,6 +37,7 @@ class ControllerBoard extends Controller {
         if(isset($_GET["param1"])) {
             $id = $_GET["param1"];
             $board = Board::get_by_id($id);
+
             if(!is_null($board)) {
                 $columns = $board->get_columns();
                 (new View("board"))->show(array(
@@ -58,24 +59,17 @@ class ControllerBoard extends Controller {
     public function add() {
         $user = $this->get_user_or_redirect();
         $errors = [];
+
         if (isset($_POST["title"])) {
             $title = $_POST["title"];
             $board = new Board($title, $user, null, new DateTime(), null);
             $errors = $board->validate();
+
             if(empty($errors)) {
                 $board = $board->insert();
-                //$this->redirect("board", "add_board", $board->get_id());
             }
         }
         return $errors;
-    }
-
-    public function add_board() {
-        $user = $this->get_user_or_redirect();
-        if(!empty($_GET["param1"])) {
-            $board_id = $_GET["param1"];
-            $this->redirect("board", "board", $board_id);
-        }
     }
 
     public function delete() {
@@ -90,10 +84,13 @@ class ControllerBoard extends Controller {
                 $this->redirect("board", "delete_board", $board_id);        
             }
 
-            (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
-             
+            else {
+                $this->redirect("board", "delete_confirm", $board_id);
+            }
         } 
-        $this->redirect("board", "index");
+        else{
+            $this->redirect("board", "index");
+        }
     }
 
     public function delete_board() {
@@ -105,22 +102,64 @@ class ControllerBoard extends Controller {
     }
 
     public function delete_confirm() {
-        if(!empty($_POST["id"])) {
-            $board_id = $_POST['id'];
+        $user = $this->get_user_or_redirect();
+        if(!empty($_GET["param1"])) {
+            $board_id = $_GET["param1"];
             $instance = Board::get_by_id($board_id);
-            $columns = $instance->get_columns();
-            if(isset($_POST["delete"])) {
-                $instance->delete();
-                $this->redirect("board", "delete_board");
+            if(!is_null($instance)) {
+                (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
             }
-            elseif(isset($_POST["cancel"])) {
+            else {
+                $this->redirect("board", "board", $board_id);
+            }
+        }
+        else {
+            $this->redirect("board", "index");
+        }
+    }
+
+    public function remove() {
+        if(isset($_POST["id"])) {
+            $board_id = $_POST["id"];
+            if(isset($_POST["delete"])) {
+                $instance = Board::get_by_id($board_id);
+                $instance->get_columns();
+                $instance->delete();
+                $this->redirect("board", "delete_board", $board_id);
+            }
+            else {
                 $this->redirect("board", "delete_board", $board_id);
             }
         }
-        $this->redirect("board", "index");
+        else {
+            $this->redirect("board", "index");
+        }
     }
 
 
+
+    
+/*
+
+ $user = $this->get_user_or_redirect();
+        if(!empty($_GET["param1"])) {
+            $board_id = $_GET['param1'];
+            $instance = Board::get_by_id($board_id);
+            if(!is_null($instance)) {
+                $instance->get_columns();
+                (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
+            }
+        }
+        //$this->redirect("board", "index");
+    if(isset($_POST["delete"])) {
+        $instance->delete();
+        $this->redirect("board", "delete_board");
+    }
+    elseif(isset($_POST["cancel"])) {
+        $this->redirect("board", "delete_board", $board_id);
+    }
+}
+*/
 }
 
 
