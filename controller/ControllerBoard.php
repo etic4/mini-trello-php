@@ -8,7 +8,7 @@ require_once "model/Board.php";
 class ControllerBoard extends Controller {
 
     public function index() {
-        $user = $this->get_user_or_redirect();
+        $user = $this->get_user_or_false();
         $owners = [];
         $others = [];
         $errors = [];
@@ -17,9 +17,12 @@ class ControllerBoard extends Controller {
             $errors = $this->add();
         }
 
-        $owners = $user->get_own_boards();
-        $others = $user->get_others_boards();
-
+        if($user) {
+            $owners = $user->get_own_boards();
+            $others = $user->get_others_boards();
+        
+        }
+        
         (new View("boardlist"))->show(array(
             "user"=>$user, 
             "owners" => $owners,
@@ -27,6 +30,7 @@ class ControllerBoard extends Controller {
             "errors" => $errors
             )
         );
+        
     }
 
     public function board() {
@@ -72,6 +76,8 @@ class ControllerBoard extends Controller {
         return $errors;
     }
 
+    // si pas de colonne -> delete
+    // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
         if(isset($_POST['id'])) {
@@ -93,6 +99,7 @@ class ControllerBoard extends Controller {
         }
     }
 
+    //
     public function delete_board() {
         if(!empty($_GET["param1"])) {
             $board_id = $_GET["param1"];
