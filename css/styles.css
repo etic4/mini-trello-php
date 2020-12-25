@@ -36,6 +36,10 @@ main {
     display: flex;
 }
 
+input:focus {
+    outline: none;
+}
+
 
 /**** =========MENU========= ***/
 

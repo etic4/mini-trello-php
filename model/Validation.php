@@ -23,16 +23,16 @@ class Validation {
         return filter_var($str, FILTER_VALIDATE_EMAIL) == $str;
     }
 
-    public static function is_unique_email($user): bool {
-        return is_null($user->get_by_email());
+    public static function is_unique_email(string $email): bool {
+        return is_null(User::get_by_email($email));
     }
 
-    public static function is_same_password($passw1, $passw2) {
+    public static function is_same_password(string $passw1, string $passw2): bool {
         return strcmp($passw1, $passw2) == 0;
     }
 
-    public static function is_unique_title($board): bool {
-        return $board->get_by_title() == 0;
+    public static function is_unique_title(string $title): bool {
+        return Board::get_by_title($title);
     }
 
 }

@@ -40,13 +40,6 @@ class Board extends Model {
         return $this->owner->get_id();
     }
 
-    /*
-    public function get_owner_inst(): ?User {
-        return User::get_by_id($this->owner);
-    }
-    */
-
-
     public function get_columns(): array {
         return Column::get_columns_from_board($this);
     }
@@ -79,7 +72,10 @@ class Board extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = "Le titre doit comporter au moins 3 caractères";
+            $errors[] = "Title must be at leat 3 characters";
+        }
+        if (!Validation::is_unique_title($this->title)) {
+            $errors[] = "A board with the same title already exists";
         }
         return $errors;
     }
@@ -103,6 +99,23 @@ class Board extends Model {
         else {
             $board = self::get_instance($data);
             return $board;
+        }
+    }
+
+    public static function get_by_title(string $title): bool {
+        $sql = 
+            "SELECT * 
+             FROM board 
+             WHERE Title = :title";
+        $params = array("title" => $title);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        if ($query->rowCount() == 0) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -145,12 +158,10 @@ class Board extends Model {
     public function insert(): Board {
         $sql = 
             "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) 
-             VALUES(:title, :owner, :createdAt, :modifiedAt)";
+             VALUES(:title, :owner, NOW(), null)";
         $params = array(
             "title"=>$this->get_title(),
             "owner"=>$this->get_owner_id(),
-            "createdAt" => $this->get_createdAt(),
-            "modifiedAt" => $this->get_modifiedAt()
             );
         $this->execute($sql, $params);
 

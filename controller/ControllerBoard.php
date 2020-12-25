@@ -59,20 +59,21 @@ class ControllerBoard extends Controller {
         if (isset($_POST["title"])) {
             $title = $_POST["title"];
             $board = new Board($title, $user, null, new DateTime(), null);
-            $errors = $board->validate();
+            //$errors = $board->validate();
             if(empty($errors)) {
                 $board = $board->insert();
                 $this->redirect("board", "add_board", $board->get_id());
             }
             else{
-            $owners = $user->get_own_boards();
-            $others = $user->get_others_boards();
-            (new View("boardlist"))->show(array(
-                "user"=>$user, 
-                "owners" => $owners,
-                "others" => $others,
-                "errors" => $errors
-                ));
+                $owners = $user->get_own_boards();
+                $others = $user->get_others_boards();
+                (new View("boardlist"))->show(array(
+                    "user"=>$user, 
+                    "owners" => $owners,
+                    "others" => $others,
+                    "errors" => $errors
+                        )
+                );
             }
         }
     }
@@ -100,8 +101,7 @@ class ControllerBoard extends Controller {
             (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
              
         } 
-        echo "hello";
-        //$this->redirect("board", "index");
+        $this->redirect("board", "index");
     }
 
     public function delete_board() {
