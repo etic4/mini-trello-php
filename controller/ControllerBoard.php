@@ -8,20 +8,17 @@ require_once "model/Board.php";
 class ControllerBoard extends Controller {
 
     public function index() {
-        $user = $this->get_user_or_false();
+        $user = $this->get_user_or_redirect();
         $owners = [];
         $others = [];
         $errors = [];
 
-        if(isset($_GET["param1"])) {
-            $error_idx = $_GET["param1"];
-            array_push($errors, Board::$errors[$error_idx]);
+        if(isset($_POST["title"])) {
+            $errors = $this->add();
         }
 
-        if ($user) {
-            $owners = $user->get_own_boards();
-            $others = $user->get_others_boards();
-        }
+        $owners = $user->get_own_boards();
+        $others = $user->get_others_boards();
 
         (new View("boardlist"))->show(array(
             "user"=>$user, 
@@ -67,12 +64,10 @@ class ControllerBoard extends Controller {
             $errors = $board->validate();
             if(empty($errors)) {
                 $board = $board->insert();
-                $this->redirect("board", "add_board", $board->get_id());
-            }
-            else{
-                $this->redirect("board", "index", $errors[0]);
+                //$this->redirect("board", "add_board", $board->get_id());
             }
         }
+        return $errors;
     }
 
     public function add_board() {

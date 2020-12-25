@@ -24,7 +24,7 @@
                         <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?></a></li>
                     <?php endforeach; ?>
                     </ul>
-                    <form class="add" action="board/add" method="post">
+                    <form class="add" action="board/index" method="post">
                         <input type="text" name="title" placeholder="Add a board">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                         <?php if (count($errors) != 0): ?>
