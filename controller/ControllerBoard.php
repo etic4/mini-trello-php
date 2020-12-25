@@ -125,41 +125,14 @@ class ControllerBoard extends Controller {
                 $instance = Board::get_by_id($board_id);
                 $instance->get_columns();
                 $instance->delete();
-                $this->redirect("board", "delete_board", $board_id);
             }
-            else {
-                $this->redirect("board", "delete_board", $board_id);
-            }
+            $this->redirect("board", "delete_board", $board_id);
         }
         else {
             $this->redirect("board", "index");
         }
     }
 
-
-
-    
-/*
-
- $user = $this->get_user_or_redirect();
-        if(!empty($_GET["param1"])) {
-            $board_id = $_GET['param1'];
-            $instance = Board::get_by_id($board_id);
-            if(!is_null($instance)) {
-                $instance->get_columns();
-                (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
-            }
-        }
-        //$this->redirect("board", "index");
-    if(isset($_POST["delete"])) {
-        $instance->delete();
-        $this->redirect("board", "delete_board");
-    }
-    elseif(isset($_POST["cancel"])) {
-        $this->redirect("board", "delete_board", $board_id);
-    }
-}
-*/
 }
 
 
