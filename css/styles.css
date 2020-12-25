@@ -191,6 +191,10 @@ strong {
     margin-right: 5px;
 }
 
+.icons li form input {
+    cursor: pointer;
+}
+
 .card .icons {
     margin-left: 7px;
 }
