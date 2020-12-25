@@ -64,26 +64,38 @@ main {
     display: flex;
     flex-direction: row;
     padding-right: 25px;
+    color: #7fb2e5
 }
 
 .menu .right i[class~="fas"] {
     text-decoration: none;
     padding: 0 5px;
-    color: #ffffff;
 }
 
-.menu .right .breadcrumb {
+.menu .right a {
+    text-decoration: none;
+    color: #7fb2e5;
     padding-right: 10px;
 }
 
-.menu .right .breadcrumb a {
-    text-decoration: none;
-    color: #ffffff;
+.menu .right a:hover {
+    color: #cce0f4;
 }
 
+;
 .fas,
 .far {
     cursor: pointer;
+}
+
+.login .menu .loginLink,
+.signup .menu .signupLink,
+.home .menu .homeLink,
+.boardMain .menu .boardLink,
+.one_card .menu .cardLink,
+.edit .menu .cardLink {
+    color: #FFFFFF;
+    padding-right: 10px;
 }
 
 
@@ -209,6 +221,10 @@ strong {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.login form {
+    margin: auto;
 }
 
 .delete_confirm form,

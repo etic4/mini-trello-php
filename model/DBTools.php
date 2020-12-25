@@ -78,30 +78,25 @@ class DBTools extends Model {
 
     public static function breadcrumb(): string {
         $path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
+        $home = "<a href='board/index'>Boards</a>";
+        $breadcrumb = $home;
+        if(isset($path[2]) && $path[3] != "index") {
+            $instance_name = $path[2];
+            $instance_id = $path[4];
+            $sql = 
+                "SELECT Title
+                FROM $instance_name
+                WHERE ID=:id";
+            $param = array("id" => $instance_id);
+            $query = self::execute($sql, $param);
+            $data = $query->fetch();
 
-        if($path[3] != "index") {
-            $home = "<a href='board/index'>Boards</a>";
-            if($path[3] == "delete_confirm") {
-                $breadcrumb = $home;
-            }
-            else {
-                $instance_name = $path[2];
-                $instance_id = $path[4];
-                $sql = 
-                    "SELECT Title
-                    FROM $instance_name
-                    WHERE ID=:id";
-                $param = array("id" => $instance_id);
-                $query = self::execute($sql, $param);
-                $data = $query->fetch();
+            $title = $data["Title"];
 
-                $title = $data["Title"];
-
-                $breadcrumb = ucfirst($instance_name) . " \"" . $title . "\" " . $home;
-            }
+            $breadcrumb = "<p class='" . $instance_name . "Link'>" . ucfirst($instance_name) . " \"" . $title . "\"</p><p>" . $home . "</p>";
         }
         else {
-            $breadcrumb = "Boards";
+            $breadcrumb = "<p class='homeLink'>Boards</p>";
         }
         return $breadcrumb;
     }
