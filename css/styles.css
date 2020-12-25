@@ -61,12 +61,23 @@ main {
 /* icons */
 
 .menu .right {
+    display: flex;
+    flex-direction: row;
     padding-right: 25px;
 }
 
 .menu .right i[class~="fas"] {
     text-decoration: none;
     padding: 0 5px;
+    color: #ffffff;
+}
+
+.menu .right .breadcrumb {
+    padding-right: 10px;
+}
+
+.menu .right .breadcrumb a {
+    text-decoration: none;
     color: #ffffff;
 }
 

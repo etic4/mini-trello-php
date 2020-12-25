@@ -2,7 +2,7 @@
 /**/
 require_once "framework/Model.php";
 
-class DBTools {
+class DBTools extends Model {
     public static function sql_date($datetime) {
         return $datetime->format('Y-m-d H:i:s');
     }
@@ -76,13 +76,35 @@ class DBTools {
         }
     }
 
-    public static function breadcrumb() {
-        //$path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
-        //var_dump($path);
-        //echo ($path[2]);
-        $home = "<a href='board/index'>Board</a>";
-        echo $home;
-    }
-    
+    public static function breadcrumb(): string {
+        $path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
 
+        if($path[3] != "index") {
+            $home = "<a href='board/index'>Boards</a>";
+            if($path[3] == "delete_confirm") {
+                $breadcrumb = $home;
+            }
+            else {
+                $instance_name = $path[2];
+                $instance_id = $path[4];
+                $sql = 
+                    "SELECT Title
+                    FROM $instance_name
+                    WHERE ID=:id";
+                $param = array("id" => $instance_id);
+                $query = self::execute($sql, $param);
+                $data = $query->fetch();
+
+                $title = $data["Title"];
+
+                $breadcrumb = ucfirst($instance_name) . " \"" . $title . "\" " . $home;
+            }
+        }
+        else {
+            $breadcrumb = "Boards";
+        }
+        return $breadcrumb;
+    }
+
+   
 }

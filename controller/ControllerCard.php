@@ -140,15 +140,23 @@ class ControllerCard extends Controller {
         $card=null;
         $board=null;
         $column=null;
-        if (isset($_POST['id'])) { 
-            $idcard=$_POST['id'];
+        if (isset($_GET['param1'])) { 
+            $idcard=$_GET['param1'];
             $card=Card::get_by_id($idcard);
-            $column=Column::get_by_id($card->get_column());
-            $board=Board::get_by_id($column->get_board());
-            $comments=Comment::get_comments_from_card($idcard);
-            $card->set_comments($comments);
+            if(!is_null($card)) {
+                $column=Column::get_by_id($card->get_column());
+                $board=Board::get_by_id($column->get_board());
+                $comments=Comment::get_comments_from_card($idcard);
+                $card->set_comments($comments);
+                (new View("card_edit"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+            }
+            else {
+                $this->redirect("board", "index");
+            }
         }
-        (new View("card_edit"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+        else {
+        $this->redirect("board", "index");
+        }
     }
 
     public function view(){
@@ -157,15 +165,23 @@ class ControllerCard extends Controller {
         $card=null;
         $board=null;
         $column=null;
-        if (isset($_POST['id'])) { 
-            $idcard=$_POST['id'];
+        if (isset($_GET['param1'])) { 
+            $idcard=$_GET['param1'];
             $card=Card::get_by_id($idcard);
-            $column=Column::get_by_id($card->get_column());
-            $board=Board::get_by_id($column->get_board());
-            $comments=Comment::get_comments_from_card($idcard);
-            $card->set_comments($comments);
+            if(!is_null($card)) {
+                $column=Column::get_by_id($card->get_column());
+                $board=Board::get_by_id($column->get_board());
+                $comments=Comment::get_comments_from_card($idcard);
+                $card->set_comments($comments);
+                (new View("card"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+            }
+            else {
+                $this->redirect("board", "index");
+            }
         }
-        (new View("card"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+        else {
+        $this->redirect("board", "index");
+        }
     } 
     
 }

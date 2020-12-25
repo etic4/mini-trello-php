@@ -8,10 +8,7 @@
             <footer>
                 <ul class="icons">
                     <li>
-                        <form class='link' action='card/view' method='post'>
-                            <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-                            <input type='submit' value="&#xf06e" class="far fa-eye" style="background:none">
-                        </form>
+                        <a href="card/view/<?= $card->get_id() ?>"><i class="far fa-eye"></i></a>
                     </li>
                     <?php if(count($card->get_comments()) > 0): ?>
                     <li>
@@ -19,10 +16,7 @@
                     </li>
                     <?php endif; ?>
                     <li>
-                        <form class='link' action='card/edit' method='post'>
-                            <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-                            <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
-                        </form>
+                        <a href="card/edit/<?= $card->get_id() ?>"><i class="fas fa-edit"></i></a>
                     </li>
                     <li>
                         <form class='link' action='card/delete_confirm' method='post'>
