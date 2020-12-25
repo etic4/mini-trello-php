@@ -5,15 +5,14 @@
 require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Card.php";
+//require_once "model/Date.php";
 
 class Column extends Model {
-    use DateGetSetTrait;
+    use Date;
 
     private ?string $id;
     private string $title;
     private int $position;
-    private DateTime $createdAt;
-    private ?DateTime $modifiedAt;
     private string $board;
     private ?array $cards;
 

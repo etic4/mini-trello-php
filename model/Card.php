@@ -4,13 +4,14 @@ require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Comment.php";
 
+
 class Card extends Model {
+    use Date;
+
     private ?string $id;
     private string $title;
     private string $body;
     private int $position;
-    private DateTime $createdAt;
-    private ?DateTime $modifiedAt;
     private User $author;
     private string $column;
     private array $comments;
@@ -63,14 +64,6 @@ class Card extends Model {
 
     public function get_position(): int {
         return $this->position;
-    }
-
-    public function get_created_at(): DateTime {
-        return $this->createdAt;
-    }
-
-    public function get_modified_at(): ?DateTime{
-        return $this->modifiedAt;
     }
 
     public function get_author(): User {
@@ -264,8 +257,8 @@ class Card extends Model {
             "title" => $this->get_title(),
             "body" => $this->get_body(),
             "position" => $this->get_position(),
-            "createdAt" => DBTools::sql_date($this->get_created_at()),
-            "modifiedAt" => $this->get_modified_at(),
+            "createdAt" => DBTools::sql_date($this->get_createdAt()),
+            "modifiedAt" => $this->get_modifiedAt(),
             "author" => $this->get_author(),
             "column" => $this->get_column()
         );
@@ -278,7 +271,7 @@ class Card extends Model {
     //met à jour la db avec les valeurs des attibuts actuels de l'objet Card
     public function update() {
         $this->set_modified_at(date('Y-m-d H:i:s'));
-        $modifiedAt = DBTools::sql_date($this->get_modified_at());
+        $modifiedAt = DBTools::sql_date($this->get_modifiedAt());
 
         /*Obligé de faire ça pour le moment parce que c'est le bordel et qu'on sait pas si les attributs qui représentent
         les clés étrangère en DB stockent une instance ou un string (qui représente un entier)*/

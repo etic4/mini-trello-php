@@ -1,15 +1,15 @@
 <?php
 
-/* Méthodes relatives au get et set de createdAt & modifiedAt.
-Ce trait existe essentiellement pour éviter la répétition des setters
-*/
+trait Date {
 
-trait DateGetSetTrait {
+    private DateTime $createdAt;
+    private ?DateTime $modifiedAt;
+
     public function get_createdAt(): DateTime {
         return $this->createdAt;
     }
 
-    public function get_modifiedAt(): DateTime {
+    public function get_modifiedAt(): ?DateTime {
         return $this->modifiedAt;
     }
 
@@ -37,4 +37,6 @@ trait DateGetSetTrait {
         $this->set_modifiedDate();
         return DBTools::sql_date($this->get_modifiedAt());
     }
+
+    
 }

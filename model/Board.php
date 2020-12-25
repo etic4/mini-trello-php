@@ -6,13 +6,11 @@ require_once "User.php";
 require_once "Column.php";
 
 class Board extends Model {
-    use DateGetSetTrait;
+    use Date;
 
     private ?string $id;
     private string $title;
     private User $owner;
-    private DateTime $createdAt;
-    private ?DateTime $modifiedAt;
     private array $columns;
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
