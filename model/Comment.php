@@ -6,16 +6,14 @@ require_once "model/Card.php";
 require_once "model/User.php";
 
 class Comment extends Model{
+    use Date;
 
     private $id;
     private $body;
-    private $createdAt;
-    private $modifiedAt;
     private $author;
     private $card;
 
     public function __construct($body,$author,$card,$id=null,$createdAt=null,$modifiedAt=null){
-
         $this->id=$id;
         $this->body=$body;
         $this->createdAt=$createdAt;
@@ -32,14 +30,6 @@ class Comment extends Model{
 
     public function get_body(){
         return $this->body;
-    }
-
-    public function get_created_at(){
-        return $this->createdAt;
-    }
-
-    public function get_modified_at(){
-        return $this->modifiedAt;
     }
 
     public function get_author(){
@@ -79,14 +69,6 @@ class Comment extends Model{
         $this->body=$body;
     }
 
-    public function set_created_at($createdAt){
-        $this->createdAt=$createdAt;
-    }
-
-    public function set_modified_at($modifiedAt){
-        $this->modifiedAt=$modifiedAt;
-    }
-
     public function set_author($author){
         $this->author=$author;
     }
@@ -117,8 +99,8 @@ class Comment extends Model{
              VALUES (:body, :createdAt, :modifiedAt, :author, :card)";
         $params=array(
             "body"=>$this->get_body(),
-            "createdAt"=>$this->get_created_at(),
-            "modifiedAt"=>$this->get_modified_at(),
+            "createdAt"=>$this->get_createdAt(),
+            "modifiedAt"=>$this->get_modifiedAt(),
             "author"=>$this->get_author(),
             "card"=>$this->get_card()
         );
@@ -150,9 +132,9 @@ class Comment extends Model{
     */
     public function update() {
         
-        $this->set_modified_at(new DateTime("now"));
-        $ma = DBTools::sql_date($this->get_modified_at());
-        $ca=DBTools::sql_date($this->get_created_at());
+        $this->set_modifiedAt(new DateTime("now"));
+        $ma = DBTools::sql_date($this->get_modifiedAt());
+        $ca=DBTools::sql_date($this->get_createdAt());
 
         $sql = 
             "UPDATE Comment 

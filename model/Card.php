@@ -5,12 +5,12 @@ require_once "DBTools.php";
 require_once "model/Comment.php";
 
 class Card extends Model {
+    use Date;
+
     private $id;
     private $title;
     private $body;
     private $position;
-    private $createdAt;
-    private $modifiedAt;
     private $author;
     private $column;
     private $comments;
@@ -68,6 +68,10 @@ class Card extends Model {
 
     public function get_author() {
         return $this->author;
+    }
+
+    public function get_author_name() {
+        return $this->author->get_fullName();
     }
 
     public function get_author_id() {
@@ -315,8 +319,8 @@ class Card extends Model {
 
     /*  
         renvoie un string qui est le nom complet de l'auteur de la carte
-    */
-    public function get_author_name(){
+    
+    public function get_author_name(): string{
         $sql = 
             "SELECT FullName 
              FROM User 
@@ -325,6 +329,7 @@ class Card extends Model {
         $name = $query->fetch();
         return $name["FullName"];
     }
+    */
 
     /*
         fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.

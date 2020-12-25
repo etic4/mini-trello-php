@@ -17,8 +17,13 @@ class User extends Model {
 
     /* Retourne une instance de User à partir d'une colonne de la DB */
     protected static function get_instance($data): User {
-        $registeredAt = DBTools::php_date($data["RegisteredAt"]);
-        return new User($data["Mail"], $data["FullName"], $data["ID"], $data["Password"],  $registeredAt);
+        return new User(
+            $data["Mail"], 
+            $data["FullName"], 
+            $data["ID"], 
+            $data["Password"],  
+            $data["RegisteredAt"]
+        );
     }
 
 
@@ -129,7 +134,7 @@ class User extends Model {
 
     //    QUERIES    //
 
-    public static function get_by_id($id): ?User {
+    public static function get_by_id(string $id): ?User {
         $sql = 
             "SELECT * 
              FROM user 
@@ -143,7 +148,7 @@ class User extends Model {
         return self::get_instance($data);
     }
 
-    public static function get_by_email($email): ?User {
+    public static function get_by_email(string $email): ?User {
         $sql = 
             "SELECT * 
              FROM user 

@@ -4,7 +4,11 @@
 Ce trait existe essentiellement pour éviter la répétition des setters
 */
 
-trait DateGetSetTrait {
+trait Date {
+
+    private DateTime $modifiedAt;
+    private ?Datetime $createdAt;
+
     public function get_createdAt(): DateTime {
         return $this->createdAt;
     }

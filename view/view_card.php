@@ -52,7 +52,7 @@
                                 <?php foreach($card->get_comments() as $comment): ?>
                                 <li class="display_one_comment">
                                     <p><?= $comment->get_body() ?></p>
-                                    <p>by <strong><?= $comment->get_author_name() ?></strong> <?=DBTools::intvl($comment->get_created_at(), new DateTime()); ?> ago.</p>
+                                    <p>by <strong><?= $comment->get_author_name() ?></strong> <?=DBTools::intvl($comment->get_createdAt(), new DateTime()); ?> ago.</p>
                                     <ul class="icons">
                                         <!-- si l'utilisateur est l'auteur du message -->
                                         <?php if($user == $comment->get_author()): ?>
