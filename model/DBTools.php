@@ -85,15 +85,16 @@ class DBTools extends Model {
             $instance_id = $path[4];
             $sql = 
                 "SELECT Title
-                FROM $instance_name
-                WHERE ID=:id";
+                 FROM $instance_name
+                 WHERE ID=:id";
             $param = array("id" => $instance_id);
             $query = self::execute($sql, $param);
             $data = $query->fetch();
 
             $title = $data["Title"];
 
-            $breadcrumb = "<p class='" . $instance_name . "Link'>" . ucfirst($instance_name) . " \"" . $title . "\"</p><p>" . $home . "</p>";
+            $breadcrumb = "<p class='" . $instance_name . "Link'>" . ucfirst($instance_name) . " \"" . $title . "\"</p>
+                           <p>" . $home . "</p>";
         }
         else {
             $breadcrumb = "<p class='homeLink'>Boards</p>";

@@ -179,6 +179,12 @@ strong {
     font-weight: 900;
 }
 
+.icons li a i {
+    font-size: 13px;
+    color: #000000;
+    padding-right: 3px;
+}
+
 .icons li p,
 .icons .link input[type=submit] {
     border: none;
