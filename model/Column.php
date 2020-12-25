@@ -214,13 +214,11 @@ class Column extends Model {
     public function insert(): Column {
         $sql = 
             "INSERT INTO `column`(Title, Position, Board, CreatedAt, ModifiedAt) 
-             VALUES(:title, :position, :board, :createdAt, :modifiedAt)";
+             VALUES(:title, :position, :board, NOW(), null)";
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
             "board" => $this->get_board(),
-            "createdAt" => $this->get_createdAt(),
-            "modifiedAt" => $this->get_modifiedAt()
         );
 
         $this->execute($sql, $params);
