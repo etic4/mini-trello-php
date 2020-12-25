@@ -70,6 +70,10 @@ class Card extends Model {
         return $this->author;
     }
 
+    public function get_author_name(): string {
+        return $this->author->get_fullName();
+    }
+
     public function get_author_id(): string {
         return $this->author->get_id();
     }
@@ -315,7 +319,7 @@ class Card extends Model {
 
     /*  
         renvoie un string qui est le nom complet de l'auteur de la carte
-    */
+    
     public function get_author_name(): string{
         $sql = 
             "SELECT FullName 
@@ -325,6 +329,8 @@ class Card extends Model {
         $name = $query->fetch();
         return $name["FullName"];
     }
+    */
+
 
     /*
         fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
