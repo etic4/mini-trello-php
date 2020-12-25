@@ -4,18 +4,26 @@ require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Comment.php";
 
+
 class Card extends Model {
     use Date;
 
-    private $id;
-    private $title;
-    private $body;
-    private $position;
-    private $author;
-    private $column;
-    private $comments;
+    private ?string $id;
+    private string $title;
+    private string $body;
+    private int $position;
+    private User $author;
+    private string $column;
+    private array $comments;
 
-    public function __construct($title, $body, $position, $createdAt, $author, $column, $id = null, $modifiedAt = null) {
+    public function __construct(string $title, 
+                                string $body, 
+                                int $position, 
+                                DateTime $createdAt, 
+                                User $author, 
+                                string $column, 
+                                ?string $id = null, 
+                                ?DateTime $modifiedAt = null) {
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;
@@ -26,7 +34,7 @@ class Card extends Model {
         $this->column = $column;
     }
 
-    public static function create_new($title, $author, $column) {
+    public static function create_new(string $title, $author, string $column) {
         return new Card(
             $title, 
             "", 
@@ -42,55 +50,43 @@ class Card extends Model {
 
     //    GETTERS    //
 
-    public function get_id() {
+    public function get_id(): ?string {
         return $this->id;
     }
 
-    public function get_title() {
+    public function get_title(): string {
         return $this->title;
     }
 
-    public function get_body() {
+    public function get_body(): string {
         return $this->body;
     }
 
-    public function get_position() {
+    public function get_position(): int {
         return $this->position;
     }
 
-    public function get_created_at() {
-        return $this->createdAt;
-    }
-
-    public function get_modified_at(){
-        return $this->modifiedAt;
-    }
-
-    public function get_author() {
+    public function get_author(): User {
         return $this->author;
     }
 
-    public function get_author_name() {
-        return $this->author->get_fullName();
-    }
-
-    public function get_author_id() {
+    public function get_author_id(): string {
         return $this->author->get_id();
     }
 
-    public function get_column() {
+    public function get_column(): string {
         return $this->column;
     }
 
     public function get_column_inst(): Column {
-        $col = $this->get_column();
+        $col = $this->column;
         if (is_int(intval($col)) || is_null($col)) {
             return Column::get_by_id($col);
         }
         return $col;
     }
 
-    public function get_comments() {
+    public function get_comments(): array {
         return $this->comments;
     }
 
@@ -100,7 +96,7 @@ class Card extends Model {
 
     public function get_board_id() {
         $column = $this->get_column_inst();
-        return $column->get_board_inst()->get_id();
+        return $column->get_board_id();
     }
 
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
@@ -110,10 +106,10 @@ class Card extends Model {
             $data["Body"],
             $data["Position"],
             DBTools::php_date($data["CreatedAt"]),
-            User::get_by_id($data["Author"]), 
+            User::get_by_id($data["Author"]),
             $data["Column"],
             $data["ID"],
-            DBTools::php_date($data["ModifiedAt"])
+            DBTools::php_date_modified($data["ModifiedAt"], $data["CreatedAt"])
         );
     }
 
@@ -261,8 +257,8 @@ class Card extends Model {
             "title" => $this->get_title(),
             "body" => $this->get_body(),
             "position" => $this->get_position(),
-            "createdAt" => DBTools::sql_date($this->get_created_at()),
-            "modifiedAt" => $this->get_modified_at(),
+            "createdAt" => DBTools::sql_date($this->get_createdAt()),
+            "modifiedAt" => $this->get_modifiedAt(),
             "author" => $this->get_author(),
             "column" => $this->get_column()
         );
@@ -275,7 +271,7 @@ class Card extends Model {
     //met à jour la db avec les valeurs des attibuts actuels de l'objet Card
     public function update() {
         $this->set_modified_at(date('Y-m-d H:i:s'));
-        $modifiedAt = DBTools::sql_date($this->get_modified_at());
+        $modifiedAt = DBTools::sql_date($this->get_modifiedAt());
 
         /*Obligé de faire ça pour le moment parce que c'est le bordel et qu'on sait pas si les attributs qui représentent
         les clés étrangère en DB stockent une instance ou un string (qui représente un entier)*/
@@ -319,7 +315,7 @@ class Card extends Model {
 
     /*  
         renvoie un string qui est le nom complet de l'auteur de la carte
-    
+    */
     public function get_author_name(): string{
         $sql = 
             "SELECT FullName 
@@ -329,14 +325,13 @@ class Card extends Model {
         $name = $query->fetch();
         return $name["FullName"];
     }
-    */
 
     /*
         fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
         on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 
         l'utilisateur, mais juste une conqéquence d'une autre action
     */
-    public static function update_card_position(Card $card){
+    public static function update_card_position($card){
 
         $sql =
             "SELECT * 
