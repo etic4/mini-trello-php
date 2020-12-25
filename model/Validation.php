@@ -32,7 +32,7 @@ class Validation {
     }
 
     public static function is_unique_title(string $title): bool {
-        return Board::get_by_title($title);
+        return is_null(Board::get_by_title($title));
     }
 
 }

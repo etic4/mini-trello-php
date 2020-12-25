@@ -69,13 +69,15 @@ class Board extends Model {
 
     //    VALIDATION    //
 
+    public static $errors = ["Title must be at leat 3 characters", "A board with the same title already exists"];
+
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Title must be at leat 3 characters";
+            $errors[] = "0";
         }
         if (!Validation::is_unique_title($this->title)) {
-            $errors[] = "A board with the same title already exists";
+            $errors[] = "1";
         }
         return $errors;
     }
@@ -102,7 +104,7 @@ class Board extends Model {
         }
     }
 
-    public static function get_by_title(string $title): bool {
+    public static function get_by_title(string $title): ?Board {
         $sql = 
             "SELECT * 
              FROM board 
@@ -112,10 +114,12 @@ class Board extends Model {
         $data = $query->fetch();
 
         if ($query->rowCount() == 0) {
-            return true;
-        }
+            return null;
+        } 
+
         else {
-            return false;
+            $board = self::get_instance($data);
+            return $board;
         }
     }
 

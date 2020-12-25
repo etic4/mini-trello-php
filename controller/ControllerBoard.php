@@ -13,6 +13,11 @@ class ControllerBoard extends Controller {
         $others = [];
         $errors = [];
 
+        if(isset($_GET["param1"])) {
+            $error_idx = $_GET["param1"];
+            array_push($errors, Board::$errors[$error_idx]);
+        }
+
         if ($user) {
             $owners = $user->get_own_boards();
             $others = $user->get_others_boards();
@@ -59,21 +64,13 @@ class ControllerBoard extends Controller {
         if (isset($_POST["title"])) {
             $title = $_POST["title"];
             $board = new Board($title, $user, null, new DateTime(), null);
-            //$errors = $board->validate();
+            $errors = $board->validate();
             if(empty($errors)) {
                 $board = $board->insert();
                 $this->redirect("board", "add_board", $board->get_id());
             }
             else{
-                $owners = $user->get_own_boards();
-                $others = $user->get_others_boards();
-                (new View("boardlist"))->show(array(
-                    "user"=>$user, 
-                    "owners" => $owners,
-                    "others" => $others,
-                    "errors" => $errors
-                        )
-                );
+                $this->redirect("board", "index", $errors[0]);
             }
         }
     }
