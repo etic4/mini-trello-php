@@ -316,22 +316,6 @@ class Card extends Model {
         }
     }
 
-
-    /*  
-        renvoie un string qui est le nom complet de l'auteur de la carte
-    
-    public function get_author_name(): string{
-        $sql = 
-            "SELECT FullName 
-             FROM User 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$this->get_author_id()));
-        $name = $query->fetch();
-        return $name["FullName"];
-    }
-    */
-
-
     /*
         fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
         on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 

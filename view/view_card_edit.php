@@ -45,9 +45,6 @@
                         </div>
                     </form>
                 </div>
-                <footer>
-                    
-                </footer>
             </article>
         </main>
     </body>
