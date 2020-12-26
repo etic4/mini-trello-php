@@ -37,6 +37,11 @@ class ControllerBoard extends Controller {
         $user = $this->get_user_or_redirect();
         $board = [];
         $columns = [];
+        $errors = [];
+
+        if(isset($_POST["title"])) {
+            $errors = $this->add();
+        }
 
         if(isset($_GET["param1"])) {
             $id = $_GET["param1"];
@@ -47,7 +52,8 @@ class ControllerBoard extends Controller {
                 (new View("board"))->show(array(
                     "user"=>$user, 
                     "board" => $board, 
-                    "columns" => $columns
+                    "columns" => $columns,
+                    "errors" => $errors
                     )
                 );
             }

@@ -40,10 +40,19 @@
             <div class="column_display">  
                 <?php include("columns.php"); ?>
                 <aside class="column_form">
-                    <form class="add" action="column/add" method="post">
+                    <form class="add" action="board/board" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
+                        <?php if (count($errors) != 0): ?>
+                        <div class='errors'>
+                            <ul>
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= $error ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
                     </form>
                 </aside>
             </div>

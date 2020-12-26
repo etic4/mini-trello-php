@@ -34,6 +34,25 @@ class ControllerColumn extends Controller {
 
     public function add() {
         $user = $this->get_user_or_redirect();
+        $errors = [];
+
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $board_id = $_POST["id"];
+            $board = Board::get_by_id($board_id);
+            $column = Column::create_new($title, $board);
+            $errors = $column->validate();
+
+            if(empty($errors)) {
+                $column = $column->insert();
+                $this->redirect("board", "board", $board->get_id());
+            }
+        }
+        $this->redirect("board", "board", $board->get_id());
+    }
+/*
+    public function add() {
+        $user = $this->get_user_or_redirect();
         if(!empty($_POST["title"])) {
             $title = $_POST["title"];
             $board_id = $_POST["id"];
@@ -43,7 +62,7 @@ class ControllerColumn extends Controller {
         }
         $this->redirect("board", "board", $board_id);
     }
-
+*/
     //PRG ???
     public function delete() {
         $user = $this->get_user_or_redirect(); 
