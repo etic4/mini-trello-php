@@ -25,7 +25,8 @@ class DBTools extends Model {
 
     public static function intvl($firstDate, $secondDate): string {
         $intvl = $secondDate->diff($firstDate);
-        if($intvl !== 0) {
+        $laps = "1 second ago";
+        if(!is_null($intvl)) {
             if ($intvl->y != 0) {
                 if($intvl->y == 1) {
                     $laps = "1 year ago";

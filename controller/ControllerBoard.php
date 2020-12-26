@@ -22,7 +22,7 @@ class ControllerBoard extends Controller {
             $others = $user->get_others_boards();
         
         }
-        
+
         (new View("boardlist"))->show(array(
             "user"=>$user, 
             "owners" => $owners,
@@ -71,12 +71,13 @@ class ControllerBoard extends Controller {
 
             if(empty($errors)) {
                 $board = $board->insert();
+                $this->redirect("board", "board", $board->get_id());
             }
         }
         return $errors;
     }
 
-    // si pas de colonne -> delete
+     // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
@@ -87,7 +88,7 @@ class ControllerBoard extends Controller {
 
             if (count($columns) == 0) { 
                 $instance->delete();
-                $this->redirect("board", "delete_board", $board_id);        
+                $this->redirect("board", "index");        
             }
 
             else {
@@ -99,15 +100,7 @@ class ControllerBoard extends Controller {
         }
     }
 
-    //
-    public function delete_board() {
-        if(!empty($_GET["param1"])) {
-            $board_id = $_GET["param1"];
-            $this->redirect("board", "board", $board_id);
-        }
-        $this->redirect("board", "index");
-    }
-
+    //mise en place de view_delete_confirm
     public function delete_confirm() {
         $user = $this->get_user_or_redirect();
         if(!empty($_GET["param1"])) {
@@ -125,6 +118,7 @@ class ControllerBoard extends Controller {
         }
     }
 
+    //exécution du delete ou cancel de delete_confirm
     public function remove() {
         if(isset($_POST["id"])) {
             $board_id = $_POST["id"];
@@ -133,11 +127,8 @@ class ControllerBoard extends Controller {
                 $instance->get_columns();
                 $instance->delete();
             }
-            $this->redirect("board", "delete_board", $board_id);
         }
-        else {
-            $this->redirect("board", "index");
-        }
+        $this->redirect("board", "index");
     }
 
 }
