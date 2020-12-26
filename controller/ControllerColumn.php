@@ -32,6 +32,11 @@ class ControllerColumn extends Controller {
         }
     }
 
+    /* essai non concluant... pas le temps d'aller plus loin pour l'instant!
+    si vous avez une idée pour récup les erreurs de validation, allez-y!!!
+    changement dans view_board -> form add -> action board/board (pas sûr que ce soit la bonne idée!)
+    utiliser le column/index ???
+    
     public function add() {
         $user = $this->get_user_or_redirect();
         $errors = [];
@@ -48,9 +53,11 @@ class ControllerColumn extends Controller {
                 $this->redirect("board", "board", $board->get_id());
             }
         }
-        $this->redirect("board", "board", $board->get_id());
+        return $errors;
     }
-/*
+    */
+
+    //pas de validation!
     public function add() {
         $user = $this->get_user_or_redirect();
         if(!empty($_POST["title"])) {
@@ -62,7 +69,7 @@ class ControllerColumn extends Controller {
         }
         $this->redirect("board", "board", $board_id);
     }
-*/
+
     //PRG ???
     public function delete() {
         $user = $this->get_user_or_redirect(); 
