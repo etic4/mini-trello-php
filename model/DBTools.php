@@ -80,7 +80,7 @@ class DBTools extends Model {
         $path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
         $home = "<a href='board/index'>Boards</a>";
         $breadcrumb = $home;
-        if(isset($path[2]) && $path[3] != "index") {
+        if(isset($path[4])) {
             $instance_name = $path[2];
             $instance_id = $path[4];
             $sql = 
