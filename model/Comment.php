@@ -7,7 +7,7 @@ require_once "model/User.php";
 
 class Comment extends Model{
 
-    private $id;
+    private String $id;
     private $body;
     private $createdAt;
     private $modifiedAt;
