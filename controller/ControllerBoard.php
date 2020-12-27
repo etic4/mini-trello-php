@@ -33,39 +33,6 @@ class ControllerBoard extends Controller {
         
     }
 
-    public function board() {
-        $user = $this->get_user_or_redirect();
-        $board = [];
-        $columns = [];
-        $errors = [];
-
-        if(isset($_POST["title"])) {
-            $errors = $this->add();
-        }
-
-        if(isset($_GET["param1"])) {
-            $id = $_GET["param1"];
-            $board = Board::get_by_id($id);
-
-            if(!is_null($board)) {
-                $columns = $board->get_columns();
-                (new View("board"))->show(array(
-                    "user"=>$user, 
-                    "board" => $board, 
-                    "columns" => $columns,
-                    "errors" => $errors
-                    )
-                );
-            }
-            else {
-                $this->redirect("board", "index");
-            }
-        }
-        else {
-            $this->redirect("board", "index");
-        }   
-    }
-
     public function add() {
         $user = $this->get_user_or_redirect();
         $errors = [];
@@ -82,6 +49,70 @@ class ControllerBoard extends Controller {
         }
         return $errors;
     }
+
+
+
+
+    public function board() {
+        $user = $this->get_user_or_redirect();
+        $board = [];
+        $columns = [];
+        $errors = [];
+
+        if(isset($_POST["column"])) {
+            $errors = $this->add_column();
+            if(!empty($errors)) {
+                $board_id = $errors["board_id"];
+                $board = Board::get_by_id($board_id);
+            }
+        }
+
+        elseif(isset($_GET["param1"])) {
+            $board_id = $_GET["param1"];
+            $board = Board::get_by_id($board_id);
+        }
+ 
+        if(!is_null($board)) {
+            $columns = $board->get_columns();
+            (new View("board"))->show(array(
+                "user"=>$user, 
+                "board" => $board, 
+                "columns" => $columns,
+                "errors" => $errors
+                )
+            );
+        }
+        
+        else {
+            $this->redirect("board", "index");
+        }
+        
+    }
+
+    public function add_column() {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $board_id = $_POST["id"];
+            $board = Board::get_by_id($board_id);
+            $column = Column::create_new($title, $board);
+            $errors = $column->validate();
+
+            if(empty($errors)) {
+                $column = $column->insert();
+                $this->redirect("board", "board", $board_id);
+            }
+
+        }
+        $errors["board_id"] = $board_id;
+        $errors["instance"] = "column";
+        return $errors;
+    }
+
+
+
 
      // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm

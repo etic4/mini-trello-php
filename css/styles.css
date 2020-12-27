@@ -224,6 +224,12 @@ strong {
     width: 275px;
 }
 
+.board aside .errors {
+    margin: -30px;
+    top: 20px;
+    width: 300px;
+}
+
 
 /***  ===LOGIN & SIGNUP===   ***/
 
@@ -458,6 +464,7 @@ strong {
     height: 45px;
     padding: 10px 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 4px;

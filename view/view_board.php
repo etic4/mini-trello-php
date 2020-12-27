@@ -42,19 +42,18 @@
                 <aside class="column_form">
                     <form class="add" action="board/board" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                        <input type='text' name='column' value='column' hidden>
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
-                        <?php if (count($errors) != 0): ?>
+                    </form>
+                    <?php if (count($errors) != 0 && $errors["instance"] == "column"): ?>
                         <div class='errors'>
                             <ul>
-                                <?php foreach ($errors as $error): ?>
-                                    <li><?= $error ?></li>
-                                <?php endforeach; ?>
+                                <li><?= $errors[0]; ?></li>
                             </ul>
                         </div>
                         <?php endif; ?>
-                    </form>
-                </aside>
+                </aside>     
             </div>
         </article>
     </main>

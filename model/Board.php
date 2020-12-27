@@ -173,13 +173,12 @@ class Board extends Model {
     public function update(): void {
         $sql = 
             "UPDATE board 
-             SET Title=:title, Owner=:owner, ModifiedAt=:modifiedAt 
+             SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
              WHERE ID=:id";
         $params = array(
             "id"=>$this->get_id(), 
             "title"=>$this->get_title(), 
             "owner"=>$this->get_owner_id(),
-            "modifiedAt"=>$this->set_modifiedDate_and_get_sql()
         );
         
         $this->execute($sql, $params);
