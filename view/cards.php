@@ -31,7 +31,7 @@
                         </form>
                     </li>
                     <!-- pas de down pour la dernière carte de la colonne -->
-                    <?php if($card->get_position() < count($column->get_cards()) - 1): ?>
+                    <?php if($card->get_position() < Card::get_cards_count($column) - 1): ?>
                     <li>
                         <form class='link' action='card/down' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
@@ -58,7 +58,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de right pour les cartes de la dernière colonne -->
-                    <?php if($column->get_position() !=end($columns)->get_position()): ?>
+                    <?php if($column->get_position() < Column::get_columns_count($column)-1): ?>
                     <li>
                         <form class='link' action='card/right' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>

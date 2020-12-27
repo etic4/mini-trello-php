@@ -17,7 +17,7 @@
             <article>
                 <header>
                     <h2>Edit a card</h2>
-                    <p class="credit">Created <?=DBTools::intvl($card->get_created_at(), new DateTime()); ?> by <strong>'<?= $card->get_author_name()?>'</strong>. <?= DBTools::laps($card->get_created_at(), $card->get_modified_at()); ?></p>
+                    <p class="credit">Created <?=DBTools::intvl($card->get_created_at(), new DateTime()); ?> by <strong>'<?= $card->get_author()->get_fullName()()?>'</strong>. <?= DBTools::laps($card->get_created_at(), $card->get_modified_at()); ?></p>
                 </header>
                 <div class="main_card">
                     <form id="edit_card" action="card/update" method="post">

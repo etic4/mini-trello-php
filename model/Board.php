@@ -14,6 +14,7 @@ class Board extends Model {
     private User $owner;
     private array $columns;
 
+
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
@@ -37,32 +38,9 @@ class Board extends Model {
         return $this->owner;
     }
 
-    public function get_owner_id(): string {
-        return $this->owner->get_id();
-    }
-
-    /*
-    public function get_owner_inst(): ?User {
-        return User::get_by_id($this->owner);
-    }
-    */
-
-
     public function get_columns(): array {
-        return Column::get_columns_from_board($this);
+        return Column::get_columns_for_board($this);
     }
-
-    /*TODO: Je crois que l'usage (un des usages?) est de rassembler les méthodes statiques avant le constructeur */
-    protected static function get_instance($data): Board {
-        return new Board(
-            $data["Title"],
-            User::get_by_id($data["Owner"]),
-            $data["ID"],
-            DBTools::php_date($data["CreatedAt"]), 
-            DBTools::php_date($data["ModifiedAt"])
-        );
-    }
-
 
     //    SETTERS    //
 
@@ -87,6 +65,17 @@ class Board extends Model {
 
 
     //    QUERIES    //
+
+
+    protected static function get_instance($data): Board {
+        return new Board(
+            $data["Title"],
+            User::get_by_id($data["Owner"]),
+            $data["ID"],
+            DBTools::php_date($data["CreatedAt"]),
+            DBTools::php_date($data["ModifiedAt"])
+        );
+    }
 
     public static function get_by_id(string $board_id): ?Board {
         $sql = 
@@ -118,8 +107,7 @@ class Board extends Model {
 
         $boards = array();
         foreach ($data as $rec) {
-            $board = self::get_instance($rec);
-            array_push($boards, $board);
+            array_push($boards, self::get_instance($rec));
         }
 
         return $boards;
@@ -136,8 +124,7 @@ class Board extends Model {
 
         $boards = array();
         foreach ($data as $rec) {
-            $board = self::get_instance($rec);
-            array_push($boards, $board);
+            array_push($boards, self::get_instance($rec));
         }
 
         return $boards;
@@ -149,24 +136,22 @@ class Board extends Model {
              VALUES(:title, :owner, :createdAt, :modifiedAt)";
         $params = array(
             "title"=>$this->get_title(),
-            "owner"=>$this->get_owner_id(),
-            "createdAt" => $this->get_createdAt(),
-            "modifiedAt" => $this->get_modifiedAt()
+            "owner"=>$this->get_owner()->get_id(),
+            "createdAt" => DBTools::sql_date($this->get_createdAt()),
+            "modifiedAt" => DBTools::sql_date($this->get_modifiedAt())
             );
         $this->execute($sql, $params);
-
-        return $this->get_by_id($this->lastInsertId());
+        $this->set_id($this->lastInsertId());
     }
 
     public function update(): void {
-        $sql = 
-            "UPDATE board 
-             SET Title=:title, Owner=:owner, ModifiedAt=:modifiedAt 
-             WHERE ID=:id";
+        $sql = "UPDATE board 
+                SET Title=:title, Owner=:owner, ModifiedAt=:modifiedAt 
+                WHERE ID=:id";
         $params = array(
             "id"=>$this->get_id(), 
             "title"=>$this->get_title(), 
-            "owner"=>$this->get_owner_id(),
+            "owner"=>$this->get_owner()->get_id(),
             "modifiedAt"=>$this->set_modifiedDate_and_get_sql()
         );
         
@@ -174,65 +159,16 @@ class Board extends Model {
     }
     
     public function delete(): void {
-        Column::delete_all($this);
-        $sql = 
-            "DELETE FROM board 
-             WHERE ID = :id";
+        foreach ($this->get_columns() as $col) {
+            $col->delete();
+        }
+        $sql = "DELETE FROM board 
+                WHERE ID = :id";
         $params = array("id"=>$this->get_id());
         $this->execute($sql, $params);
     }
 
-    public static function delete_all(User $user): void {
-        foreach (Board::get_users_boards($user) as $board) {
-            $board->delete();
-        }
-    }
-
-    /*  TODO: si on a des instances partout, on peut juste faire: $this->get_column()->get_board()->get_owner() et pas de fetch en DB
-        renvoie le propriétaire du board contenant la carte id_card
-    */
-    public static function get_board_owner(Card $card): User{
-        $sql=
-            "SELECT Owner 
-             FROM Board b, `Column` co, Card ca 
-             WHERE ca.id=:id_card 
-             AND co.id=ca.column 
-             AND co.Board=b.id";
-        $params=array("id_card" => $card->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        return User::get_by_id($data["Owner"]);
-    }
-
-    
     //    TOOLBOX    //
 
-    public function move_left(Column $col): void {
-        $pos = $col->get_position();
-
-        if ($pos > 0) {
-            $target = $this->get_columns()[$pos - 1];
-            $col->set_position($pos - 1);
-            $target->set_position($pos);
-
-            $col->update();
-            $target->update();
-        }
-    }
-
-    public function move_right(Column $col): void {
-        $pos = $col->get_position();
-        $columns = $this->get_columns();
-
-        if ($pos < sizeof($columns) - 1) {
-            $target = $columns[$pos + 1];
-            $col->set_position($pos + 1);
-            $target->set_position($pos);
-
-            $col->update();
-            $target->update();;
-        }
-    }
 
 }

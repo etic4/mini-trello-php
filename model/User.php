@@ -15,18 +15,6 @@ class User extends Model {
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
 
-    /* Retourne une instance de User à partir d'une colonne de la DB */
-    protected static function get_instance($data): User {
-        return new User(
-            $data["Mail"], 
-            $data["FullName"], 
-            $data["ID"], 
-            $data["Password"],  
-            $data["RegisteredAt"]
-        );
-    }
-
-
     public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
@@ -134,6 +122,19 @@ class User extends Model {
 
     //    QUERIES    //
 
+    /* Retourne une instance de User à partir d'une colonne de la DB */
+    protected static function get_instance($data): User {
+        return new User(
+            $data["Mail"],
+            $data["FullName"],
+            null,
+            $data["ID"],
+            $data["Password"],
+            $data["RegisteredAt"]
+        );
+    }
+
+
     public static function get_by_id(string $id): ?User {
         $sql = 
             "SELECT * 
@@ -191,6 +192,9 @@ class User extends Model {
     }
 
     public function delete() {
+        foreach ($this->get_own_boards() as $board) {
+            $board->delete();
+        }
         $sql = 
             "DELETE FROM user 
              WHERE ID = :id";
@@ -201,23 +205,12 @@ class User extends Model {
 
     //    TOOLBOX    //
 
-    // TODO: supprimer ça et passer la liste des boards telle quelle
-    // Prépare la liste des boards pour l'affichage
-    private function get_boards_for_view($board_array): array {
-        $boards = [];
-        foreach ($board_array as $board) {
-            $user = $board->get_owner();
-            $boards[] = array("id"=>$board->get_id(), "title"=>$board->get_title(), "fullName"=>$user->get_fullName());
-        }
-        return $boards;
-    }
-
     public function get_own_boards(): array {
-        return $this->get_boards_for_view(Board::get_users_boards($this));
+        return Board::get_users_boards($this);
     }
 
     public function get_others_boards(): array {
-        return$this->get_boards_for_view(Board::get_others_boards($this));
+        return Board::get_others_boards($this);
     }
 
 }
