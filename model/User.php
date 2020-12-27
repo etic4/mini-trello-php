@@ -130,7 +130,7 @@ class User extends Model {
             null,
             $data["ID"],
             $data["Password"],
-            $data["RegisteredAt"]
+            DBTools::php_date($data["RegisteredAt"])
         );
     }
 

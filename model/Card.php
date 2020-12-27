@@ -157,7 +157,7 @@ class Card extends Model {
 
         $cards = [];
         foreach ($data as $rec) {
-            array_push($cards, self::get_instance($data));
+            array_push($cards, self::get_instance($rec));
         }
         return $cards;
     }
@@ -256,7 +256,7 @@ class Card extends Model {
     }
 
     public function move_left(): void {
-        $pos = $this->position;
+        $pos = $this->get_column()->get_position();
 
         if ($pos > 0) {
             $target = $this->get_column()->get_board()->get_columns()[$pos-1];
@@ -264,14 +264,14 @@ class Card extends Model {
             /*Faut décrémenter les suivantes avant de changer de colonne*/
             Card::decrement_following_cards_position($this);
 
-            $this->set_column($target->get_id());
-            $this->set_position(sizeof($target->get_cards()));
+            $this->set_column($target);
+            $this->set_position(Card::get_cards_count($target));
             $this->update();
         }
     }
 
-    public function move_right(Card $card): void {
-        $pos = $this->position;
+    public function move_right(): void {
+        $pos = $this->get_column()->get_position();
         $colList = $this->get_column()->get_board()->get_columns();
 
         if ($pos < sizeof($colList)-1) {
@@ -280,8 +280,8 @@ class Card extends Model {
             /*Faut décrémenter les suivantes avant de changer de colonne*/
             Card::decrement_following_cards_position($this);
 
-            $this->set_column($target->get_id());
-            $this->set_position(sizeof($target->get_cards()));
+            $this->set_column($target);
+            $this->set_position(Card::get_cards_count($target));
             $this->update();
 
         }

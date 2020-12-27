@@ -66,13 +66,12 @@ class ControllerCard extends Controller {
         
         if(isset($_POST['id'])){
             $card=Card::get_by_id($_POST['id']);
-            $column=Column::get_by_id($card->get_column());
+            $column=Column::get_by_id($card->get_column()->get_id());
             if(isset ($_POST['delete'])){
                 Card::decrement_following_cards_position($card);
                 $card->delete();
             }
-            
-            $this->redirect("board","board",$column->get_board()->get_id());
+            $this->redirect("board","board", $column->get_board()->get_id());
         }
     }
     

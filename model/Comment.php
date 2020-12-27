@@ -56,8 +56,8 @@ class Comment extends Model{
     protected static function get_instance($data): Comment {
         return new Comment(
             $data["Body"],
-            $data["Author"],
-            $data["Card"],
+            User::get_by_id($data["Author"]),
+            Card::get_by_id($data["Card"]),
             $data["ID"],
             DBTools::php_date($data["CreatedAt"]),
             DBTools::php_date($data["ModifiedAt"])

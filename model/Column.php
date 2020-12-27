@@ -160,9 +160,9 @@ class Column extends Model {
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
-            "board" => $this->get_board(),
-            "createdAt" => $this->get_createdAt(),
-            "modifiedAt" => $this->get_modifiedAt()
+            "board" => $this->get_board()->get_id(),
+            "createdAt" => DBTools::sql_date($this->get_createdAt()),
+            "modifiedAt" => DBTools::sql_date($this->get_modifiedAt())
         );
 
         $this->execute($sql, $params);
@@ -179,7 +179,7 @@ class Column extends Model {
             "id" => $this->get_id(), 
             "title" => $this->get_title(), 
             "position" => $this->get_position(),
-            "board" => $this->get_board(), 
+            "board" => $this->get_board()->get_id(),
             "modifiedAt" => $this->set_modifiedDate_and_get_sql()
         );
         $this->execute($sql, $params);
@@ -226,15 +226,13 @@ class Column extends Model {
         }
     }
 
-
-
     public static function decrement_following_columns_position(Column $col): void {
         $sql = "UPDATE `column` 
                 SET Position = Position - 1
                 WHERE Board=:board 
                 AND Position>:pos";
         $params = array(
-            "column" => $col->get_board()->get_id(),
+            "board" => $col->get_board()->get_id(),
             "pos" => $col->get_position()
         );
         self::execute($sql,$params);

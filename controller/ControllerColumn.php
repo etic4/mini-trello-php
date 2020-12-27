@@ -62,7 +62,7 @@ class ControllerColumn extends Controller {
 
             else {
                 $col->delete();
-                $col->decrement_following_columns_position();
+                Column::decrement_following_columns_position($col);
                 $this->redirect("board", "board", $board->get_id());
             }
         }

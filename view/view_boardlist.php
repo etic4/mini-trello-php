@@ -34,7 +34,7 @@
                 <h2>Others' boards</h2>
                     <ul class="otherBoards">
                     <?php foreach($others as $board): ?>
-                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b><br/>by <?= $board->get_fullName() ?></a></li>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b><br/>by <?= $user->get_fullName() ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>
