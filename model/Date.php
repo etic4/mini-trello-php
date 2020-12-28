@@ -21,16 +21,23 @@ trait Date {
         return $this->modifiedAt;
     }
 
-    public function set_createdAt_from_sql(string $createdAt) {
-        $this->createdAt = new DateTime($createdAt);
-    }
-
-    public function set_modifiedAt_from_sql(?string $modifiedAt){
-        if ($modifiedAt == null) {
-            $this->modifiedAt = $this->createdAt;
+    public function set_createdAt_from_sql(?string $createdAt) {
+        if (is_null($createdAt)) {
+            $this->createdAt = new DateTime();
         } else {
-            $this->createdAt = new DateTime($modifiedAt);
+            $this->createdAt = new DateTime($createdAt);
         }
     }
 
+    public function set_modifiedAt_from_sql(?string $modifiedAt, ?string $createdAt){
+        if (is_null($createdAt)) {
+            $this->modifiedAt = new DateTime();
+        } else {
+            if ($modifiedAt == null) {
+                $this->modifiedAt = new DateTime($createdAt);
+            } else {
+                $this->modifiedAt = new DateTime($modifiedAt);
+            }
+        }
+    }
 }

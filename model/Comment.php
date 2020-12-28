@@ -20,7 +20,7 @@ class Comment extends Model{
         $this->author=$author;
         $this->card=$card;
         $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt);
+        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
     }
 
     // GETTERS

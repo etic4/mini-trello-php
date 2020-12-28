@@ -38,7 +38,7 @@ class Card extends Model {
         $this->body = $body;
         $this->position = $position;
         $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt);
+        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
         $this->author = $author;
         $this->column = $column;
     }

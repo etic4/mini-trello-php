@@ -20,7 +20,7 @@ class Board extends Model {
         $this->title = $title;
         $this->owner = $owner;
         $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt);
+        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
     }
 
 
