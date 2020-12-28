@@ -129,7 +129,7 @@ class Board extends Model {
         return $boards;
     }
     
-    public function insert(): Board {
+    public function insert() {
         $sql = 
             "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) 
              VALUES(:title, :owner, :createdAt, :modifiedAt)";
