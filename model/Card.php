@@ -177,14 +177,12 @@ class Card extends Model {
     //insère la carte dans la db, la carte reçoit un nouvel id.
     public function insert() {
         $sql = 
-            "INSERT INTO card(Title, Body, Position, CreatedAt, ModifiedAt, Author, `Column`) 
-             VALUES(:title, :body, :position, :createdAt, :modifiedAt, :author, :column)";
+            "INSERT INTO card(Title, Body, Position, Author, `Column`) 
+             VALUES(:title, :body, :position, :author, :column)";
         $params = array(
             "title" => $this->get_title(),
             "body" => $this->get_body(),
             "position" => $this->get_position(),
-            "createdAt" => DBTools::sql_date($this->get_createdAt()),
-            "modifiedAt" => DBTools::sql_date($this->get_modifiedAt()),
             "author" => $this->get_author()->get_id(),
             "column" => $this->get_column()->get_id()
         );
@@ -197,7 +195,7 @@ class Card extends Model {
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
     public function update() {
 
-        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=:modifiedAt, Author=:author, 
+        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=NOW(), Author=:author, 
                 `Column`=:column WHERE ID=:id";
         $params = array(
             "id" => $this->get_id(), 
@@ -205,8 +203,7 @@ class Card extends Model {
             "body" => $this->get_body(), 
             "position" => $this->get_position(),
             "author" => $this->get_author()->get_id(),
-            "column" => $this->get_column()->get_id(),
-            "modifiedAt" => $this->set_modifiedDate_and_get_sql()
+            "column" => $this->get_column()->get_id()
         );
 
         $this->execute($sql, $params);

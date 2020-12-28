@@ -131,13 +131,11 @@ class Board extends Model {
     
     public function insert() {
         $sql = 
-            "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) 
-             VALUES(:title, :owner, :createdAt, :modifiedAt)";
+            "INSERT INTO board(Title, Owner) 
+             VALUES(:title, :owner)";
         $params = array(
             "title"=>$this->get_title(),
-            "owner"=>$this->get_owner()->get_id(),
-            "createdAt" => DBTools::sql_date($this->get_createdAt()),
-            "modifiedAt" => DBTools::sql_date($this->get_modifiedAt())
+            "owner"=>$this->get_owner()->get_id()
             );
         $this->execute($sql, $params);
         $this->set_id($this->lastInsertId());
@@ -145,13 +143,12 @@ class Board extends Model {
 
     public function update(): void {
         $sql = "UPDATE board 
-                SET Title=:title, Owner=:owner, ModifiedAt=:modifiedAt 
+                SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
                 WHERE ID=:id";
         $params = array(
             "id"=>$this->get_id(), 
             "title"=>$this->get_title(), 
-            "owner"=>$this->get_owner()->get_id(),
-            "modifiedAt"=>$this->set_modifiedDate_and_get_sql()
+            "owner"=>$this->get_owner()->get_id()
         );
         
         $this->execute($sql, $params);

@@ -156,15 +156,12 @@ class Column extends Model {
 
     public function insert(): Column {
         $sql = 
-            "INSERT INTO `column`(Title, Position, Board, CreatedAt, ModifiedAt) 
-             VALUES(:title, :position, :board, :createdAt, :modifiedAt)";
-        $createdAt = DBTools::sql_date($this->get_createdAt());
+            "INSERT INTO `column`(Title, Position, Board) 
+             VALUES(:title, :position, :board)";
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
-            "board" => $this->get_board()->get_id(),
-            "createdAt" => DBTools::sql_date($this->get_createdAt()),
-            "modifiedAt" => DBTools::sql_date($this->get_modifiedAt())
+            "board" => $this->get_board()->get_id()
         );
 
         $this->execute($sql, $params);
@@ -175,14 +172,13 @@ class Column extends Model {
     public function update(): void {
         $sql = 
             "UPDATE `column` 
-             SET Title=:title, Position=:position, Board=:board, ModifiedAt=:modifiedAt 
+             SET Title=:title, Position=:position, Board=:board, ModifiedAt=NOW() 
              WHERE ID=:id";
         $params = array(
             "id" => $this->get_id(), 
             "title" => $this->get_title(), 
             "position" => $this->get_position(),
-            "board" => $this->get_board()->get_id(),
-            "modifiedAt" => $this->set_modifiedDate_and_get_sql()
+            "board" => $this->get_board()->get_id()
         );
         $this->execute($sql, $params);
     }

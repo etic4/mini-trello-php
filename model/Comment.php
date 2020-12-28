@@ -69,14 +69,12 @@ class Comment extends Model{
      */
     public function insert() { 
         $sql=
-            "INSERT INTO comment (Body, CreatedAt, ModifiedAt, Author, Card) 
-             VALUES (:body, :createdAt, :modifiedAt, :author, :card)";
+            "INSERT INTO comment (Body, Author, Card) 
+             VALUES (:body, :author, :card)";
         $params=array(
             "body"=>$this->get_body(),
             "author"=>$this->get_author()->get_id(),
-            "card"=>$this->get_card()->get_id(),
-            "createdAt"=>DBTools::sql_date($this->get_createdAt()),
-            "modifiedAt"=>DBTools::sql_date($this->get_modifiedAt())
+            "card"=>$this->get_card()->get_id()
         );
         $this->execute($sql, $params);
         $this->set_id($this->lastInsertId());
@@ -106,14 +104,13 @@ class Comment extends Model{
     public function update() {
         $sql = 
             "UPDATE comment 
-             SET Body=:body, Author=:author, Card=:card , ModifiedAt=:modifiedAt
+             SET Body=:body, Author=:author, Card=:card , ModifiedAt=NOW()
              WHERE ID=:id";
         $params = array(
             "id"=>$this->get_id(),
             "body"=>$this->get_body(), 
             "author"=>$this->get_author()->get_id(),
-            "card"=>$this->get_card()->get_id(),
-            "modifiedAt"=>$this->set_modifiedDate_and_get_sql()
+            "card"=>$this->get_card()->get_id()
         );
         $this->execute($sql, $params);
     }

@@ -32,4 +32,5 @@ trait Date {
             $this->createdAt = new DateTime($modifiedAt);
         }
     }
+
 }

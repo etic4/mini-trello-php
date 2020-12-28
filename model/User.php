@@ -165,8 +165,7 @@ class User extends Model {
         $params = array(
             "email" => $this->get_email(), 
             "fullName" => $this->get_fullName(),
-            "passwdHash" => $this->get_passwdHash(),
-            "registeredAt" => DBTools::sql_date($this->get_registeredAt())
+            "passwdHash" => $this->get_passwdHash()
         );
         $this->execute($sql, $params);
 
