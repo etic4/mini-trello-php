@@ -26,18 +26,14 @@ class ControllerBoard extends Controller {
 
     public function board() {
         $user = $this->get_user_or_redirect();
-        $board = [];
-        $columns = [];
 
         if(isset($_GET["param1"])) {
             $id = $_GET["param1"];
             $board = Board::get_by_id($id);
-            $columns = $board->get_columns();
-            
+
             (new View("board"))->show(array(
                 "user"=>$user, 
-                "board" => $board, 
-                "columns" => $columns)
+                "board" => $board)
             );
         }
         else {
@@ -50,22 +46,19 @@ class ControllerBoard extends Controller {
         //TODO validate title -> unique!!!
         $user = $this->get_user_or_redirect();
         if (!empty($_POST["title"])) {
-            $title = $_POST["title"];
-            $board = new Board($title, $user, null, new DateTime(), null);
+            $board = new Board($_POST["title"], $user);
             $board->insert();
         }
         $this->redirect("board", "index");
     }
 
     public function delete() {
-        $user = $user = $this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect();
         if(isset($_POST['id'])) {
-            $board_id = $_POST['id'];
-            $instance = Board::get_by_id($board_id);
-            $columns = $instance->get_columns();
+            $board = Board::get_by_id($_POST['id']);
 
-            if (isset($_POST["delete"]) || count($columns) == 0) { 
-                $instance->delete();
+            if (isset($_POST["delete"]) || Column::get_columns_count($board) == 0) {
+                $board->delete();
                 $this->redirect("board", "index");        
             }
 
@@ -74,7 +67,7 @@ class ControllerBoard extends Controller {
             }
 
             else {
-                (new View("delete_confirm"))->show(array("instance" => $instance));
+                (new View("delete_confirm"))->show(array("instance" => $board));
             } 
         } 
 

@@ -3,27 +3,8 @@
 require_once "framework/Model.php";
 
 class DBTools {
-    public static function sql_date($datetime) {
-        return $datetime->format('Y-m-d H:i:s');
-    }
 
-    public static function php_date($sqlDate): ?DateTime {
-        try {
-                return new DateTime($sqlDate);
-
-        } catch (Exception $e) {
-            print("Erreur lors de la conversion de la date: " . $sqlDate);
-        }
-    }
-
-    public static function php_date_modified($sqlDate, $default): ?DateTime {
-        if($sqlDate == null) {
-            $sqlDate == $default;
-        }
-        return self::php_date($sqlDate);
-    }
-
-    public static function intvl($firstDate, $secondDate) {
+    public static function intvl($firstDate, $secondDate): string {
         $intvl = $secondDate->diff($firstDate);
         if($intvl !== 0) {
             if ($intvl->y != 0) {
@@ -67,7 +48,7 @@ class DBTools {
         return $laps;
     }
     
-    public static function laps ($firstDate, $secondDate) {
+    public static function laps ($firstDate, $secondDate): string {
         if ($secondDate->diff($firstDate)->format('Y-m-d H:i:s') == "0-0-0 0:0:0") {
             return "Modified " . self::intvl($firstDate, $secondDate);
         }

@@ -80,7 +80,10 @@ class Router
             $controller = $this->get_controller();
             $this->call_action($controller);
         } catch (Exception $ex) {
-            Tools::abort($ex->getMessage());
+            if (Configuration::is_dev())
+                Tools::abort('<pre>' . $ex->getMessage() . '<p>' . $ex->getTraceAsString() . '</p></pre>');
+            else
+                Tools::abort($ex->getMessage());
         }
     }
 
