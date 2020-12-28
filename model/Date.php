@@ -1,7 +1,9 @@
 <?php
 
-/* Méthodes relatives au get et set de createdAt & modifiedAt.
-Ce trait existe essentiellement pour éviter la répétition des setters
+
+/* 
+    Méthodes relatives au get et set de createdAt & modifiedAt.
+    Ce trait existe essentiellement pour éviter la répétition des setters
 */
 
 trait Date {
@@ -12,6 +14,7 @@ trait Date {
     public static function sql_date($datetime) {
         return $datetime->format('Y-m-d H:i:s');
     }
+
 
     public function get_createdAt(): DateTime {
         return $this->createdAt;
@@ -29,7 +32,7 @@ trait Date {
         }
     }
 
-    public function set_modifiedAt_from_sql(?string $modifiedAt, ?string $createdAt){
+    public function set_modifiedAt_from_sql(?string $modifiedAt, ?string $createdAt) {
         if (is_null($createdAt)) {
             $this->modifiedAt = new DateTime();
         } else {
@@ -40,4 +43,6 @@ trait Date {
             }
         }
     }
+
+    
 }

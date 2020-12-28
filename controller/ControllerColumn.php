@@ -51,7 +51,7 @@ class ControllerColumn extends Controller {
             if(!isset($_POST["delete"])) {
                 if (Column::get_columns_count($board) == 0) {
                     $col->delete();
-                    $col->decrement_following_columns_position();
+                    Column::decrement_following_columns_position($col);
                     $this->redirect("board", "board", $board->get_id());
                 }
 

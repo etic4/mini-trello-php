@@ -9,7 +9,7 @@
         <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body>
+    <body class="signup">
         <header>
             <?php include('menu.php'); ?>
         </header>

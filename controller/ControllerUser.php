@@ -39,4 +39,8 @@ class ControllerUser extends Controller {
         session_destroy();
         $this->redirect();
     }
+
+    public function signup() {
+        (new View("signup"))->show();
+    }
 }

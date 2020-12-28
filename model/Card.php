@@ -33,6 +33,7 @@ class Card extends Model {
                                 ?string $id = null,
                                 ?string $createdAt = null,
                                 ?string $modifiedAt = null) {
+
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;
@@ -42,6 +43,7 @@ class Card extends Model {
         $this->author = $author;
         $this->column = $column;
     }
+
 
     //    GETTERS    //
 
@@ -58,6 +60,7 @@ class Card extends Model {
     }
 
     public function get_position(): string {
+
         return $this->position;
     }
 
@@ -65,21 +68,47 @@ class Card extends Model {
         return $this->author;
     }
 
+    public function get_author_name(): string {
+        return $this->author->get_fullName();
+    }
+
+    public function get_author_id(): string {
+        return $this->author->get_id();
+    }
+
     public function get_column(): Column {
         return $this->column;
+    }
+
+    public function get_column_cards(): array {
+        return $this->column->get_cards();
+    }
+
+    public function get_column_id(): string {
+        return $this->column->get_id();
+    }
+
+    public function get_column_position(): string {
+        return $this->column->get_position();
+    }
+
+    public function get_all_columns(): array {
+        return $this->column->get_board_columns();
+    }
+
+    public function get_board_id(): string {
+        return $this->column->get_board_id();
+    }
+
+    public function get_board_owner(): User{
+        return $this->column->get_board_owner();
     }
 
     public function get_comments(): array {
         return Comment::get_comments_for_card($this);
     }
 
-    public function get_board_id(): string {
-        return $this->get_column()->get_board()->get_id();
-    }
-
-    public function get_board_owner(): User{
-        return $this->get_column()->get_board()->get_owner();
-    }
+    
 
     // SETTERS //
 
@@ -106,7 +135,7 @@ class Card extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $errors[] = "Le titre doit comporter au moins 3 caractères";
+            $errors[] = "Title must be at least 3 characters long";
         }
         return $errors;
     }
@@ -182,9 +211,8 @@ class Card extends Model {
         $params = array(
             "title" => $this->get_title(),
             "body" => $this->get_body(),
-            "position" => $this->get_position(),
-            "author" => $this->get_author()->get_id(),
-            "column" => $this->get_column()->get_id()
+            "author" => $this->get_author_id(),
+            "column" => $this->get_column_id()
         );
 
         $this->execute($sql, $params);
@@ -194,7 +222,6 @@ class Card extends Model {
 
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
     public function update() {
-
         $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=NOW(), Author=:author, 
                 `Column`=:column WHERE ID=:id";
         $params = array(
@@ -202,8 +229,8 @@ class Card extends Model {
             "title" => $this->get_title(),
             "body" => $this->get_body(), 
             "position" => $this->get_position(),
-            "author" => $this->get_author()->get_id(),
-            "column" => $this->get_column()->get_id()
+            "author" => $this->get_author_id(),
+            "column" => $this->get_column_id()
         );
 
         $this->execute($sql, $params);
@@ -212,7 +239,6 @@ class Card extends Model {
     /*
         supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
     */
-
     public function delete() {
         foreach ($this->get_comments() as $comment) {
             $comment->delete();
@@ -223,13 +249,14 @@ class Card extends Model {
         self::execute($sql, $param);
     }
 
+
     //    MOVE CARD    //
 
     public function move_up(): void {
         $pos = $this->get_position();
 
         if ($pos > 0) {
-            $target = $this->get_column()->get_cards()[$pos-1];
+            $target = $this->get_column_cards()[$pos-1];
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
@@ -240,7 +267,7 @@ class Card extends Model {
 
     public function move_down(): void {
         $pos = $this->get_position();
-        $cards = $this->get_column()->get_cards();
+        $cards = $this->get_column_cards();
 
         if ($pos < sizeof($cards)-1) {
             $target = $cards[(int)$pos + 1];
@@ -253,10 +280,10 @@ class Card extends Model {
     }
 
     public function move_left(): void {
-        $pos = $this->get_column()->get_position();
+        $pos = $this->get_column_position();
 
         if ($pos > 0) {
-            $target = $this->get_column()->get_board()->get_columns()[$pos-1];
+            $target = $this->get_all_columns()[$pos-1];
 
             /*Faut décrémenter les suivantes avant de changer de colonne*/
             Card::decrement_following_cards_position($this);
@@ -268,8 +295,8 @@ class Card extends Model {
     }
 
     public function move_right(): void {
-        $pos = $this->get_column()->get_position();
-        $colList = $this->get_column()->get_board()->get_columns();
+        $pos = $this->get_column_position();
+        $colList = $this->get_all_columns();
 
         if ($pos < sizeof($colList)-1) {
             $target = $colList[$pos+1];
@@ -295,7 +322,7 @@ class Card extends Model {
                 WHERE `Column`=:column 
                 AND Position>:pos";
         $params = array(
-            "column" => $card->get_column()->get_id(),
+            "column" => $card->get_column_id(),
             "pos" => $card->get_position()
         );
         self::execute($sql,$params);

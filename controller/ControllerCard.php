@@ -110,12 +110,29 @@ class ControllerCard extends Controller {
         $card=null;
         $board=null;
         $column=null;
-        if (isset($_POST['id'])) { 
-            $card = Card::get_by_id($_POST['id']);
-            $column = $card->get_column();
-            $board = $column->get_board();
+        if (isset($_GET['param1'])) { 
+            $idcard=$_GET['param1'];
+            $card=Card::get_by_id($idcard);
+            if(!is_null($card)) {
+                $column = Column::get_by_id($card->get_column_id());
+                $board = Board::get_by_id($column->get_board_id());
+                $comments = $card->get_comments();
+                (new View("card_edit"))->show(array(
+                    "user" => $user, 
+                    "board" => $board, 
+                    "column" => $column, 
+                    "card" => $card, 
+                    "comment" => $comments
+                    )
+                );
+            }
+            else {
+                $this->redirect("board", "index");
+            }
         }
-        (new View("card_edit"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+        else {
+        $this->redirect("board", "index");
+        }
     }
 
     public function view(){
@@ -123,12 +140,29 @@ class ControllerCard extends Controller {
         $card=null;
         $board=null;
         $column=null;
-        if (isset($_POST['id'])) {
-            $card = Card::get_by_id($_POST['id']);
-            $column = $card->get_column();
-            $board = $column->get_board();
+        if (isset($_GET['param1'])) { 
+            $idcard=$_GET['param1'];
+            $card=Card::get_by_id($idcard);
+            if(!is_null($card)) {
+                $column = Column::get_by_id($card->get_column_id());
+                $board = Board::get_by_id($column->get_board_id());
+                $comments = $card->get_comments();
+                (new View("card"))->show(array(
+                    "user" => $user, 
+                    "board" => $board, 
+                    "column" => $column, 
+                    "card" => $card, 
+                    "comment" => $comments
+                    )
+                );
+            }
+            else {
+                $this->redirect("board", "index");
+            }
         }
-        (new View("card"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
+        else {
+        $this->redirect("board", "index");
+        }
     } 
     
 }
