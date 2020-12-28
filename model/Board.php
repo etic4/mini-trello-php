@@ -15,12 +15,12 @@ class Board extends Model {
     private array $columns;
 
 
-    public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
+    public function __construct(string $title, User $owner, ?string $id=null, ?string $createdAt=null, ?string $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
-        $this->set_createdAt($createdAt);
-        $this->set_modifiedAt($modifiedAt);
+        $this->set_createdAt_from_sql($createdAt);
+        $this->set_modifiedAt_from_sql($modifiedAt);
     }
 
 
@@ -72,8 +72,8 @@ class Board extends Model {
             $data["Title"],
             User::get_by_id($data["Owner"]),
             $data["ID"],
-            DBTools::php_date($data["CreatedAt"]),
-            DBTools::php_date($data["ModifiedAt"])
+            $data["CreatedAt"],
+            $data["ModifiedAt"]
         );
     }
 

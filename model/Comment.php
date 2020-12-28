@@ -13,14 +13,14 @@ class Comment extends Model{
     private User $author;
     private Card $card;
 
-    public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
-                                ?DateTime $modifiedAt=null){
+    public function __construct(string $body, User $author, Card $card, ?string $id=null, ?string $createdAt=null,
+                                ?string $modifiedAt=null){
         $this->id=$id;
         $this->body=$body;
         $this->author=$author;
         $this->card=$card;
-        $this->set_createdAt($createdAt);
-        $this->set_modifiedAt($modifiedAt);
+        $this->set_createdAt_from_sql($createdAt);
+        $this->set_modifiedAt_from_sql($modifiedAt);
     }
 
     // GETTERS
@@ -59,8 +59,8 @@ class Comment extends Model{
             User::get_by_id($data["Author"]),
             Card::get_by_id($data["Card"]),
             $data["ID"],
-            DBTools::php_date($data["CreatedAt"]),
-            DBTools::php_date($data["ModifiedAt"])
+            $data["CreatedAt"],
+            $data["ModifiedAt"]
         );
     }
 

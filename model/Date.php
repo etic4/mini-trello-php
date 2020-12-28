@@ -9,6 +9,10 @@ trait Date {
     private DateTime $modifiedAt;
     private Datetime $createdAt;
 
+    public static function sql_date($datetime) {
+        return $datetime->format('Y-m-d H:i:s');
+    }
+
     public function get_createdAt(): DateTime {
         return $this->createdAt;
     }
@@ -17,28 +21,15 @@ trait Date {
         return $this->modifiedAt;
     }
 
-    public function set_createdAt(?DateTime $createdAt): void {
-        if ($createdAt == null) {
-            $this->createdAt = new DateTime("now");
-        } else {
-            $this->createdAt = $createdAt;
-        }
+    public function set_createdAt_from_sql(string $createdAt) {
+        $this->createdAt = new DateTime($createdAt);
     }
 
-    public function set_modifiedAt(?DateTime $modifiedAt): void {
+    public function set_modifiedAt_from_sql(?string $modifiedAt){
         if ($modifiedAt == null) {
-            $this->modifiedAt = new DateTime("now");
+            $this->modifiedAt = $this->createdAt;
         } else {
-            $this->modifiedAt = $modifiedAt;
+            $this->createdAt = new DateTime($modifiedAt);
         }
-    }
-
-    public function set_modifiedDate() {
-        $this->set_modifiedAt(new DateTime("now"));
-    }
-
-    public function set_modifiedDate_and_get_sql() {
-        $this->set_modifiedDate();
-        return DBTools::sql_date($this->get_modifiedAt());
     }
 }

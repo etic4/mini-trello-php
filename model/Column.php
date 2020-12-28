@@ -24,14 +24,14 @@ class Column extends Model {
         );
     }
 
-    public function __construct(string $title, int $position, Board $board, string $id=null, ?DateTime $createdAt=null,
-                                ?DateTime $modifiedAt=null) {
+    public function __construct(string $title, int $position, Board $board, string $id=null, ?string $createdAt=null,
+                                ?string $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->position = $position;
         $this->board = $board;
-        $this->set_createdAt($createdAt);
-        $this->set_modifiedAt($modifiedAt);
+        $this->set_createdAt_from_sql($createdAt);
+        $this->set_modifiedAt_from_sql($modifiedAt);
     }
 
 
@@ -88,8 +88,8 @@ class Column extends Model {
             $data["Position"],
             Board::get_by_id($data["Board"]),
             $data["ID"],
-            DBTools::php_date($data["CreatedAt"]),
-            DBTools::php_date($data["ModifiedAt"])
+            $data["CreatedAt"],
+            $data["ModifiedAt"]
         );
     }
 

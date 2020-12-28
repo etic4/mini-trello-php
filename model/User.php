@@ -16,7 +16,7 @@ class User extends Model {
 
 
     public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
-                                ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
+                                ?string $id=null, ?string $passwdHash=null, ?string $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
         }
@@ -25,7 +25,7 @@ class User extends Model {
         $this->email = $email;
         $this->fullName = $fullName;
         $this->passwdHash = $passwdHash;
-        $this->set_registeredAt($registeredAt);
+        $this->set_registeredAt_from_sql($registeredAt);
         $this->clearPasswd = $clearPasswd;
     }
 
@@ -59,14 +59,9 @@ class User extends Model {
         $this->id = $id;
     }
 
-    public function set_registeredAt(?Datetime $registeredAt) {
-        if (is_null($registeredAt)){
-            $this->registeredAt = new Datetime("now");
-        } else {
-            $this->registeredAt = $registeredAt;
-        }
+    public function set_registeredAt_from_sql(string $registeredAt) {
+        $this->registeredAt = new DateTime($registeredAt);
     }
-
 
     //    VALIDATION    //
 
@@ -130,7 +125,7 @@ class User extends Model {
             null,
             $data["ID"],
             $data["Password"],
-            DBTools::php_date($data["RegisteredAt"])
+            $data["RegisteredAt"]
         );
     }
 

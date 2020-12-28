@@ -31,14 +31,14 @@ class Card extends Model {
                                 User $author, 
                                 Column $column,
                                 ?string $id = null,
-                                ?DateTime $createdAt = null,
-                                ?DateTime $modifiedAt = null) {
+                                ?string $createdAt = null,
+                                ?string $modifiedAt = null) {
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;
         $this->position = $position;
-        $this->set_createdAt($createdAt);
-        $this->set_modifiedAt($modifiedAt);
+        $this->set_createdAt_from_sql($createdAt);
+        $this->set_modifiedAt_from_sql($modifiedAt);
         $this->author = $author;
         $this->column = $column;
     }
@@ -123,8 +123,8 @@ class Card extends Model {
             User::get_by_id($data["Author"]),
             Column::get_by_id($data["Column"]),
             $data["ID"],
-            DBTools::php_date($data["CreatedAt"]),
-            DBTools::php_date($data["ModifiedAt"])
+            $data["CreatedAt"],
+            $data["ModifiedAt"]
         );
     }
 
