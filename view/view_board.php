@@ -7,7 +7,7 @@
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
-    <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+    <link href="css/test.css" rel="stylesheet" type="text/css"/>
 </head>
 <body class="boardMain">
 	<header>
@@ -46,13 +46,13 @@
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
-                    <?php if (count($errors) != 0 && $errors["instance"] == "column"): ?>
-                        <div class='errors'>
-                            <ul>
-                                <li><?= $errors[0]; ?></li>
-                            </ul>
-                        </div>
-                        <?php endif; ?>
+                    <?php if (count($errors) != 0): ?>
+                    <div class='errors'>
+                        <ul>
+                            <li><?= $errors['error']; ?></li>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
                 </aside>     
             </div>
         </article>

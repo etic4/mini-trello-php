@@ -63,14 +63,14 @@ class ControllerBoard extends Controller {
             $errors = $this->add_column();
             if(!empty($errors)) {
                 $board_id = $errors["board_id"];
-                $board = Board::get_by_id($board_id);
             }
         }
 
         elseif(isset($_GET["param1"])) {
             $board_id = $_GET["param1"];
-            $board = Board::get_by_id($board_id);
         }
+
+        $board = Board::get_by_id($board_id);
  
         if(!is_null($board)) {
             $columns = $board->get_columns();
@@ -96,8 +96,7 @@ class ControllerBoard extends Controller {
         if (!empty($_POST["title"])) {
             $title = $_POST["title"];
             $board_id = $_POST["id"];
-            $board = Board::get_by_id($board_id);
-            $column = Column::create_new($title, $board);
+            $column = Column::create_new($title, $board_id);
             $errors = $column->validate();
 
             if(empty($errors)) {
@@ -106,8 +105,6 @@ class ControllerBoard extends Controller {
             }
 
         }
-        $errors["board_id"] = $board_id;
-        $errors["instance"] = "column";
         return $errors;
     }
 

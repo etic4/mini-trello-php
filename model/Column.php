@@ -25,11 +25,11 @@ class Column extends Model {
         $this->set_modifiedAt($modifiedAt);
     }
 
-    public static function create_new(string $title, Board $board) {
+    public static function create_new(string $title, string $board_id): Column {
         return new Column(
             $title, 
-            self::get_column_count($board), 
-            $board->get_id(), 
+            self::get_column_count(Board::get_by_id($board_id)), 
+            $board_id, 
             null, 
             new DateTime(), 
             null
@@ -100,7 +100,7 @@ class Column extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Le titre doit comporter au moins 3 caractères";
+            $errors = array("error" => "Title must be at least 3 characters long", "column" => "column", "board_id" => $this->board);
         }
         return $errors;
     }

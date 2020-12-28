@@ -32,6 +32,8 @@ class ControllerColumn extends Controller {
         }
     }
 
+
+
     //PRG ???
     public function delete() {
         $user = $this->get_user_or_redirect(); 
