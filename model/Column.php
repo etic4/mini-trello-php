@@ -12,7 +12,8 @@ class Column extends Model {
 
     private ?string $id;
     private string $title;
-    private int $position;
+    private string $position;
+
     private Board $board;
 
     public static function create_new(string $title, Board $board): Column {
@@ -23,8 +24,8 @@ class Column extends Model {
         );
     }
 
-    public function __construct(string $title, int $position, Board $board, string $id=null, DateTime $createdAt=null,
-                                DateTime $modifiedAt=null) {
+    public function __construct(string $title, int $position, Board $board, string $id=null, ?DateTime $createdAt=null,
+                                ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->position = $position;
@@ -44,7 +45,7 @@ class Column extends Model {
         return $this->title;
     }
 
-    public function get_position(): int {
+    public function get_position(): string {
         return $this->position;
     }
 
@@ -81,7 +82,7 @@ class Column extends Model {
 
     //    QUERIES    //
 
-    protected static function get_instance($data) :Column {
+    protected static function get_instance($data, $board=null) :Column {
         return new Column(
             $data["Title"],
             $data["Position"],
@@ -157,6 +158,7 @@ class Column extends Model {
         $sql = 
             "INSERT INTO `column`(Title, Position, Board, CreatedAt, ModifiedAt) 
              VALUES(:title, :position, :board, :createdAt, :modifiedAt)";
+        $createdAt = DBTools::sql_date($this->get_createdAt());
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
@@ -237,5 +239,4 @@ class Column extends Model {
         );
         self::execute($sql,$params);
     }
-    
 }

@@ -91,8 +91,7 @@ class Board extends Model {
         } 
 
         else {
-            $board = self::get_instance($data);
-            return $board;
+            return self::get_instance($data);
         }
     }
 
