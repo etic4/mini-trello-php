@@ -363,6 +363,7 @@ strong {
     border-radius: 4px;
     border: none;
     color: #ffffff;
+    cursor: pointer;
 }
 
 .delete_confirm form input[value=Cancel] {
