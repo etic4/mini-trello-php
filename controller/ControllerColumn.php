@@ -37,24 +37,13 @@ class ControllerColumn extends Controller {
         $user = $this->get_user_or_redirect(); 
         if(isset($_POST['id'])) {
             $col = Column::get_by_id($_POST['id']);
-            $board = $col->get_board();
 
-            if(!isset($_POST["delete"])) {
-                if (Column::get_columns_count($board) == 0) {
-                    $col->delete();
-                    Column::decrement_following_columns_position($col);
-                    $this->redirect("board", "board", $board->get_id());
-                }
-
-                else {
-                    $this->redirect("column", "delete_confirm", $col->get_id());
-                } 
-            }
-
-            else {
+            if (Card::get_cards_count($col) == 0) {
                 $col->delete();
                 Column::decrement_following_columns_position($col);
-                $this->redirect("board", "board", $board->get_id());
+                $this->redirect("board", "board", $col->get_board_id());
+            } else {
+                $this->redirect("column", "delete_confirm", $col->get_id());
             }
         }
     }
@@ -66,12 +55,25 @@ class ControllerColumn extends Controller {
                 (new View("delete_confirm"))->show(array("instance" => $col));
             }
             else {
-                $this->redirect("board", "board");
+                $this->redirect("board", "index");
             }
         }
          else {
-            $this->redirect("board", "board");
+            $this->redirect("board", "index");
          }
     }
 
+    //exécution du delete ou cancel de delete_confirm
+    public function remove() {
+        if(isset($_POST["id"])) {
+            $col = Column::get_by_id($_POST["id"]);
+            if(isset($_POST["delete"])) {
+                $col->delete();
+            }
+            $this->redirect("board", "board",   $col->get_board_id());
+        } else {
+            $this->redirect("board", "index");
+        }
+
+    }
 }
