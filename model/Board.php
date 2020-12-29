@@ -169,7 +169,8 @@ class Board extends Model {
 
             );
         $this->execute($sql, $params);
-        $this->set_id($this->lastInsertId());
+        $board = $this->get_by_id($this->lastInsertId());
+        return $board;
     }
 
     public function update(): void {

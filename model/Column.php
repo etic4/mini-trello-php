@@ -91,7 +91,7 @@ class Column extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "column" => "column", "board_id" => $this->board);
+            $errors = array("error" => "Title must be at least 3 characters long", "column" => "column", "board_id" => $this->get_board_id());
         }
         return $errors;
     }

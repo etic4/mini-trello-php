@@ -44,7 +44,7 @@ class ControllerBoard extends Controller {
 
             if(empty($errors)) {
                 $board = $board->insert();
-                $this->redirect("board", "board", $board);
+                $this->redirect("board", "board", $board->get_id());
             }
         }
         return $errors;
@@ -96,7 +96,8 @@ class ControllerBoard extends Controller {
         if (!empty($_POST["title"])) {
             $title = $_POST["title"];
             $board_id = $_POST["id"];
-            $column = Column::create_new($title, $board_id);
+            $board = Board::get_by_id($board_id);
+            $column = Column::create_new($title, $board);
             $errors = $column->validate();
 
             if(empty($errors)) {
