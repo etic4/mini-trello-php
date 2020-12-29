@@ -7,7 +7,7 @@ require_once "model/User.php";
 //require_once "model/Date.php";
 
 class Comment extends Model{
-    use Date;
+    use DateTrait;
 
     private ?string $id;
     private string $body;

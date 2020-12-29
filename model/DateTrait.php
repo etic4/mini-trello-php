@@ -6,7 +6,7 @@
     Ce trait existe essentiellement pour éviter la répétition des setters
 */
 
-trait Date {
+trait DateTrait {
 
     private ?DateTime $modifiedAt;
     private ?Datetime $createdAt;

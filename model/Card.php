@@ -6,7 +6,7 @@ require_once "model/Comment.php";
 
 
 class Card extends Model {
-    use Date;
+    use DateTrait;
 
     private ?string $id;
     private string $title;

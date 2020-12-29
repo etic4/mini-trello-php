@@ -7,7 +7,7 @@ require_once "Column.php";
 
 
 class Board extends Model {
-    use Date;
+    use DateTrait;
 
     private ?string $id;
     private string $title;

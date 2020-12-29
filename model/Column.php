@@ -9,7 +9,7 @@ require_once "model/Card.php";
 
 
 class Column extends Model {
-    use Date;
+    use DateTrait;
 
     private ?string $id;
     private string $title;
