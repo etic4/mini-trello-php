@@ -15,7 +15,6 @@ class ControllerColumn extends Controller {
         if (isset($_POST["id"])) {
             $col = Column::get_by_id($_POST["id"]);
             $col->move_right();
-
             $this->redirect("board", "board", $col->get_board()->get_id());
         }
     }

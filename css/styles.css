@@ -614,6 +614,15 @@ strong {
     padding: 2px;
 }
 
+.main_comment .display_one_comment .editconfirm {
+    margin-right: 10px;
+}
+
+.main_comment .display_one_comment .editconfirm input[type=text] {
+    width: 500px;
+    font-size: inherit;
+}
+
 .main_comment .display_one_comment p {
     padding-right: 5px;
     white-space: nowrap;

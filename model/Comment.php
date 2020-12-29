@@ -24,7 +24,9 @@ class Comment extends Model{
         $this->set_createdAt_from_sql($createdAt);
         $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
     }
-
+    public static function create_new(String $body, User $author, Card $card): Comment{
+        return new Comment($body, $author, $card, null);
+    }
     // GETTERS
 
     public function get_id(): string {
@@ -155,5 +157,8 @@ class Comment extends Model{
                 WHERE ID = :id";
         $param = array('id' => $this->id);
         self::execute($sql, $param);
+    }
+    public function get_author_name(): String{
+        return $this->get_author()->get_fullName();
     }
 }
