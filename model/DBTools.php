@@ -60,13 +60,15 @@ class DBTools extends Model {
     }
 
     public static function breadcrumb(): string {
-        $path = array_filter(explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
+        $uri = str_replace(Configuration::get("web_root"), "", $_SERVER['REQUEST_URI']);
+        $path = explode('/', $uri);
         $home = "<a href='board/index'>Boards</a>";
-        $breadcrumb = $home;
-        if(isset($path[4])) {
-            $instance_name = $path[2];
-            $instance_id = $path[4];
-            $sql = 
+        $breadcrumb = "<p class='homeLink'>Boards</p>";
+
+        if(isset($path[2])) {
+            $instance_name = $path[0];
+            $instance_id = $path[2];
+            $sql =
                 "SELECT Title
                  FROM $instance_name
                  WHERE ID=:id";
@@ -78,9 +80,6 @@ class DBTools extends Model {
 
             $breadcrumb = "<p class='" . $instance_name . "Link'>" . ucfirst($instance_name) . " \"" . $title . "\"</p>
                            <p>" . $home . "</p>";
-        }
-        else {
-            $breadcrumb = "<p class='homeLink'>Boards</p>";
         }
         return $breadcrumb;
     }
