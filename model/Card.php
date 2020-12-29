@@ -100,6 +100,10 @@ class Card extends Model {
         return $this->column->get_board_id();
     }
 
+    public function get_board() {
+        return $this->column->get_board();
+    }
+
     public function get_board_owner(): User{
         return $this->column->get_board_owner();
     }
