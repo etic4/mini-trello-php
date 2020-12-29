@@ -20,7 +20,6 @@ class ControllerBoard extends Controller {
         if($user) {
             $owners = $user->get_own_boards();
             $others = $user->get_others_boards();
-        
         }
 
         (new View("boardlist"))->show(array(
@@ -30,7 +29,6 @@ class ControllerBoard extends Controller {
             "errors" => $errors
             )
         );
-        
     }
 
     public function add() {
@@ -86,7 +84,6 @@ class ControllerBoard extends Controller {
         else {
             $this->redirect("board", "index");
         }
-        
     }
 
     public function add_column() {
