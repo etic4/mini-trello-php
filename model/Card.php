@@ -211,6 +211,7 @@ class Card extends Model {
         $params = array(
             "title" => $this->get_title(),
             "body" => $this->get_body(),
+            "position" => $this->get_position(),
             "author" => $this->get_author_id(),
             "column" => $this->get_column_id()
         );
