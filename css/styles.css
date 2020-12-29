@@ -204,6 +204,128 @@ strong {
 }
 
 
+/***  =====EDIT TITLE=====  ***/
+
+.editTitle {
+    display: flex;
+    flex-direction: row;
+    margin-left: -10px;
+}
+
+
+/* rendre invisible */
+
+.control,
+.editTitle input[type="submit"] {
+    opacity: 0;
+    width: 0;
+}
+
+
+/* position corbeille */
+
+.title .link .far {
+    margin-top: 1px;
+    font-size: 16px;
+    margin-left: -10px;
+}
+
+
+/* ordre flex */
+
+.editTitle .control[type="text"] {
+    order: 1;
+    padding-left: 15px;
+    font-size: 20px;
+    height: 40px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #cccccc;
+}
+
+.editTitle input[type="submit"] {
+    order: 2;
+    color: #FFFFFF;
+    border: 1px solid #0066CC;
+    background-color: #0066CC;
+    border-right: 2px solid #cccccc;
+}
+
+.editTitle h2 {
+    order: 3;
+    margin-left: -20px;
+}
+
+.editTitle label {
+    order: 4;
+    margin-top: 10px;
+    padding-right: 5px;
+    padding-left: 10px;
+}
+
+.editTitle #toggle {
+    order: 5;
+    position: relative;
+    top: 15px;
+    right: 20px;
+    transform: scale(2);
+    opacity: 0;
+}
+
+.editTitle button {
+    order: 6;
+    color: #FFFFFF;
+    border: 1px solid #0066CC;
+    background-color: #0066CC;
+    border-radius: 0 4px 4px 0;
+}
+
+
+/* action */
+
+#toggle:checked~.control[type="text"] {
+    opacity: 100;
+    width: 750px;
+    transition: width 0.2s ease-in-out;
+}
+
+#toggle:checked~button {
+    opacity: 100;
+    position: relative;
+    width: 40px;
+    right: 17px;
+    z-index: 0;
+}
+
+#toggle:checked~input[type="submit"] {
+    position: relative;
+    right: 8px;
+    opacity: 100;
+    width: 40px;
+}
+
+#toggle:checked~h2 {
+    font-size: 0;
+}
+
+#toggle:checked {
+    top: 14px;
+    left: 9px;
+    transform: scale(3);
+    z-index: 1;
+}
+
+#toggle:checked~label {
+    font-size: 0;
+    height: 20px;
+}
+
+input:focus,
+button:focus,
+button:focus:not(:focus-visible) {
+    outline: none;
+}
+
+
 /***  =======ERRORS======  ***/
 
 .errors {

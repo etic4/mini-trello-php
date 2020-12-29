@@ -7,7 +7,7 @@
     <base href="<?= $web_root ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
-    <link href="css/test.css" rel="stylesheet" type="text/css"/>
+    <link href="css/styles.css" rel="stylesheet" type="text/css"/>
 </head>
 <body class="boardMain">
 	<header>
@@ -17,13 +17,17 @@
         <article>
             <header>
                 <div class="title">
-                    <h2>Board "<?= $board->get_title() ?>"</h2>
                     <?php if ($user == $board->get_owner()): ?>
                     <ul class="icons">
                         <li>
-                            <form class='link' action='board/edit' method='post'>
+                            <form class='editTitle' action='board/edit' method='post'>
                                 <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                                <input type='submit' value="&#xf044" class="fas fa-edit" style="background:none">
+                                <input type ="checkbox" id="toggle">
+                                <label for="toggle"><i class="fas fa-edit"></i></label>
+                                <input class="control" type="text" name="title" value="<?= $board->get_title() ?>">
+                                <input class="fas fa-paper-plane" type="submit" value="&#xf1d8">
+                                <button class="control"><i class="fas fa-undo-alt"></i></button>
+                                <h2>Board "<?= $board->get_title() ?>"</h2>
                             </form>
                         </li>
                         <li>
