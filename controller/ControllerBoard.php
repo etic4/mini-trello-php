@@ -147,26 +147,21 @@ class ControllerBoard extends Controller {
                 $this->redirect("board", "board", $board_id);
             }
         }
-        else {
-            $this->redirect("board", "index");
-        }
+        $this->redirect("board", "index");
     }
 
 
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
         if(isset($_POST["id"])) {
-            $board_id = $_POST["id"];
-            if(isset($_POST["delete"])) {
-                $instance = Board::get_by_id($board_id);
-                $instance->get_columns();
-                $instance->delete();
+            $board = Board::get_by_id($_POST["id"]);
+            if(!isset($_POST["delete"])) {
+                $this->redirect("board", "board", $_POST["id"]);
             }
+            $board->delete();
         }
         $this->redirect("board", "index");
     }
-
-
 }
 
 

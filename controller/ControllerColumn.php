@@ -53,14 +53,10 @@ class ControllerColumn extends Controller {
             $col = Column::get_by_id($_GET["param1"]);
             if(!is_null($col)) {
                 (new View("delete_confirm"))->show(array("instance" => $col));
-            }
-            else {
-                $this->redirect("board", "index");
+                die;
             }
         }
-         else {
-            $this->redirect("board", "index");
-         }
+        $this->redirect("board", "index");
     }
 
     //exécution du delete ou cancel de delete_confirm
@@ -71,9 +67,7 @@ class ControllerColumn extends Controller {
                 $col->delete();
             }
             $this->redirect("board", "board",   $col->get_board_id());
-        } else {
-            $this->redirect("board", "index");
         }
-
+        $this->redirect("board", "index");
     }
 }
