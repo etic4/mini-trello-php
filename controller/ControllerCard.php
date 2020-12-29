@@ -144,17 +144,32 @@ class ControllerCard extends Controller {
             $idcard=$_GET['param1'];
             $card=Card::get_by_id($idcard);
             if(!is_null($card)) {
-                $column = Column::get_by_id($card->get_column_id());
-                $board = Board::get_by_id($column->get_board_id());
-                $comments = $card->get_comments();
-                (new View("card"))->show(array(
-                    "user" => $user, 
-                    "board" => $board, 
-                    "column" => $column, 
-                    "card" => $card, 
-                    "comment" => $comments
-                    )
-                );
+                if(isset($_GET['param2'])){
+                    $column = Column::get_by_id($card->get_column_id());
+                    $board = Board::get_by_id($column->get_board_id());
+                    $comments = $card->get_comments();
+                    (new View("card"))->show(array(
+                        "user" => $user, 
+                        "board" => $board, 
+                        "column" => $column, 
+                        "card" => $card, 
+                        "comment" => $comments,
+                        "show_comment" => $_GET['param2']
+                        )
+                    );
+                }else {
+                    $column = Column::get_by_id($card->get_column_id());
+                    $board = Board::get_by_id($column->get_board_id());
+                    $comments = $card->get_comments();
+                    (new View("card"))->show(array(
+                        "user" => $user, 
+                        "board" => $board, 
+                        "column" => $column, 
+                        "card" => $card, 
+                        "comment" => $comments
+                        )
+                    );
+                }
             }
             else {
                 $this->redirect("board", "index");
