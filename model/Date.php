@@ -8,11 +8,20 @@
 
 trait Date {
 
-    private DateTime $modifiedAt;
-    private Datetime $createdAt;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
     public static function sql_date($datetime) {
         return $datetime->format('Y-m-d H:i:s');
+    }
+
+    public static function get_dates_from_sql($createdAt, $modifiedAt): array {
+        $createdAtInst = new DateTime($createdAt);
+        $modifiedAtInst = $createdAtInst;
+        if (!is_null($modifiedAt)) {
+            $modifiedAtInst = new DateTime($modifiedAt);
+        }
+        return array($createdAtInst, $modifiedAtInst);
     }
 
 
@@ -24,25 +33,16 @@ trait Date {
         return $this->modifiedAt;
     }
 
-    public function set_createdAt_from_sql(?string $createdAt) {
-        if (is_null($createdAt)) {
-            $this->createdAt = new DateTime();
-        } else {
-            $this->createdAt = new DateTime($createdAt);
-        }
+    public function set_createdAt(DateTime $createdAt) {
+        $this->createdAt = $createdAt;
     }
 
-    public function set_modifiedAt_from_sql(?string $modifiedAt, ?string $createdAt) {
-        if (is_null($createdAt)) {
-            $this->modifiedAt = new DateTime();
-        } else {
-            if ($modifiedAt == null) {
-                $this->modifiedAt = new DateTime($createdAt);
-            } else {
-                $this->modifiedAt = new DateTime($modifiedAt);
-            }
-        }
+    public function set_modifiedAt(DateTime $modifiedAt) {
+        $this->modifiedAt = $modifiedAt;
     }
 
-    
+    public function set_dates_from_instance($inst) {
+        $this->set_createdAt($inst->get_createdAt());
+        $this->set_modifiedAt($inst->get_modifiedAt());
+    }
 }

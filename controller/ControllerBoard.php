@@ -43,7 +43,7 @@ class ControllerBoard extends Controller {
             $errors = $board->validate();
 
             if(empty($errors)) {
-                $board = $board->insert();
+                $board->insert();
                 $this->redirect("board", "board", $board->get_id());
             }
         }
@@ -101,7 +101,7 @@ class ControllerBoard extends Controller {
             $errors = $column->validate();
 
             if(empty($errors)) {
-                $column = $column->insert();
+                $column->insert();
                 $this->redirect("board", "board", $board_id);
             }
         }

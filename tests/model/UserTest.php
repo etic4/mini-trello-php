@@ -44,8 +44,7 @@ class UserTest extends TestCase {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
         $this->assertEquals(5, $data["total"]);
 
-        //TODO: changer ça, set les dates et simplement set l'id après insert
-        $user = $user->insert();
+        $user->insert();
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
 
         $this->assertEquals(6, (int) $data["total"]);

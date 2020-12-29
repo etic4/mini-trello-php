@@ -11,12 +11,12 @@ class User extends Model {
     private string $email;
     private string $fullName;
     private ?string $passwdHash;
-    private DateTime $registeredAt;
+    private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
 
     public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
-                                ?string $id=null, ?string $passwdHash=null, ?string $registeredAt=null) {
+                                ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
         }
@@ -25,8 +25,8 @@ class User extends Model {
         $this->email = $email;
         $this->fullName = $fullName;
         $this->passwdHash = $passwdHash;
-        $this->set_registeredAt_from_sql($registeredAt);
         $this->clearPasswd = $clearPasswd;
+        $this->registeredAt = $registeredAt;
     }
 
 
@@ -59,8 +59,8 @@ class User extends Model {
         $this->id = $id;
     }
 
-    public function set_registeredAt_from_sql(string $registeredAt) {
-        $this->registeredAt = new DateTime($registeredAt);
+    public function set_registeredAt(DateTime $registeredAt) {
+        $this->registeredAt = $registeredAt;
     }
 
     //    VALIDATION    //
@@ -125,7 +125,7 @@ class User extends Model {
             null,
             $data["ID"],
             $data["Password"],
-            $data["RegisteredAt"]
+            new DateTime($data["RegisteredAt"])
         );
     }
 
@@ -158,18 +158,19 @@ class User extends Model {
         return self::get_instance($data);
     }
 
-    public function insert(): User {
+    public function insert() {
         $sql = 
-            "INSERT INTO user(Mail, FullName, Password, RegisteredAt) 
-             VALUES(:email, :fullName, :passwdHash, :registeredAt)";
+            "INSERT INTO user(Mail, FullName, Password) 
+             VALUES(:email, :fullName, :passwdHash)";
         $params = array(
             "email" => $this->get_email(), 
             "fullName" => $this->get_fullName(),
             "passwdHash" => $this->get_passwdHash()
         );
         $this->execute($sql, $params);
-
-        return $this->get_by_id($this->lastInsertId());
+        $user = self::get_by_id($this->lastInsertId());
+        $this->set_id($user->get_id());
+        $this->set_registeredAt($user->get_registeredAt());
     }
 
     public function update() {

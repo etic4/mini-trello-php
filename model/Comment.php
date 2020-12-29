@@ -15,14 +15,14 @@ class Comment extends Model{
     private Card $card;
 
 
-    public function __construct(string $body, User $author, Card $card, ?string $id=null, ?string $createdAt=null,
-                                ?string $modifiedAt=null){
+    public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
+                                ?DateTime $modifiedAt=null){
         $this->id=$id;
         $this->body=$body;
         $this->author=$author;
         $this->card=$card;
-        $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
+        $this->createdAt = $createdAt;
+        $this->modifiedAt = $modifiedAt;
     }
 
     // GETTERS
@@ -70,13 +70,14 @@ class Comment extends Model{
         renvoie un comment avec comme attributs les donnee de $data
     */
     protected static function get_instance($data): Comment {
+        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Comment(
             $data["Body"],
             User::get_by_id($data["Author"]),
             Card::get_by_id($data["Card"]),
             $data["ID"],
-            $data["CreatedAt"],
-            $data["ModifiedAt"]
+            $createdAt,
+            $modifiedAt
         );
     }
 
@@ -93,7 +94,9 @@ class Comment extends Model{
             "card"=>$this->get_card()->get_id()
         );
         $this->execute($sql, $params);
-        $this->set_id($this->lastInsertId());
+        $id = $this->lastInsertId();
+        $this->set_id($id);
+        $this->set_dates_from_instance(self::get_by_id($id));
     }
 
     /*

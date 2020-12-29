@@ -15,12 +15,13 @@ class Board extends Model {
     private array $columns;
 
 
-    public function __construct(string $title, User $owner, ?string $id=null, ?string $createdAt=null, ?string $modifiedAt=null) {
+    public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
+                                ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
-        $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
+        $this->createdAt = $createdAt;
+        $this->modifiedAt = $modifiedAt;
     }
 
 
@@ -79,12 +80,13 @@ class Board extends Model {
     //    QUERIES    //
 
     protected static function get_instance($data): Board {
+        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Board(
             $data["Title"],
             User::get_by_id($data["Owner"]),
             $data["ID"],
-            $data["CreatedAt"],
-            $data["ModifiedAt"]
+            $createdAt,
+            $modifiedAt
         );
     }
 
@@ -161,16 +163,16 @@ class Board extends Model {
     
     public function insert() {
         $sql = 
-            "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) 
-             VALUES(:title, :owner, NOW(), null)";
+            "INSERT INTO board(Title, Owner) 
+             VALUES(:title, :owner)";
         $params = array(
             "title"=>$this->get_title(),
             "owner"=>$this->get_owner_id(),
-
             );
         $this->execute($sql, $params);
-        $board = $this->get_by_id($this->lastInsertId());
-        return $board;
+        $id = $this->lastInsertId();
+        $this->set_id($id);
+        $this->set_dates_from_instance(self::get_by_id($id));
     }
 
     public function update(): void {
@@ -196,29 +198,5 @@ class Board extends Model {
         $params = array("id"=>$this->get_id());
         $this->execute($sql, $params);
     }
-
-    public static function delete_all(User $user): void {
-        foreach (Board::get_users_boards($user) as $board) {
-            $board->delete();
-        }
-    }
-
-    /*  TODO: si on a des instances partout, on peut juste faire: $this->get_column()->get_board()->get_owner() et pas de fetch en DB
-        renvoie le propriétaire du board contenant la carte id_card
-    */
-    public static function get_board_owner(Card $card): User{
-        $sql=
-            "SELECT Owner 
-             FROM Board b, `Column` co, Card ca 
-             WHERE ca.id=:id_card 
-             AND co.id=ca.column 
-             AND co.Board=b.id";
-        $params=array("id_card" => $card->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        return User::get_by_id($data["Owner"]);
-    }
-
 
 }

@@ -25,14 +25,14 @@ class Column extends Model {
         );
     }
 
-    public function __construct(string $title, int $position, Board $board, string $id=null, ?string $createdAt=null,
-                                ?string $modifiedAt=null) {
+    public function __construct(string $title, int $position, Board $board, string $id=null, ?DateTime $createdAt=null,
+                                ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->position = $position;
         $this->board = $board;
-        $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
+        $this->createdAt = $createdAt;
+        $this->modifiedAt = $modifiedAt;
     }
 
 
@@ -100,13 +100,14 @@ class Column extends Model {
     //    QUERIES    //
 
     protected static function get_instance($data, $board=null) :Column {
+        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Column(
             $data["Title"],
             $data["Position"],
             Board::get_by_id($data["Board"]),
             $data["ID"],
-            $data["CreatedAt"],
-            $data["ModifiedAt"]
+            $createdAt,
+            $modifiedAt
         );
     }
 
@@ -171,10 +172,10 @@ class Column extends Model {
         return $data["nbr"];
     }
 
-    public function insert(): Column {
+    public function insert() {
         $sql = 
-            "INSERT INTO `column`(Title, Position, Board, CreatedAt, ModifiedAt) 
-             VALUES(:title, :position, :board, NOW(), null)";
+            "INSERT INTO `column`(Title, Position, Board) 
+             VALUES(:title, :position, :board)";
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
@@ -182,8 +183,9 @@ class Column extends Model {
         );
 
         $this->execute($sql, $params);
-
-        return $this->get_by_id($this->lastInsertId());
+        $id = $this->lastInsertId();
+        $this->set_id($id);
+        $this->set_dates_from_instance(self::get_by_id($id));
     }
 
     public function update(): void {

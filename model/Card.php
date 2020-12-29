@@ -31,17 +31,17 @@ class Card extends Model {
                                 User $author, 
                                 Column $column,
                                 ?string $id = null,
-                                ?string $createdAt = null,
-                                ?string $modifiedAt = null) {
+                                ?DateTime $createdAt=null,
+                                ?DateTime $modifiedAt=null) {
 
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;
         $this->position = $position;
-        $this->set_createdAt_from_sql($createdAt);
-        $this->set_modifiedAt_from_sql($modifiedAt, $createdAt);
         $this->author = $author;
         $this->column = $column;
+        $this->createdAt = $createdAt;
+        $this->modifiedAt = $modifiedAt;
     }
 
 
@@ -145,6 +145,7 @@ class Card extends Model {
 
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
+        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Card(
             $data["Title"],
             $data["Body"],
@@ -152,8 +153,8 @@ class Card extends Model {
             User::get_by_id($data["Author"]),
             Column::get_by_id($data["Column"]),
             $data["ID"],
-            $data["CreatedAt"],
-            $data["ModifiedAt"]
+            $createdAt,
+            $modifiedAt
         );
     }
 
@@ -217,8 +218,9 @@ class Card extends Model {
         );
 
         $this->execute($sql, $params);
-        $this->set_id($this->lastInsertId());
-
+        $id = $this->lastInsertId();
+        $this->set_id($id);
+        $this->set_dates_from_instance(self::get_by_id($id));
     }
 
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
