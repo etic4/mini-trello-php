@@ -228,6 +228,7 @@ strong {
     margin-top: 1px;
     font-size: 16px;
     margin-left: -10px;
+    z-index: 0;
 }
 
 
@@ -284,6 +285,7 @@ strong {
 
 #toggle:checked~.control[type="text"] {
     opacity: 100;
+    margin-right: -30px;
     width: 750px;
     transition: width 0.2s ease-in-out;
 }
@@ -292,13 +294,13 @@ strong {
     opacity: 100;
     position: relative;
     width: 40px;
-    right: 17px;
-    z-index: 0;
+    right: -20px;
+    z-index: 1;
 }
 
 #toggle:checked~input[type="submit"] {
     position: relative;
-    right: 8px;
+    right: -29px;
     opacity: 100;
     width: 40px;
 }
@@ -309,9 +311,9 @@ strong {
 
 #toggle:checked {
     top: 14px;
-    left: 9px;
+    left: 45px;
     transform: scale(3);
-    z-index: 1;
+    z-index: 2;
 }
 
 #toggle:checked~label {
