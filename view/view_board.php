@@ -35,7 +35,7 @@
                     </ul>
                     <?php endif;?>
                 </div>
-                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= DBTools::laps($board->get_createdAt(), $board->get_modifiedAt()); ?>.</p>
+                <p class="credit">Created <?= $board->get_created_intvl(); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl(); ?>.</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>
