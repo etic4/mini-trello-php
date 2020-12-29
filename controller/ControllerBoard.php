@@ -3,6 +3,7 @@
 require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "model/Board.php";
+require_once "CtrlTools.php";
 
 
 class ControllerBoard extends Controller {
@@ -20,7 +21,6 @@ class ControllerBoard extends Controller {
         if($user) {
             $owners = $user->get_own_boards();
             $others = $user->get_others_boards();
-        
         }
 
         (new View("boardlist"))->show(array(
@@ -30,7 +30,6 @@ class ControllerBoard extends Controller {
             "errors" => $errors
             )
         );
-        
     }
 
     public function add() {
@@ -86,7 +85,6 @@ class ControllerBoard extends Controller {
         else {
             $this->redirect("board", "index");
         }
-        
     }
 
     public function add_column() {

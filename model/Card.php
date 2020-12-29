@@ -1,7 +1,6 @@
 <?php
 
 require_once "framework/Model.php";
-require_once "DBTools.php";
 require_once "model/Comment.php";
 
 
@@ -98,6 +97,10 @@ class Card extends Model {
 
     public function get_board_id(): string {
         return $this->column->get_board_id();
+    }
+
+    public function get_board() {
+        return $this->column->get_board();
     }
 
     public function get_board_owner(): User{

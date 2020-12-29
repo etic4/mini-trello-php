@@ -3,7 +3,6 @@
 //require_once "ColumnModel.php";
 //require_once "ColumnValidator.php";
 require_once "framework/Model.php";
-require_once "DBTools.php";
 require_once "model/Card.php";
 //require_once "model/Date.php";
 

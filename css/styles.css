@@ -86,18 +86,12 @@ input:focus {
     color: #cce0f4;
 }
 
-;
 .fas,
 .far {
     cursor: pointer;
 }
 
-.login .menu .loginLink,
-.signup .menu .signupLink,
-.home .menu .homeLink,
-.boardMain .menu .boardLink,
-.one_card .menu .cardLink,
-.edit .menu .cardLink {
+.breadcrumb {
     color: #FFFFFF;
     padding-right: 10px;
 }
