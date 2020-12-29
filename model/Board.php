@@ -38,9 +38,18 @@ class Board extends Model {
         return $this->owner;
     }
 
+    public function get_owner_id(): string {
+        return $this->owner->get_id();
+    }
+
+    public function get_owner_fullName(): string {
+        return $this->owner->get_fullName();
+    }
+
     public function get_columns(): array {
         return Column::get_columns_for_board($this);
     }
+
 
     //    SETTERS    //
 
@@ -58,14 +67,16 @@ class Board extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = "Le titre doit comporter au moins 3 caractères";
+            $errors[] = "Title must be at least 3 characters long";
+        }
+        if (!Validation::is_unique_title($this->title)) {
+            $errors[] = "A board with the same title already exists";
         }
         return $errors;
     }
 
 
     //    QUERIES    //
-
 
     protected static function get_instance($data): Board {
         return new Board(
@@ -92,6 +103,25 @@ class Board extends Model {
 
         else {
             return self::get_instance($data);
+        }
+    }
+
+    public static function get_by_title(string $title): ?Board {
+        $sql = 
+            "SELECT * 
+             FROM board 
+             WHERE Title = :title";
+        $params = array("title" => $title);
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        if ($query->rowCount() == 0) {
+            return null;
+        } 
+
+        else {
+            $board = self::get_instance($data);
+            return $board;
         }
     }
 
@@ -131,24 +161,27 @@ class Board extends Model {
     
     public function insert() {
         $sql = 
-            "INSERT INTO board(Title, Owner) 
-             VALUES(:title, :owner)";
+            "INSERT INTO board(Title, Owner, CreatedAt, ModifiedAt) 
+             VALUES(:title, :owner, NOW(), null)";
         $params = array(
             "title"=>$this->get_title(),
-            "owner"=>$this->get_owner()->get_id()
+            "owner"=>$this->get_owner_id(),
+
             );
         $this->execute($sql, $params);
-        $this->set_id($this->lastInsertId());
+        $board = $this->get_by_id($this->lastInsertId());
+        return $board;
     }
 
     public function update(): void {
-        $sql = "UPDATE board 
-                SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
-                WHERE ID=:id";
+        $sql = 
+            "UPDATE board 
+             SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
+             WHERE ID=:id";
         $params = array(
             "id"=>$this->get_id(), 
             "title"=>$this->get_title(), 
-            "owner"=>$this->get_owner()->get_id()
+            "owner"=>$this->get_owner_id(),
         );
         
         $this->execute($sql, $params);
@@ -164,7 +197,28 @@ class Board extends Model {
         $this->execute($sql, $params);
     }
 
-    //    TOOLBOX    //
+    public static function delete_all(User $user): void {
+        foreach (Board::get_users_boards($user) as $board) {
+            $board->delete();
+        }
+    }
+
+    /*  TODO: si on a des instances partout, on peut juste faire: $this->get_column()->get_board()->get_owner() et pas de fetch en DB
+        renvoie le propriétaire du board contenant la carte id_card
+    */
+    public static function get_board_owner(Card $card): User{
+        $sql=
+            "SELECT Owner 
+             FROM Board b, `Column` co, Card ca 
+             WHERE ca.id=:id_card 
+             AND co.id=ca.column 
+             AND co.Board=b.id";
+        $params=array("id_card" => $card->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        return User::get_by_id($data["Owner"]);
+    }
 
 
 }

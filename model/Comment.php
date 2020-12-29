@@ -4,6 +4,7 @@ require_once "framework/Model.php";
 require_once "model/DBTools.php";
 require_once "model/Card.php";
 require_once "model/User.php";
+//require_once "model/Date.php";
 
 class Comment extends Model{
     use Date;
@@ -12,6 +13,7 @@ class Comment extends Model{
     private string $body;
     private User $author;
     private Card $card;
+
 
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?string $createdAt=null,
                                 ?string $modifiedAt=null){
@@ -33,6 +35,7 @@ class Comment extends Model{
         return $this->body;
     }
 
+
     public function get_author(): User {
         return $this->author;
     }
@@ -46,6 +49,19 @@ class Comment extends Model{
     public function set_id($id){
         $this->id=$id;
     }
+
+    public function set_body($body){
+        $this->body=$body;
+    }
+
+    public function set_author($author){
+        $this->author=$author;
+    }
+
+    public function set_card($card){
+        $this->card=$card;
+    }
+
 
 
     //   QUERIES
@@ -65,7 +81,7 @@ class Comment extends Model{
     }
 
     /*
-     * insertion en db avec les valeurs d'instances.
+         insertion en db avec les valeurs d'instances.
      */
     public function insert() { 
         $sql=

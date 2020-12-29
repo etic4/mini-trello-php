@@ -36,6 +36,10 @@ main {
     display: flex;
 }
 
+input:focus {
+    outline: none;
+}
+
 
 /**** =========MENU========= ***/
 
@@ -61,18 +65,43 @@ main {
 /* icons */
 
 .menu .right {
+    display: flex;
+    flex-direction: row;
     padding-right: 25px;
+    color: #7fb2e5
 }
 
 .menu .right i[class~="fas"] {
     text-decoration: none;
     padding: 0 5px;
-    color: #ffffff;
 }
 
-.fas, .far {
+.menu .right a {
+    text-decoration: none;
+    color: #7fb2e5;
+    padding-right: 10px;
+}
+
+.menu .right a:hover {
+    color: #cce0f4;
+}
+
+;
+.fas,
+.far {
     cursor: pointer;
 }
+
+.login .menu .loginLink,
+.signup .menu .signupLink,
+.home .menu .homeLink,
+.boardMain .menu .boardLink,
+.one_card .menu .cardLink,
+.edit .menu .cardLink {
+    color: #FFFFFF;
+    padding-right: 10px;
+}
+
 
 /*** =========ADD========= ***/
 
@@ -154,10 +183,20 @@ strong {
     font-weight: 900;
 }
 
+.icons li a i {
+    font-size: 13px;
+    color: #000000;
+    padding-right: 3px;
+}
+
 .icons li p,
 .icons .link input[type=submit] {
     border: none;
     margin-right: 5px;
+}
+
+.icons li form input {
+    cursor: pointer;
 }
 
 .card .icons {
@@ -165,7 +204,7 @@ strong {
 }
 
 
-/***  ========ERRORS=======  ***/
+/***  =======ERRORS======  ***/
 
 .errors {
     display: block;
@@ -175,8 +214,21 @@ strong {
     border-top: 2px solid #cccccc;
     border-bottom: 2px solid #cccccc;
     padding: 10px 0;
-    margin-top: 20px;
+    margin-top: 15px;
     margin-bottom: -10px;
+}
+
+.add .errors {
+    top: 55px;
+    right: 275px;
+    width: 275px;
+}
+
+.board aside .errors {
+    margin: -22px;
+    top: 10px;
+    padding: 10px;
+    width: 280px;
 }
 
 
@@ -190,6 +242,10 @@ strong {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.login form {
+    margin: auto;
 }
 
 .delete_confirm form,
@@ -409,6 +465,7 @@ strong {
     height: 45px;
     padding: 10px 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 4px;

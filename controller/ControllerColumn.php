@@ -29,16 +29,7 @@ class ControllerColumn extends Controller {
         }
     }
 
-    public function add() {
-        $user = $this->get_user_or_redirect();
-        if(!empty($_POST["title"])) {
-            $title = $_POST["title"];
-            $board = Board::get_by_id($_POST["id"]);
-            $column = Column::create_new($title, $board);
-            $column->insert();
-        }
-        $this->redirect("board", "board", $_POST["id"]);
-    }
+    
 
     //PRG ???
     public function delete() {
@@ -50,7 +41,7 @@ class ControllerColumn extends Controller {
             if(!isset($_POST["delete"])) {
                 if (Column::get_columns_count($board) == 0) {
                     $col->delete();
-                    $col->decrement_following_columns_position();
+                    Column::decrement_following_columns_position($col);
                     $this->redirect("board", "board", $board->get_id());
                 }
 

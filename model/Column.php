@@ -5,6 +5,7 @@
 require_once "framework/Model.php";
 require_once "DBTools.php";
 require_once "model/Card.php";
+//require_once "model/Date.php";
 
 
 class Column extends Model {
@@ -13,8 +14,8 @@ class Column extends Model {
     private ?string $id;
     private string $title;
     private string $position;
-
     private Board $board;
+
 
     public static function create_new(string $title, Board $board): Column {
         return new Column(
@@ -53,6 +54,18 @@ class Column extends Model {
         return $this->board;
     }
 
+    public function get_board_id(): string {
+        return $this->board->get_id();
+    }
+
+    public function get_board_owner(): User {
+        return $this->board->get_owner();
+    }
+
+    public function get_board_columns(): array {
+        return $this->board->get_columns();
+    }
+
     public function get_cards(): array {
         return Card::get_cards_for_column($this);
     }
@@ -68,13 +81,17 @@ class Column extends Model {
         $this->position = $position;
     }
 
+    public function set_cards(): void {
+        $this->cards = Card::get_cards_for_column($this);
+    }
+
 
     //    VALIDATION    //
 
     public function validate(): array {
         $errors = [];
-        if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $errors[] = "Le titre doit comporter au moins 3 caractères";
+        if (!Validation::str_longer_than($this->title, 2)) {
+            $errors = array("error" => "Title must be at least 3 characters long", "column" => "column", "board_id" => $this->get_board_id());
         }
         return $errors;
     }
@@ -156,12 +173,12 @@ class Column extends Model {
 
     public function insert(): Column {
         $sql = 
-            "INSERT INTO `column`(Title, Position, Board) 
-             VALUES(:title, :position, :board)";
+            "INSERT INTO `column`(Title, Position, Board, CreatedAt, ModifiedAt) 
+             VALUES(:title, :position, :board, NOW(), null)";
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
-            "board" => $this->get_board()->get_id()
+            "board" => $this->get_board_id()
         );
 
         $this->execute($sql, $params);
@@ -178,7 +195,7 @@ class Column extends Model {
             "id" => $this->get_id(), 
             "title" => $this->get_title(), 
             "position" => $this->get_position(),
-            "board" => $this->get_board()->get_id()
+            "board" => $this->get_board_id()
         );
         $this->execute($sql, $params);
     }
@@ -195,13 +212,14 @@ class Column extends Model {
         $this->execute($sql, $params);
     }
 
+
     // MOVE COLUMN //
 
     public function move_left(): void {
         $pos = $this->get_position();
 
         if ($pos > 0) {
-            $target = $this->get_board()->get_columns()[$pos - 1];
+            $target = $this->get_board_columns()[$pos - 1];
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
@@ -212,7 +230,7 @@ class Column extends Model {
 
     public function move_right(): void {
         $pos = $this->get_position();
-        $columns = $this->get_board()->get_columns();
+        $columns = $this->get_board_columns();
 
         if ($pos < sizeof($columns) - 1) {
             $target = $columns[(int)$pos + 1];
@@ -230,9 +248,10 @@ class Column extends Model {
                 WHERE Board=:board 
                 AND Position>:pos";
         $params = array(
-            "board" => $col->get_board()->get_id(),
+            "board" => $col->get_board_id(),
             "pos" => $col->get_position()
         );
         self::execute($sql,$params);
     }
+
 }

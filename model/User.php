@@ -199,12 +199,36 @@ class User extends Model {
 
     //    TOOLBOX    //
 
+
+    // Prépare la liste des boards pour l'affichage
+    private function get_boards_for_view($board_array): array {
+        $boards = [];
+        foreach ($board_array as $board) {
+            $user = $board->get_owner();
+
+            if(count($board->get_columns()) > 1) {
+                $columns = "(" . count($board->get_columns()) . " columns)";
+            }
+            else {
+                $columns = "(" . count($board->get_columns()) . " column)";
+            }
+
+            $boards[] = array(
+                "id" => $board->get_id(), 
+                "title" => $board->get_title(), 
+                "fullName" => $user->get_fullName(), 
+                "columns" => $columns
+            );
+        }
+        return $boards;
+    }
+
     public function get_own_boards(): array {
-        return Board::get_users_boards($this);
+        return $this->get_boards_for_view(Board::get_users_boards($this));
     }
 
     public function get_others_boards(): array {
-        return Board::get_others_boards($this);
+        return$this->get_boards_for_view(Board::get_others_boards($this));
     }
 
 }

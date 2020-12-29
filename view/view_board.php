@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
     <link href="css/styles.css" rel="stylesheet" type="text/css"/>
 </head>
-<body>
+<body class="boardMain">
 	<header>
      <?php include('menu.php'); ?>
 	</header>
@@ -18,6 +18,7 @@
             <header>
                 <div class="title">
                     <h2>Board "<?= $board->get_title() ?>"</h2>
+                    <?php if ($user == $board->get_owner()): ?>
                     <ul class="icons">
                         <li>
                             <form class='link' action='board/edit' method='post'>
@@ -32,18 +33,27 @@
                             </form>
                         </li>
                     </ul>
+                    <?php endif;?>
                 </div>
-                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. <?= DBTools::laps($board->get_createdAt(), $board->get_modifiedAt()); ?>.</p>
+                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= DBTools::laps($board->get_createdAt(), $board->get_modifiedAt()); ?>.</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>
                 <aside class="column_form">
-                    <form class="add" action="column/add" method="post">
+                    <form class="add" action="board/board" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                        <input type='text' name='column' value='column' hidden>
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
-                </aside>
+                    <?php if (count($errors) != 0): ?>
+                    <div class='errors'>
+                        <ul>
+                            <li><?= $errors['error']; ?></li>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
+                </aside>     
             </div>
         </article>
     </main>
