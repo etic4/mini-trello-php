@@ -142,6 +142,7 @@ class ControllerBoard extends Controller {
             $instance = Board::get_by_id($board_id);
             if(!is_null($instance)) {
                 (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
+                die;
             }
             else {
                 $this->redirect("board", "board", $board_id);
@@ -156,6 +157,7 @@ class ControllerBoard extends Controller {
         if(isset($_POST["id"])) {
             $board = Board::get_by_id($_POST["id"]);
             if(!isset($_POST["delete"])) {
+                $board->delete();
                 $this->redirect("board", "board", $_POST["id"]);
             }
             $board->delete();
