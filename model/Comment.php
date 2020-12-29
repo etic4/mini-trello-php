@@ -1,7 +1,6 @@
 <?php
 
 require_once "framework/Model.php";
-require_once "model/DBTools.php";
 require_once "model/Card.php";
 require_once "model/User.php";
 //require_once "model/Date.php";

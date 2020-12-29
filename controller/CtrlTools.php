@@ -2,7 +2,7 @@
 
 require_once "framework/Model.php";
 
-class DBTools extends Model {
+class CtrlTools extends Model {
 
     public static function breadcrumb(): string {
         $breadcrumb = "<p class='breadcrumb'>Boards</p>";

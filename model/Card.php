@@ -1,7 +1,6 @@
 <?php
 
 require_once "framework/Model.php";
-require_once "DBTools.php";
 require_once "model/Comment.php";
 
 
