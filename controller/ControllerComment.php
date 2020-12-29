@@ -16,7 +16,7 @@ class ControllerComment extends Controller {
             $idcomment=$_POST['id'];
             $instance=Comment::get_by_id($idcomment);
             $instance->delete(); 
-            $this->redirect("board","board",$instance->get_card()->get_column()->get_board()->get_id());
+            $this->redirect("card","view",$instance->get_card()->get_id());
         }
         $this->redirect("board","index");
     }
@@ -52,7 +52,7 @@ class ControllerComment extends Controller {
             $card=Card::get_by_id($_POST['idcard']);  
             $instance=new Comment($_POST['body'],$user,$card);
             $instance->set_id($instance->insert());
-            $this->redirect("board","board",$instance->get_card()->get_column()->get_board()->get_id());
+            $this->redirect("card","view",$_POST['idcard']);
         }
         $this->redirect("board","index");
     }

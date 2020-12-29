@@ -108,7 +108,8 @@ class Comment extends Model{
         $sql = 
             "SELECT * 
              FROM comment 
-             WHERE ID=:id";
+             WHERE ID=:id
+             ORDER BY ModifiedAt DESC, CreatedAt DESC";
         $query = self::execute($sql, array("id"=>$id));
 
         $data = $query->fetch();
@@ -136,6 +137,12 @@ class Comment extends Model{
         $this->execute($sql, $params);
     }
 
+    public function delete() {
+        $sql = "DELETE FROM comment 
+                WHERE ID = :id";
+        $param = array('id' => $this->id);
+        self::execute($sql, $param);
+    }
     /*
         renvoie un tab de comment dont la carte est $card
     */
@@ -143,7 +150,8 @@ class Comment extends Model{
         $sql = 
             "SELECT * 
              FROM comment 
-             WHERE Card=:id";
+             WHERE Card=:id
+             ORDER BY ModifiedAt DESC, CreatedAt DESC";
         $param = array("id" => $card->get_id());
         $query = self::execute($sql, $param);
         $data = $query->fetchAll();
@@ -154,14 +162,15 @@ class Comment extends Model{
         }
         return $comments;
     }
-
-    public function delete() {
-        $sql = "DELETE FROM comment 
-                WHERE ID = :id";
-        $param = array('id' => $this->id);
-        self::execute($sql, $param);
-    }
+    // fonction utilitaires
     public function get_author_name(): String{
         return $this->get_author()->get_fullName();
+    }
+
+    public function get_time_string(): String{
+
+        $created=$this->get_created_intvl();
+        $ma=$this->get_modified_intvl();
+        return "Created ".$created.". ".$ma.".";
     }
 }

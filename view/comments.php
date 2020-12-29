@@ -15,7 +15,7 @@
                         </form>
                     <?php else: ?>
                         <p><?= $comment->get_body() ?> and <?= $comment->get_id() ?> </p>
-                        <p>by <strong><?= $comment->get_author()->get_fullName() ?></strong> created <?=$comment->get_created_intvl(); ?> ago.</p>
+                        <p>by <strong><?= $comment->get_author()->get_fullName() ?></strong> <?= $comment->get_time_string() ?></p>
                     <?php endif; ?>
                     <ul class="icons">
                         <!-- si l'utilisateur est l'auteur du message -->
