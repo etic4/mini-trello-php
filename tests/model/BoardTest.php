@@ -101,4 +101,13 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
     }
 
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Board $inst) {
+        sleep(1);
+        $inst->update();
+        $this->assertNotEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+    }
+
 }

@@ -108,4 +108,12 @@ class CardTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
     }
 
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Card $inst) {
+        sleep(1);
+        $inst->update();
+        $this->assertNotEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+    }
 }
