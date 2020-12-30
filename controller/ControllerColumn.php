@@ -64,6 +64,7 @@ class ControllerColumn extends Controller {
             $col = Column::get_by_id($_POST["id"]);
             if(isset($_POST["delete"])) {
                 $col->delete();
+                Column::decrement_following_columns_position($col);
             }
             $this->redirect("board", "board",   $col->get_board_id());
         }
