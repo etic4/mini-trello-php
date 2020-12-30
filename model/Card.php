@@ -144,7 +144,11 @@ class Card extends Model {
     }
 
     public function has_comments(): bool {
-        return self::get_cards_count($this->get_column()) - 1;
+        return $this->get_comments_count() > 0;
+    }
+
+    public function get_comments_count(): string {
+        return Comment::get_comments_count($this);
     }
 
     public function is_first(): bool {

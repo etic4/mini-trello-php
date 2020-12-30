@@ -26,6 +26,7 @@ class Comment extends Model{
     public static function create_new(String $body, User $author, Card $card): Comment{
         return new Comment($body, $author, $card, null);
     }
+
     // GETTERS
 
     public function get_id(): string {
@@ -142,6 +143,7 @@ class Comment extends Model{
         $param = array('id' => $this->id);
         self::execute($sql, $param);
     }
+
     /*
         renvoie un tab de comment dont la carte est $card
     */
@@ -161,13 +163,22 @@ class Comment extends Model{
         }
         return $comments;
     }
+
+    public static function get_comments_count(Card $card): string {
+        $sql = "SELECT COUNT(*) as nbr FROM comment WHERE Card=:cardId";
+        $params = array("cardId" => $card->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        return $data["nbr"];
+    }
+
     // fonction utilitaires
     public function get_author_name(): String{
         return $this->get_author()->get_fullName();
     }
 
     public function get_time_string(): String{
-
         $created=$this->get_created_intvl();
         $ma=$this->get_modified_intvl();
         return "Created ".$created.". ".$ma.".";

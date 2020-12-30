@@ -12,7 +12,7 @@
                     </li>
                     <?php if($card->has_comments()): ?>
                     <li>
-                        <p class='button_comment'>&#x28;<?= $card->has_comments() ?>&nbsp;<i class="far fa-comment"></i>&#x29;</p>
+                        <p class='button_comment'>&#x28;<?= $card->get_comments_count() ?>&nbsp;<i class="far fa-comment"></i>&#x29;</p>
                     </li>
                     <?php endif; ?>
                     <li>
