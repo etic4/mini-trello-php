@@ -13,10 +13,10 @@ class Column extends Model {
     private ?string $id;
     private string $title;
     private int $position;
-    private string $board;
+    private Board $board;
     private ?array $cards;
 
-    public function __construct(string $title, int $position, string $board, string $id=null, DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
+    public function __construct(string $title, int $position, Board $board, string $id=null, DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->position = $position;
@@ -29,7 +29,7 @@ class Column extends Model {
         return new Column(
             $title, 
             self::get_column_count(Board::get_by_id($board_id)), 
-            $board_id, 
+            Board::get_by_id($board_id), 
             null, 
             new DateTime(), 
             null
@@ -51,16 +51,12 @@ class Column extends Model {
         return $this->position;
     }
 
-    public function get_board(): string {
+    public function get_board(): Board {
         return $this->board;
     }
 
-    public function get_board_inst(): Board {
-        return Board::get_by_id($this->board);
-    }
-
     public function get_board_id(): string {
-        return $this->get_board_inst()->get_id();
+        return $this->get_board()->get_id();
     }
 
     public function get_cards(): array {
@@ -71,7 +67,7 @@ class Column extends Model {
         return new Column(
             $data["Title"],
             $data["Position"],
-            $data["Board"], 
+            Board::get_by_id($data["Board"]), 
             $data["ID"],
             DBTools::php_date($data["CreatedAt"]), 
             DBTools::php_date($data["ModifiedAt"])
@@ -83,6 +79,10 @@ class Column extends Model {
 
     public function set_id(string $id): void {
         $this->id = $id;
+    }
+
+    public function set_title(string $title): void {
+        $this->title = $title;
     }
 
     public function set_position(int $position): void {
@@ -97,10 +97,10 @@ class Column extends Model {
 
     //    VALIDATION    //
 
-    public function validate(): array {
+    public function validate(string $action): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "column" => "column", "board_id" => $this->board);
+            $errors = array("error" => "Title must be at least 3 characters long", "instance" => "column", "action" => $action, "column_id" => $this->get_id(), "id" => $this->get_board_id());
         }
         return $errors;
     }
@@ -218,7 +218,7 @@ class Column extends Model {
         $params = array(
             "title" => $this->get_title(), 
             "position" => $this->get_position(), 
-            "board" => $this->get_board(),
+            "board" => $this->get_board_id(),
         );
 
         $this->execute($sql, $params);
@@ -229,14 +229,13 @@ class Column extends Model {
     public function update(): void {
         $sql = 
             "UPDATE `column` 
-             SET Title=:title, Position=:position, Board=:board, ModifiedAt=:modifiedAt 
+             SET Title=:title, Position=:position, Board=:board, ModifiedAt=NOW() 
              WHERE ID=:id";
         $params = array(
             "id" => $this->get_id(), 
             "title" => $this->get_title(), 
             "position" => $this->get_position(),
-            "board" => $this->get_board(), 
-            "modifiedAt" => $this->set_modifiedDate_and_get_sql()
+            "board" => $this->get_board_id(), 
         );
         $this->execute($sql, $params);
     }
@@ -292,7 +291,7 @@ class Column extends Model {
         $pos = $this->position;
 
         if ($pos > 0) {
-            $target = $this->get_board_inst()->get_columns()[$pos-1];
+            $target = $this->get_board()->get_columns()[$pos-1];
 
             $card->set_column($target->get_id());
             $card->set_position(sizeof($target->get_cards()));
@@ -307,7 +306,7 @@ class Column extends Model {
 
     public function move_right(Card $card): void {
         $pos = $this->position;
-        $colList = $this->get_board_inst()->get_columns();
+        $colList = $this->get_board()->get_columns();
 
         if ($pos < sizeof($colList)-1) {
             $target = $colList[$pos+1];

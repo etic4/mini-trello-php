@@ -18,7 +18,7 @@ class ControllerCard extends Controller {
             $card = Card::get_by_id($cardId);
             $column = $card->get_column_inst();
             $column->move_left($card);
-            $this->redirect("board", "board", $column->get_board_inst()->get_id());
+            $this->redirect("board", "board", $column->get_board()->get_id());
         }
     }
 
@@ -30,7 +30,7 @@ class ControllerCard extends Controller {
             $column = $card->get_column_inst();
             $column->move_right($card);
 
-            $this->redirect("board", "board", $column->get_board_inst()->get_id());
+            $this->redirect("board", "board", $column->get_board()->get_id());
         }
 
     }
@@ -43,7 +43,7 @@ class ControllerCard extends Controller {
             $column = $card->get_column_inst();
             $column->move_up($card);
 
-            $this->redirect("board", "board", $column->get_board_inst()->get_id());
+            $this->redirect("board", "board", $column->get_board()->get_id());
         }
     }
 
@@ -55,7 +55,7 @@ class ControllerCard extends Controller {
             $column = $card->get_column_inst();
             $column->move_down($card);
 
-            $this->redirect("board", "board", $column->get_board_inst()->get_id());
+            $this->redirect("board", "board", $column->get_board()->get_id());
         }
     }
 
@@ -145,7 +145,7 @@ class ControllerCard extends Controller {
             $card=Card::get_by_id($idcard);
             if(!is_null($card)) {
                 $column=Column::get_by_id($card->get_column());
-                $board=Board::get_by_id($column->get_board());
+                $board=Board::get_by_id($column->get_board_id());
                 $comments=Comment::get_comments_from_card($idcard);
                 $card->set_comments($comments);
                 (new View("card_edit"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));
@@ -170,7 +170,7 @@ class ControllerCard extends Controller {
             $card=Card::get_by_id($idcard);
             if(!is_null($card)) {
                 $column=Column::get_by_id($card->get_column());
-                $board=Board::get_by_id($column->get_board());
+                $board=Board::get_by_id($column->get_board_id());
                 $comments=Comment::get_comments_from_card($idcard);
                 $card->set_comments($comments);
                 (new View("card"))->show(array("user"=>$user, "card"=>$card, "board"=>$board, "column"=>$column));

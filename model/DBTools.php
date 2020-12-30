@@ -35,31 +35,31 @@ class DBTools extends Model {
                 }
             } elseif ($intvl->m != 0) {
                 if($intvl->m == 1) {
-                    $laps = "1 month";
+                    $laps = "1 month ago";
                 } else {
                     $laps = $intvl->m . " months ago";
                 }
             } elseif ($intvl->d != 0) {
                 if($intvl->d == 1) {
-                    $laps = "1 day";
+                    $laps = "1 day ago";
                 } else {
                     $laps = $intvl->d . " days ago";
                 }
             } elseif ($intvl->h != 0) {
                 if($intvl->h == 1) {
-                    $laps = "1 hour";
+                    $laps = "1 hour ago";
                 } else {
                     $laps = $intvl->h . " hours ago";
                 }
             } elseif ($intvl->i != 0) {
                 if($intvl->i == 1) {
-                    $laps = "1 minute";
+                    $laps = "1 minute ago";
                 } else {
                     $laps = $intvl->i . " minutes ago";
                 }
             } elseif ($intvl->s != 0) {
                 if($intvl->s == 1) {
-                    $laps = "1 second";
+                    $laps = "1 second ago";
                 } else {
                     $laps = $intvl->s . " seconds ago";
                 }
@@ -69,11 +69,12 @@ class DBTools extends Model {
     }
     
     public static function laps ($firstDate, $secondDate): string {
-        if ($secondDate->diff($firstDate)->format('Y-m-d H:i:s') == "0-0-0 0:0:0") {
-            return "Modified " . self::intvl($firstDate, $secondDate);
+        if (is_null($secondDate->diff($firstDate))) {
+            return "Never modified";
         }
         else {
-            return "Never modified";
+            $firstDate = new DateTime();
+            return "Modified " . self::intvl($firstDate, $secondDate);
         }
     }
 

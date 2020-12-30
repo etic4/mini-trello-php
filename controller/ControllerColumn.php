@@ -7,14 +7,14 @@ require_once "model/User.php";
 class ControllerColumn extends Controller {
 
     public function index() {
-        // TODO
+        
     }
 
     public function right() {
         $user = $this->get_user_or_redirect();
         if (isset($_POST["id"])) {
             $col = Column::get_by_id($_POST["id"]);
-            $board = $col->get_board_inst();
+            $board = $col->get_board();
             $board->move_right($col);
 
             $this->redirect("board", "board", $board->get_id());
@@ -25,7 +25,7 @@ class ControllerColumn extends Controller {
         $user = $this->get_user_or_redirect();
         if (isset($_POST["id"])) {
             $col = Column::get_by_id($_POST["id"]);
-            $board = $col->get_board_inst();
+            $board = $col->get_board();
             $board->move_left($col);
 
             $this->redirect("board", "board", $board->get_id());
@@ -78,5 +78,49 @@ class ControllerColumn extends Controller {
             $this->redirect("board", "board");
          }
     }
+
+    /*
+    public function add() {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $board_id = $_POST["id"];
+            $action = $_POST["action"];
+            $column = Column::create_new($title, $board_id);
+            $errors = $column->validate($action);
+
+            if(empty($errors)) {
+                $column = $column->insert();
+                $this->redirect("board", "board", $board_id);
+            }
+
+        }
+        return $errors;
+    }
+
+    // edit titre Column
+    public function edit() {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $column_id = $_POST["id"];
+            $action = $_POST["action"];
+            $column = Column::get_by_id($column_id);
+            $column->set_title($title);
+            $errors = $column->validate($action);
+
+            if(empty($errors)) {
+                $column = $column->insert();
+                $this->redirect("board", "board", $column->get_board_id());
+            }
+
+        }
+        return $errors;
+    }
+    */
 
 }

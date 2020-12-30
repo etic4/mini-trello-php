@@ -5,14 +5,17 @@
             <header class="title_column">
                 <ul class="icons">
                     <li>
-                        <form class='editTitle' action='column/edit' method='post'>
-                            <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
+                        <form class='editTitle' action='board/board/<?= $board->get_id() ?>' method='post'>
+                            <input type='text' name='instance' value='column' hidden>
+                            <input type='text' name='action' value='edit' hidden>
+                            <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                            <input type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
                             <input type ="checkbox" id="toggle">
                             <label for="toggle"><i class="fas fa-edit"></i></label>
-                            <input class="control" type="text" name="title" value="<?= $column->get_title() ?>">
-                            <input class="fas fa-paper-plane" type="submit" value="&#xf1d8">
+                            <input type="text" class="control" name="title" value="<?= $column->get_title() ?>">
+                            <input type="submit" class="fas fa-paper-plane" value="&#xf1d8">
                             <button class="control"><i class="fas fa-undo-alt"></i></button>
-                            <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
+                            <input type='submit' value="&#xf044" class="fas fa-edit" style="background:none">
                             <h3><?= $column->get_title() ?></h3>
                         </form>
                     </li>
@@ -41,6 +44,13 @@
                     </li>
                     <?php endif; ?>
                 </ul>
+                <?php if (count($errors) != 0 && $errors['instance'] == "column" && $errors['action'] == "edit" && $errors['column_id'] == $column->get_id()): ?>
+                    <div class='errors'>
+                        <ul>
+                            <li><?= $errors['error']; ?></li>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </header>
             <section>
                 <?php include("cards.php"); ?>

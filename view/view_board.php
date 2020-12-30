@@ -20,8 +20,9 @@
                     <?php if ($user == $board->get_owner()): ?>
                     <ul class="icons">
                         <li>
-                            <form class='editTitle' action='board/edit' method='post'>
+                            <form class='editTitle' action='board/board/<?= $board->get_id() ?>' method='post'>
                                 <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                                <input type='text' name='instance' value='board' hidden>
                                 <input type ="checkbox" id="toggle">
                                 <label for="toggle"><i class="fas fa-edit"></i></label>
                                 <input class="control" type="text" name="title" value="<?= $board->get_title() ?>">
@@ -37,20 +38,28 @@
                             </form>
                         </li>
                     </ul>
-                    <?php endif;?>
+                    <?php endif; ?>
+                    <?php if (count($errors) != 0 && $errors['instance'] == "board"): ?>
+                    <div class='errors'>
+                        <ul>
+                            <li><?= $errors['error']; ?></li>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
                 </div>
-                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. <?= DBTools::laps($board->get_createdAt(), $board->get_modifiedAt()); ?>.</p>
+                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. <?= DBTools::laps(new DateTime(), $board->get_modifiedAt()); ?>.</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>
                 <aside class="column_form">
-                    <form class="add" action="board/board" method="post">
+                    <form class="add" action="board/board/<?= $board->get_id() ?>" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <input type='text' name='column' value='column' hidden>
+                        <input type='text' name='instance' value='column' hidden>
+                        <input type='text' name='action' value='add' hidden>
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
-                    <?php if (count($errors) != 0): ?>
+                    <?php if (count($errors) != 0 && $errors['instance'] == "column" && $errors['action'] == "add"): ?>
                     <div class='errors'>
                         <ul>
                             <li><?= $errors['error']; ?></li>
