@@ -51,7 +51,7 @@ class ControllerComment extends Controller {
         if(isset($_POST['idcard'])&& !empty($_POST['body'])){
             $card=Card::get_by_id($_POST['idcard']);  
             $instance=new Comment($_POST['body'],$user,$card);
-            $instance->set_id($instance->insert());
+            $instance->insert();
             $this->redirect("card","view",$_POST['idcard']);
         }
         $this->redirect("board","index");
