@@ -36,7 +36,9 @@ main {
     display: flex;
 }
 
-input:focus {
+input:focus,
+button:focus,
+button:focus:not(:focus-visible) {
     outline: none;
 }
 
@@ -195,6 +197,183 @@ strong {
 
 .card .icons {
     margin-left: 7px;
+}
+
+
+/***  =====EDIT TITLE=====  ***/
+
+.editTitle {
+    display: flex;
+    flex-direction: row;
+    margin-left: -10px;
+}
+
+
+/* rendre invisible */
+
+.control,
+.editTitle input[type="submit"] {
+    opacity: 0;
+    width: 0;
+}
+
+
+/* position corbeille */
+
+.board .title .link .far {
+    margin-top: 1px;
+    font-size: 16px;
+    margin-left: -10px;
+    z-index: 0;
+}
+
+
+/* ordre flex */
+
+.editTitle .control[type="text"] {
+    order: 1;
+    padding-left: 15px;
+    font-size: 20px;
+    height: 40px;
+    border-radius: 4px 0 0 4px;
+    color: #666666;
+    border: 1px solid #cccccc;
+}
+
+.editTitle input[type="submit"] {
+    order: 2;
+    color: #FFFFFF;
+    border: 1px solid #0066CC;
+    background-color: #0066CC;
+    border-right: 2px solid #cccccc;
+}
+
+.editTitle h2 {
+    order: 3;
+    margin-left: -20px;
+}
+
+.editTitle label {
+    order: 4;
+    margin-top: 10px;
+    padding-right: 5px;
+    padding-left: 10px;
+}
+
+.editTitle #toggle {
+    order: 5;
+    position: relative;
+    top: 15px;
+    right: 20px;
+    transform: scale(2);
+    opacity: 0;
+}
+
+.editTitle button {
+    order: 6;
+    color: #FFFFFF;
+    border: 1px solid #0066CC;
+    background-color: #0066CC;
+    border-radius: 0 4px 4px 0;
+}
+
+
+/* action */
+
+#toggle:checked~.control[type="text"] {
+    opacity: 100;
+    margin-right: -30px;
+    width: 750px;
+    transition: width 0.2s ease-in-out;
+}
+
+#toggle:checked~button {
+    opacity: 100;
+    position: relative;
+    width: 40px;
+    right: -20px;
+    z-index: 1;
+}
+
+#toggle:checked~input[type="submit"] {
+    position: relative;
+    right: -29px;
+    opacity: 100;
+    width: 40px;
+}
+
+#toggle:checked~h2 {
+    font-size: 0;
+}
+
+#toggle:checked {
+    top: 14px;
+    left: 45px;
+    transform: scale(3);
+    z-index: 2;
+}
+
+#toggle:checked~label {
+    font-size: 0;
+    height: 20px;
+}
+
+
+/* edit column */
+
+.column .editTitle h3 {
+    position: relative;
+    top: 10px;
+    left: 12px;
+}
+
+.column .editTitle label {
+    margin-right: -15px;
+    padding-top: 4px;
+    font-size: 13px;
+}
+
+.column .editTitle #toggle {
+    right: 6px;
+}
+
+
+/* action */
+
+.column #toggle:checked~h3 {
+    font-size: 0;
+}
+
+.column #toggle:checked~.control[type="text"] {
+    margin-left: 7px;
+    margin-top: 9px;
+    width: 180px;
+    margin-right: -60px;
+    font-size: 18px;
+    height: 45px;
+}
+
+.column #toggle:checked~button {
+    opacity: 100;
+    position: relative;
+    margin-top: 9px;
+    width: 40px;
+    right: -2px;
+    z-index: 1;
+    margin-right: 50px;
+}
+
+.column #toggle:checked~input[type="submit"] {
+    position: relative;
+    margin-top: 9px;
+    right: -56px;
+    opacity: 100;
+    width: 40px;
+}
+
+.column #toggle:checked {
+    top: 27px;
+    left: 28px;
 }
 
 
@@ -494,11 +673,6 @@ strong {
     display: flex;
     flex-direction: row;
     justify-content: start;
-}
-
-.board .column .title_column h3 {
-    padding-right: 10px;
-    padding-top: 2px;
 }
 
 .board .column footer .add {

@@ -60,21 +60,43 @@ trait DateTrait {
     private function intvl($firstDate, $secondDate): string {
         $intvl = $secondDate->diff($firstDate);
         $laps = "1 second ago";
-        if(!is_null($intvl)) {
-            if ($intvl->y != 0) {
+        if ($intvl->y != 0) {
+            if($intvl->y == 1) {
+                $laps = "1 year ago";
+            } else {
                 $laps = $intvl->y . " years ago";
-            } elseif ($intvl->m != 0) {
+            }
+        } elseif ($intvl->m != 0) {
+            if($intvl->m == 1) {
+                $laps = "1 month ago";
+            } else {
                 $laps = $intvl->m . " months ago";
-            } elseif ($intvl->d != 0) {
+            }
+        } elseif ($intvl->d != 0) {
+            if($intvl->d == 1) {
+                $laps = "1 day ago";
+            } else {
                 $laps = $intvl->d . " days ago";
-            } elseif ($intvl->h != 0) {
+            }
+        } elseif ($intvl->h != 0) {
+            if($intvl->h == 1) {
+                $laps = "1 hour ago";
+            } else {
                 $laps = $intvl->h . " hours ago";
-            } elseif ($intvl->i != 0) {
+            }
+        } elseif ($intvl->i != 0) {
+            if($intvl->i == 1) {
+                $laps = "1 minute ago";
+            } else {
                 $laps = $intvl->i . " minutes ago";
-            } elseif ($intvl->s != 0) {
+            }
+        } elseif ($intvl->s != 0) {
+            if($intvl->s == 1) {
+                $laps = "1 second ago";
+            } else {
                 $laps = $intvl->s . " seconds ago";
             }
         }
-        return $laps;
+    return $laps;
     }
 }

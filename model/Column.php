@@ -21,7 +21,10 @@ class Column extends Model {
         );
     }
 
-    public function __construct(string $title, int $position, Board $board, string $id=null, ?DateTime $createdAt=null,
+    public function __construct(string $title, 
+                                int $position, 
+                                Board $board, string $id=null, 
+                                ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
@@ -73,6 +76,10 @@ class Column extends Model {
         $this->id = $id;
     }
 
+    public function set_title(string $title): void {
+        $this->title = $title;
+    }
+
     public function set_position(int $position): void {
         $this->position = $position;
     }
@@ -87,10 +94,10 @@ class Column extends Model {
 
     //    VALIDATION    //
 
-    public function validate(): array {
+    public function validate(string $action): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "column" => "column", "board_id" => $this->get_board_id());
+            $errors = array("error" => "Title must be at least 3 characters long", "instance" => "column", "action" => $action, "column_id" => $this->get_id(), "id" => $this->get_board_id());
         }
         return $errors;
     }
@@ -177,7 +184,7 @@ class Column extends Model {
              VALUES(:title, :position, :board)";
         $params = array(
             "title" => $this->get_title(), 
-            "position" => $this->get_position(), 
+            "position" => $this->get_position(),
             "board" => $this->get_board_id()
         );
 
@@ -244,14 +251,14 @@ class Column extends Model {
         }
     }
 
-    public static function decrement_following_columns_position(Column $col): void {
+    public static function decrement_following_columns_position(Column $column): void {
         $sql = "UPDATE `column` 
                 SET Position = Position - 1
                 WHERE Board=:board 
                 AND Position>:pos";
         $params = array(
-            "board" => $col->get_board_id(),
-            "pos" => $col->get_position()
+            "board" => $column->get_board_id(),
+            "pos" => $column->get_position()
         );
         self::execute($sql,$params);
     }

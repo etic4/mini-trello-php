@@ -32,25 +32,7 @@ class ControllerBoard extends Controller {
         );
     }
 
-    public function add() {
-        $user = $this->get_user_or_redirect();
-        $errors = [];
-
-        if (isset($_POST["title"])) {
-            $title = $_POST["title"];
-            $board = new Board($title, $user);
-            $errors = $board->validate();
-
-            if(empty($errors)) {
-                $board->insert();
-                $this->redirect("board", "board", $board->get_id());
-            }
-        }
-        return $errors;
-    }
-
-
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function board() {
         $user = $this->get_user_or_redirect();
@@ -58,11 +40,28 @@ class ControllerBoard extends Controller {
         $columns = [];
         $errors = [];
 
-        if(isset($_POST["column"])) {
-            $errors = $this->add_column();
-            if(!empty($errors)) {
-                $board_id = $errors["board_id"];
+        if(isset($_POST['instance'])) {
+            $board_id = $_POST['id'];
+
+            if($_POST['instance'] == "board") {
+                $errors = $this->edit();
             }
+
+            if($_POST['instance'] == "column") {
+                if($_POST['action'] == "add") {
+                    $errors = $this->add_column();
+                }
+
+                elseif($_POST['action'] == 'edit') {
+                    $errors = $this->edit_column();
+                }
+
+            }
+
+            if($_POST['instance'] == "card") {
+
+            }
+
         }
 
         elseif(isset($_GET["param1"])) {
@@ -87,6 +86,27 @@ class ControllerBoard extends Controller {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // ajout nouveau Board
+    public function add() {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+
+        if (isset($_POST["title"])) {
+            $title = $_POST["title"];
+            $board = new Board($title, $user, null, new DateTime(), null);
+            $errors = $board->validate();
+
+            if(empty($errors)) {
+                $board->insert();
+                $this->redirect("board", "board", $board->get_id());
+            }
+        }
+        return $errors;
+    }
+
+    // ajout nouvelle Column
     public function add_column() {
         $user = $this->get_user_or_redirect();
         $errors = [];
@@ -94,9 +114,10 @@ class ControllerBoard extends Controller {
         if (!empty($_POST["title"])) {
             $title = $_POST["title"];
             $board_id = $_POST["id"];
+            $action = $_POST["action"];
             $board = Board::get_by_id($board_id);
             $column = Column::create_new($title, $board);
-            $errors = $column->validate();
+            $errors = $column->validate($action);
 
             if(empty($errors)) {
                 $column->insert();
@@ -106,10 +127,54 @@ class ControllerBoard extends Controller {
         return $errors;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //edit titre Board
+    public function edit() {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
 
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $board_id = $_POST["id"];
+            $board = Board::get_by_id($board_id);
+            $board->set_title($title);
+            $errors = $board->validate();
 
-     // si pas de colonne -> delete -> redirect index
+            if(empty($errors)) {
+                $board->update();
+                $this->redirect("board", "board", $board_id);
+            }
+
+        }
+        return $errors;
+    }
+
+    // edit titre Column
+    public function edit_column() {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+
+        if (!empty($_POST["title"])) {
+            $title = $_POST["title"];
+            $column_id = $_POST["column_id"];
+            $action = $_POST["action"];
+            $column = Column::get_by_id($column_id);
+            $column->set_title($title);
+            $errors = $column->validate($action);
+
+            if(empty($errors)) {
+                $column->update();
+                $this->redirect("board", "board", $column->get_board_id());
+            }
+
+        }
+        return $errors;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
