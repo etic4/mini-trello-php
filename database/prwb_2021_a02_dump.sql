@@ -23,15 +23,15 @@ DROP TABLE IF EXISTS `board`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `board` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Title` varchar(128) NOT NULL,
-  `Owner` int(11) NOT NULL,
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `ModifiedAt` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `Title` (`Title`),
-  KEY `Owner` (`Owner`),
-  CONSTRAINT `board_ibfk_1` FOREIGN KEY (`Owner`) REFERENCES `user` (`ID`)
+                         `ID` int(11) NOT NULL AUTO_INCREMENT,
+                         `Title` varchar(128) NOT NULL,
+                         `Owner` int(11) NOT NULL,
+                         `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
+                         `ModifiedAt` datetime DEFAULT NULL,
+                         PRIMARY KEY (`ID`),
+                         UNIQUE KEY `Title` (`Title`),
+                         KEY `Owner` (`Owner`),
+                         CONSTRAINT `board_ibfk_1` FOREIGN KEY (`Owner`) REFERENCES `user` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -53,19 +53,19 @@ DROP TABLE IF EXISTS `card`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `card` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Title` varchar(128) NOT NULL,
-  `Body` text NOT NULL,
-  `Position` int(11) NOT NULL DEFAULT 0,
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `ModifiedAt` datetime DEFAULT NULL,
-  `Author` int(11) NOT NULL,
-  `Column` int(11) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `Author` (`Author`),
-  KEY `Column` (`Column`),
-  CONSTRAINT `card_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `user` (`ID`),
-  CONSTRAINT `card_ibfk_2` FOREIGN KEY (`Column`) REFERENCES `column` (`ID`)
+                        `ID` int(11) NOT NULL AUTO_INCREMENT,
+                        `Title` varchar(128) NOT NULL,
+                        `Body` text NOT NULL,
+                        `Position` int(11) NOT NULL DEFAULT 0,
+                        `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
+                        `ModifiedAt` datetime DEFAULT NULL,
+                        `Author` int(11) NOT NULL,
+                        `Column` int(11) NOT NULL,
+                        PRIMARY KEY (`ID`),
+                        KEY `Author` (`Author`),
+                        KEY `Column` (`Column`),
+                        CONSTRAINT `card_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `user` (`ID`),
+                        CONSTRAINT `card_ibfk_2` FOREIGN KEY (`Column`) REFERENCES `column` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -87,15 +87,15 @@ DROP TABLE IF EXISTS `column`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `column` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Title` varchar(128) NOT NULL,
-  `Position` int(11) NOT NULL DEFAULT 0,
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `ModifiedAt` datetime DEFAULT NULL,
-  `Board` int(11) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `Board` (`Board`),
-  CONSTRAINT `column_ibfk_1` FOREIGN KEY (`Board`) REFERENCES `board` (`ID`)
+                          `ID` int(11) NOT NULL AUTO_INCREMENT,
+                          `Title` varchar(128) NOT NULL,
+                          `Position` int(11) NOT NULL DEFAULT 0,
+                          `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
+                          `ModifiedAt` datetime DEFAULT NULL,
+                          `Board` int(11) NOT NULL,
+                          PRIMARY KEY (`ID`),
+                          KEY `Board` (`Board`),
+                          CONSTRAINT `column_ibfk_1` FOREIGN KEY (`Board`) REFERENCES `board` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -117,17 +117,17 @@ DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `comment` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Body` text NOT NULL,
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `ModifiedAt` datetime DEFAULT NULL,
-  `Author` int(11) NOT NULL,
-  `Card` int(11) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `Author` (`Author`),
-  KEY `Card` (`Card`),
-  CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `user` (`ID`),
-  CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`Card`) REFERENCES `card` (`ID`)
+                           `ID` int(11) NOT NULL AUTO_INCREMENT,
+                           `Body` text NOT NULL,
+                           `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
+                           `ModifiedAt` datetime DEFAULT NULL,
+                           `Author` int(11) NOT NULL,
+                           `Card` int(11) NOT NULL,
+                           PRIMARY KEY (`ID`),
+                           KEY `Author` (`Author`),
+                           KEY `Card` (`Card`),
+                           CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `user` (`ID`),
+                           CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`Card`) REFERENCES `card` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -149,13 +149,13 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Mail` varchar(128) NOT NULL,
-  `FullName` varchar(128) NOT NULL,
-  `Password` varchar(256) NOT NULL,
-  `RegisteredAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `Mail` (`Mail`)
+                        `ID` int(11) NOT NULL AUTO_INCREMENT,
+                        `Mail` varchar(128) NOT NULL,
+                        `FullName` varchar(128) NOT NULL,
+                        `Password` varchar(256) NOT NULL,
+                        `RegisteredAt` datetime NOT NULL DEFAULT current_timestamp(),
+                        PRIMARY KEY (`ID`),
+                        UNIQUE KEY `Mail` (`Mail`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

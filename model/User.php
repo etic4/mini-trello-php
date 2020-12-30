@@ -1,19 +1,22 @@
-<?php
 
-//require_once "UserModel.php";
-require_once "Validation.php";
+<?php
+/*TODO: se mettre d'accord sur l'organisation du code dans les classes (genre méthodes statiques après attributs, getters et setters ensemble ??*/
+
 require_once "framework/Model.php";
-require_once "model/Board.php";
+require_once "Board.php";
+require_once "Validation.php";
 
 class User extends Model {
-    private $id;
-    private $email;
-    private $fullName;
-    private $passwdHash;
-    private $clearPasswd; //Utilisé uniquement au moment du signup
-    private $registeredAt;
+    private ?string $id;
+    private string $email;
+    private string $fullName;
+    private ?string $passwdHash;
+    private ?DateTime $registeredAt;
+    private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
-    public function __construct($email, $fullName, $passwdHash, $id=null, $registeredAt=null, $clearPasswd=null) {
+
+    public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
+                                ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
         }
@@ -22,22 +25,22 @@ class User extends Model {
         $this->email = $email;
         $this->fullName = $fullName;
         $this->passwdHash = $passwdHash;
-        $this->registeredAt = $registeredAt;
         $this->clearPasswd = $clearPasswd;
+        $this->registeredAt = $registeredAt;
     }
 
 
     //    GETTERS    //
 
-    public function get_id() {
+    public function get_id(): string {
         return $this->id;
     }
 
-    public function get_email() {
+    public function get_email(): string {
         return $this->email;
     }
 
-    public function get_fullName() {
+    public function get_fullName(): string {
         return $this->fullName;
     }
 
@@ -56,6 +59,9 @@ class User extends Model {
         $this->id = $id;
     }
 
+    public function set_registeredAt(DateTime $registeredAt) {
+        $this->registeredAt = $registeredAt;
+    }
 
     //    VALIDATION    //
 
@@ -111,7 +117,20 @@ class User extends Model {
 
     //    QUERIES    //
 
-    public static function get_by_id($id) {
+    /* Retourne une instance de User à partir d'une colonne de la DB */
+    protected static function get_instance($data): User {
+        return new User(
+            $data["Mail"],
+            $data["FullName"],
+            null,
+            $data["ID"],
+            $data["Password"],
+            new DateTime($data["RegisteredAt"])
+        );
+    }
+
+
+    public static function get_by_id(string $id): ?User {
         $sql = 
             "SELECT * 
              FROM user 
@@ -121,19 +140,11 @@ class User extends Model {
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
             return null;
-        } else {
-            $registeredAt = DBTools::php_date($data["RegisteredAt"]);
-            return new User(
-                $data["Mail"], 
-                $data["FullName"], 
-                $data["Password"], 
-                $data["ID"],  
-                $registeredAt
-            );
         }
+        return self::get_instance($data);
     }
 
-    public static function get_by_email($email): ?User {
+    public static function get_by_email(string $email): ?User {
         $sql = 
             "SELECT * 
              FROM user 
@@ -143,16 +154,8 @@ class User extends Model {
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
             return null;
-        } else {
-            $registeredAt = DBTools::php_date($data["RegisteredAt"]);
-            return new User(
-                $data["Mail"], 
-                $data["FullName"], 
-                $data["Password"], 
-                $data["ID"],  
-                $registeredAt
-            );
         }
+        return self::get_instance($data);
     }
 
     public function insert() {
@@ -165,8 +168,9 @@ class User extends Model {
             "passwdHash" => $this->get_passwdHash()
         );
         $this->execute($sql, $params);
-
-        return $this->get_by_id($this->lastInsertId());
+        $user = self::get_by_id($this->lastInsertId());
+        $this->set_id($user->get_id());
+        $this->set_registeredAt($user->get_registeredAt());
     }
 
     public function update() {
@@ -183,6 +187,9 @@ class User extends Model {
     }
 
     public function delete() {
+        foreach ($this->get_own_boards() as $board) {
+            $board->delete();
+        }
         $sql = 
             "DELETE FROM user 
              WHERE ID = :id";
@@ -192,6 +199,7 @@ class User extends Model {
 
 
     //    TOOLBOX    //
+
 
     // Prépare la liste des boards pour l'affichage
     private function get_boards_for_view($board_array): array {

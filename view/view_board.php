@@ -27,7 +27,7 @@
                                 <label for="toggle"><i class="fas fa-edit"></i></label>
                                 <input class="control" type="text" name="title" value="<?= $board->get_title() ?>">
                                 <input class="fas fa-paper-plane" type="submit" value="&#xf1d8">
-                                <button class="control"><i class="fas fa-undo-alt"></i></button>
+                                <button class="control"><i class="fas fa-arrow-left"></i></button>
                                 <h2>Board "<?= $board->get_title() ?>"</h2>
                             </form>
                         </li>
@@ -47,7 +47,7 @@
                     </div>
                     <?php endif; ?>
                 </div>
-                <p class="credit">Created <?= DBTools::intvl($board->get_createdAt(), new DateTime()); ?> by <strong>'<?= $board->get_owner()->get_fullName() ?>'</strong>. <?= DBTools::laps(new DateTime(), $board->get_modifiedAt()); ?>.</p>
+                <p class="credit">Created <?= $board->get_created_intvl(); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl(); ?>.</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>

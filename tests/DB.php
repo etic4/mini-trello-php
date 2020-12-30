@@ -13,6 +13,10 @@ class DB {
         $this->pdo = new PDO("{$dbtype}:host={$dbhost};charset=utf8", $dbuser, $dbpassword);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
+
+    public function get_pdo() {
+        return $this->pdo;
+    }
     
     public function init() {
         $dbname = Configuration::get("dbname");

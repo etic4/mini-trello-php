@@ -3,6 +3,7 @@
 /**/
 require_once "framework/Controller.php";
 require_once "model/User.php";
+require_once "CtrlTools.php";
 
 class ControllerUser extends Controller {
 

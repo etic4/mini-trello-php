@@ -3,7 +3,7 @@
 require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "model/Board.php";
-require_once "ControllerColumn.php";
+require_once "CtrlTools.php";
 
 
 class ControllerBoard extends Controller {
@@ -21,7 +21,6 @@ class ControllerBoard extends Controller {
         if($user) {
             $owners = $user->get_own_boards();
             $others = $user->get_others_boards();
-        
         }
 
         (new View("boardlist"))->show(array(
@@ -31,7 +30,6 @@ class ControllerBoard extends Controller {
             "errors" => $errors
             )
         );
-        
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +84,6 @@ class ControllerBoard extends Controller {
         else {
             $this->redirect("board", "index");
         }
-        
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +99,7 @@ class ControllerBoard extends Controller {
             $errors = $board->validate();
 
             if(empty($errors)) {
-                $board = $board->insert();
+                $board->insert();
                 $this->redirect("board", "board", $board->get_id());
             }
         }
@@ -118,14 +115,14 @@ class ControllerBoard extends Controller {
             $title = $_POST["title"];
             $board_id = $_POST["id"];
             $action = $_POST["action"];
-            $column = Column::create_new($title, $board_id);
+            $board = Board::get_by_id($board_id);
+            $column = Column::create_new($title, $board);
             $errors = $column->validate($action);
 
             if(empty($errors)) {
-                $column = $column->insert();
+                $column->insert();
                 $this->redirect("board", "board", $board_id);
             }
-
         }
         return $errors;
     }
@@ -208,29 +205,28 @@ class ControllerBoard extends Controller {
             $instance = Board::get_by_id($board_id);
             if(!is_null($instance)) {
                 (new View("delete_confirm"))->show(array("user" => $user, "instance" => $instance));
+                die;
             }
             else {
                 $this->redirect("board", "board", $board_id);
             }
         }
-        else {
-            $this->redirect("board", "index");
-        }
+        $this->redirect("board", "index");
     }
+
 
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
         if(isset($_POST["id"])) {
-            $board_id = $_POST["id"];
-            if(isset($_POST["delete"])) {
-                $instance = Board::get_by_id($board_id);
-                $instance->get_columns();
-                $instance->delete();
+            $board = Board::get_by_id($_POST["id"]);
+            if(!isset($_POST["delete"])) {
+                $board->delete();
+                $this->redirect("board", "board", $_POST["id"]);
             }
+            $board->delete();
         }
         $this->redirect("board", "index");
     }
-
 }
 
 
