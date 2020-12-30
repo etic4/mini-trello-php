@@ -1,8 +1,6 @@
 <?php
 
-require_once "framework/Model.php";
-
-class CtrlTools extends Model {
+class CtrlTools {
 
     public static function breadcrumb(): string {
         $breadcrumb = "<p class='breadcrumb'>Boards</p>";
