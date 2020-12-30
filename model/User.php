@@ -16,7 +16,7 @@ class User extends Model {
 
 
     public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
-                                ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt) {
+                                ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
         }
