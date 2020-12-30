@@ -36,7 +36,9 @@ main {
     display: flex;
 }
 
-input:focus {
+input:focus,
+button:focus,
+button:focus:not(:focus-visible) {
     outline: none;
 }
 
@@ -240,6 +242,7 @@ strong {
     font-size: 20px;
     height: 40px;
     border-radius: 4px 0 0 4px;
+    color: #666666;
     border: 1px solid #cccccc;
 }
 
@@ -321,10 +324,62 @@ strong {
     height: 20px;
 }
 
-input:focus,
-button:focus,
-button:focus:not(:focus-visible) {
-    outline: none;
+
+/* edit column */
+
+.column .editTitle h3 {
+    position: relative;
+    top: 10px;
+    left: 12px;
+}
+
+.column .editTitle label {
+    margin-right: -15px;
+    padding-top: 4px;
+    font-size: 13px;
+}
+
+.column .editTitle #toggle {
+    right: 6px;
+}
+
+
+/* action */
+
+.column #toggle:checked~h3 {
+    font-size: 0;
+}
+
+.column #toggle:checked~.control[type="text"] {
+    margin-left: 7px;
+    margin-top: 9px;
+    width: 180px;
+    margin-right: -60px;
+    font-size: 18px;
+    height: 45px;
+}
+
+.column #toggle:checked~button {
+    opacity: 100;
+    position: relative;
+    margin-top: 9px;
+    width: 40px;
+    right: -2px;
+    z-index: 1;
+    margin-right: 50px;
+}
+
+.column #toggle:checked~input[type="submit"] {
+    position: relative;
+    margin-top: 9px;
+    right: -56px;
+    opacity: 100;
+    width: 40px;
+}
+
+.column #toggle:checked {
+    top: 27px;
+    left: 28px;
 }
 
 
@@ -623,11 +678,6 @@ button:focus:not(:focus-visible) {
     display: flex;
     flex-direction: row;
     justify-content: start;
-}
-
-.board .column .title_column h3 {
-    padding-right: 10px;
-    padding-top: 2px;
 }
 
 .board .column footer .add {

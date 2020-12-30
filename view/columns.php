@@ -3,12 +3,17 @@
     <li>
         <section class="column">
             <header class="title_column">
-                <h3><?= $column->get_title() ?></h3>
                 <ul class="icons">
                     <li>
-                        <form class='link' action='column/edit' method='post'>
+                        <form class='editTitle' action='column/edit' method='post'>
                             <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
+                            <input type ="checkbox" id="toggle">
+                            <label for="toggle"><i class="fas fa-edit"></i></label>
+                            <input class="control" type="text" name="title" value="<?= $column->get_title() ?>">
+                            <input class="fas fa-paper-plane" type="submit" value="&#xf1d8">
+                            <button class="control"><i class="fas fa-undo-alt"></i></button>
                             <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
+                            <h3><?= $column->get_title() ?></h3>
                         </form>
                     </li>
                     <li>
