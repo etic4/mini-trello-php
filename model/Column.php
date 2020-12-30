@@ -1,10 +1,7 @@
 <?php
 
-//require_once "ColumnModel.php";
-//require_once "ColumnValidator.php";
 require_once "framework/Model.php";
 require_once "model/Card.php";
-//require_once "model/Date.php";
 
 
 class Column extends Model {
@@ -80,10 +77,13 @@ class Column extends Model {
         $this->position = $position;
     }
 
-    public function set_cards(): void {
-        $this->cards = Card::get_cards_for_column($this);
+    public function is_first(): bool {
+        return $this->get_position() == 0;
     }
 
+    public function is_last(): bool {
+        return $this->get_position() == self::get_columns_count($this->get_board()) - 1;
+    }
 
     //    VALIDATION    //
 

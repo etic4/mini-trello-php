@@ -143,6 +143,17 @@ class Card extends Model {
         return $errors;
     }
 
+    public function has_comments(): bool {
+        return self::get_cards_count($this->get_column()) - 1;
+    }
+
+    public function is_first(): bool {
+        return $this->get_position() == 0;
+    }
+
+    public function is_last(): bool {
+        return $this->get_position() == self::get_cards_count($this->get_column()) - 1;
+    }
 
     //    QUERIES    //
 

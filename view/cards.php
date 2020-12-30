@@ -10,9 +10,9 @@
                     <li>
                         <a href="card/view/<?= $card->get_id() ?>"><i class="far fa-eye"></i></a>
                     </li>
-                    <?php if(count($card->get_comments()) > 0): ?>
+                    <?php if($card->has_comments()): ?>
                     <li>
-                        <p class='button_comment'>&#x28;<?= count($card->get_comments()) ?>&nbsp;<i class="far fa-comment"></i>&#x29;</p>
+                        <p class='button_comment'>&#x28;<?= $card->has_comments() ?>&nbsp;<i class="far fa-comment"></i>&#x29;</p>
                     </li>
                     <?php endif; ?>
                     <li>
@@ -25,7 +25,7 @@
                         </form>
                     </li>
                     <!-- pas de down pour la dernière carte de la colonne -->
-                    <?php if($card->get_position() < Card::get_cards_count($column) - 1): ?>
+                    <?php if(!$card->is_last()): ?>
                     <li>
                         <form class='link' action='card/down' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
@@ -34,7 +34,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de up pour la première carte de la colonne -->
-                    <?php if($card->get_position() > 0): ?>
+                    <?php if(!$card->is_first()): ?>
                     <li>
                         <form class='link' action='card/up' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
@@ -43,7 +43,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de left pour les cartes de la première colonne -->
-                    <?php if($column->get_position() > 0): ?>
+                    <?php if(!$column->is_first()): ?>
                     <li>
                         <form class='link' action='card/left' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
@@ -52,7 +52,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de right pour les cartes de la dernière colonne -->
-                    <?php if($column->get_position() < Column::get_columns_count($board)-1): ?>
+                    <?php if(!$column->is_last()): ?>
                     <li>
                         <form class='link' action='card/right' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
