@@ -36,7 +36,6 @@ class UserTest extends TestCase {
 
     /**
      * @depends testCreateUserInstance
-     * @param User $user
      */
     public function testGetIdProducesErrorOnNotSavedInstance(User $user) {
         $this->expectException(TypeError::class);
@@ -46,7 +45,15 @@ class UserTest extends TestCase {
 
     /**
      * @depends testCreateUserInstance
-     * @param User $user
+     */
+    public function testGetRegisteredAtProducesErrorOnNotSavedInstance(User $user) {
+        $this->expectException(TypeError::class);
+        $user->get_registeredAt();
+        return $user;
+    }
+
+    /**
+     * @depends testCreateUserInstance
      */
     public function testCountPlus1AfterInsert(User $user) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
@@ -63,9 +70,15 @@ class UserTest extends TestCase {
 
     /**
      * @depends testCountPlus1AfterInsert
-     * @param User $user
      */
     public function testIdSetAfterInsert(User $user) {
         $this->assertIsString($user->get_id());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testRegisteredAtSetAfterInsert(User $user) {
+        $this->assertInstanceOf(DateTime::class, $user->get_registeredAt());
     }
 }

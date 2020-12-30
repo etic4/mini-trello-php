@@ -40,7 +40,6 @@ class CardTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateCardInstance
-     * @param Card $card
      */
     public function testGetIdProducesErrorOnNotSavedInstance(Card $card) {
         $this->expectException(TypeError::class);
@@ -50,7 +49,24 @@ class CardTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateCardInstance
-     * @param Card $card
+     */
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Card $card) {
+        $this->expectException(TypeError::class);
+        $card->get_createdAt();
+        return $card;
+    }
+
+    /**
+     * @depends testCreateCardInstance
+     */
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Card $card) {
+        $this->expectException(TypeError::class);
+        $card->get_modifiedAt();
+        return $card;
+    }
+
+    /**
+     * @depends testCreateCardInstance
      */
     public function testCountPlus1AfterInsert(Card $card) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM `card`")->fetch();
@@ -66,9 +82,30 @@ class CardTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCountPlus1AfterInsert
-     * @param Card $card
      */
     public function testIdSetAfterInsert(Card $card) {
         $this->assertIsString($card->get_id());
     }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testCreatedAtSetAfterInsert(Card $card) {
+        $this->assertInstanceOf(DateTime::class, $card->get_createdAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtSetAfterInsert(Card $card) {
+        $this->assertInstanceOf(DateTime::class, $card->get_modifiedAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtEqualsCreatedAtAfterInsert(Card $inst) {
+        $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+    }
+
 }

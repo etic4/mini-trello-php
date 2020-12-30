@@ -35,7 +35,6 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateCommentInstance
-     * @param Comment $comment
      */
     public function testGetIdProducesErrorOnNotSavedInstance(Comment $comment) {
         $this->expectException(TypeError::class);
@@ -43,9 +42,27 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
         return $comment;
     }
 
+
     /**
      * @depends testCreateCommentInstance
-     * @param Comment $comment
+     */
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Comment $comment) {
+        $this->expectException(TypeError::class);
+        $comment->get_createdAt();
+        return $board;
+    }
+
+    /**
+     * @depends testCreateCommentInstance
+     */
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Comment $comment) {
+        $this->expectException(TypeError::class);
+        $comment->get_modifiedAt();
+        return $board;
+    }
+
+    /**
+     * @depends testCreateCommentInstance
      */
     public function testCountPlus1AfterInsert(Comment $comment) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM comment")->fetch();
@@ -61,9 +78,30 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCountPlus1AfterInsert
-     * @param Comment $comment
      */
     public function testIdSetAfterInsert(Comment $comment) {
         $this->assertIsString($comment->get_id());
     }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testCreatedAtSetAfterInsert(Comment $comment) {
+        $this->assertInstanceOf(DateTime::class, $comment->get_createdAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtSetAfterInsert(Comment $comment) {
+        $this->assertInstanceOf(DateTime::class, $comment->get_modifiedAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtEqualsCreatedAtAfterInsert(Comment $inst) {
+        $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+    }
+
 }

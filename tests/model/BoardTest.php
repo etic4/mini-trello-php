@@ -33,7 +33,6 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateBoardInstance
-     * @param Board $board
      */
     public function testGetIdProducesErrorOnNotSavedInstance(Board $board) {
         $this->expectException(TypeError::class);
@@ -43,7 +42,24 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateBoardInstance
-     * @param Board $board
+     */
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Board $board) {
+        $this->expectException(TypeError::class);
+        $board->get_createdAt();
+        return $board;
+    }
+
+    /**
+     * @depends testCreateBoardInstance
+     */
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Board $board) {
+        $this->expectException(TypeError::class);
+        $board->get_modifiedAt();
+        return $board;
+    }
+
+    /**
+     * @depends testCreateBoardInstance
      */
     public function testCountPlus1AfterInsert(Board $board) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
@@ -59,9 +75,30 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCountPlus1AfterInsert
-     * @param Board $board
      */
     public function testIdSetAfterInsert(Board $board) {
         $this->assertIsString($board->get_id());
     }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testCreatedAtSetAfterInsert(Board $board) {
+        $this->assertInstanceOf(DateTime::class, $board->get_createdAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtSetAfterInsert(Board $board) {
+        $this->assertInstanceOf(DateTime::class, $board->get_modifiedAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtEqualsCreatedAtAfterInsert(Board $inst) {
+        $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+    }
+
 }

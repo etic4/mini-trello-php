@@ -35,7 +35,6 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateColumnInstance
-     * @param Column $column
      */
     public function testGetIdProducesErrorOnNotSavedInstance(Column $column) {
         $this->expectException(TypeError::class);
@@ -43,9 +42,29 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
         return $column;
     }
 
+
     /**
      * @depends testCreateColumnInstance
-     * @param Column $column
+     * @param Board $board
+     */
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column) {
+        $this->expectException(TypeError::class);
+        $column->get_createdAt();
+        return $column;
+    }
+
+    /**
+     * @depends testCreateColumnInstance
+     * @param Board $board
+     */
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column) {
+        $this->expectException(TypeError::class);
+        $column->get_modifiedAt();
+        return $column;
+    }
+
+    /**
+     * @depends testCreateColumnInstance
      */
     public function testCountPlus1AfterInsert(Column $column) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM `column`")->fetch();
@@ -61,9 +80,30 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCountPlus1AfterInsert
-     * @param Column $column
      */
     public function testIdSetAfterInsert(Column $column) {
         $this->assertIsString($column->get_id());
     }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testCreatedAtSetAfterInsert(Column $column) {
+        $this->assertInstanceOf(DateTime::class, $column->get_createdAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtSetAfterInsert(Column $column) {
+        $this->assertInstanceOf(DateTime::class, $column->get_modifiedAt());
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     */
+    public function testModifiedAtEqualsCreatedAtAfterInsert(Column $inst) {
+        $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+    }
+
 }
