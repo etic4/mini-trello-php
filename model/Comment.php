@@ -135,6 +135,7 @@ class Comment extends Model{
             "card"=>$this->get_card()->get_id()
         );
         $this->execute($sql, $params);
+        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
     }
 
     public function delete() {

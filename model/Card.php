@@ -255,6 +255,7 @@ class Card extends Model {
         );
 
         $this->execute($sql, $params);
+        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
     }
 
     /*
