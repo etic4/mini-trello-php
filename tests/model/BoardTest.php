@@ -34,7 +34,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Board $board) {
+    public function testGetIdProducesErrorOnNotSavedInstance(Board $board): Board {
         $this->expectException(TypeError::class);
         $board->get_id();
         return $board;
@@ -43,7 +43,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Board $board) {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Board $board): Board {
         $this->expectException(TypeError::class);
         $board->get_createdAt();
         return $board;
@@ -52,7 +52,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Board $board) {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Board $board): Board {
         $this->expectException(TypeError::class);
         $board->get_modifiedAt();
         return $board;
@@ -61,7 +61,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateBoardInstance
      */
-    public function testCountPlus1AfterInsert(Board $board) {
+    public function testCountPlus1AfterInsert(Board $board): Board {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
         $count = $data["total"];
 

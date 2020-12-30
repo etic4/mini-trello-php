@@ -41,7 +41,7 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Card $card) {
+    public function testGetIdProducesErrorOnNotSavedInstance(Card $card): Card {
         $this->expectException(TypeError::class);
         $card->get_id();
         return $card;
@@ -50,7 +50,7 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Card $card) {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Card $card): Card {
         $this->expectException(TypeError::class);
         $card->get_createdAt();
         return $card;
@@ -59,7 +59,7 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Card $card) {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Card $card): Card {
         $this->expectException(TypeError::class);
         $card->get_modifiedAt();
         return $card;
@@ -68,7 +68,7 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testCountPlus1AfterInsert(Card $card) {
+    public function testCountPlus1AfterInsert(Card $card): Card {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM `card`")->fetch();
         $count = $data["total"];
 

@@ -36,7 +36,7 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Comment $comment) {
+    public function testGetIdProducesErrorOnNotSavedInstance(Comment $comment): Comment {
         $this->expectException(TypeError::class);
         $comment->get_id();
         return $comment;
@@ -46,7 +46,7 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Comment $comment) {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Comment $comment): Comment {
         $this->expectException(TypeError::class);
         $comment->get_createdAt();
         return $board;
@@ -55,7 +55,7 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Comment $comment) {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Comment $comment): Comment {
         $this->expectException(TypeError::class);
         $comment->get_modifiedAt();
         return $board;
@@ -64,7 +64,7 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCommentInstance
      */
-    public function testCountPlus1AfterInsert(Comment $comment) {
+    public function testCountPlus1AfterInsert(Comment $comment): Comment {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM comment")->fetch();
         $count = $data["total"];
 

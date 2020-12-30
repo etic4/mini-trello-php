@@ -36,7 +36,7 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Column $column) {
+    public function testGetIdProducesErrorOnNotSavedInstance(Column $column): Column {
         $this->expectException(TypeError::class);
         $column->get_id();
         return $column;
@@ -45,9 +45,8 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateColumnInstance
-     * @param Board $board
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column) {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column): Column {
         $this->expectException(TypeError::class);
         $column->get_createdAt();
         return $column;
@@ -55,9 +54,8 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testCreateColumnInstance
-     * @param Board $board
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column) {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column): Column {
         $this->expectException(TypeError::class);
         $column->get_modifiedAt();
         return $column;
@@ -66,7 +64,7 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateColumnInstance
      */
-    public function testCountPlus1AfterInsert(Column $column) {
+    public function testCountPlus1AfterInsert(Column $column): Column {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM `column`")->fetch();
         $count = $data["total"];
 
