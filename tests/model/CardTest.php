@@ -1,0 +1,74 @@
+<?php
+
+
+class CardTest extends \PHPUnit\Framework\TestCase {
+    public static DB $db;
+
+    public static function setUpBeforeClass(): void {
+        self::$db = new DB();
+        self::$db->init();
+    }
+
+    public static function tearDownAfterClass(): void {
+        self::$db->init();
+    }
+
+    public function testGetCardInstanceFromDB() {
+        $card = Card::get_by_id(1);
+        $this->assertInstanceOf(Card::class, $card);
+        $this->assertEquals(1, $card->get_id());
+    }
+
+    public function testCreateCardInstance(): Card {
+        $title = "Titre de la carte";
+        $body = "the body";
+        $column = Column::get_by_id(1);
+        $position = Card::get_cards_count($column);
+        $author = User::get_by_id(1);
+
+        $card = new Card($title, $body, $position, $author, $column);
+
+        $this->assertInstanceOf(Card::class, $card);
+        $this->assertEquals($card->get_title(), $title);
+        $this->assertEquals($card->get_body(), $body);
+        $this->assertEquals($card->get_column(), $column);
+        $this->assertEquals($card->get_position(), $position);
+        $this->assertEquals($card->get_author(), $author);
+
+        return $card;
+    }
+
+    /**
+     * @depends testCreateCardInstance
+     * @param Card $card
+     */
+    public function testGetIdProducesErrorOnNotSavedInstance(Card $card) {
+        $this->expectException(TypeError::class);
+        $card->get_id();
+        return $card;
+    }
+
+    /**
+     * @depends testCreateCardInstance
+     * @param Card $card
+     */
+    public function testCountPlus1AfterInsert(Card $card) {
+        $data = self::$db->execute("SELECT COUNT(*) as total FROM `card`")->fetch();
+        $count = $data["total"];
+
+        $card->insert();
+        $data = self::$db->execute("SELECT COUNT(*) as total FROM `card`")->fetch();
+
+        $this->assertEquals($count + 1, $data["total"]);
+
+        return $card;
+    }
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     * @param Card $card
+     */
+    public function testIdSetAfterInsert(Card $card) {
+        $this->assertIsString($card->get_id());
+    }
+}

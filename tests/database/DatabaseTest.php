@@ -33,5 +33,4 @@ class DatabaseTest extends TestCase {
         $data = $query->fetchAll();
         $this->assertCount($count, $data);
     }
-
 }

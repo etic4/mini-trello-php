@@ -15,7 +15,7 @@ class UserTest extends TestCase {
     }
 
     public function testGetUserInstanceFromDB() {
-        $user = User::get_by_email("boverhaegen@epfc.eu");
+        $user = User::get_by_id(1);
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals(1, $user->get_id());
     }
@@ -24,7 +24,7 @@ class UserTest extends TestCase {
         $email = "test@rmail.com";
         $fullName = "Prénom Nom";
         $password = "Pass1!";
-        $user = new User($email, $fullName, null, null, null, $password);
+        $user = new User($email, $fullName, $password, null, null, null);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($user->get_email(), $email);
@@ -38,16 +38,34 @@ class UserTest extends TestCase {
      * @depends testCreateUserInstance
      * @param User $user
      */
-    public function testInsertUser(User $user) {
-        $this->assertNull($user->get_id());
+    public function testGetIdProducesErrorOnNotSavedInstance(User $user) {
+        $this->expectException(TypeError::class);
+        $user->get_id();
+        return $user;
+    }
 
+    /**
+     * @depends testCreateUserInstance
+     * @param User $user
+     */
+    public function testCountPlus1AfterInsert(User $user) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
-        $this->assertEquals(5, $data["total"]);
+        $count = $data["total"];
 
         $user->insert();
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
 
-        $this->assertEquals(6, (int) $data["total"]);
-        $this->assertEquals("6", $user->get_id());
+        $this->assertEquals($count + 1, $data["total"]);
+
+        return $user;
+    }
+
+
+    /**
+     * @depends testCountPlus1AfterInsert
+     * @param User $user
+     */
+    public function testIdSetAfterInsert(User $user) {
+        $this->assertIsString($user->get_id());
     }
 }

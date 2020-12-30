@@ -46,7 +46,7 @@ class Card extends Model {
 
     //    GETTERS    //
 
-    public function get_id(): ?string {
+    public function get_id(): string {
         return $this->id;
     }
 
