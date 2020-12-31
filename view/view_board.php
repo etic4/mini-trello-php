@@ -39,10 +39,12 @@
                         </li>
                     </ul>
                     <?php endif; ?>
-                    <?php if (count($errors) != 0 && $errors['instance'] == "board"): ?>
+                    <?php if (count($errors) != 0 && $errors['error']['instance'] == "board"): ?>
                     <div class='errors'>
                         <ul>
-                            <li><?= $errors['error']; ?></li>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= $error['message']; ?></li>
+                        <?php endforeach; ?>
                         </ul>
                     </div>
                     <?php endif; ?>
@@ -57,10 +59,12 @@
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
-                    <?php if (count($errors) != 0 && $errors['instance'] == "column" && $errors['action'] == "add"): ?>
+                    <?php if (count($errors) != 0 && $errors['error']['instance'] == "column" && $errors['error']['action'] == "add"): ?>
                     <div class='errors'>
                         <ul>
-                            <li><?= $errors['error']; ?></li>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= $error['message']; ?></li>
+                        <?php endforeach; ?>
                         </ul>
                     </div>
                     <?php endif; ?>

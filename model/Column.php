@@ -104,7 +104,8 @@ class Column extends Model {
         }
 
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "instance" => "column", "action" => $action, "column_id" => $column_id, "id" => $this->get_board_id());
+            $errors["error"] = array("message" => "Title must be at least 3 characters long", "instance" => "column", "action" => $action, "column_id" => $column_id, "id" => $this->get_board_id());
+
         }
         return $errors;
     }

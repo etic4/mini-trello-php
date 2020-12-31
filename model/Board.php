@@ -67,10 +67,11 @@ class Board extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "instance" => "board");
+            $errors["error"] = array("message" => "Title must be at least 3 characters long", "instance" => "board");
+            
         }
         if (!Validation::is_unique_title($this->title)) {
-            $errors = array("error" => "A board with the same title already exists", "instance" => "board");
+            $errors["error"] = array("message" => "A board with the same title already exists", "instance" => "board");
         }
         return $errors;
     }

@@ -30,9 +30,9 @@
                         <?php if (count($errors) != 0): ?>
                         <div class='errors'>
                             <ul>
-                                <?php foreach ($errors as $error): ?>
-                                    <li><?= $error; ?></li>
-                                <?php endforeach; ?>
+                            <?php foreach ($errors as $error): ?>
+                                <li><?= $error['message']; ?></li>
+                            <?php endforeach; ?>
                             </ul>
                         </div>
                         <?php endif; ?>

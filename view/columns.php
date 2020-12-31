@@ -41,10 +41,12 @@
                     </li>
                     <?php endif; ?>
                 </ul>
-                <?php if (count($errors) != 0 && $errors['instance'] == "column" && $errors['action'] == "edit" && $errors['column_id'] == $column->get_id()): ?>
+                <?php if (count($errors) != 0 && $errors['error']['instance'] == "column" && $errors['error']['action'] == "edit" && $errors['error']['column_id'] == $column->get_id()): ?>
                     <div class='errors'>
                         <ul>
-                            <li><?= $errors['error']; ?></li>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= $error['message']; ?></li>
+                        <?php endforeach; ?>
                         </ul>
                     </div>
                 <?php endif; ?>
