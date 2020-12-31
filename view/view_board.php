@@ -20,7 +20,7 @@
                     <?php if ($user == $board->get_owner()): ?>
                     <ul class="icons">
                         <li>
-                            <form class='editTitle' action='board/board/<?= $board->get_id() ?>' method='post'>
+                            <form class='editTitle' action='board/edit/<?= $board->get_id() ?>' method='post'>
                                 <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
                                 <input type='text' name='instance' value='board' hidden>
                                 <input type ="checkbox" id="toggle">
@@ -52,10 +52,8 @@
             <div class="column_display">  
                 <?php include("columns.php"); ?>
                 <aside class="column_form">
-                    <form class="add" action="board/board/<?= $board->get_id() ?>" method="post">
+                    <form class="add" action="column/add" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <input type='text' name='instance' value='column' hidden>
-                        <input type='text' name='action' value='add' hidden>
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>

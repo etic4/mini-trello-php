@@ -5,11 +5,8 @@
             <header class="title_column">
                 <ul class="icons">
                     <li>
-                        <form class='editTitle' action='board/board/<?= $board->get_id() ?>' method='post'>
-                            <input type='text' name='instance' value='column' hidden>
-                            <input type='text' name='action' value='edit' hidden>
-                            <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                            <input type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
+                        <form class='editTitle' action='column/edit' method='post'>
+                            <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                             <input type ="checkbox" id="toggle">
                             <label for="toggle"><i class="fas fa-edit"></i></label>
                             <input type="text" class="control" name="title" value="<?= $column->get_title() ?>">
