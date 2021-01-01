@@ -4,9 +4,11 @@ require_once "framework/Controller.php";
 require_once "model/Card.php";
 require_once "model/User.php";
 require_once "CtrlTools.php";
+require_once "ErrorTrait.php";
 
 
 class ControllerCard extends Controller {
+    use ErrorTrait;
 
     public function index() {
         // TODO: Implement index() method.

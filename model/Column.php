@@ -97,12 +97,15 @@ class Column extends Model {
 
     public function validate(string $action): array {
         $errors = [];
-        $id = null;
-        if(is_null($this->get_id())) {
-            $id = $this->get_id();
+        $column_id = "";
+
+        /*On ne peut faire get_id() que sur un objet inséré en DB*/
+        if ($action == "edit") {
+            $column_id = $this->get_id();
         }
+
         if (!Validation::str_longer_than($this->title, 2)) {
-            $error = new ValidationError("Title must be at least 3 characters long", "column", $action, $id);
+            $error = new ValidationError("Title must be at least 3 characters long", $this, $action);
             array_push($errors, $error);
         }
         return $errors;
