@@ -44,12 +44,14 @@
                     </li>
                     <?php endif; ?>
                 </ul>
-                <?php if (count($errors) != 0 && $errors['instance'] == "column" && $errors['action'] == "edit" && $errors['column_id'] == $column->get_id()): ?>
-                    <div class='errors'>
-                        <ul>
-                            <li><?= $errors['error']; ?></li>
-                        </ul>
-                    </div>
+                <?php if (count($errors) != 0 && $errors[0]->must_be_displayed("column", "edit", $column->get_id())): ?>
+                <div class='errors'>
+                    <ul>
+                    <?php foreach($errors as $error): ?>
+                        <li><?= $error->get_message(); ?></li>
+                    <?php endforeach; ?>
+                    </ul>
+                </div>    
                 <?php endif; ?>
             </header>
             <section>

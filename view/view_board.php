@@ -39,12 +39,14 @@
                         </li>
                     </ul>
                     <?php endif; ?>
-                    <?php if (count($errors) != 0 && $errors['instance'] == "board"): ?>
+                    <?php if (count($errors) != 0 && $errors[0]->must_be_displayed("board", null, null)): ?>
                     <div class='errors'>
                         <ul>
-                            <li><?= $errors['error']; ?></li>
+                        <?php foreach($errors as $error): ?>
+                            <li><?= $error->get_message(); ?></li>
+                        <?php endforeach; ?>
                         </ul>
-                    </div>
+                    </div>    
                     <?php endif; ?>
                 </div>
                 <p class="credit">Created <?= $board->get_created_intvl(); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl(); ?>.</p>
@@ -59,12 +61,14 @@
                         <input type="text" name="title" placeholder="Add a column">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
-                    <?php if (count($errors) != 0 && $errors['instance'] == "column" && $errors['action'] == "add"): ?>
+                    <?php if (count($errors) != 0 && $errors[0]->must_be_displayed("column", "add", null)): ?>
                     <div class='errors'>
                         <ul>
-                            <li><?= $errors['error']; ?></li>
+                        <?php foreach($errors as $error): ?>
+                            <li><?= $error->get_message(); ?></li>
+                        <?php endforeach; ?>
                         </ul>
-                    </div>
+                    </div>    
                     <?php endif; ?>
                 </aside>     
             </div>

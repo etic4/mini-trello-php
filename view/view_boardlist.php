@@ -31,7 +31,7 @@
                         <div class='errors'>
                             <ul>
                                 <?php foreach ($errors as $error): ?>
-                                    <li><?= $error; ?></li>
+                                    <li><?= $error->get_message(); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>

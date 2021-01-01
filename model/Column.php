@@ -23,7 +23,8 @@ class Column extends Model {
 
     public function __construct(string $title, 
                                 int $position, 
-                                Board $board, string $id=null, 
+                                Board $board, 
+                                string $id=null, 
                                 ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
         $this->id = $id;
@@ -37,7 +38,7 @@ class Column extends Model {
 
     //    GETTERS    //
 
-    public function get_id(): string {
+    public function get_id(): ?string {
         return $this->id;
     }
 
@@ -96,8 +97,13 @@ class Column extends Model {
 
     public function validate(string $action): array {
         $errors = [];
+        $id = null;
+        if(is_null($this->get_id())) {
+            $id = $this->get_id();
+        }
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "instance" => "column", "action" => $action, "column_id" => $this->get_id(), "id" => $this->get_board_id());
+            $error = new ValidationError("Title must be at least 3 characters long", "column", $action, $id);
+            array_push($errors, $error);
         }
         return $errors;
     }

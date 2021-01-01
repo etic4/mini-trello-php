@@ -3,6 +3,7 @@
 require_once "framework/Model.php";
 require_once "User.php";
 require_once "Column.php";
+require_once "ValidationError.php";
 
 
 class Board extends Model {
@@ -66,11 +67,13 @@ class Board extends Model {
 
     public function validate(): array {
         $errors = [];
-        if (!Validation::str_longer_than($this->title, 2)) {
-            $errors = array("error" => "Title must be at least 3 characters long", "instance" => "board");
+        if (!Validation::str_longer_than($this->get_title(), 2)) {
+            $error = new ValidationError("Title must be at least 3 characters long", "board", null, null);
+            array_push($errors, $error);
         }
-        if (!Validation::is_unique_title($this->title)) {
-            $errors = array("error" => "A board with the same title already exists", "instance" => "board");
+        if (!Validation::is_unique_title($this->get_title())) {
+            $error = new ValidationError("A board with the same title already exists", "board", null, null);
+            array_push($errors, $error);
         }
         return $errors;
     }
