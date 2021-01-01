@@ -4,6 +4,7 @@
 require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "CtrlTools.php";
+require_once "ValidationError.php";
 
 class ControllerUser extends Controller {
 

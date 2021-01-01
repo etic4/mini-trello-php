@@ -46,7 +46,7 @@ class Card extends Model {
 
     //    GETTERS    //
 
-    public function get_id(): string {
+    public function get_id(): ?string {
         return $this->id;
     }
 
@@ -138,8 +138,7 @@ class Card extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $error = "Title must be at least 3 characters long";
-            array_push($errors, $error);
+            $errors[] = "Title must be at least 3 characters long";
         }
         return $errors;
     }

@@ -26,7 +26,7 @@ class Board extends Model {
 
     //    GETTERS    //
 
-    public function get_id(): string {
+    public function get_id(): ?string {
         return $this->id;
     }
 
@@ -67,12 +67,13 @@ class Board extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors["error"] = array("message" => "Title must be at least 3 characters long", "instance" => "board");
+            $errors[] =  "Title must be at least 3 characters long";
             
         }
         if (!Validation::is_unique_title($this->title)) {
-            $errors["error"] = array("message" => "A board with the same title already exists", "instance" => "board");
+            $errors[] = "A board with the same title already exists";
         }
+
         return $errors;
     }
 

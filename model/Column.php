@@ -37,7 +37,7 @@ class Column extends Model {
 
     //    GETTERS    //
 
-    public function get_id(): string {
+    public function get_id(): ?string {
         return $this->id;
     }
 
@@ -94,18 +94,10 @@ class Column extends Model {
 
     //    VALIDATION    //
 
-    public function validate(string $action): array {
+    public function validate(): array {
         $errors = [];
-        $column_id = "";
-
-        /*On ne peut faire get_id() que sur un objet inséré en DB*/
-        if ($action == "edit") {
-            $column_id = $this->get_id();
-        }
-
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors["error"] = array("message" => "Title must be at least 3 characters long", "instance" => "column", "action" => $action, "column_id" => $column_id, "id" => $this->get_board_id());
-
+            $errors[] = "Title must be at least 3 characters long";
         }
         return $errors;
     }

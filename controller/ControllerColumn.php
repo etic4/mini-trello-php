@@ -3,10 +3,9 @@
 require_once "framework/Controller.php";
 require_once "model/Column.php";
 require_once "model/User.php";
-require_once "ErrorTrait.php";
+require_once "ValidationError.php";
 
 class ControllerColumn extends Controller {
-    use ErrorTrait;
 
     public function index() {
         
@@ -79,11 +78,12 @@ class ControllerColumn extends Controller {
         if (isset($_POST["id"]) && !empty($_POST["title"])) {
             $board = Board::get_by_id($_POST["id"]);
             $title = $_POST["title"];
-
             $column = Column::create_new($title, $board);
-            $this->set_errors($column->validate("add"));
 
-            if($this->no_errors()) {
+            $errors = new ValidationError($column, "add");
+            $errors->set_messages($column->validate());
+
+            if($errors->is_empty()) {
                 $column->insert();
             }
             $this->redirect("board", "board", $_POST["id"]);
@@ -100,9 +100,11 @@ class ControllerColumn extends Controller {
             $title = $_POST["title"];
             $column = Column::get_by_id($id);
             $column->set_title($title);
-            $this->set_errors($column->validate("edit"));
 
-            if($this->no_errors()) {
+            $errors = new ValidationError($column, "edit");
+            $errors->set_messages($column->validate());
+
+            if($errors->is_empty()) {
                 $column->insert();
             }
             $this->redirect("board", "board", $column->get_board_id());

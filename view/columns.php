@@ -41,11 +41,11 @@
                     </li>
                     <?php endif; ?>
                 </ul>
-                <?php if (count($errors) != 0 && $errors['error']['instance'] == "column" && $errors['error']['action'] == "edit" && $errors['error']['column_id'] == $column->get_id()): ?>
+                <?php if ($errors->has_errors("column", "edit", $column->get_id())): ?>
                     <div class='errors'>
                         <ul>
-                        <?php foreach ($errors as $error): ?>
-                            <li><?= $error['message']; ?></li>
+                        <?php foreach ($errors->get_errors() as $message): ?>
+                            <li><?= $message; ?></li>
                         <?php endforeach; ?>
                         </ul>
                     </div>
