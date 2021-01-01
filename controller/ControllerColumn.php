@@ -80,10 +80,11 @@ class ControllerColumn extends Controller {
             $title = $_POST["title"];
             $column = Column::create_new($title, $board);
 
-            $errors = new ValidationError($column, "add");
-            $errors->set_messages($column->validate());
+            $error = new ValidationError($column, "add");
+            $error->set_messages($column->validate());
+            $error->add_to_session();
 
-            if($errors->is_empty()) {
+            if($error->is_empty()) {
                 $column->insert();
             }
             $this->redirect("board", "board", $_POST["id"]);
@@ -101,10 +102,11 @@ class ControllerColumn extends Controller {
             $column = Column::get_by_id($id);
             $column->set_title($title);
 
-            $errors = new ValidationError($column, "edit");
-            $errors->set_messages($column->validate());
+            $error = new ValidationError($column, "edit");
+            $error->set_messages($column->validate());
+            $error->add_to_session();
 
-            if($errors->is_empty()) {
+            if($error->is_empty()) {
                 $column->insert();
             }
             $this->redirect("board", "board", $column->get_board_id());

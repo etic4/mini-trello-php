@@ -30,7 +30,7 @@
                         <?php if ($errors->has_errors()): ?>
                         <div class='errors'>
                             <ul>
-                            <?php foreach ($errors->get_errors() as $message): ?>
+                            <?php foreach ($errors->get_messages() as $message): ?>
                                 <li><?= $message; ?></li>
                             <?php endforeach; ?>
                             </ul>

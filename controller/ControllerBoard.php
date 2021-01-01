@@ -23,7 +23,7 @@ class ControllerBoard extends Controller {
             "user"=>$user, 
             "owners" => $owners,
             "others" => $others,
-            "errors" => ValidationError::get_errors_and_reset()
+            "errors" => ValidationError::get_error_and_reset()
             )
         );
     }
@@ -42,7 +42,7 @@ class ControllerBoard extends Controller {
                         "user"=>$user,
                         "board" => $board,
                         "columns" => $columns,
-                        "errors" => ValidationError::get_errors_and_reset()
+                        "errors" => ValidationError::get_error_and_reset()
                     )
                 );
             }
@@ -64,6 +64,7 @@ class ControllerBoard extends Controller {
 
             $error = new ValidationError($board, "add");
             $error->set_messages($board->validate());
+            $error->add_to_session();
 
             if($error->is_empty()) {
                 $board->insert();
@@ -86,10 +87,11 @@ class ControllerBoard extends Controller {
             $board = Board::get_by_id($board_id);
             $board->set_title($title);
 
-            $errors = new ValidationError($board, "edit");
-            $errors->set_messages($board->validate());
+            $error = new ValidationError($board, "edit");
+            $error->set_messages($board->validate());
+            $error->add_to_session();
 
-            if($errors->is_empty()) {
+            if($error->is_empty()) {
                 $board->update();
             }
             $this->redirect("board", "board", $board_id);

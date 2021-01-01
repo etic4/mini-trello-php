@@ -44,7 +44,7 @@
                 <?php if ($errors->has_errors("column", "edit", $column->get_id())): ?>
                     <div class='errors'>
                         <ul>
-                        <?php foreach ($errors->get_errors() as $message): ?>
+                        <?php foreach ($errors->get_messages() as $message): ?>
                             <li><?= $message; ?></li>
                         <?php endforeach; ?>
                         </ul>

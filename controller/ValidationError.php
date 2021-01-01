@@ -3,33 +3,40 @@
 
 class ValidationError {
 
-    /*La méthode chargée de leur affichage récupère les erreurs, $_SESSION["error"] est reset*/
-    public static function get_errors_and_reset(): array {
-        $error = array();
+    private ?string $instance_name;
+    private ?string $action;
+    private ?string $id;
+    private array $messages;
 
+    /* Retourne l'erreur et reset la session */
+    public static function get_error_and_reset(): ValidationError {
+        $error = new ValidationError();
         if (isset($_SESSION["error"])) {
             $error = $_SESSION["error"];
-            $_SESSION["error"] = [];
+            $_SESSION["error"] = new ValidationError();
         }
         return $error;
     }
 
+
     public function __construct($instance=null, ?string $action=null) {
-        $_SESSION["error"] = array(
-          "instance_name" => get_class($instance),
-          "action" => $action,
-          "id" => $instance == null ? null : $instance->get_id(),
-          "messages" => []
-        );
+        $this->instance_name = is_null($instance) ? null : strtolower(get_class($instance));
+        $this->action = $action;
+        $this->id = is_null($instance) ? null : $instance->get_id();
+        $this->messages = [];
     }
 
+    /* Ajoute l'erreur à la session */
+    public function add_to_session() {
+        $_SESSION["error"] = $this;
+    }
     /* set la liste des messages.*/
     public function set_messages($messages_list) {
-        $_SESSION["error"]["messages"] = $messages_list;
+        $this->messages = $messages_list;
     }
 
     public function is_empty(): bool {
-        return empty($_SESSION["error"]["messages"]);
+        return empty($this->messages);
     }
 
     /* Retourne true s'il y a des erreurs pour cette instance et cette action*/
@@ -46,16 +53,14 @@ class ValidationError {
         }
 
         /*Sinon on check l'égalité */
-        return $_SESSION["error"]["instance_name"] == $instance_name
-            && $_SESSION["error"]["action"] == $action
-            && $_SESSION["error"]["id"] == $id;
+        return $this->instance_name == $instance_name
+            && $this->action == $action
+            && $this->id == $id;
     }
 
     /*La méthode chargée de leur affichage récupère les erreurs*/
-    public function get_errors(): array {
-        return $_SESSION["error"]["messages"];
+    public function get_messages(): array {
+        return $this->messages;
     }
-
-
 
 }

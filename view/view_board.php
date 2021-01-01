@@ -39,10 +39,10 @@
                         </li>
                     </ul>
                     <?php endif; ?>
-                    <?php if ($errors->has_errors("board")): ?>
+                    <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
                     <div class='errors'>
                         <ul>
-                        <?php foreach ($errors->get_errors() as $message): ?>
+                        <?php foreach ($errors->get_messages() as $message): ?>
                             <li><?= $message; ?></li>
                         <?php endforeach; ?>
                         </ul>
@@ -62,7 +62,7 @@
                     <?php if ($errors->has_errors("column", "add")): ?>
                     <div class='errors'>
                         <ul>
-                        <?php foreach ($errors->get_errors() as $message): ?>
+                        <?php foreach ($errors->get_messages() as $message): ?>
                             <li><?= $message; ?></li>
                         <?php endforeach; ?>
                         </ul>
