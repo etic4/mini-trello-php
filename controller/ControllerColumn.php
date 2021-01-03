@@ -107,7 +107,7 @@ class ControllerColumn extends Controller {
             $error->add_to_session();
 
             if($error->is_empty()) {
-                $column->insert();
+                $column->update();
             }
             $this->redirect("board", "board", $column->get_board_id());
         }

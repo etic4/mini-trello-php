@@ -404,6 +404,26 @@ strong {
     width: 280px;
 }
 
+.boardMain .board .title .errors {
+    margin-left: 15px;
+    top: -10px;
+    width: 330px;
+}
+
+.column_display .column .title_column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.column_display .column .title_column .errors {
+    height: 20px;
+}
+
+.column_display .column .title_column .errors li {
+    width: 270px;
+}
+
 
 /***  ===LOGIN & SIGNUP===   ***/
 
@@ -673,6 +693,10 @@ strong {
     display: flex;
     flex-direction: row;
     justify-content: start;
+}
+
+.board .column .title_column .icons .editTitle h3 {
+    white-space: nowrap;
 }
 
 .board .column footer .add {
