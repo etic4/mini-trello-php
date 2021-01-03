@@ -77,7 +77,6 @@ class User extends Model {
         }
         return $errors;
     }
-
     public function check_password($clearPasswd): bool {
         return $this->passwdHash === Tools::my_hash($clearPasswd);
     }
@@ -88,7 +87,9 @@ class User extends Model {
         if (!Validation::valid_email($this->email)) {
             $errors[] = "Email non valide";
         }
-
+        if(!Validation::is_unique_email($this->email)){
+            $errors[]="Email non disponible";
+        }
         //fullName
         if (!Validation::str_longer_than($this->fullName, 2)) {
             $errors[] = "Le nom doit comporter au moins 3 caractères";
@@ -104,7 +105,7 @@ class User extends Model {
         }
 
         if (!Validation::contains_digits($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins une chiffre capitale";
+            $errors[] = "Le mot de passe doit contenir au moins un chiffre";
         }
 
         if (!Validation::contains_non_alpha($this->clearPasswd)) {

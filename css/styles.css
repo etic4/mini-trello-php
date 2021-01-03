@@ -602,6 +602,11 @@ strong {
 
 /***  ======COMMENT======  ***/
 
+article .comment h3 {
+    padding-top: 10px;
+    padding-bottom: 40px;
+}
+
 .main_comment {
     margin-top: -25px;
     margin-left: 15px;

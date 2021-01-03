@@ -41,6 +41,34 @@ class ControllerUser extends Controller {
     }
 
     public function signup() {
-        (new View("signup"))->show();
+        $email = '';
+        $password = '';
+        $fullName='';
+        $confirm='';
+        $errors = [];
+        $user=null;
+        if (isset($_POST['email']) && isset($_POST['password']) && isset($_POST['fullName']) && isset($_POST['confirm'])) {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $fullName=$_POST['fullName'];
+            $confirm=$_POST['confirm'];
+            
+            $user=new User($email,$fullName,$password,null,null,null);
+            $errors = $user->validate();
+            if($confirm!==$password){
+               array_push($errors,"Votre mot de passe et votre confirmation de mot de passe sont différentes");
+            }
+            if (empty($errors)) {
+                $user->insert();
+                $this->log_user($user);
+            }
+        }
+        (new View("signup"))->show(array(
+            "email" => $email, 
+            "password" => $password,
+            "fullName" => $fullName,
+            "confirm" => $confirm, 
+            "errors" => $errors)
+        );
     }
 }
