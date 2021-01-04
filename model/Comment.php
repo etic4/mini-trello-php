@@ -1,97 +1,109 @@
 <?php
 
 require_once "framework/Model.php";
-require_once "model/DBTools.php";
 require_once "model/Card.php";
 require_once "model/User.php";
+//require_once "model/Date.php";
 
 class Comment extends Model{
+    use DateTrait;
 
-    private String $id;
-    private $body;
-    private $createdAt;
-    private $modifiedAt;
-    private $author;
-    private $card;
-
-    public function __construct($body,$author,$card,$id=null,$createdAt=null,$modifiedAt=null){
-
+    public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
+                                ?DateTime $modifiedAt=null){
         $this->id=$id;
         $this->body=$body;
-        $this->createdAt=$createdAt;
-        $this->modifiedAt=$modifiedAt;
         $this->author=$author;
         $this->card=$card;
+        $this->createdAt = $createdAt;
+        $this->modifiedAt = $modifiedAt;
+    }
+    public static function create_new(String $body, User $author, Card $card): Comment{
+        return new Comment($body, $author, $card, null);
     }
 
-    // GETTER & SETTER
+    // GETTERS
 
-    public function get_id(){
+    public function get_id(): ?string {
         return $this->id;
     }
-    public function get_body(){
+
+    public function get_body(): string {
         return $this->body;
     }
-    public function get_created_at(){
-        return $this->createdAt;
-    }
-    public function get_modified_at(){
-        return $this->modifiedAt;
-    }
-    public function get_author(){
+
+
+    public function get_author(): User {
         return $this->author;
     }
-    public function get_card(){
+
+    public function get_card(): Card {
         return $this->card;
     }
+
+    //   SETTERS
+
     public function set_id($id){
         $this->id=$id;
     }
+
     public function set_body($body){
         $this->body=$body;
     }
-    public function set_created_at($createdAt){
-        $this->createdAt=$createdAt;
-    }
-    public function set_modified_at($modifiedAt){
-        $this->modifiedAt=$modifiedAt;
-    }
+
     public function set_author($author){
         $this->author=$author;
     }
+
     public function set_card($card){
         $this->card=$card;
     }
 
-    public function get_author_name(){
-        $sql = "SELECT FullName FROM User WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$this->author));
-        $name=$query->fetch();
-        return $name["FullName"];
-    }/*
-        supprime le comment de la db
-    */
-    public function delete(){
-        $sql="DELETE FROM comment WHERE Id=:id";
-        $param=array("id"=>$this->get_id());
-        $query = self::execute($sql, $param);
-    }
+
+
+    //   QUERIES
+
     /*
-     * insertion en db avec les valeurs d'instances.
+        renvoie un comment avec comme attributs les donnee de $data
+    */
+    protected static function get_instance($data): Comment {
+        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
+        return new Comment(
+            $data["Body"],
+            User::get_by_id($data["Author"]),
+            Card::get_by_id($data["Card"]),
+            $data["ID"],
+            $createdAt,
+            $modifiedAt
+        );
+    }
+
+    /*
+         insertion en db avec les valeurs d'instances.
      */
     public function insert() { 
-        $sql="INSERT INTO Comment (Body, CreatedAt, ModifiedAt, Author, Card) VALUES (:body, :createdAt, :modifiedAt, :author, :card)";
-        $params=array("body"=>$this->get_body(),"createdAt"=>$this->get_created_at(),"modifiedAt"=>$this->get_modified_at(),
-        "author"=>$this->get_author(),"card"=>$this->get_card());
+        $sql=
+            "INSERT INTO comment (Body, Author, Card) 
+             VALUES (:body, :author, :card)";
+        $params=array(
+            "body"=>$this->get_body(),
+            "author"=>$this->get_author()->get_id(),
+            "card"=>$this->get_card()->get_id()
+        );
         $this->execute($sql, $params);
-
-        return $this->get_by_id($this->lastInsertId());
+        $id = $this->lastInsertId();
+        $this->set_id($id);
+        $this->set_dates_from_instance(self::get_by_id($id));
     }
+
     /*
         renvoie un objet comment dont l'id est $id
     */
-    public static function get_by_id($id) {
-        $sql = "SELECT * FROM Comment WHERE ID=:id";
+    public static function get_by_id($id): ?Comment {
+        $sql = 
+            "SELECT * 
+             FROM comment 
+             WHERE ID=:id
+             ORDER BY ModifiedAt DESC, CreatedAt DESC";
         $query = self::execute($sql, array("id"=>$id));
 
         $data = $query->fetch();
@@ -101,50 +113,69 @@ class Comment extends Model{
             return static::get_instance($data);
         }
     }
-    /*
-        renvoie un comment avec comme attributs les donnee de $data
-    */
-    protected static function get_instance($data) :Comment{
-
-        $ca = DBTools::php_date($data["CreatedAt"]);
-        $ma = DBTools::php_date_modified($data["ModifiedAt"],$data["CreatedAt"]);
-        return new Comment($data["Body"], $data["Author"], $data["Card"],$data["ID"], $ca, $ma);
-        
-    }
+    
     /*
         mets a jour la db avec les valeurs de l'instance
     */
     public function update() {
-        
-        $this->set_modified_at(new DateTime("now"));
-        $ma = DBTools::sql_date($this->get_modified_at());
-        $ca=DBTools::sql_date($this->get_created_at());
-        $sql = "UPDATE Comment SET Body=:body, CreatedAt=:ca, ModifiedAt=:ma, Author=:author, Card=:card WHERE ID=:id";
-        $params = array("id"=>$this->get_id(), "body"=>$this->get_body(), "ca"=>$ca,"ma"=>$ma, "author"=>$this->get_author(), "card"=>$this->get_card());
-
+        $sql = 
+            "UPDATE comment 
+             SET Body=:body, Author=:author, Card=:card , ModifiedAt=NOW()
+             WHERE ID=:id";
+        $params = array(
+            "id"=>$this->get_id(),
+            "body"=>$this->get_body(), 
+            "author"=>$this->get_author()->get_id(),
+            "card"=>$this->get_card()->get_id()
+        );
         $this->execute($sql, $params);
+        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
     }
+
+    public function delete() {
+        $sql = "DELETE FROM comment 
+                WHERE ID = :id";
+        $param = array('id' => $this->id);
+        self::execute($sql, $param);
+    }
+
     /*
-        renvoie un tab de comment dont la carte est $card_id
+        renvoie un tab de comment dont la carte est $card
     */
-    public static function get_comments_from_card($card_id) {
+    public static function get_comments_for_card(Card $card): array {
         $sql = 
             "SELECT * 
              FROM comment 
-             WHERE Card=:card";
-        $param = array("card" => $card_id);
+             WHERE Card=:id
+             ORDER BY ModifiedAt DESC, CreatedAt DESC";
+        $param = array("id" => $card->get_id());
         $query = self::execute($sql, $param);
         $data = $query->fetchAll();
+
         $comments = array();
         foreach ($data as $rec) {
-            $comment = Comment::get_instance($rec);
-            array_push($comments, $comment);
+            array_push($comments, self::get_instance($rec));
         }
         return $comments;
     }
-    
-    
+
+    public static function get_comments_count(Card $card): string {
+        $sql = "SELECT COUNT(*) as nbr FROM comment WHERE Card=:cardId";
+        $params = array("cardId" => $card->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetch();
+
+        return $data["nbr"];
+    }
+
+    // fonction utilitaires
+    public function get_author_name(): String{
+        return $this->get_author()->get_fullName();
+    }
+
+    public function get_time_string(): String{
+        $created=$this->get_created_intvl();
+        $ma=$this->get_modified_intvl();
+        return "Created ".$created.". ".$ma.".";
+    }
 }
-
-
-?>

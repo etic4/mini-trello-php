@@ -35,4 +35,9 @@ class Configuration
         return self::$parameters;
     }
 
+    public static function is_dev() {
+        return file_exists("config/dev.ini");
+
+    }
+
 }

@@ -10,11 +10,11 @@
         <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body>
+    <body class="login">
         <header>
             <?php include('menu.php'); ?>
         </header>
-        <main class="login">
+        <main>
             <form action="user/login" method="post">
                 <h2>Sign in</h2>
                 <hr>

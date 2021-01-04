@@ -10,23 +10,32 @@
         <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body>
+    <body class="home">
         <header>
         <?php include('menu.php'); ?>
         </header>
-        <?php if($user): ?>;
+        <?php if($user): ?>
         <main class="list">
             <article class="up">
                 <h2>Your boards</h2>
                 <div class="displayBoards">
                     <ul class="yourBoards">
                     <?php foreach($owners as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b></a></li>
+                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?></a></li>
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
                         <input type="text" name="title" placeholder="Add a board">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
+                        <?php if ($errors->has_errors()): ?>
+                        <div class='errors'>
+                            <ul>
+                            <?php foreach ($errors->get_messages() as $message): ?>
+                                <li><?= $message; ?></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </article>
@@ -34,7 +43,7 @@
                 <h2>Others' boards</h2>
                     <ul class="otherBoards">
                     <?php foreach($others as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b><br/>by <?= $board['fullName'] ?></a></li>
+                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?> <br/>by <?= $board['fullName'] ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>

@@ -3,12 +3,17 @@
     <li>
         <section class="column">
             <header class="title_column">
-                <h3><?= $column->get_title() ?></h3>
                 <ul class="icons">
                     <li>
-                        <form class='link' action='column/edit' method='post'>
+                        <form class='editTitle' action='column/edit' method='post'>
                             <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
-                            <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
+                            <input type ="checkbox" id="toggle">
+                            <label for="toggle"><i class="fas fa-edit"></i></label>
+                            <input type="text" class="control" name="title" value="<?= $column->get_title() ?>">
+                            <input type="submit" class="fas fa-paper-plane" value="&#xf1d8">
+                            <button class="control"><i class="fas fa-arrow-left"></i></button>
+                            <input type='submit' value="&#xf044" class="fas fa-edit" style="background:none">
+                            <h3><?= $column->get_title() ?></h3>
                         </form>
                     </li>
                     <li>
@@ -18,7 +23,7 @@
                         </form>
                     </li>
                     <!-- pas de left pour la première colonne -->
-                    <?php if($column->get_position() > 0): ?>
+                    <?php if(!$column->is_first()): ?>
                     <li>
                         <form class='link' action='column/left' method='post'>
                             <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
@@ -27,7 +32,7 @@
                     </li>
                     <?php endif; ?>
                     <!-- pas de right pour la dernière colonne -->
-                    <?php if($column->get_position() != end($columns)->get_position()): ?>
+                    <?php if(!$column->is_last()): ?>
                     <li>
                         <form class='link' action='column/right' method='post'>
                             <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
@@ -36,6 +41,15 @@
                     </li>
                     <?php endif; ?>
                 </ul>
+                <?php if ($errors->has_errors("column", "edit", $column->get_id())): ?>
+                    <div class='errors'>
+                        <ul>
+                        <?php foreach ($errors->get_messages() as $message): ?>
+                            <li><?= $message; ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </header>
             <section>
                 <?php include("cards.php"); ?>
