@@ -46,7 +46,7 @@
                             <li><?= $message; ?></li>
                         <?php endforeach; ?>
                         </ul>
-                    </div>
+                    </div>    
                     <?php endif; ?>
                 </div>
                 <p class="credit">Created <?= $board->get_created_intvl(); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl(); ?>.</p>
@@ -66,7 +66,7 @@
                             <li><?= $message; ?></li>
                         <?php endforeach; ?>
                         </ul>
-                    </div>
+                    </div>    
                     <?php endif; ?>
                 </aside>     
             </div>

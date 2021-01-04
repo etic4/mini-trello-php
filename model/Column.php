@@ -23,7 +23,8 @@ class Column extends Model {
 
     public function __construct(string $title, 
                                 int $position, 
-                                Board $board, string $id=null, 
+                                Board $board, 
+                                string $id=null, 
                                 ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
         $this->id = $id;
