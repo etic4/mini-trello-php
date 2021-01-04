@@ -108,6 +108,7 @@ class ControllerCard extends Controller {
                     $column = Column::get_by_id($card->get_column_id());
                     $board = Board::get_by_id($column->get_board_id());
                     $comments = $card->get_comments();
+                    $edit="yes";
                     (new View("card_edit"))->show(array(
                         "user" => $user, 
                         "board" => $board, 
@@ -115,20 +116,21 @@ class ControllerCard extends Controller {
                         "card" => $card, 
                         "comment" => $comments,
                         "show_comment" => $_GET['param2'],
-                        "edit" => "edit"
+                        "edit" => $edit
                         )
                     );
                 }else{
                     $column = Column::get_by_id($card->get_column_id());
                     $board = Board::get_by_id($column->get_board_id());
                     $comments = $card->get_comments();
+                    $edit="yes";
                     (new View("card_edit"))->show(array(
                         "user" => $user, 
                         "board" => $board, 
                         "column" => $column, 
                         "card" => $card, 
                         "comment" => $comments,
-                        "edit" => "edit"
+                        "edit" => $edit
                         )
                     );
                 }
