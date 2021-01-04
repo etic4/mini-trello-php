@@ -14,7 +14,7 @@
                             <input type="submit" name='button' value="cancel">
                         </form>
                     <?php else: ?>
-                        <p><?= $comment->get_body() ?> and <?= $comment->get_id() ?> </p>
+                        <p><?= $comment->get_body() ?> </p>
                         <p>by <strong><?= $comment->get_author()->get_fullName() ?></strong> <?= $comment->get_time_string() ?></p>
                     <?php endif; ?>
                     <ul class="icons">

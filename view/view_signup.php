@@ -14,9 +14,19 @@
             <?php include('menu.php'); ?>
         </header>
         <main class="login">
-            <form action="user/login" method="post">
+            <form action="user/signup" method="post">
                 <h2>Sign up</h2>
-                <hr>
+                <hr> 
+                <?php if (count($errors) != 0): ?>
+                <div class='errors'>
+                    <p>Please correct the following error(s) :</p>
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= $error ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
                 <ul class="wrapper">
                     <li class="form-row">
                         <label for="email"><i class="fas fa-at"></i></label>
@@ -24,7 +34,7 @@
                     </li>
                     <li class="form-row">
                         <label for="fullname"><i class="fas fa-user"></i></label>
-                        <input type="text" name="fullname" placeholder="Full Name">
+                        <input type="text" name="fullName" placeholder="Full Name">
                     </li>
                     <li class="form-row">
                         <label for="password"><i class="fas fa-lock"></i></label>

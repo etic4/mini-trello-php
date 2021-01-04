@@ -8,7 +8,7 @@ class Validation {
     }
 
     public static function contains_capitals($str): bool {
-        return preg_match('/[A-Z]]/', $str) > 0;
+        return strtolower($str)!==$str;
     }
 
     public static function contains_digits($str): bool {
