@@ -25,7 +25,11 @@ class ControllerComment extends Controller {
         if(isset($_POST['id'])){            
             $idcomment=$_POST['id'];
             $instance=Comment::get_by_id($idcomment);
-            $this->redirect("card","view",$instance->get_card()->get_id(),$idcomment);
+            if(isset($_POST['edit'])){
+                $this->redirect("card","edit",$instance->get_card()->get_id(),$idcomment);
+            }else{
+                $this->redirect("card","view",$instance->get_card()->get_id(),$idcomment);
+            }
         }else{
             $this->redirect("board","index");
         }

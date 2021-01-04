@@ -23,6 +23,9 @@
                          <li>
                             <form class='link' action='Comment/edit' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
+                                <?php if(isset($edit)): ?>
+                                    <input type='text' name='edit' value='yes' hidden>
+                                <?php endif;?>
                                 <input type='submit' name='show' value="&#xf044"class="fas fa-edit" style="background:none">
                             </form>
                         </li>
