@@ -171,6 +171,7 @@ class ControllerCard extends Controller {
         $this->redirect("board", "index");
         }
     } 
+    
     public function remove() {
         if(isset($_POST["id"])) {
             $card = Card::get_by_id($_POST["id"]);

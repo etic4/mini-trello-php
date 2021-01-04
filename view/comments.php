@@ -1,4 +1,4 @@
-<section class=comment>
+<section class="comment">
     <header>
         <h3>Comments</h3>
     </header>
@@ -15,22 +15,22 @@
                         </form>
                     <?php else: ?>
                         <p><?= $comment->get_body() ?> </p>
-                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_time_string() ?></p>
+                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_modified_intvl() ?></p>
                     <?php endif; ?>
                     <ul class="icons">
                         <!-- si l'utilisateur est l'auteur du message -->
-                         <?php if($user->get_id() == $comment->get_author()->get_id() && !isset($show_comment)): ?>
+                         <?php if($user->get_id() == $comment->get_author_id() && !isset($show_comment)): ?>
                          <li>
-                            <form class='link' action='Comment/edit' method='post'>
+                            <form class='link' action='comment/edit' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                                 <input type='submit' name='show' value="&#xf044"class="fas fa-edit" style="background:none">
                             </form>
                         </li>
                         <?php endif; ?>
                         <!-- si l'utilisateur est proprio du tableau ou si l'utilisateur est l'auteur du message -->
-                        <?php if($user->get_id() == $board->get_owner()->get_id() || $user->get_id() == $comment->get_author()->get_id()): ?>
+                        <?php if($user->get_id() == $board->get_owner_id() || $user->get_id() == $comment->get_author_id()): ?>
                             <li>
-                            <form class='link' action='Comment/delete' method='post'>
+                            <form class='link' action='comment/delete' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                                 <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                             </form>
@@ -42,8 +42,8 @@
         </ul>
     </div>
     <footer>
-        <form class="add" action="Comment/add" method="post">
-            <input type='text' name='idcard' value='<?= $card->get_id() ?>' hidden>
+        <form class="add" action="comment/add" method="post">
+            <input type="text" name="idcard" value="<?= $card->get_id() ?>" hidden>
             <input type="text" name="body">
             <input type="submit" value="Add a comment">
         </form>
