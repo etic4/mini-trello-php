@@ -9,7 +9,7 @@ require_once "ValidationError.php";
 class ControllerCard extends Controller {
 
     public function index() {
-        // TODO: Implement index() method.
+        $this->redirect("board", "index");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
