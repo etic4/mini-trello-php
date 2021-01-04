@@ -27,12 +27,18 @@
                     <form class="add" action="board/add" method="post">
                         <input type="text" name="title" placeholder="Add a board">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
-                        <?php if (count($errors) != 0): ?>
+                        <?php if ($errors->has_errors()): ?>
                         <div class='errors'>
                             <ul>
+<<<<<<< HEAD
                                 <?php foreach ($errors as $error): ?>
                                     <li><?= $error->get_message(); ?></li>
                                 <?php endforeach; ?>
+=======
+                            <?php foreach ($errors->get_messages() as $message): ?>
+                                <li><?= $message; ?></li>
+                            <?php endforeach; ?>
+>>>>>>> dev
                             </ul>
                         </div>
                         <?php endif; ?>

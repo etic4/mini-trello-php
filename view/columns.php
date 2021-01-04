@@ -41,14 +41,14 @@
                     </li>
                     <?php endif; ?>
                 </ul>
-                <?php if (count($errors) != 0 && $errors[0]->must_be_displayed($column, "edit")): ?>
-                <div class='errors'>
-                    <ul>
-                    <?php foreach($errors as $error): ?>
-                        <li><?= $error->get_message(); ?></li>
-                    <?php endforeach; ?>
-                    </ul>
-                </div>    
+                <?php if ($errors->has_errors("column", "edit", $column->get_id())): ?>
+                    <div class='errors'>
+                        <ul>
+                        <?php foreach ($errors->get_messages() as $message): ?>
+                            <li><?= $message; ?></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </div>
                 <?php endif; ?>
             </header>
             <section>

@@ -4,11 +4,9 @@ require_once "framework/Controller.php";
 require_once "model/Card.php";
 require_once "model/User.php";
 require_once "CtrlTools.php";
-require_once "ErrorTrait.php";
-
+require_once "ValidationError.php";
 
 class ControllerCard extends Controller {
-    use ErrorTrait;
 
     public function index() {
         // TODO: Implement index() method.
@@ -64,23 +62,7 @@ class ControllerCard extends Controller {
         }
         $this->redirect("board", "board", $_POST["board_id"]);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public function delete(){
-        $user=$this->get_user_or_redirect();
         
-        if(isset($_POST['id'])){
-            $card=Card::get_by_id($_POST['id']);
-            $column=Column::get_by_id($card->get_column()->get_id());
-            if(isset ($_POST['delete'])){
-                Card::decrement_following_cards_position($card);
-                $card->delete();
-            }
-            $this->redirect("board","board", $column->get_board()->get_id());
-        }
-    }
-    
     public function update(){
         $user=$this->get_user_or_redirect();
         $card=null;
@@ -189,5 +171,15 @@ class ControllerCard extends Controller {
         $this->redirect("board", "index");
         }
     } 
-    
+    public function remove() {
+        if(isset($_POST["id"])) {
+            $card = Card::get_by_id($_POST["id"]);
+            if(isset($_POST["delete"])) {
+                Card::decrement_following_cards_position($card);
+                $card->delete();
+            }
+            $this->redirect("board", "board", $card->get_column()->get_board_id());
+        }
+        $this->redirect("board", "index");
+    }
 }

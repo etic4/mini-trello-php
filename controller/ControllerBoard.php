@@ -4,11 +4,10 @@ require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "model/Board.php";
 require_once "CtrlTools.php";
-require_once "ErrorTrait.php";
+require_once "ValidationError.php";
 
 
 class ControllerBoard extends Controller {
-    use ErrorTrait;
 
     public function index() {
         $user = $this->get_user_or_false();
@@ -24,7 +23,7 @@ class ControllerBoard extends Controller {
             "user"=>$user, 
             "owners" => $owners,
             "others" => $others,
-            "errors" => $this->get_errors_and_reset()
+            "errors" => ValidationError::get_error_and_reset()
             )
         );
     }
@@ -43,7 +42,7 @@ class ControllerBoard extends Controller {
                         "user"=>$user,
                         "board" => $board,
                         "columns" => $columns,
-                        "errors" => $this->get_errors_and_reset()
+                        "errors" => ValidationError::get_error_and_reset()
                     )
                 );
             }
@@ -62,9 +61,12 @@ class ControllerBoard extends Controller {
         if (isset($_POST["title"])) {
             $title = $_POST["title"];
             $board = new Board($title, $user, null, new DateTime(), null);
-            $this->set_errors($board->validate());
 
-            if($this->no_errors()) {
+            $error = new ValidationError($board, "add");
+            $error->set_messages($board->validate());
+            $error->add_to_session();
+
+            if($error->is_empty()) {
                 $board->insert();
                 $this->redirect("board", "board", $board->get_id());
             }
@@ -84,9 +86,12 @@ class ControllerBoard extends Controller {
             $title = $_POST["title"];
             $board = Board::get_by_id($board_id);
             $board->set_title($title);
-            $this->set_errors($board->validate());
 
-            if($this->no_errors()) {
+            $error = new ValidationError($board, "edit");
+            $error->set_messages($board->validate());
+            $error->add_to_session();
+
+            if($error->is_empty()) {
                 $board->update();
             }
             $this->redirect("board", "board", $board_id);
@@ -142,11 +147,11 @@ class ControllerBoard extends Controller {
     public function remove() {
         if(isset($_POST["id"])) {
             $board = Board::get_by_id($_POST["id"]);
-            if(!isset($_POST["delete"])) {
+            if(isset($_POST["delete"])) {
                 $board->delete();
-                $this->redirect("board", "board", $_POST["id"]);
+                $this->redirect("board", "index");
             }
-            $board->delete();
+            $this->redirect("board", "board", $board->get_id());
         }
         $this->redirect("board", "index");
     }

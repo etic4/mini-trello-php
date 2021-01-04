@@ -45,7 +45,9 @@
                         </div>
                     </form>
                 </div>
+                <?= include('comments.php'); ?>
             </article>
+            
         </main>
     </body>
 </html>
