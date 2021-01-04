@@ -30,12 +30,12 @@ class ControllerComment extends Controller {
             $this->redirect("board","index");
         }
     }
-    public function editconfirm(){
+    public function edit_confirm(){
         $user=$this->get_user_or_redirect();
         if(isset($_POST['id'])){            
             $idcomment=$_POST['id'];
             $instance=Comment::get_by_id($idcomment);
-            if(isset($_POST['button']) && $_POST['button']=='validate'){
+            if(isset($_POST['validate'])){
                 if(isset($_POST['body'])){
                     $instance->set_body($_POST['body']);
                     $instance->update();

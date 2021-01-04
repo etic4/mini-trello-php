@@ -36,6 +36,10 @@ class Comment extends Model{
         return $this->author;
     }
 
+    public function get_author_fullName() :string {
+        return $this->author->get_fullName();
+    }
+ 
     public function get_card(): Card {
         return $this->card;
     }

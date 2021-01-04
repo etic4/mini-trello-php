@@ -834,7 +834,7 @@ article .comment h3 {
 }
 
 .main_comment .display_one_comment .icons {
-    margin-top: -2px;
+    margin-top: -3px;
 }
 
 .comment footer .add {
@@ -843,6 +843,33 @@ article .comment h3 {
 
 .comment footer .add input[type=text] {
     width: 100%;
+}
+
+.main_comment .display_one_comment .editconfirm {
+    display: flex;
+    flex-direction: row;
+}
+
+.main_comment .display_one_comment .editconfirm input[name="body"] {
+    height: 35px;
+    padding-left: 10px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #cccccc;
+}
+
+.main_comment .display_one_comment .editconfirm .fas {
+    background-color: #0066CC;
+    color: #FFFFFF;
+    width: 35px;
+    border: 1px solid #0066CC;
+}
+
+.main_comment .display_one_comment .editconfirm .fas[name="validate"] {
+    border-right: 1px solid #cccccc;
+}
+
+.main_comment .display_one_comment .editconfirm .fas[name="cancel"] {
+    border-radius: 0 4px 4px 0;
 }
 
 

@@ -35,4 +35,5 @@ class Validation {
         return is_null(Board::get_by_title($title));
     }
 
+
 }

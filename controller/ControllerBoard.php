@@ -147,11 +147,11 @@ class ControllerBoard extends Controller {
     public function remove() {
         if(isset($_POST["id"])) {
             $board = Board::get_by_id($_POST["id"]);
-            if(!isset($_POST["delete"])) {
+            if(isset($_POST["delete"])) {
                 $board->delete();
-                $this->redirect("board", "board", $_POST["id"]);
+                $this->redirect("board", "index");
             }
-            $board->delete();
+            $this->redirect("board", "board", $board->get_id());
         }
         $this->redirect("board", "index");
     }
