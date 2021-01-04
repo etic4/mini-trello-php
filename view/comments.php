@@ -6,16 +6,16 @@
         <ul>
             <?php foreach($card->get_comments() as $comment):?>
                 <li class="display_one_comment">
-                    <?php if(isset($show_comment) && $show_comment==$comment->get_id()): ?>
-                        <form class='editconfirm' action="Comment/editconfirm" method="post">
+                    <?php if(isset($show_comment) && $show_comment == $comment->get_id()): ?>
+                        <form class='editconfirm' action="comment/edit_confirm" method="post">
                             <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                             <input type="text" name="body" value='<?= $comment->get_body() ?>' >
-                            <input type="submit" name='button' value="validate">
-                            <input type="submit" name='button' value="cancel">
+                            <input class="fas fa-paper-plane" type="submit" name="validate" value="&#xf1d8">
+                            <input class="fas fa-arrow-left" type="submit" name="cancel" value="&#xf060">
                         </form>
                     <?php else: ?>
                         <p><?= $comment->get_body() ?> </p>
-                        <p>by <strong><?= $comment->get_author()->get_fullName() ?></strong> <?= $comment->get_time_string() ?></p>
+                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_time_string() ?></p>
                     <?php endif; ?>
                     <ul class="icons">
                         <!-- si l'utilisateur est l'auteur du message -->
