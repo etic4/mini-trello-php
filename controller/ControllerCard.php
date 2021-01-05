@@ -58,12 +58,15 @@ class ControllerCard extends Controller {
         if(!empty($_POST["title"])) {
             $column = Column::get_by_id($_POST["column_id"]);
             $card = Card::create_new($_POST["title"], $user, $column);
-            $errors=$card->validate();
-            if(empty($errors)){                
+            $error = new ValidationError($card, "add");
+            $error->set_messages($card->validate());
+            $error->add_to_session();
+            if($error->is_empty()){                
                 $card->insert(); 
             }
+            $this->redirect("board","board",$card->get_board_id());
         }
-        $this->redirect("board", "board", $_POST["board_id"]);
+        $this->redirect("board", "index");
     }
         
     public function update(){
@@ -77,8 +80,10 @@ class ControllerCard extends Controller {
             if(isset($_POST['title'])){
                 $card->set_title($_POST['title']);
             }
-            $errors=$card->validate_update();
-            if(empty($errors)){
+            $error = new ValidationError($card, "update");
+            $error->set_messages($card->validate_update());
+            $error->add_to_session();
+            if($error->is_empty()){  
                 $card->update();
             }
             $this->redirect("card","view",$card->get_id());

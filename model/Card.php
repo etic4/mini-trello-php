@@ -191,7 +191,7 @@ class Card extends Model {
         $sql = 
         "SELECT * 
          FROM card 
-         WHERE Title=:title AND `Column`=:column AND ID !=:id ";
+         WHERE Title=:title AND `Column`=:column AND ID <>:id ";
          $params = array(
              "title"=>$this->get_title(), 
              "column"=>$this->get_column_id(),
