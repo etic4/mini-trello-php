@@ -10,7 +10,7 @@
                         <form class='editconfirm' action="comment/edit_confirm" method="post">
                             <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                             <?php if(isset($edit)): ?>
-                                <input type='text' name='edit' value='yes'>
+                                <input type='text' name='edit' value='yes' hidden>
                             <?php endif;?>
                             <input type="text" name="body" value='<?= $comment->get_body() ?>' >
                             <input class="fas fa-paper-plane" type="submit" name="validate" value="&#xf1d8">
@@ -27,7 +27,7 @@
                             <form class='link' action='Comment/edit' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                                 <?php if(isset($edit)): ?>
-                                    <input type='text' name='edit' value='yes'>
+                                    <input type='text' name='edit' value='yes' hidden>
                                 <?php endif;?>
                                 <input type='submit' name='show' value="&#xf044"class="fas fa-edit" style="background:none">
                             </form>
@@ -39,7 +39,7 @@
                             <form class='link' action='Comment/delete' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                                 <?php if(isset($edit)): ?>
-                                    <input type='text' name='edit' value='yes'>
+                                    <input type='text' name='edit' value='yes' hidden>
                                 <?php endif;?>
                                 <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                             </form>
@@ -54,7 +54,7 @@
         <form class="add" action="Comment/add" method="post">
             <input type='text' name='idcard' value='<?= $card->get_id() ?>' hidden>
             <?php if(isset($edit)): ?>
-                <input type='text' name='edit' value='yes'>
+                <input type='text' name='edit' value='yes' hidden>
             <?php endif;?>
             <input type="text" name="body">
             <input type="submit" value="Add a comment">

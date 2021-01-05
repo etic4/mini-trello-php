@@ -45,7 +45,11 @@ class ControllerComment extends Controller {
                     $instance->update();
                 }
             }
-            $this->redirect("card","view",$instance->get_card()->get_id());
+            if(isset($_POST['edit'])){
+                $this->redirect("card","edit",$instance->get_card()->get_id());
+            }else{
+                $this->redirect("card","view",$instance->get_card()->get_id());
+            }
         }else{
             $this->redirect("board","index");
         }
@@ -56,7 +60,11 @@ class ControllerComment extends Controller {
             $card=Card::get_by_id($_POST['idcard']);  
             $instance=new Comment($_POST['body'],$user,$card);
             $instance->insert();
-            $this->redirect("card","view",$_POST['idcard']);
+            if(isset($_POST['edit'])){
+                $this->redirect("card","edit",$instance->get_card()->get_id());
+            }else{
+                $this->redirect("card","view",$instance->get_card()->get_id());
+            }
         }
         $this->redirect("board","index");
     }

@@ -20,7 +20,7 @@
                         <h2>Card "<?= $card->get_title() ?>"</h2>
                         <ul class="icons">
                             <li>
-                                <form class='link' action='card/edit' method='post'>
+                                <form class='link' action='card/edit_link' method='post'>
                                     <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
                                     <input type='submit' value="&#xf044"class="fas fa-edit" style="background:none">
                                 </form>
