@@ -8,12 +8,6 @@ require_once "model/User.php";
 class Comment extends Model{
     use DateTrait;
 
-    private ?string $id;
-    private string $body;
-    private User $author;
-    private Card $card;
-
-
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null){
         $this->id=$id;

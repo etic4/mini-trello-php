@@ -140,6 +140,19 @@ class Card extends Model {
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
+        if(!$this->title_is_unique()){
+            $errors[] = "Title already exists in this column";
+        }
+        return $errors;
+    }
+    public function validate_update(): array{
+        $errors = [];
+        if (!Validation::str_longer_than($this->get_title(), 2)) {
+            $errors[] = "Title must be at least 3 characters long";
+        }
+        if(!$this->title_is_unique_update()){
+            $errors[] = "Title already exists in this column";
+        }
         return $errors;
     }
 
@@ -161,6 +174,33 @@ class Card extends Model {
 
     //    QUERIES    //
 
+    // renvoie true si le titre de la carte $card est unique pour la colonne de la carte $card
+    public function title_is_unique(){
+        $sql = 
+        "SELECT * 
+         FROM card 
+         WHERE Title=:title AND `Column`=:column";
+         $params = array("title"=>$this->get_title(), "column"=>$this->get_column_id());
+         $query = self::execute($sql, $params);
+         $data=$query->fetch();
+         return $query->rowCount()==0 ;
+    }
+    //renvoie true si le titre de la carte $card pour la colonne de la carte $card est unique
+    // update version
+    public function title_is_unique_update(){
+        $sql = 
+        "SELECT * 
+         FROM card 
+         WHERE Title=:title AND `Column`=:column AND ID <>:id ";
+         $params = array(
+             "title"=>$this->get_title(), 
+             "column"=>$this->get_column_id(),
+             "id"=>$this->get_id()
+            );
+         $query = self::execute($sql, $params);
+         $data=$query->fetch();
+         return $query->rowCount()==0 ;
+    }
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
         list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
@@ -175,7 +215,6 @@ class Card extends Model {
             $modifiedAt
         );
     }
-
     //renvoie un objet Card dont l'id est $id
     public static function get_by_id($card_id): ?Card {
         $sql = 
