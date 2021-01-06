@@ -8,8 +8,9 @@ require_once "model/User.php";
 class ControllerComment extends Controller {
 
     public function index() {
-        // TODO: Implement index() method.
+        $this->redirect("board", "index");
     }
+    
     public function delete(){
         $user=$this->get_user_or_redirect();
         if(isset($_POST['id'])){            
@@ -20,6 +21,7 @@ class ControllerComment extends Controller {
         }
         $this->redirect("board","index");
     }
+
     public function edit(){
         $user=$this->get_user_or_redirect();
         if(isset($_POST['id'])){            
@@ -34,6 +36,7 @@ class ControllerComment extends Controller {
             $this->redirect("board","index");
         }
     }
+
     public function edit_confirm(){
         $user=$this->get_user_or_redirect();
         if(isset($_POST['id'])){            
@@ -54,6 +57,7 @@ class ControllerComment extends Controller {
             $this->redirect("board","index");
         }
     }
+
     public function add(){
         $user=$this->get_user_or_redirect();
         if(isset($_POST['idcard'])&& !empty($_POST['body'])){

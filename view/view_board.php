@@ -49,7 +49,7 @@
                     </div>    
                     <?php endif; ?>
                 </div>
-                <p class="credit">Created <?= $board->get_created_intvl(); ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl(); ?>.</p>
+                <p class="credit">Created <?= $board->get_created_intvl() ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl() ?>.</p>
             </header>
             <div class="column_display">  
                 <?php include("columns.php"); ?>

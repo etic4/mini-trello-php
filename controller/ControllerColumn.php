@@ -8,7 +8,7 @@ require_once "ValidationError.php";
 class ControllerColumn extends Controller {
 
     public function index() {
-        
+        $this->redirect("board", "index");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,22 +36,31 @@ class ControllerColumn extends Controller {
     public function delete() {
         $this->get_user_or_redirect();
         if(isset($_POST['id'])) {
-            $column = Column::get_by_id($_POST['id']);
+            $column_id = $_POST['id'];
+            $column = Column::get_by_id($column_id);
+            $cards = Card::get_cards_count($column);
 
-            if (Card::get_cards_count($column) == 0) {
+            if (count($cards) == 0) {
                 $column->delete();
                 Column::decrement_following_columns_position($column);
                 $this->redirect("board", "board", $column->get_board_id());
-            } else {
+            } 
+            
+            else {
                 $this->redirect("column", "delete_confirm", $column->get_id());
             }
+        }
+        else {
+            $this->redirect("board", "index");
         }
     }
 
     public function delete_confirm() {
+        $user = $this->get_user_or_redirect();
         if (isset($_GET["param1"])) {
-            $column = Column::get_by_id($_GET["param1"]);
-            if(!is_null($column)) {
+            $column_id = $_GET["param1"];
+            $column = Column::get_by_id($column_id);
+            if(!is_null($column) && $user) {
                 (new View("delete_confirm"))->show(array("instance" => $column));
                 die;
             }
@@ -72,11 +81,14 @@ class ControllerColumn extends Controller {
         $this->redirect("board", "index");
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public function add() {
         $this->get_user_or_redirect();
 
         if (isset($_POST["id"]) && !empty($_POST["title"])) {
-            $board = Board::get_by_id($_POST["id"]);
+            $board_id = $_POST["id"];
+            $board = Board::get_by_id($board_id);
             $title = $_POST["title"];
             $column = Column::create_new($title, $board);
 
@@ -91,6 +103,8 @@ class ControllerColumn extends Controller {
         }
         $this->redirect("board");
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // edit titre Column
     public function edit() {

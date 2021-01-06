@@ -9,7 +9,7 @@ require_once "ValidationError.php";
 class ControllerCard extends Controller {
 
     public function index() {
-        // TODO: Implement index() method.
+        $this->redirect("board", "index");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,7 +222,6 @@ class ControllerCard extends Controller {
             $this->redirect("board", "index");
         }
     } 
-
     public function remove() {
         if(isset($_POST["id"])) {
             $card = Card::get_by_id($_POST["id"]);
