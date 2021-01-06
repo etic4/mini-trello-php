@@ -8,6 +8,11 @@ require_once "model/User.php";
 class Comment extends Model{
     use DateTrait;
 
+    private ?String $id;
+    private String $body;
+    private User $author;
+    private Card $card;
+
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null){
         $this->id=$id;
@@ -122,6 +127,12 @@ class Comment extends Model{
         }
     }
     
+    public static function can_edit(int $id, User $user): bool{
+
+        $c=Comment::get_by_id($id);
+        return !( is_null($c) || $c->get_author_id()!==$user->get_id());
+
+    }
     /*
         mets a jour la db avec les valeurs de l'instance
     */

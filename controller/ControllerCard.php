@@ -95,7 +95,7 @@ class ControllerCard extends Controller {
         $user=$this->get_user_or_redirect();
         if (isset($_POST['id'])) {
             $card=Card::get_by_id($_POST['id']);
-            if($card!=null){
+            if(!is_null($card)){
                 $this->redirect("card","delete_confirm",$card->get_id());
             }
         }
@@ -106,11 +106,13 @@ class ControllerCard extends Controller {
         $user=$this->get_user_or_redirect();
         if (isset($_GET['param1'])) {
             $card=Card::get_by_id($_GET['param1']);
-            (new View("delete_confirm"))->show(array(
-                "user"=>$user, 
-                "instance"=>$card
-                ));
-            die;
+            if(!is_null($card)){
+                (new View("delete_confirm"))->show(array(
+                    "user"=>$user, 
+                    "instance"=>$card
+                    ));
+                die;
+            }            
         }
         $this->redirect("board", "index");
     }
@@ -136,7 +138,7 @@ class ControllerCard extends Controller {
             $idcard=$_GET['param1'];
             $card=Card::get_by_id($idcard);
             if(!is_null($card)) {
-                if(isset($_GET['param2'])){
+                if(isset($_GET['param2']) && Comment::can_edit($_GET['param2'], $user)){
                     $column = Column::get_by_id($card->get_column_id());
                     $board = Board::get_by_id($column->get_board_id());
                     $comments = $card->get_comments();
@@ -187,7 +189,7 @@ class ControllerCard extends Controller {
             $idcard=$_GET['param1'];
             $card=Card::get_by_id($idcard);
             if(!is_null($card)) {
-                if(isset($_GET['param2'])){
+                if(isset($_GET['param2']) && Comment::can_edit($_GET['param2'], $user)){
                     $column = Column::get_by_id($card->get_column_id());
                     $board = Board::get_by_id($column->get_board_id());
                     $comments = $card->get_comments();
@@ -225,11 +227,13 @@ class ControllerCard extends Controller {
     public function remove() {
         if(isset($_POST["id"])) {
             $card = Card::get_by_id($_POST["id"]);
-            if(isset($_POST["delete"])) {
-                Card::decrement_following_cards_position($card);
-                $card->delete();
+            if(!is_null($card)){
+                if(isset($_POST["delete"]) ) {
+                    Card::decrement_following_cards_position($card);
+                    $card->delete();
+                }
+                $this->redirect("board", "board", $card->get_column()->get_board_id());
             }
-            $this->redirect("board", "board", $card->get_column()->get_board_id());
         }
         $this->redirect("board", "index");
     }
