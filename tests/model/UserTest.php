@@ -37,9 +37,8 @@ class UserTest extends TestCase {
     /**
      * @depends testCreateUserInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(User $user) {
-        $this->expectException(TypeError::class);
-        $user->get_id();
+    public function testGetIdReturnNullOnNotSavedInstance(User $user): User {
+        $this->assertEquals(null, $user->get_id());
         return $user;
     }
 

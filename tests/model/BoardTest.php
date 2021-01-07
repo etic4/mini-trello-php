@@ -34,9 +34,8 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Board $board): Board {
-        $this->expectException(TypeError::class);
-        $board->get_id();
+    public function testGetIdReturnNullOnNotSavedInstance(Board $board): Board {
+        $this->assertEquals(null, $board->get_id());
         return $board;
     }
 

@@ -41,9 +41,8 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Card $card): Card {
-        $this->expectException(TypeError::class);
-        $card->get_id();
+    public function testGetIdReturnNullOnNotSavedInstance(Card $card): Card {
+        $this->assertEquals(null, $card->get_id());
         return $card;
     }
 

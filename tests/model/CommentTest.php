@@ -36,9 +36,8 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Comment $comment): Comment {
-        $this->expectException(TypeError::class);
-        $comment->get_id();
+    public function testGetIdReturnNullOnNotSavedInstance(Comment $comment): Comment {
+        $this->assertEquals(null, $comment->get_id());
         return $comment;
     }
 

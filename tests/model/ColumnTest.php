@@ -36,9 +36,8 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Column $column): Column {
-        $this->expectException(TypeError::class);
-        $column->get_id();
+    public function testGetIdReturnNullOnNotSavedInstance(Column $column): Column {
+        $this->assertEquals(null, $column->get_id());
         return $column;
     }
 
