@@ -8,71 +8,102 @@ require_once "model/User.php";
 class ControllerComment extends Controller {
 
     public function index() {
-        $this->redirect("board", "index");
+        $this->redirect();
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public function delete(){
+    public function delete() {
         $user=$this->get_user_or_redirect();
-        if(isset($_POST['id'])){            
-            $idcomment=$_POST['id'];
-            $instance=Comment::get_by_id($idcomment);
-            $instance->delete(); 
-            $this->redirect("card","view",$instance->get_card()->get_id());
+
+        if(isset($_POST['id'])) {   
+            $comment_id = $_POST['id'];       
+            $comment = Comment::get_by_id($comment_id);
+            $comment->delete(); 
+            $this->redirect("card", "view", $comment->get_card_id());
         }
-        $this->redirect("board","index");
+
+        $this->redirect();
     }
 
-    public function edit(){
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public function edit() {
         $user=$this->get_user_or_redirect();
-        if(isset($_POST['id'])){            
-            $idcomment=$_POST['id'];
-            $instance=Comment::get_by_id($idcomment);
-            if(isset($_POST['edit'])){
-                $this->redirect("card","edit",$instance->get_card()->get_id(),$idcomment);
-            }else{
-                $this->redirect("card","view",$instance->get_card()->get_id(),$idcomment);
+
+        if(isset($_POST['id'])) {            
+            $comment_id = $_POST['id'];
+            $comment = Comment::get_by_id($comment_id);
+
+            if(isset($_POST['edit'])) {
+                $this->redirect("card","edit", $comment->get_card_id(), $comment_id);
             }
-        }else{
-            $this->redirect("board","index");
+            
+            else {
+                $this->redirect("card","view", $comment->get_card_id(), $comment_id);
+            }
+        }
+        
+        else{
+            $this->redirect();
         }
     }
 
-    public function edit_confirm(){
+    public function edit_confirm() {
         $user=$this->get_user_or_redirect();
+
         if(isset($_POST['id'])){            
-            $idcomment=$_POST['id'];
-            $instance=Comment::get_by_id($idcomment);
+            $comment_id = $_POST['id'];
+            $comment = Comment::get_by_id($comment_id);
+
             if(isset($_POST['validate'])){
+
                 if(isset($_POST['body'])){
-                    $instance->set_body($_POST['body']);
-                    $instance->update();
+                    $body = $_POST['body'];
+                    $comment->set_body($body);
+                    $comment->update();
                 }
             }
+
             if(isset($_POST['edit'])){
-                $this->redirect("card","edit",$instance->get_card()->get_id());
-            }else{
-                $this->redirect("card","view",$instance->get_card()->get_id());
+                $this->redirect("card","edit",$comment->get_card_id());
             }
-        }else{
-            $this->redirect("board","index");
+            
+            else{
+                $this->redirect("card","view",$comment->get_card_id());
+            }
+
+        }
+        
+        else{
+            $this->redirect();
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add(){
         $user=$this->get_user_or_redirect();
-        if(isset($_POST['idcard'])&& !empty($_POST['body'])){
-            $card=Card::get_by_id($_POST['idcard']);  
-            $instance=new Comment($_POST['body'],$user,$card);
-            $instance->insert();
+
+        if(isset($_POST['idcard']) && !empty($_POST['body'])) {
+            $card_id = $_POST['idcard'];
+            $body = $_POST['body'];
+
+            $card = Card::get_by_id($card_id);  
+            $comment = new Comment($body, $user, $card);
+            $comment->insert();
+
             if(isset($_POST['edit'])){
-                $this->redirect("card","edit",$instance->get_card()->get_id());
-            }else{
-                $this->redirect("card","view",$instance->get_card()->get_id());
+                $this->redirect("card", "edit", $comment->get_card_id());
+            }
+
+            else{
+                $this->redirect("card", "view", $comment->get_card_id());
             }
         }
-        $this->redirect("board","index");
+
+        $this->redirect();
     }
-    
 }
 
 ?>

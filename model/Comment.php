@@ -31,7 +31,6 @@ class Comment extends Model{
         return $this->body;
     }
 
-
     public function get_author(): User {
         return $this->author;
     }
@@ -46,6 +45,10 @@ class Comment extends Model{
  
     public function get_card(): Card {
         return $this->card;
+    }
+
+    public function get_card_id(): String {
+        return $this->card->get_id();
     }
 
     //   SETTERS
