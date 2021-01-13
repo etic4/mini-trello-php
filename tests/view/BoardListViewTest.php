@@ -1,68 +1,42 @@
-<?php
+<?php namespace view;
 
 require_once "vendor/vendor/autoload.php";
+require_once "tests/tools/DB.php";
+require_once  "tests/tools/HTTPClient.php";
 
-use GuzzleHttp\Client;
-
+use tools\DB;
+use tools\HTTPClient;
 
 class BoardListViewTest extends \PHPUnit\Framework\TestCase {
-    public static DB $db;
-    public static Client $http;
+    private static DB $db;
+    private static HTTPClient $http;
 
-    public static function base_url(): string {
-        return "http://localhost" . Configuration::get("web_root");
-    }
-
-    public static function default_page() {
-        return self::base_url() . Configuration::get("default_controller") . "/index";
-    }
 
     public static function setUpBeforeClass(): void {
         self::$db = new DB();
         self::$db->init();
 
-        self::$http = new Client([
-            // Base URI is used with relative requests
-            'base_uri' => 'http://localhost',
-            // You can set any number of default request options.
-            'timeout'  => 2.0,
-        ]);
+        self::$http = new HTTPClient();
     }
 
     public static function tearDownAfterClass(): void {
         self::$db->init();
     }
 
-    private function http_get($uri): array {
-        $base_url = self::base_url();
-        $final_uri = "";
-        $response = self::$http->get( $base_url . $uri, [
-            'on_stats' => function (GuzzleHttp\TransferStats $stats) use (&$final_uri) {
-                $final_uri = $stats->getEffectiveUri();
-            }
-        ]);
-
-        $resp["status"] = $response->getStatusCode();
-        $resp["uri"] = $final_uri;
-        $resp["body"] = $response->getBody();
-        $resp["headers"] = $response->getHeaders();
-
-        return $resp;
-    }
-
     public function testNotLoggedGetUserReturnsSignup() {
-        $response = $this->http_get("user/index");
+        $response = self::$http->get("user/index");
 
         $this->assertEquals(200, $response["status"]);
-        $this->assertEquals($this->default_page(), $response["uri"]);
+        $this->assertEquals(self::$http->default_page(), $response["url"]);
         $this->assertStringContainsString("<h2>Sign in</h2>", $response["body"] );
+        $this->assertEquals("Sign in", $response["html"]->find_one("h2")->textContent);
     }
 
     public function testGetBoardUrlWhenNotLoggedReturnsSignIN() {
         // get board/1 Action '1' doesn't exist in this controller
-        $response = $this->http_get("user/index");
+        $response = self::$http->get("board");
         $this->assertEquals(200, $response["status"]);
-        $this->assertEquals("http://localhost/epfc/prwb_2021_a02/user/index", $response["uri"]);
+        $this->assertEquals(self::$http->default_page(), $response["url"]);
         $this->assertStringContainsString("<h2>Sign in</h2>", $response["body"] );
     }
 
