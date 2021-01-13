@@ -18,7 +18,6 @@ class ValidationError {
         return $error;
     }
 
-
     public function __construct($instance=null, ?string $action=null) {
         $this->instance_name = is_null($instance) ? null : strtolower(get_class($instance));
         $this->action = $action;

@@ -1,5 +1,11 @@
-<?php
+<?php namespace model;
 
+use tools\DB;
+use \Card;
+use \Comment;
+use \User;
+use \Datetime;
+use \TypeError;
 
 class CommentTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;
@@ -36,28 +42,25 @@ class CommentTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetIdReturnNullOnNotSavedInstance(Comment $comment): Comment {
+    public function testGetIdReturnNullOnNotSavedInstance(Comment $comment) {
         $this->assertEquals(null, $comment->get_id());
-        return $comment;
     }
 
 
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Comment $comment): Comment {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Comment $comment) {
         $this->expectException(TypeError::class);
         $comment->get_createdAt();
-        return $board;
     }
 
     /**
      * @depends testCreateCommentInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Comment $comment): Comment {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Comment $comment) {
         $this->expectException(TypeError::class);
         $comment->get_modifiedAt();
-        return $board;
     }
 
     /**

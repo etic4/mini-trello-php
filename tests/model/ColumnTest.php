@@ -1,4 +1,10 @@
-<?php
+<?php namespace model;
+
+use tools\DB;
+use \Board;
+use \Column;
+use \Datetime;
+use \TypeError;
 
 
 class ColumnTest extends \PHPUnit\Framework\TestCase {
@@ -36,28 +42,25 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetIdReturnNullOnNotSavedInstance(Column $column): Column {
+    public function testGetIdReturnNullOnNotSavedInstance(Column $column) {
         $this->assertEquals(null, $column->get_id());
-        return $column;
     }
 
 
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column): Column {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column) {
         $this->expectException(TypeError::class);
         $column->get_createdAt();
-        return $column;
     }
 
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column): Column {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column) {
         $this->expectException(TypeError::class);
         $column->get_modifiedAt();
-        return $column;
     }
 
     /**
