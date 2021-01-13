@@ -8,7 +8,7 @@ require_once "ValidationError.php";
 class ControllerColumn extends Controller {
 
     public function index() {
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ class ControllerColumn extends Controller {
             }
         }
         else {
-            $this->redirect("board", "index");
+            $this->redirect();
         }
     }
 
@@ -65,7 +65,7 @@ class ControllerColumn extends Controller {
                 die;
             }
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     //exécution du delete ou cancel de delete_confirm
@@ -78,7 +78,7 @@ class ControllerColumn extends Controller {
             }
             $this->redirect("board", "board", $column->get_board_id());
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ class ControllerColumn extends Controller {
             }
             $this->redirect("board", "board", $_POST["id"]);
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,6 +125,6 @@ class ControllerColumn extends Controller {
             }
             $this->redirect("board", "board", $column->get_board_id());
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 }

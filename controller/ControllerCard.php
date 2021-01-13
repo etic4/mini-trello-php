@@ -9,7 +9,7 @@ require_once "ValidationError.php";
 class ControllerCard extends Controller {
 
     public function index() {
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ class ControllerCard extends Controller {
             }
             $this->redirect("board","board",$card->get_board_id());
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
         
     public function update(){
@@ -114,7 +114,7 @@ class ControllerCard extends Controller {
                 die;
             }            
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,11 +170,11 @@ class ControllerCard extends Controller {
                 }
             }
             else {
-                $this->redirect("board", "index");
+                $this->redirect();
             }
         }
         else {
-        $this->redirect("board", "index");
+        $this->redirect();
         }
     }
 
@@ -217,11 +217,11 @@ class ControllerCard extends Controller {
                 }
             }
             else {
-                $this->redirect("board", "index");
+                $this->redirect();
             }
         }
         else {
-            $this->redirect("board", "index");
+            $this->redirect();
         }
     } 
     public function remove() {
@@ -235,6 +235,6 @@ class ControllerCard extends Controller {
                 $this->redirect("board", "board", $card->get_column()->get_board_id());
             }
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 }

@@ -8,7 +8,7 @@ require_once "model/User.php";
 class ControllerComment extends Controller {
 
     public function index() {
-        $this->redirect("board", "index");
+        $this->redirect();
     }
     
     public function delete(){

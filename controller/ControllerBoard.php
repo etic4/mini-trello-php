@@ -48,7 +48,7 @@ class ControllerBoard extends Controller {
                 die;
             }
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ class ControllerBoard extends Controller {
                 $this->redirect("board", "board", $board->get_id());
             }
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
 
@@ -95,7 +95,7 @@ class ControllerBoard extends Controller {
             }
             $this->redirect("board", "board", $board_id);
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
 
@@ -112,7 +112,7 @@ class ControllerBoard extends Controller {
 
             if (count($columns) == 0) { 
                 $board->delete();
-                $this->redirect("board", "index");        
+                $this->redirect();
             }
 
             else {
@@ -120,7 +120,7 @@ class ControllerBoard extends Controller {
             }
         }
         else {
-            $this->redirect("board", "index");
+            $this->redirect();
         }
     }
 
@@ -136,7 +136,7 @@ class ControllerBoard extends Controller {
             }
             $this->redirect("board", "board", $board_id);
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
 
@@ -146,11 +146,11 @@ class ControllerBoard extends Controller {
             $board = Board::get_by_id($_POST["id"]);
             if(isset($_POST["delete"])) {
                 $board->delete();
-                $this->redirect("board", "index");
+                $this->redirect();
             }
             $this->redirect("board", "board", $board->get_id());
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 }
 
