@@ -1,11 +1,13 @@
 <?php namespace model;
 
+use \Tools;
 use tools\DB;
 use \User;
 use \Datetime;
 use \TypeError;
+use \PHPUnit\Framework\TestCase;
 
-class UserTest extends \PHPUnit\Framework\TestCase {
+class UserTest extends TestCase {
     public static DB $db;
 
     public static function setUpBeforeClass(): void {

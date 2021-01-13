@@ -1,6 +1,7 @@
-<?php
+<?php namespace database;
 
 use PHPUnit\Framework\TestCase;
+use tools\DB;
 
 class DatabaseTest extends TestCase {
     public static DB $db;
