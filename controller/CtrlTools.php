@@ -3,13 +3,27 @@
 class CtrlTools {
 
     public static function breadcrumb(): string {
-        $breadcrumb = "<p class='breadcrumb'>Boards</p>";
+        $breadcrumb = "<span class='breadcrumb-current'>Boards</span>";
 
         if (isset($_GET["param1"])) {
-            $id = $_GET["param1"];
-            $Class = ucfirst($_GET["controller"]);
-            $title = $Class::get_by_id($id)->get_title();
-            $breadcrumb = "<div><span class='breadcrumb'>$Class \"$title\"</span><span><a href='board/index'> Boards</a></span></div>";
+            $separator = "<span class='breadcrumb-separator'>&lt;</span>";
+
+            $class_name = ucfirst($_GET["controller"]);
+            $instance = $class_name::get_by_id($_GET["param1"]);
+            $title = $instance->get_title();
+
+            $breadcrumb = "<span><a href='board/index'> Boards</a></span>";
+
+            if ($_GET["controller"] == "card") {
+                $parent = $instance->get_board();
+                $parent_id = $parent->get_id();
+                $parent_title = $parent->get_title();
+
+                $breadcrumb = "<span><a href='board/board/$parent_id'>Board \"$parent_title\"</a></span>" . $separator . $breadcrumb;
+            }
+
+            $breadcrumb = "<span class='breadcrumb-current'>$class_name \"$title\"</span>". $separator . $breadcrumb;
+            $breadcrumb = "<div class='breadcrumb'>$breadcrumb</div>";
         }
         return $breadcrumb;
     }

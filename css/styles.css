@@ -94,10 +94,19 @@ button:focus:not(:focus-visible) {
 }
 
 .breadcrumb {
-    color: #FFFFFF;
-    padding-right: 10px;
+    margin-right: 20px;
 }
 
+.breadcrumb a {
+    padding: 0 !important;
+}
+.breadcrumb-current {
+    color: #FFFFFF;
+}
+
+.breadcrumb-separator {
+    margin: 0px 7px;
+}
 
 /*** =========ADD========= ***/
 
