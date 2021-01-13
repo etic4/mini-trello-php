@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '29758781aaf0d0f2b57a90847969dc5f33413db5',
+    'reference' => '364660bf41c373fb07e2307962c6dd5fe288cd60',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '29758781aaf0d0f2b57a90847969dc5f33413db5',
+      'reference' => '364660bf41c373fb07e2307962c6dd5fe288cd60',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -46,6 +46,15 @@
       array (
       ),
       'reference' => '53330f47520498c0ae1f61f7e2c90f55690c06a3',
+    ),
+    'imangazaliev/didom' => 
+    array (
+      'pretty_version' => '1.16.1',
+      'version' => '1.16.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'c88f5a562868d92b86d0b6aa8dfb30aa7f99977f',
     ),
     'psr/http-client' => 
     array (
