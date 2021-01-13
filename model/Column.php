@@ -100,6 +100,9 @@ class Column extends Model {
         if (!Validation::str_longer_than($this->title, 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
+        if(!Validation::is_unique_column_title($this)) {
+            $errors[] = "A column with the same title already exists in this board";
+        }
         return $errors;
     }
 
@@ -179,6 +182,21 @@ class Column extends Model {
         return $data["nbr"];
     }
 
+    public function is_unique_title_in_the_board(): bool {
+        $sql =
+            "SELECT *
+             FROM `column`
+             WHERE Board=:id
+             AND Title=:title";
+        $params= array(
+            "id" => $this->get_board_id(), 
+            "title" => $this->get_title()
+        );
+
+        $query = self::execute($sql, $params);
+        return $query->rowCount() == 0;
+    }
+
     public function insert() {
         $sql = 
             "INSERT INTO `column`(Title, Position, Board) 
@@ -206,6 +224,7 @@ class Column extends Model {
             "position" => $this->get_position(),
             "board" => $this->get_board_id()
         );
+
         $this->execute($sql, $params);
         $this->set_dates_from_instance(self::get_by_id($this->get_id()));
     }

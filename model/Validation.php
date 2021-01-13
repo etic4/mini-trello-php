@@ -35,5 +35,8 @@ class Validation {
         return is_null(Board::get_by_title($title));
     }
 
+    public static function is_unique_column_title($column): bool {
+        return $column->is_unique_title_in_the_board();
+    }
 
 }

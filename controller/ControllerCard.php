@@ -9,7 +9,7 @@ require_once "ValidationError.php";
 class ControllerCard extends Controller {
 
     public function index() {
-        // TODO: Implement index() method.
+        $this->redirect("board", "index");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +58,15 @@ class ControllerCard extends Controller {
         if(!empty($_POST["title"])) {
             $column = Column::get_by_id($_POST["column_id"]);
             $card = Card::create_new($_POST["title"], $user, $column);
-            $card->insert(); 
+            $error = new ValidationError($card, "add");
+            $error->set_messages($card->validate());
+            $error->add_to_session();
+            if($error->is_empty()){                
+                $card->insert(); 
+            }
+            $this->redirect("board","board",$card->get_board_id());
         }
-        $this->redirect("board", "board", $_POST["board_id"]);
+        $this->redirect("board", "index");
     }
         
     public function update(){
@@ -74,27 +80,53 @@ class ControllerCard extends Controller {
             if(isset($_POST['title'])){
                 $card->set_title($_POST['title']);
             }
-            if( !($_REQUEST['edit']=="Cancel")){
+            $error = new ValidationError($card, "update");
+            $error->set_messages($card->validate_update());
+            $error->add_to_session();
+            if($error->is_empty()){  
                 $card->update();
             }
+            $this->redirect("card","view",$card->get_id());
         }
-        $this->redirect("board","board", $card->get_board_id());
+        $this->redirect("board","index");
+    }
+
+    public function delete() {
+        $user=$this->get_user_or_redirect();
+        if (isset($_POST['id'])) {
+            $card=Card::get_by_id($_POST['id']);
+            if($card!=null){
+                $this->redirect("card","delete_confirm",$card->get_id());
+            }
+        }
+        $this->redirect("board","index");
     }
 
     public function delete_confirm(){
         $user=$this->get_user_or_redirect();
-        $card=null;
-        if (isset($_POST['id'])) {
-            $card=Card::get_by_id($_POST['id']);
+        if (isset($_GET['param1'])) {
+            $card=Card::get_by_id($_GET['param1']);
+            (new View("delete_confirm"))->show(array(
+                "user"=>$user, 
+                "instance"=>$card
+                ));
+            die;
         }
-        (new View("delete_confirm"))->show(array(
-            "user"=>$user, 
-            "instance"=>$card
-            ));
+        $this->redirect("board", "index");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
+    public function edit_link(){
+        $user=$this->get_user_or_redirect();
+        if (isset($_POST['id'])) {
+            $card=Card::get_by_id($_POST['id']);
+            if($card!=null){
+                $this->redirect("card","edit",$card->get_id());
+            }
+        }
+        $this->redirect("board","index");
+    }
     public function edit(){
         $user=$this->get_user_or_redirect();
         $card=null;
@@ -104,17 +136,36 @@ class ControllerCard extends Controller {
             $idcard=$_GET['param1'];
             $card=Card::get_by_id($idcard);
             if(!is_null($card)) {
-                $column = Column::get_by_id($card->get_column_id());
-                $board = Board::get_by_id($column->get_board_id());
-                $comments = $card->get_comments();
-                (new View("card_edit"))->show(array(
-                    "user" => $user, 
-                    "board" => $board, 
-                    "column" => $column, 
-                    "card" => $card, 
-                    "comment" => $comments
-                    )
-                );
+                if(isset($_GET['param2'])){
+                    $column = Column::get_by_id($card->get_column_id());
+                    $board = Board::get_by_id($column->get_board_id());
+                    $comments = $card->get_comments();
+                    $edit="yes";
+                    (new View("card_edit"))->show(array(
+                        "user" => $user, 
+                        "board" => $board, 
+                        "column" => $column, 
+                        "card" => $card, 
+                        "comment" => $comments,
+                        "show_comment" => $_GET['param2'],
+                        "edit" => $edit
+                        )
+                    );
+                }else{
+                    $column = Column::get_by_id($card->get_column_id());
+                    $board = Board::get_by_id($column->get_board_id());
+                    $comments = $card->get_comments();
+                    $edit="yes";
+                    (new View("card_edit"))->show(array(
+                        "user" => $user, 
+                        "board" => $board, 
+                        "column" => $column, 
+                        "card" => $card, 
+                        "comment" => $comments,
+                        "edit" => $edit
+                        )
+                    );
+                }
             }
             else {
                 $this->redirect("board", "index");
@@ -168,10 +219,9 @@ class ControllerCard extends Controller {
             }
         }
         else {
-        $this->redirect("board", "index");
+            $this->redirect("board", "index");
         }
     } 
-    
     public function remove() {
         if(isset($_POST["id"])) {
             $card = Card::get_by_id($_POST["id"]);

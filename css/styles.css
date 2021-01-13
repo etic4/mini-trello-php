@@ -397,11 +397,20 @@ strong {
     width: 275px;
 }
 
+.board aside {
+    display: flex;
+    flex-direction: column;
+}
+
 .board aside .errors {
-    margin: -22px;
-    top: 10px;
+    margin: -32px;
+    top: 30px;
     padding: 10px;
     width: 280px;
+}
+
+.board aside .errors li {
+    height: 40px;
 }
 
 .boardMain .board .title .errors {
@@ -417,7 +426,7 @@ strong {
 }
 
 .column_display .column .title_column .errors {
-    height: 20px;
+    height: 30px;
 }
 
 .column_display .column .title_column .errors li {
@@ -656,8 +665,7 @@ strong {
 
 .board aside {
     width: 300px;
-    height: 45px;
-    padding: 10px 0;
+    height: 70px;
     display: flex;
     flex-direction: column;
     justify-content: center;

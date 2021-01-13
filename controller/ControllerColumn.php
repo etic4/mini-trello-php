@@ -8,7 +8,7 @@ require_once "ValidationError.php";
 class ControllerColumn extends Controller {
 
     public function index() {
-        
+        $this->redirect("board", "index");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +81,8 @@ class ControllerColumn extends Controller {
         $this->redirect("board", "index");
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public function add() {
         $this->get_user_or_redirect();
 
@@ -101,6 +103,8 @@ class ControllerColumn extends Controller {
         }
         $this->redirect("board");
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // edit titre Column
     public function edit() {
