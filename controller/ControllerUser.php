@@ -10,7 +10,7 @@ class ControllerUser extends Controller {
 
     public function index() {
         if ($this->user_logged()) {
-            $this->redirect("board");
+            $this->redirect();
         } else {
             $this->login();
         }
