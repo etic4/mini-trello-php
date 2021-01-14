@@ -108,7 +108,7 @@ class Comment extends Model{
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     /*
@@ -151,7 +151,7 @@ class Comment extends Model{
             "card"=>$this->get_card()->get_id()
         );
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     public function delete() {

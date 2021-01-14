@@ -277,7 +277,7 @@ class Card extends Model {
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
@@ -294,7 +294,7 @@ class Card extends Model {
         );
 
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     /*

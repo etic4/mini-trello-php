@@ -210,7 +210,7 @@ class Column extends Model {
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     public function update(): void {
@@ -226,7 +226,7 @@ class Column extends Model {
         );
 
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     public function delete(): void {
