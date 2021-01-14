@@ -14,7 +14,7 @@ class ControllerComment extends Controller {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public function delete() {
-        $user=$this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect();
 
         if(isset($_POST['id'])) {   
             $comment_id = $_POST['id'];       
@@ -29,7 +29,7 @@ class ControllerComment extends Controller {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function edit() {
-        $user=$this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect();
 
         if(isset($_POST['id'])) {            
             $comment_id = $_POST['id'];
@@ -37,20 +37,16 @@ class ControllerComment extends Controller {
 
             if(isset($_POST['edit'])) {
                 $this->redirect("card","edit", $comment->get_card_id(), $comment_id);
-            }
-            
-            else {
+            } else {
                 $this->redirect("card","view", $comment->get_card_id(), $comment_id);
             }
-        }
-        
-        else{
+        } else {
             $this->redirect();
         }
     }
 
     public function edit_confirm() {
-        $user=$this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect();
 
         if(isset($_POST['id'])){            
             $comment_id = $_POST['id'];
@@ -66,16 +62,12 @@ class ControllerComment extends Controller {
             }
 
             if(isset($_POST['edit'])){
-                $this->redirect("card","edit",$comment->get_card_id());
-            }
-            
-            else{
-                $this->redirect("card","view",$comment->get_card_id());
+                $this->redirect("card", "edit", $comment->get_card_id());
+            } else {
+                $this->redirect("card", "view", $comment->get_card_id());
             }
 
-        }
-        
-        else{
+        } else {
             $this->redirect();
         }
     }
@@ -83,7 +75,7 @@ class ControllerComment extends Controller {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add(){
-        $user=$this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect();
 
         if(isset($_POST['idcard']) && !empty($_POST['body'])) {
             $card_id = $_POST['idcard'];
@@ -95,9 +87,7 @@ class ControllerComment extends Controller {
 
             if(isset($_POST['edit'])){
                 $this->redirect("card", "edit", $comment->get_card_id());
-            }
-
-            else{
+            } else {
                 $this->redirect("card", "view", $comment->get_card_id());
             }
         }

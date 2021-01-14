@@ -210,8 +210,7 @@ class User extends Model {
 
             if(count($board->get_columns()) > 1) {
                 $columns = "(" . count($board->get_columns()) . " columns)";
-            }
-            else {
+            } else {
                 $columns = "(" . count($board->get_columns()) . " column)";
             }
 
@@ -230,7 +229,7 @@ class User extends Model {
     }
 
     public function get_others_boards(): array {
-        return$this->get_boards_for_view(Board::get_others_boards($this));
+        return $this->get_boards_for_view(Board::get_others_boards($this));
     }
 
 }

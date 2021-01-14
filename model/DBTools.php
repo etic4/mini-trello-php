@@ -71,8 +71,7 @@ class DBTools extends Model {
     public static function laps ($firstDate, $secondDate): string {
         if (is_null($secondDate->diff($firstDate))) {
             return "Never modified";
-        }
-        else {
+        } else {
             $firstDate = new DateTime();
             return "Modified " . self::intvl($firstDate, $secondDate);
         }
@@ -97,8 +96,7 @@ class DBTools extends Model {
 
             $breadcrumb = "<p class='" . $instance_name . "Link'>" . ucfirst($instance_name) . " \"" . $title . "\"</p>
                            <p>" . $home . "</p>";
-        }
-        else {
+        } else {
             $breadcrumb = "<p class='homeLink'>Boards</p>";
         }
         return $breadcrumb;
