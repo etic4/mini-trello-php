@@ -1,10 +1,11 @@
 <?php namespace model;
 
-use tools\DB;
+require_once "tests/tools/DB.php";
 use \Board;
 use \Column;
 use \Datetime;
 use \TypeError;
+use \tools\DB;
 
 
 class ColumnTest extends \PHPUnit\Framework\TestCase {
