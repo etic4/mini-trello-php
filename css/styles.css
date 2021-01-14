@@ -433,6 +433,10 @@ strong {
     width: 270px;
 }
 
+.column footer .errors {
+    top: -15px;
+}
+
 
 /***  ===LOGIN & SIGNUP===   ***/
 

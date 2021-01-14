@@ -42,17 +42,11 @@
                     <?php endif; ?>
                 </ul>
                 <?php if ($errors->has_errors("column", "edit", $column->get_id())): ?>
-                    <div class='errors'>
-                        <ul>
-                        <?php foreach ($errors->get_messages() as $message): ?>
-                            <li><?= $message; ?></li>
-                        <?php endforeach; ?>
-                        </ul>
-                    </div>
+                    <?php include('errors.php'); ?>
                 <?php endif; ?>
             </header>
             <section>
-                <?php include("cards.php"); ?>
+                <?php include("view_cards.php"); ?>
             </section>
             <footer>   
                 <form class="add" action="card/add" method="post">
@@ -61,6 +55,9 @@
                     <input type="text" name="title" placeholder="Add a card">
                     <input type="submit" value="&#xf067" class="fas fa-plus">
                 </form>
+                <?php if ($errors->has_errors("card", "add", $column->get_id())): ?>
+                    <?php include('errors.php'); ?>
+                <?php endif; ?>
             </footer>
         </section>
     </li>

@@ -74,8 +74,9 @@ class ControllerCard extends Controller {
             $column = Column::get_by_id($column_id);
             $card = Card::create_new($title, $user, $column);
 
-            $error = new ValidationError($card, "add");
+            $error = new ValidationError($card, "add", $column_id);
             $error->set_messages($card->validate());
+            $error->set_id($column_id);
             $error->add_to_session();
 
             if($error->is_empty()){                
