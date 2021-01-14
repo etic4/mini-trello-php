@@ -55,7 +55,7 @@ trait DateTrait {
     /* Récupère les dates de création et de modification en DB après insertion*/
     private function query_dates() {
         $tableName = strtolower(get_class($this));
-        $sql = "SELECT CreatedAt, ModifiedAt FROM $tableName WHERE ID=:id";
+        $sql = "SELECT CreatedAt, ModifiedAt FROM `$tableName WHERE ID=:id";
         $params = array("id" => $this->get_id());
         $query = $this->execute($sql, $params);
         $data = $query->fetch();
