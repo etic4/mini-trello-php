@@ -43,7 +43,7 @@
                             <p><?= $card->get_body() ?></p>
                         </div>
                     </section>
-                    <?php include('comments.php'); ?>
+                    <?php include('view_comments.php'); ?>
                 </div>
             </article>
         </main>

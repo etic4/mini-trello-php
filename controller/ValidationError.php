@@ -25,10 +25,15 @@ class ValidationError {
         $this->messages = [];
     }
 
+    public function set_id(string $id) {
+        $this->id = $id;
+    }
+
     /* Ajoute l'erreur à la session */
     public function add_to_session() {
         $_SESSION["error"] = $this;
     }
+    
     /* set la liste des messages.*/
     public function set_messages($messages_list) {
         $this->messages = $messages_list;

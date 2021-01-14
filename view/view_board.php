@@ -40,19 +40,13 @@
                     </ul>
                     <?php endif; ?>
                     <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
-                    <div class='errors'>
-                        <ul>
-                        <?php foreach ($errors->get_messages() as $message): ?>
-                            <li><?= $message; ?></li>
-                        <?php endforeach; ?>
-                        </ul>
-                    </div>    
+                        <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </div>
                 <p class="credit">Created <?= $board->get_created_intvl() ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl() ?>.</p>
             </header>
             <div class="column_display">  
-                <?php include("columns.php"); ?>
+                <?php include("view_columns.php"); ?>
                 <aside class="column_form">
                     <form class="add" action="column/add" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
@@ -60,13 +54,7 @@
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
                     <?php if ($errors->has_errors("column", "add")): ?>
-                    <div class='errors'>
-                        <ul>
-                        <?php foreach ($errors->get_messages() as $message): ?>
-                            <li><?= $message; ?></li>
-                        <?php endforeach; ?>
-                        </ul>
-                    </div>    
+                        <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </aside>     
             </div>
