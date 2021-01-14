@@ -111,13 +111,10 @@ class ControllerBoard extends Controller {
             if (count($columns) == 0) { 
                 $board->delete();
                 $this->redirect();
-            }
-
-            else {
+            } else {
                 $this->redirect("board", "delete_confirm", $board_id);
             }
-        }
-        else {
+        } else {
             $this->redirect();
         }
     }

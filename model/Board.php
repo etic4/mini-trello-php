@@ -102,9 +102,7 @@ class Board extends Model {
 
         if ($query->rowCount() == 0) {
             return null;
-        } 
-
-        else {
+        } else {
             return self::get_instance($data);
         }
     }
@@ -120,9 +118,7 @@ class Board extends Model {
 
         if ($query->rowCount() == 0) {
             return null;
-        } 
-
-        else {
+        } else {
             $board = self::get_instance($data);
             return $board;
         }

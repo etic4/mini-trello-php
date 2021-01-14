@@ -93,7 +93,7 @@ class ControllerCard extends Controller {
         $card = null;
         if (isset($_POST['id'])) {
             $card_id = $_POST['id'];
-            $card=Card::get_by_id($card_id);
+            $card = Card::get_by_id($card_id);
 
             if(isset($_POST['body'])){
                 $body = $_POST['body'];
@@ -137,7 +137,7 @@ class ControllerCard extends Controller {
         $user = $this->get_user_or_redirect();
         if (isset($_GET['param1'])) {
             $card_id = $_GET['param1'];
-            $card=Card::get_by_id($card_id);
+            $card = Card::get_by_id($card_id);
 
             if(!is_null($card)){
                 (new View("delete_confirm"))->show(array(
@@ -173,7 +173,7 @@ class ControllerCard extends Controller {
         $user = $this->get_user_or_redirect();
         if (isset($_POST['id'])) {
             $card_id = $_POST['id'];
-            $card=Card::get_by_id($card_id);
+            $card = Card::get_by_id($card_id);
 
             if($card != null) {
                 $this->redirect("card", "edit", $card->get_id());
@@ -183,10 +183,10 @@ class ControllerCard extends Controller {
     }
 
     public function edit(){
-        $user=$this->get_user_or_redirect();
-        $card=null;
-        $board=null;
-        $column=null;
+        $user = $this->get_user_or_redirect();
+        $card = null;
+        $board = null;
+        $column = null;
 
         if (isset($_GET['param1'])) { 
             $card_id = $_GET['param1'];
@@ -199,7 +199,6 @@ class ControllerCard extends Controller {
                 $edit="yes";
 
                 if(isset($_GET['param2'])){
-                    
                     (new View("card_edit"))->show(array(
                         "user" => $user, 
                         "board" => $board, 
@@ -211,10 +210,7 @@ class ControllerCard extends Controller {
                         )
                     );
                     die;
-                }
-                
-                else {
-                   
+                } else {
                     (new View("card_edit"))->show(array(
                         "user" => $user, 
                         "board" => $board, 
@@ -227,8 +223,7 @@ class ControllerCard extends Controller {
                     die;
                 }
             }
-        }
-        else {
+        } else {
             $this->redirect();
         }
     }
@@ -236,10 +231,10 @@ class ControllerCard extends Controller {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function view(){
-        $user=$this->get_user_or_redirect();
-        $card=null;
-        $board=null;
-        $column=null;
+        $user = $this->get_user_or_redirect();
+        $card = null;
+        $board = null;
+        $column = null;
 
         if (isset($_GET['param1'])) { 
             $card_id = $_GET['param1'];
@@ -251,7 +246,6 @@ class ControllerCard extends Controller {
                 $comments = $card->get_comments();
 
                 if(isset($_GET['param2'])){
-                    
                     (new View("card"))->show(array(
                         "user" => $user, 
                         "board" => $board, 
@@ -262,10 +256,7 @@ class ControllerCard extends Controller {
                         )
                     );
                     die;
-                }
-                
-                else {
-                    
+                } else {
                     (new View("card"))->show(array(
                         "user" => $user, 
                         "board" => $board, 
@@ -277,8 +268,7 @@ class ControllerCard extends Controller {
                     die;
                 }
             }
-        }
-        else {
+        } else {
             $this->redirect();
         }
     } 

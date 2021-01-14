@@ -44,13 +44,10 @@ class ControllerColumn extends Controller {
                 $column->delete();
                 Column::decrement_following_columns_position($column);
                 $this->redirect("board", "board", $column->get_board_id());
-            } 
-            
-            else {
+            } else {
                 $this->redirect("column", "delete_confirm", $column->get_id());
             }
-        }
-        else {
+        } else {
             $this->redirect();
         }
     }

@@ -39,4 +39,5 @@ class Validation {
         return $column->is_unique_title_in_the_board();
     }
 
+    
 }
