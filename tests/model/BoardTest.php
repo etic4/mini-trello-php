@@ -1,10 +1,11 @@
 <?php namespace model;
 
-use tools\DB;
+require_once "tests/tools/DB.php";
 use \Board;
 use \User;
 use \Datetime;
 use \TypeError;
+use \tools\DB;
 
 class BoardTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;

@@ -1,11 +1,12 @@
 <?php namespace model;
 
-use tools\DB;
+require_once "tests/tools/DB.php";
 use \Card;
 use \Comment;
 use \User;
 use \Datetime;
 use \TypeError;
+use \tools\DB;
 
 class CommentTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;
