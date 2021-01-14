@@ -62,8 +62,7 @@ class ControllerBoard extends Controller {
             $board = new Board($title, $user, null, new DateTime(), null);
 
             $error = new ValidationError($board, "add");
-            $error->set_messages($board->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($board->validate());
 
             if($error->is_empty()) {
                 $board->insert();
@@ -87,8 +86,7 @@ class ControllerBoard extends Controller {
             $board->set_title($title);
 
             $error = new ValidationError($board, "edit");
-            $error->set_messages($board->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($board->validate());
 
             if($error->is_empty()) {
                 $board->update();

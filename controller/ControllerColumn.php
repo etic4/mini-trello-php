@@ -90,8 +90,7 @@ class ControllerColumn extends Controller {
             $column = Column::create_new($title, $board);
 
             $error = new ValidationError($column, "add");
-            $error->set_messages($column->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($column->validate());
 
             if($error->is_empty()) {
                 $column->insert();
@@ -114,8 +113,7 @@ class ControllerColumn extends Controller {
             $column->set_title($title);
 
             $error = new ValidationError($column, "edit");
-            $error->set_messages($column->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($column->validate());
 
             if($error->is_empty()) {
                 $column->update();
