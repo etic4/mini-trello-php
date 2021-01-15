@@ -1,11 +1,11 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "User.php";
 require_once "Column.php";
 
 
-class Board extends Model {
+class Board extends CachedGet {
     use DateTrait;
 
     private ?string $id;
@@ -89,22 +89,6 @@ class Board extends Model {
             $createdAt,
             $modifiedAt
         );
-    }
-
-    public static function get_by_id(string $board_id): ?Board {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE ID=:id";
-        $params = array("id" => $board_id);
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return self::get_instance($data);
-        }
     }
 
     public static function get_by_title(string $title): ?Board {

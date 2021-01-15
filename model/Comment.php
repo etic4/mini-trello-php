@@ -1,11 +1,11 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Card.php";
 require_once "model/User.php";
-//require_once "model/Date.php";
 
-class Comment extends Model{
+
+class Comment extends CachedGet {
     use DateTrait;
 
     private ?String $id;
@@ -109,25 +109,6 @@ class Comment extends Model{
         $id = $this->lastInsertId();
         $this->set_id($id);
         $this->set_dates_from_db();
-    }
-
-    /*
-        renvoie un objet comment dont l'id est $id
-    */
-    public static function get_by_id($id): ?Comment {
-        $sql = 
-            "SELECT * 
-             FROM comment 
-             WHERE ID=:id
-             ORDER BY ModifiedAt DESC, CreatedAt DESC";
-        $query = self::execute($sql, array("id"=>$id));
-
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return static::get_instance($data);
-        }
     }
     
     public static function can_edit(int $id, User $user): bool{

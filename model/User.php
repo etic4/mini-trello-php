@@ -1,12 +1,12 @@
 
 <?php
-/*TODO: se mettre d'accord sur l'organisation du code dans les classes (genre méthodes statiques après attributs, getters et setters ensemble ??*/
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "Board.php";
 require_once "Validation.php";
 
-class User extends Model {
+
+class User extends CachedGet {
     private ?string $id;
     private string $email;
     private string $fullName;
@@ -128,21 +128,6 @@ class User extends Model {
             $data["Password"],
             new DateTime($data["RegisteredAt"])
         );
-    }
-
-
-    public static function get_by_id(string $id): ?User {
-        $sql = 
-            "SELECT * 
-             FROM user 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$id));
-
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return null;
-        }
-        return self::get_instance($data);
     }
 
     public static function get_by_email(string $email): ?User {

@@ -1,10 +1,10 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Comment.php";
 
 
-class Card extends Model {
+class Card extends CachedGet {
     use DateTrait;
 
     private ?string $id;
@@ -214,21 +214,6 @@ class Card extends Model {
             $createdAt,
             $modifiedAt
         );
-    }
-    //renvoie un objet Card dont l'id est $id
-    public static function get_by_id($card_id): ?Card {
-        $sql = 
-            "SELECT * 
-             FROM card 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$card_id));
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return self::get_instance($data);
-        }
     }
 
     //renvoie un tableau de cartes triées dont la colonne est $column;
