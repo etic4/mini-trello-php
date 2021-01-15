@@ -12,7 +12,7 @@ class Column extends CachedGet {
     private string $position;
     private Board $board;
 
-    private array $cards;
+    private ?array $cards = null;
 
 
     public static function create_new(string $title, Board $board): Column {

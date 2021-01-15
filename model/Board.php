@@ -11,7 +11,7 @@ class Board extends CachedGet {
     private ?string $id;
     private string $title;
     private User $owner;
-    private array $columns;
+    private ?array $columns = null;
 
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
