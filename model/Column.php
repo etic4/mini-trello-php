@@ -18,7 +18,7 @@ class Column extends CachedGet {
     public static function create_new(string $title, Board $board): Column {
         return new Column(
             $title,
-            self::get_columns_count($board),
+            count($board->get_columns()),
             $board
         );
     }
@@ -95,7 +95,7 @@ class Column extends CachedGet {
     }
 
     public function is_last(): bool {
-        return $this->get_position() == self::get_columns_count($this->get_board()) - 1;
+        return $this->get_position() == count($this->get_board_columns()) - 1;
     }
 
     //    VALIDATION    //
@@ -158,19 +158,6 @@ class Column extends CachedGet {
             array_push($columns, $column);
         }
         return $columns;
-    }
-
-    //nombre de Column du Board
-    public static function get_columns_count(Board $board): string {
-        $sql =
-            "SELECT COUNT(Position) as nbr
-             FROM `column` 
-             WHERE Board=:id";
-        $params= array("id"=>$board->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        return $data["nbr"];
     }
 
     public function is_unique_title_in_the_board(): bool {
