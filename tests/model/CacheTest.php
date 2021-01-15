@@ -36,14 +36,52 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
 
     }
 
-    public function testMultipleGetByIDReturnsSameInstance() {
+    public function testMultipleBoardGetByIDReturnsSameInstance() {
         $board = Board::get_by_id(1);
-        $board->set_title("!!!!");  //n'est pas update en DB
 
-        $board2 = Board::get_by_id(1);  // sans cache retournerait une nouvelle instance depuis la DB
+        $this->assertNotEquals("!", $board->get_title());
+        $board->set_title("!");  //n'est pas update en DB
+
+        $board2 = Board::get_by_id(1);  // sans cache retournerait une nouvelle instance depuis la DB avec le titre original
         $this->assertSame($board, $board2);
 
         $this->assertEquals($board->get_title(), $board2->get_title());
+    }
+
+    public function testGetByIdInexistentIdReturnsNull() {
+        $board = Board::get_by_id(42);
+        $this->assertNull($board);
+    }
+
+    public function testMultipleGetByIdInexistentIDReturnsNull() {
+        $board = Board::get_by_id(42);
+        $board = Board::get_by_id(42);
+        $this->assertNull($board);
+    }
+
+    public function testGetColumnsGetCardsGetCommentsReturnsCached() {
+        $columns = Board::get_by_id(1)->get_columns();
+        $cards = Column::get_by_id(1)->get_cards();
+        $comments = Card::get_by_id(6)->get_comments();
+
+
+        $this->assertNotEquals("-", $columns[0]->get_title());
+        $this->assertNotEquals("?", $cards[0]->get_title());
+        $this->assertNotEquals("!", $comments[0]->get_body());
+
+        //Pas sauvegardé en DB
+        $columns[0]->set_title("-");
+        $cards[0]->set_title("?");
+        $comments[0]->set_body("!");
+
+        $columns = Board::get_by_id(1)->get_columns();
+        $cards = Column::get_by_id(1)->get_cards();
+        $comments = Card::get_by_id(6)->get_comments();
+
+        //Comme pas sauvegardé, si valeurs identiques c'est que vient de cache
+        $this->assertEquals("-", $columns[0]->get_title());
+        $this->assertEquals("?", $cards[0]->get_title());
+        $this->assertEquals("!", $comments[0]->get_body());
     }
 
 }
