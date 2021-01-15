@@ -229,7 +229,9 @@ class Card extends CachedGet {
 
         $cards = [];
         foreach ($data as $rec) {
-            array_push($cards, self::get_instance($rec));
+            $card = self::get_instance($rec);
+            self::add_instance_to_cache($card);
+            array_push($cards, $card);
         }
         return $cards;
     }

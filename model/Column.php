@@ -148,7 +148,9 @@ class Column extends CachedGet {
 
         $columns = array();
         foreach ($data as $rec) {
-            array_push($columns, self::get_instance($rec));
+            $column = self::get_instance($rec);
+            self::add_instance_to_cache($column);
+            array_push($columns, $column);
         }
         return $columns;
     }
