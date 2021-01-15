@@ -12,6 +12,8 @@ class Column extends CachedGet {
     private string $position;
     private Board $board;
 
+    private array $cards;
+
 
     public static function create_new(string $title, Board $board): Column {
         return new Column(
@@ -67,7 +69,10 @@ class Column extends CachedGet {
     }
 
     public function get_cards(): array {
-        return Card::get_cards_for_column($this);
+        if (is_null($this->cards)) {
+            $this->cards = Card::get_cards_for_column($this);
+        }
+        return $this->cards;
     }
 
 

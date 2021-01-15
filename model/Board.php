@@ -47,7 +47,10 @@ class Board extends CachedGet {
     }
 
     public function get_columns(): array {
-        return Column::get_columns_for_board($this);
+        if (is_null($this->columns)) {
+            $this->columns = Column::get_columns_for_board($this);
+        }
+        return $this->columns;
     }
 
 

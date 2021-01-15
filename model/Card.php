@@ -14,6 +14,8 @@ class Card extends CachedGet {
     private User $author;
     private Column $column;
 
+    private array $comments;
+
     public static function create_new(string $title, User $author, Column $column): Card {
         return new Card(
             $title,
@@ -108,7 +110,10 @@ class Card extends CachedGet {
     }
 
     public function get_comments(): array {
-        return Comment::get_comments_for_card($this);
+        if (is_null($this->comments)) {
+            $this->comments = Comment::get_comments_for_card($this);
+        }
+        return $this->comments;
     }
 
     
