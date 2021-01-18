@@ -78,15 +78,18 @@ class ControllerBoard extends Controller {
     //edit titre Board
     public function edit() {
         $this->get_user_or_redirect();
+        $error = new ValidationError();
 
-        if ( isset($_POST["id"]) && !empty($_POST["title"])) {
+        if (isset($_POST["id"]) && !empty($_POST["title"])) {
             $board_id = $_POST["id"];
             $title = $_POST["title"];
             $board = Board::get_by_id($board_id);
-            $board->set_title($title);
 
-            $error = new ValidationError($board, "edit");
-            $error->set_messages_and_add_to_session($board->validate());
+            if ($board->get_title() != $title) {
+                $board->set_title($title);
+                $error = new ValidationError($board, "edit");
+                $error->set_messages_and_add_to_session($board->validate());
+            }
 
             if($error->is_empty()) {
                 $board->update();

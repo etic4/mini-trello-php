@@ -105,17 +105,20 @@ class ControllerColumn extends Controller {
     // edit titre Column
     public function edit() {
         $this->get_user_or_redirect();
+        $error = new ValidationError();
 
         if (isset($_POST["id"]) && !empty($_POST["title"])) {
             $id = $_POST["id"];
             $title = $_POST["title"];
             $column = Column::get_by_id($id);
-            $column->set_title($title);
 
-            $error = new ValidationError($column, "edit");
-            $error->set_messages_and_add_to_session($column->validate());
+            if ($column->get_title() !== $title) {
+                $column->set_title($title);
+                $error = new ValidationError($column, "edit");
+                $error->set_messages_and_add_to_session($column->validate());
+            }
 
-            if($error->is_empty()) {
+            if ($error->is_empty()) {
                 $column->update();
             }
             $this->redirect("board", "board", $column->get_board_id());
