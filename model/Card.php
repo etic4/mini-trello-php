@@ -1,10 +1,10 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Comment.php";
 
 
-class Card extends Model {
+class Card extends CachedGet {
     use DateTrait;
 
     private ?string $id;
@@ -13,6 +13,8 @@ class Card extends Model {
     private string $position;
     private User $author;
     private Column $column;
+
+    private ?array $comments = null;
 
     public static function create_new(string $title, User $author, Column $column): Card {
         return new Card(
@@ -108,7 +110,10 @@ class Card extends Model {
     }
 
     public function get_comments(): array {
-        return Comment::get_comments_for_card($this);
+        if (is_null($this->comments)) {
+            $this->comments = Comment::get_comments_for_card($this);
+        }
+        return $this->comments;
     }
 
     
@@ -215,21 +220,6 @@ class Card extends Model {
             $modifiedAt
         );
     }
-    //renvoie un objet Card dont l'id est $id
-    public static function get_by_id($card_id): ?Card {
-        $sql = 
-            "SELECT * 
-             FROM card 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$card_id));
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return self::get_instance($data);
-        }
-    }
 
     //renvoie un tableau de cartes triées dont la colonne est $column;
     public static function get_cards_for_column(Column $column): array {
@@ -244,7 +234,9 @@ class Card extends Model {
 
         $cards = [];
         foreach ($data as $rec) {
-            array_push($cards, self::get_instance($rec));
+            $card = self::get_instance($rec);
+            self::add_instance_to_cache($card);
+            array_push($cards, $card);
         }
         return $cards;
     }
