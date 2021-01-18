@@ -17,15 +17,8 @@
             <form action="user/signup" method="post">
                 <h2>Sign up</h2>
                 <hr> 
-                <?php if (count($errors) != 0): ?>
-                <div class='errors'>
-                    <p>Please correct the following error(s) :</p>
-                    <ul>
-                        <?php foreach ($errors as $error): ?>
-                            <li><?= $error ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
+                <?php if ($errors->has_errors()): ?>
+                    <?php include('errors.php'); ?>
                 <?php endif; ?>
                 <ul class="wrapper">
                     <li class="form-row">

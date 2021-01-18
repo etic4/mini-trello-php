@@ -81,35 +81,39 @@ class User extends CachedGet {
         return $this->passwdHash === Tools::my_hash($clearPasswd);
     }
 
-    public function validate(): array {
+    public function validate(string $confirm): array {
         $errors = array();
         //email
         if (!Validation::valid_email($this->email)) {
-            $errors[] = "Email non valide";
+            $errors[] = "Unvalid email";
         }
         if(!Validation::is_unique_email($this->email)){
-            $errors[]="Email non disponible";
+            $errors[]="Unvalid email";
         }
         //fullName
         if (!Validation::str_longer_than($this->fullName, 2)) {
-            $errors[] = "Le nom doit comporter au moins 3 caractères";
+            $errors[] = "Name must be at least 3 characters long";
         }
 
         //password
         if (!Validation::str_longer_than($this->clearPasswd, 7)) {
-            $errors[] = "Le mot de passe doit comporter au moins 8 caractères";
+            $errors[] = "Password must be at least 8 characters long";
+        }
+
+        if (!Validation::is_same_password($this->clearPasswd, $confirm)) {
+            $errors[] = "Passwords don't match";
         }
 
         if (!Validation::contains_capitals($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins une lettre capitale";
+            $errors[] = "Password must contain at least 1 uppercase letter";
         }
 
         if (!Validation::contains_digits($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins un chiffre";
+            $errors[] = "Password must contain at least 1 number";
         }
 
         if (!Validation::contains_non_alpha($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins une caractère spécial";
+            $errors[] = "Password must contain at least one special character";
         }
 
         return $errors;
