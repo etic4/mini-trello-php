@@ -111,6 +111,10 @@ class Column extends CachedGet {
         return $errors;
     }
 
+    public function is_unique_title_in_the_board(): bool {
+        $title = $this->get_title();
+        return in_array($title, $this->get_board_columns());
+    }
 
     //    QUERIES    //
 
@@ -158,21 +162,6 @@ class Column extends CachedGet {
             array_push($columns, $column);
         }
         return $columns;
-    }
-
-    public function is_unique_title_in_the_board(): bool {
-        $sql =
-            "SELECT *
-             FROM `column`
-             WHERE Board=:id
-             AND Title=:title";
-        $params= array(
-            "id" => $this->get_board_id(), 
-            "title" => $this->get_title()
-        );
-
-        $query = self::execute($sql, $params);
-        return $query->rowCount() == 0;
     }
 
     public function insert() {
