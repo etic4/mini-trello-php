@@ -1,6 +1,12 @@
-<?php
+<?php namespace model;
 
+use \Tools;
+require_once "tests/tools/DB.php";
+use \User;
+use \Datetime;
+use \TypeError;
 use \PHPUnit\Framework\TestCase;
+use \tools\DB;
 
 class UserTest extends TestCase {
     public static DB $db;
@@ -37,9 +43,8 @@ class UserTest extends TestCase {
     /**
      * @depends testCreateUserInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(User $user) {
-        $this->expectException(TypeError::class);
-        $user->get_id();
+    public function testGetIdReturnNullOnNotSavedInstance(User $user): User {
+        $this->assertEquals(null, $user->get_id());
         return $user;
     }
 

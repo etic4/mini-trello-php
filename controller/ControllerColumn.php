@@ -8,7 +8,7 @@ require_once "ValidationError.php";
 class ControllerColumn extends Controller {
 
     public function index() {
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,14 +44,11 @@ class ControllerColumn extends Controller {
                 $column->delete();
                 Column::decrement_following_columns_position($column);
                 $this->redirect("board", "board", $column->get_board_id());
-            } 
-            
-            else {
+            } else {
                 $this->redirect("column", "delete_confirm", $column->get_id());
             }
-        }
-        else {
-            $this->redirect("board", "index");
+        } else {
+            $this->redirect();
         }
     }
 
@@ -65,7 +62,7 @@ class ControllerColumn extends Controller {
                 die;
             }
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     //exécution du delete ou cancel de delete_confirm
@@ -78,7 +75,7 @@ class ControllerColumn extends Controller {
             }
             $this->redirect("board", "board", $column->get_board_id());
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,15 +90,14 @@ class ControllerColumn extends Controller {
             $column = Column::create_new($title, $board);
 
             $error = new ValidationError($column, "add");
-            $error->set_messages($column->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($column->validate());
 
             if($error->is_empty()) {
                 $column->insert();
             }
             $this->redirect("board", "board", $_POST["id"]);
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,14 +113,13 @@ class ControllerColumn extends Controller {
             $column->set_title($title);
 
             $error = new ValidationError($column, "edit");
-            $error->set_messages($column->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($column->validate());
 
             if($error->is_empty()) {
                 $column->update();
             }
             $this->redirect("board", "board", $column->get_board_id());
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 }

@@ -48,7 +48,7 @@ class ControllerBoard extends Controller {
                 die;
             }
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,15 +62,14 @@ class ControllerBoard extends Controller {
             $board = new Board($title, $user, null, new DateTime(), null);
 
             $error = new ValidationError($board, "add");
-            $error->set_messages($board->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($board->validate());
 
             if($error->is_empty()) {
                 $board->insert();
                 $this->redirect("board", "board", $board->get_id());
             }
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
 
@@ -87,15 +86,14 @@ class ControllerBoard extends Controller {
             $board->set_title($title);
 
             $error = new ValidationError($board, "edit");
-            $error->set_messages($board->validate());
-            $error->add_to_session();
+            $error->set_messages_and_add_to_session($board->validate());
 
             if($error->is_empty()) {
                 $board->update();
             }
             $this->redirect("board", "board", $board_id);
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
 
@@ -112,15 +110,12 @@ class ControllerBoard extends Controller {
 
             if (count($columns) == 0) { 
                 $board->delete();
-                $this->redirect("board", "index");        
-            }
-
-            else {
+                $this->redirect();
+            } else {
                 $this->redirect("board", "delete_confirm", $board_id);
             }
-        }
-        else {
-            $this->redirect("board", "index");
+        } else {
+            $this->redirect();
         }
     }
 
@@ -136,7 +131,7 @@ class ControllerBoard extends Controller {
             }
             $this->redirect("board", "board", $board_id);
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
 
@@ -146,11 +141,11 @@ class ControllerBoard extends Controller {
             $board = Board::get_by_id($_POST["id"]);
             if(isset($_POST["delete"])) {
                 $board->delete();
-                $this->redirect("board", "index");
+                $this->redirect();
             }
             $this->redirect("board", "board", $board->get_id());
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 }
 

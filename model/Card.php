@@ -1,10 +1,10 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Comment.php";
 
 
-class Card extends Model {
+class Card extends CachedGet {
     use DateTrait;
 
     private ?string $id;
@@ -13,6 +13,8 @@ class Card extends Model {
     private string $position;
     private User $author;
     private Column $column;
+
+    private ?array $comments = null;
 
     public static function create_new(string $title, User $author, Column $column): Card {
         return new Card(
@@ -108,7 +110,10 @@ class Card extends Model {
     }
 
     public function get_comments(): array {
-        return Comment::get_comments_for_card($this);
+        if (is_null($this->comments)) {
+            $this->comments = Comment::get_comments_for_card($this);
+        }
+        return $this->comments;
     }
 
     
@@ -141,7 +146,7 @@ class Card extends Model {
             $errors[] = "Title must be at least 3 characters long";
         }
         if(!$this->title_is_unique()){
-            $errors[] = "Title already exists in this column";
+            $errors[] = "Title already exists in this board";
         }
         return $errors;
     }
@@ -151,7 +156,7 @@ class Card extends Model {
             $errors[] = "Title must be at least 3 characters long";
         }
         if(!$this->title_is_unique_update()){
-            $errors[] = "Title already exists in this column";
+            $errors[] = "Title already exists in this board";
         }
         return $errors;
     }
@@ -178,9 +183,9 @@ class Card extends Model {
     public function title_is_unique(){
         $sql = 
         "SELECT * 
-         FROM card 
-         WHERE Title=:title AND `Column`=:column";
-         $params = array("title"=>$this->get_title(), "column"=>$this->get_column_id());
+         FROM card ca, `column` co
+         WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
+         $params = array("title"=>$this->get_title(), "board_id"=>$this->get_board_id());
          $query = self::execute($sql, $params);
          $data=$query->fetch();
          return $query->rowCount()==0 ;
@@ -190,12 +195,12 @@ class Card extends Model {
     public function title_is_unique_update(){
         $sql = 
         "SELECT * 
-         FROM card 
-         WHERE Title=:title AND `Column`=:column AND ID <>:id ";
+         FROM card ca, `column` co
+         WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
          $params = array(
              "title"=>$this->get_title(), 
-             "column"=>$this->get_column_id(),
-             "id"=>$this->get_id()
+             "board_id"=>$this->get_board_id(),
+             "card_id"=>$this->get_id()
             );
          $query = self::execute($sql, $params);
          $data=$query->fetch();
@@ -215,21 +220,6 @@ class Card extends Model {
             $modifiedAt
         );
     }
-    //renvoie un objet Card dont l'id est $id
-    public static function get_by_id($card_id): ?Card {
-        $sql = 
-            "SELECT * 
-             FROM card 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$card_id));
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return self::get_instance($data);
-        }
-    }
 
     //renvoie un tableau de cartes triées dont la colonne est $column;
     public static function get_cards_for_column(Column $column): array {
@@ -244,7 +234,9 @@ class Card extends Model {
 
         $cards = [];
         foreach ($data as $rec) {
-            array_push($cards, self::get_instance($rec));
+            $card = self::get_instance($rec);
+            self::add_instance_to_cache($card);
+            array_push($cards, $card);
         }
         return $cards;
     }
@@ -277,7 +269,7 @@ class Card extends Model {
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
@@ -294,7 +286,7 @@ class Card extends Model {
         );
 
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     /*

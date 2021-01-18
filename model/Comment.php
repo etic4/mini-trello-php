@@ -1,12 +1,17 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Card.php";
 require_once "model/User.php";
-//require_once "model/Date.php";
 
-class Comment extends Model{
+
+class Comment extends CachedGet {
     use DateTrait;
+
+    private ?String $id;
+    private String $body;
+    private User $author;
+    private Card $card;
 
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null){
@@ -103,28 +108,15 @@ class Comment extends Model{
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
-    }
-
-    /*
-        renvoie un objet comment dont l'id est $id
-    */
-    public static function get_by_id($id): ?Comment {
-        $sql = 
-            "SELECT * 
-             FROM comment 
-             WHERE ID=:id
-             ORDER BY ModifiedAt DESC, CreatedAt DESC";
-        $query = self::execute($sql, array("id"=>$id));
-
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return static::get_instance($data);
-        }
+        $this->set_dates_from_db();
     }
     
+    public static function can_edit(int $id, User $user): bool{
+
+        $c=Comment::get_by_id($id);
+        return !( is_null($c) || $c->get_author_id()!==$user->get_id());
+
+    }
     /*
         mets a jour la db avec les valeurs de l'instance
     */
@@ -140,7 +132,7 @@ class Comment extends Model{
             "card"=>$this->get_card()->get_id()
         );
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     public function delete() {

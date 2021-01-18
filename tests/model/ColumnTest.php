@@ -1,4 +1,11 @@
-<?php
+<?php namespace model;
+
+require_once "tests/tools/DB.php";
+use \Board;
+use \Column;
+use \Datetime;
+use \TypeError;
+use \tools\DB;
 
 
 class ColumnTest extends \PHPUnit\Framework\TestCase {
@@ -22,7 +29,7 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
     public function testCreateColumnInstance(): Column {
         $title = "Titre de la colonne";
         $board = Board::get_by_id(1);
-        $position = Column::get_columns_count($board);
+        $position = count($board->get_columns());
 
         $column = new Column($title, $position, $board);
 
@@ -36,29 +43,25 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Column $column): Column {
-        $this->expectException(TypeError::class);
-        $column->get_id();
-        return $column;
+    public function testGetIdReturnNullOnNotSavedInstance(Column $column) {
+        $this->assertEquals(null, $column->get_id());
     }
 
 
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column): Column {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Column $column) {
         $this->expectException(TypeError::class);
         $column->get_createdAt();
-        return $column;
     }
 
     /**
      * @depends testCreateColumnInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column): Column {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Column $column) {
         $this->expectException(TypeError::class);
         $column->get_modifiedAt();
-        return $column;
     }
 
     /**

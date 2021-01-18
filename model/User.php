@@ -1,12 +1,12 @@
 
 <?php
-/*TODO: se mettre d'accord sur l'organisation du code dans les classes (genre méthodes statiques après attributs, getters et setters ensemble ??*/
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "Board.php";
 require_once "Validation.php";
 
-class User extends Model {
+
+class User extends CachedGet {
     private ?string $id;
     private string $email;
     private string $fullName;
@@ -130,21 +130,6 @@ class User extends Model {
         );
     }
 
-
-    public static function get_by_id(string $id): ?User {
-        $sql = 
-            "SELECT * 
-             FROM user 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$id));
-
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return null;
-        }
-        return self::get_instance($data);
-    }
-
     public static function get_by_email(string $email): ?User {
         $sql = 
             "SELECT * 
@@ -210,8 +195,7 @@ class User extends Model {
 
             if(count($board->get_columns()) > 1) {
                 $columns = "(" . count($board->get_columns()) . " columns)";
-            }
-            else {
+            } else {
                 $columns = "(" . count($board->get_columns()) . " column)";
             }
 
@@ -230,7 +214,7 @@ class User extends Model {
     }
 
     public function get_others_boards(): array {
-        return$this->get_boards_for_view(Board::get_others_boards($this));
+        return $this->get_boards_for_view(Board::get_others_boards($this));
     }
 
 }

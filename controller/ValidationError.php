@@ -8,7 +8,7 @@ class ValidationError {
     private ?string $id;
     private array $messages;
 
-    /* Retourne l'erreur et reset la session */
+    /* Retourne l'erreur et reset l'erreur pour la session */
     public static function get_error_and_reset(): ValidationError {
         $error = new ValidationError();
         if (isset($_SESSION["error"])) {
@@ -17,7 +17,6 @@ class ValidationError {
         }
         return $error;
     }
-
 
     public function __construct($instance=null, ?string $action=null) {
         $this->instance_name = is_null($instance) ? null : strtolower(get_class($instance));
@@ -29,14 +28,11 @@ class ValidationError {
     public function set_id(string $id) {
         $this->id = $id;
     }
-
-    /* Ajoute l'erreur à la session */
-    public function add_to_session() {
-        $_SESSION["error"] = $this;
-    }
-    /* set la liste des messages.*/
-    public function set_messages($messages_list) {
+    
+    /* set la liste des messages et ajoute l'erreur à la session */
+    public function set_messages_and_add_to_session($messages_list) {
         $this->messages = $messages_list;
+        $_SESSION["error"] = $this;
     }
 
     public function is_empty(): bool {

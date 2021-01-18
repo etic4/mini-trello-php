@@ -15,6 +15,9 @@ trait DateTrait {
         return $datetime->format('Y-m-d H:i:s');
     }
 
+    /* Crée des intances de Datetime à partir d'un string provenant de la DB
+    Si $modifiedAt est null, il est set à la valeur de $createdAt
+*/
     public static function get_dates_from_sql($createdAt, $modifiedAt): array {
         $createdAtInst = new DateTime($createdAt);
         $modifiedAtInst = $createdAtInst;
@@ -41,9 +44,23 @@ trait DateTrait {
         $this->modifiedAt = $modifiedAt;
     }
 
-    public function set_dates_from_instance($inst) {
-        $this->set_createdAt($inst->get_createdAt());
-        $this->set_modifiedAt($inst->get_modifiedAt());
+    /* Comme la date de création est set en db,
+    cette méthode set les dates de l'instance après insertion ou update */
+    public function set_dates_from_db() {
+        list($createdAt, $modifiedAt) = $this->query_dates();
+        $this->set_createdAt($createdAt);
+        $this->set_modifiedAt($modifiedAt);
+    }
+
+    /* Récupère les dates de création et de modification en DB après insertion*/
+    private function query_dates() {
+        $tableName = strtolower(get_class($this));
+        $sql = "SELECT CreatedAt, ModifiedAt FROM `$tableName` WHERE ID=:id";
+        $params = array("id" => $this->get_id());
+        $query = $this->execute($sql, $params);
+        $data = $query->fetch();
+
+        return self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
     }
 
     public function get_created_intvl() {
