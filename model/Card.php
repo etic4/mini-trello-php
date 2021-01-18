@@ -182,21 +182,22 @@ class Card extends CachedGet {
     // renvoie true si le titre de la carte $card est unique pour la colonne de la carte $card
     public function title_is_unique(){
         $sql = 
-        "SELECT * 
-         FROM card ca, `column` co
-         WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
+            "SELECT * 
+            FROM card ca, `column` co
+            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
          $params = array("title"=>$this->get_title(), "board_id"=>$this->get_board_id());
          $query = self::execute($sql, $params);
          $data=$query->fetch();
          return $query->rowCount()==0 ;
     }
+
     //renvoie true si le titre de la carte $card pour la colonne de la carte $card est unique
     // update version
     public function title_is_unique_update(){
         $sql = 
-        "SELECT * 
-         FROM card ca, `column` co
-         WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
+            "SELECT * 
+            FROM card ca, `column` co
+            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
          $params = array(
              "title"=>$this->get_title(), 
              "board_id"=>$this->get_board_id(),
@@ -206,6 +207,7 @@ class Card extends CachedGet {
          $data=$query->fetch();
          return $query->rowCount()==0 ;
     }
+
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
         list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);

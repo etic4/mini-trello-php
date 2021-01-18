@@ -28,13 +28,7 @@
                         <input type="text" name="title" placeholder="Add a board">
                         <input type="submit" value="&#xf067" class="fas fa-plus">
                         <?php if ($errors->has_errors()): ?>
-                        <div class='errors'>
-                            <ul>
-                            <?php foreach ($errors->get_messages() as $message): ?>
-                                <li><?= $message; ?></li>
-                            <?php endforeach; ?>
-                            </ul>
-                        </div>
+                            <?php include('errors.php'); ?>
                         <?php endif; ?>
                     </form>
                 </div>
