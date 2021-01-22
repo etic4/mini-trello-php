@@ -17,7 +17,7 @@
             <article>
                 <header>
                     <h2>Edit a card</h2>
-                    <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name() ?>'</strong>. <?= $card->get_modified_intvl() ?></p>
+                    <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
                 </header>
                 <div class="main_card">
                     <form id="edit_card" action="card/update" method="post">
