@@ -67,21 +67,24 @@ class ControllerCard extends Controller {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        if(!empty($_POST["title"])) {
-            $title = $_POST["title"];
-            $column_id = $_POST["column_id"];
+        if (isset($_POST["board_id"])) {
+            $board_id = $_POST["board_id"];
+            if (!empty($_POST["title"])) {
+                $column_id = $_POST["column_id"];
+                $title = $_POST["title"];
+                
+                $column = Column::get_by_id($column_id);
+                $card = Card::create_new($title, $user, $column);
 
-            $column = Column::get_by_id($column_id);
-            $card = Card::create_new($title, $user, $column);
+                $error = new ValidationError($card, "add", $column_id);
+                $error->set_messages_and_add_to_session($card->validate());
+                $error->set_id($column_id);
 
-            $error = new ValidationError($card, "add", $column_id);
-            $error->set_messages_and_add_to_session($card->validate());
-            $error->set_id($column_id);
-
-            if($error->is_empty()){                
-                $card->insert(); 
+                if($error->is_empty()){                
+                    $card->insert(); 
+                }
             }
-            $this->redirect("board","board",$card->get_board_id());
+            $this->redirect("board", "board", $board_id);
         }
         $this->redirect();
     }

@@ -83,17 +83,19 @@ class ControllerColumn extends Controller {
     public function add() {
         $this->get_user_or_redirect();
 
-        if (isset($_POST["id"]) && !empty($_POST["title"])) {
-            $board_id = $_POST["id"];
-            $board = Board::get_by_id($board_id);
-            $title = $_POST["title"];
-            $column = Column::create_new($title, $board);
+        if (isset($_POST["id"])) {
+            if (!empty($_POST["title"])) {
+                $board_id = $_POST["id"];
+                $board = Board::get_by_id($board_id);
+                $title = $_POST["title"];
+                $column = Column::create_new($title, $board);
 
-            $error = new ValidationError($column, "add");
-            $error->set_messages_and_add_to_session($column->validate());
+                $error = new ValidationError($column, "add");
+                $error->set_messages_and_add_to_session($column->validate());
 
-            if($error->is_empty()) {
-                $column->insert();
+                if($error->is_empty()) {
+                    $column->insert();
+                }
             }
             $this->redirect("board", "board", $_POST["id"]);
         }
