@@ -104,6 +104,7 @@ body {
 .breadcrumb a {
     padding: 0 !important;
 }
+
 .breadcrumb-current {
     color: #FFFFFF;
 }
@@ -111,6 +112,7 @@ body {
 .breadcrumb-separator {
     margin: 0px 7px;
 }
+
 
 /*** =========ADD========= ***/
 
@@ -465,7 +467,6 @@ strong {
 
 .login form {
     margin: auto;
-    background-color: rgba(229, 229, 229, 0.3);
 }
 
 .delete_confirm form,
@@ -474,6 +475,7 @@ strong {
     margin-top: 25px;
     border-radius: 4px;
     border: 1px solid #cccccc;
+    background-color: rgba(229, 229, 229, 0.3);
 }
 
 .delete_confirm form hr,
