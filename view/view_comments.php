@@ -18,7 +18,7 @@
                         </form>
                     <?php else: ?>
                         <p><?= $comment->get_body() ?> </p>
-                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_modified_intvl() ?></p>
+                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_created_intvl() ?></p>
                     <?php endif; ?>
                     <ul class="icons">
                         <!-- si l'utilisateur est l'auteur du message -->
