@@ -113,7 +113,14 @@ class Column extends CachedGet {
 
     public function is_unique_title_in_the_board(): bool {
         $title = $this->get_title();
-        return in_array($title, $this->get_board_columns());
+        $columns = $this->get_board_columns();
+        $count = 0;
+        foreach($columns as $column) {
+            if($column->get_title() === $title){
+                ++$count;
+            }
+        }
+        return $count == 0;
     }
 
     //    QUERIES    //

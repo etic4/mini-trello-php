@@ -38,7 +38,7 @@ class ControllerColumn extends Controller {
         if(isset($_POST['id'])) {
             $column_id = $_POST['id'];
             $column = Column::get_by_id($column_id);
-            $cards = Card::get_cards_count($column);
+            $cards = $column->get_cards();
 
             if (count($cards) == 0) {
                 $column->delete();
@@ -91,6 +91,7 @@ class ControllerColumn extends Controller {
                 $column = Column::create_new($title, $board);
 
                 $error = new ValidationError($column, "add");
+                echo $column->is_unique_title_in_the_board();
                 $error->set_messages_and_add_to_session($column->validate());
 
                 if($error->is_empty()) {
