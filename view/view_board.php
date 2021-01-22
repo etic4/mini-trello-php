@@ -17,7 +17,7 @@
         <article>
             <header>
                 <div class="title">
-                    <?php if ($user == $board->get_owner()): ?>
+                    <?php if ($user->is_owner($board)): ?>
                     <ul class="icons">
                         <li>
                             <form class='editTitle' action='board/edit/<?= $board->get_id() ?>' method='post'>

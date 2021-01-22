@@ -119,6 +119,14 @@ class User extends CachedGet {
         return $errors;
     }
 
+    public function is_owner(Board $board): bool {
+        return $this == $board->get_owner();
+    } 
+
+    public function is_author(Comment $comment): bool {
+        return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
+    }
+
 
     //    QUERIES    //
 
