@@ -8,7 +8,7 @@ require_once "ValidationError.php";
 class ControllerColumn extends Controller {
 
     public function index() {
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,20 +38,17 @@ class ControllerColumn extends Controller {
         if(isset($_POST['id'])) {
             $column_id = $_POST['id'];
             $column = Column::get_by_id($column_id);
-            $cards = Card::get_cards_count($column);
+            $cards = $column->get_cards();
 
             if (count($cards) == 0) {
                 $column->delete();
                 Column::decrement_following_columns_position($column);
                 $this->redirect("board", "board", $column->get_board_id());
-            } 
-            
-            else {
+            } else {
                 $this->redirect("column", "delete_confirm", $column->get_id());
             }
-        }
-        else {
-            $this->redirect("board", "index");
+        } else {
+            $this->redirect();
         }
     }
 
@@ -65,7 +62,7 @@ class ControllerColumn extends Controller {
                 die;
             }
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     //exécution du delete ou cancel de delete_confirm
@@ -78,7 +75,7 @@ class ControllerColumn extends Controller {
             }
             $this->redirect("board", "board", $column->get_board_id());
         }
-        $this->redirect("board", "index");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,22 +83,24 @@ class ControllerColumn extends Controller {
     public function add() {
         $this->get_user_or_redirect();
 
-        if (isset($_POST["id"]) && !empty($_POST["title"])) {
-            $board_id = $_POST["id"];
-            $board = Board::get_by_id($board_id);
-            $title = $_POST["title"];
-            $column = Column::create_new($title, $board);
+        if (isset($_POST["id"])) {
+            if (!empty($_POST["title"])) {
+                $board_id = $_POST["id"];
+                $board = Board::get_by_id($board_id);
+                $title = $_POST["title"];
+                $column = Column::create_new($title, $board);
 
-            $error = new ValidationError($column, "add");
-            $error->set_messages($column->validate());
-            $error->add_to_session();
+                $error = new ValidationError($column, "add");
+                echo $column->is_unique_title_in_the_board();
+                $error->set_messages_and_add_to_session($column->validate());
 
-            if($error->is_empty()) {
-                $column->insert();
+                if($error->is_empty()) {
+                    $column->insert();
+                }
             }
             $this->redirect("board", "board", $_POST["id"]);
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,22 +108,24 @@ class ControllerColumn extends Controller {
     // edit titre Column
     public function edit() {
         $this->get_user_or_redirect();
+        $error = new ValidationError();
 
         if (isset($_POST["id"]) && !empty($_POST["title"])) {
             $id = $_POST["id"];
             $title = $_POST["title"];
             $column = Column::get_by_id($id);
-            $column->set_title($title);
 
-            $error = new ValidationError($column, "edit");
-            $error->set_messages($column->validate());
-            $error->add_to_session();
+            if ($column->get_title() !== $title) {
+                $column->set_title($title);
+                $error = new ValidationError($column, "edit");
+                $error->set_messages_and_add_to_session($column->validate());
+            }
 
-            if($error->is_empty()) {
+            if ($error->is_empty()) {
                 $column->update();
             }
             $this->redirect("board", "board", $column->get_board_id());
         }
-        $this->redirect("board");
+        $this->redirect();
     }
 }

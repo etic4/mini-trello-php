@@ -42,6 +42,10 @@ button:focus:not(:focus-visible) {
     outline: none;
 }
 
+body {
+    background-image: url(../assets/images/blue2.jpg);
+}
+
 
 /**** =========MENU========= ***/
 
@@ -94,8 +98,19 @@ button:focus:not(:focus-visible) {
 }
 
 .breadcrumb {
+    margin-right: 20px;
+}
+
+.breadcrumb a {
+    padding: 0 !important;
+}
+
+.breadcrumb-current {
     color: #FFFFFF;
-    padding-right: 10px;
+}
+
+.breadcrumb-separator {
+    margin: 0px 7px;
 }
 
 
@@ -433,6 +448,10 @@ strong {
     width: 270px;
 }
 
+.column footer .errors {
+    top: -15px;
+}
+
 
 /***  ===LOGIN & SIGNUP===   ***/
 
@@ -456,6 +475,7 @@ strong {
     margin-top: 25px;
     border-radius: 4px;
     border: 1px solid #cccccc;
+    background-color: rgba(229, 229, 229, 0.3);
 }
 
 .delete_confirm form hr,
@@ -691,7 +711,7 @@ strong {
     justify-content: center;
     align-items: center;
     border-radius: 4px;
-    background-color: #e5e5e5;
+    background-color: rgba(229, 229, 229, 0.8);
 }
 
 .board .column .title_column {
@@ -796,7 +816,7 @@ strong {
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #cccccc;
-    background-color: #e5e5e5;
+    background-color: rgba(229, 229, 229, 0.7);
 }
 
 
@@ -809,7 +829,9 @@ article .comment h3 {
 
 .main_comment {
     margin-top: -25px;
-    margin-left: 15px;
+    padding: 15px 5px 15px 20px;
+    border-radius: 4px;
+    background-color: rgba(229, 229, 229, 0.5);
 }
 
 .main_comment .display_one_comment {
@@ -910,7 +932,8 @@ article .comment h3 {
     height: 35px;
     padding-left: 5px;
     border-radius: 4px;
-    border: 1px solid #cccccc
+    border: 1px solid #cccccc;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .edit .main_card textarea {
@@ -919,12 +942,13 @@ article .comment h3 {
     padding-top: 10px;
     resize: none;
     border-radius: 4px;
-    border: 1px solid #cccccc
+    border: 1px solid #cccccc;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .edit .main_card div:nth-child(3) input,
 .edit .main_card div:nth-child(4) input {
-    background-color: #e5e5e5;
+    background-color: rgba(229, 229, 229, 0.9);
 }
 
 .edit .main_card input[type=submit] {

@@ -1,12 +1,12 @@
 
 <?php
-/*TODO: se mettre d'accord sur l'organisation du code dans les classes (genre méthodes statiques après attributs, getters et setters ensemble ??*/
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "Board.php";
 require_once "Validation.php";
 
-class User extends Model {
+
+class User extends CachedGet {
     private ?string $id;
     private string $email;
     private string $fullName;
@@ -70,10 +70,10 @@ class User extends Model {
         $user = User::get_by_email($email);
         if ($user) {
             if (!$user->check_password($password)) {
-                $errors[] = "You have entered an invalid username or password";
+                $errors[] = "Invalid username or password";
             }
         } else {
-            $errors[] = "You have entered an invalid username or password";
+            $errors[] = "Invalid username or password";
         }
         return $errors;
     }
@@ -81,38 +81,50 @@ class User extends Model {
         return $this->passwdHash === Tools::my_hash($clearPasswd);
     }
 
-    public function validate(): array {
+    public function validate(string $confirm): array {
         $errors = array();
         //email
         if (!Validation::valid_email($this->email)) {
-            $errors[] = "Email non valide";
+            $errors[] = "Invalid email";
         }
         if(!Validation::is_unique_email($this->email)){
-            $errors[]="Email non disponible";
+            $errors[] = "Invalid email";
         }
         //fullName
         if (!Validation::str_longer_than($this->fullName, 2)) {
-            $errors[] = "Le nom doit comporter au moins 3 caractères";
+            $errors[] = "Name must be at least 3 characters long";
         }
 
         //password
         if (!Validation::str_longer_than($this->clearPasswd, 7)) {
-            $errors[] = "Le mot de passe doit comporter au moins 8 caractères";
+            $errors[] = "Password must be at least 8 characters long";
+        }
+
+        if (!Validation::is_same_password($this->clearPasswd, $confirm)) {
+            $errors[] = "Passwords don't match";
         }
 
         if (!Validation::contains_capitals($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins une lettre capitale";
+            $errors[] = "Password must contain at least 1 uppercase letter";
         }
 
         if (!Validation::contains_digits($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins un chiffre";
+            $errors[] = "Password must contain at least 1 number";
         }
 
         if (!Validation::contains_non_alpha($this->clearPasswd)) {
-            $errors[] = "Le mot de passe doit contenir au moins une caractère spécial";
+            $errors[] = "Password must contain at least one special character";
         }
 
         return $errors;
+    }
+
+    public function is_owner(Board $board): bool {
+        return $this == $board->get_owner();
+    } 
+
+    public function is_author(Comment $comment): bool {
+        return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
     }
 
 
@@ -128,21 +140,6 @@ class User extends Model {
             $data["Password"],
             new DateTime($data["RegisteredAt"])
         );
-    }
-
-
-    public static function get_by_id(string $id): ?User {
-        $sql = 
-            "SELECT * 
-             FROM user 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$id));
-
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return null;
-        }
-        return self::get_instance($data);
     }
 
     public static function get_by_email(string $email): ?User {
@@ -201,7 +198,6 @@ class User extends Model {
 
     //    TOOLBOX    //
 
-
     // Prépare la liste des boards pour l'affichage
     private function get_boards_for_view($board_array): array {
         $boards = [];
@@ -210,8 +206,7 @@ class User extends Model {
 
             if(count($board->get_columns()) > 1) {
                 $columns = "(" . count($board->get_columns()) . " columns)";
-            }
-            else {
+            } else {
                 $columns = "(" . count($board->get_columns()) . " column)";
             }
 
@@ -230,7 +225,7 @@ class User extends Model {
     }
 
     public function get_others_boards(): array {
-        return$this->get_boards_for_view(Board::get_others_boards($this));
+        return $this->get_boards_for_view(Board::get_others_boards($this));
     }
 
 }

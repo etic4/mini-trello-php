@@ -3,23 +3,23 @@
 
 class Validation {
     
-    public static function str_longer_than($str, $len): bool {
+    public static function str_longer_than(string $str, int $len): bool {
         return is_string($str) && strlen($str) > $len;
     }
 
-    public static function contains_capitals($str): bool {
+    public static function contains_capitals(string $str): bool {
         return strtolower($str)!==$str;
     }
 
-    public static function contains_digits($str): bool {
+    public static function contains_digits(string $str): bool {
         return preg_match('/\d/', $str) > 0;
     }
 
-    public static function contains_non_alpha($str): bool {
+    public static function contains_non_alpha(string $str): bool {
         return preg_match('/[^A-Za-z0-9 ]/', $str) > 0;
     }
 
-    public static function valid_email($str): bool {
+    public static function valid_email(string $str): bool {
         return filter_var($str, FILTER_VALIDATE_EMAIL) == $str;
     }
 
@@ -35,8 +35,9 @@ class Validation {
         return is_null(Board::get_by_title($title));
     }
 
-    public static function is_unique_column_title($column): bool {
+    public static function is_unique_column_title(Column $column): bool {
         return $column->is_unique_title_in_the_board();
     }
 
+    
 }

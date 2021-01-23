@@ -1,10 +1,10 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Card.php";
 
 
-class Column extends Model {
+class Column extends CachedGet {
     use DateTrait;
 
     private ?string $id;
@@ -12,11 +12,13 @@ class Column extends Model {
     private string $position;
     private Board $board;
 
+    private ?array $cards = null;
+
 
     public static function create_new(string $title, Board $board): Column {
         return new Column(
             $title,
-            self::get_columns_count($board),
+            count($board->get_columns()),
             $board
         );
     }
@@ -58,6 +60,10 @@ class Column extends Model {
         return $this->board->get_id();
     }
 
+    public function get_board_title(): string {
+        return $this->board->get_title();
+    }
+
     public function get_board_owner(): User {
         return $this->board->get_owner();
     }
@@ -67,7 +73,10 @@ class Column extends Model {
     }
 
     public function get_cards(): array {
-        return Card::get_cards_for_column($this);
+        if (is_null($this->cards)) {
+            $this->cards = Card::get_cards_for_column($this);
+        }
+        return $this->cards;
     }
 
 
@@ -90,7 +99,7 @@ class Column extends Model {
     }
 
     public function is_last(): bool {
-        return $this->get_position() == self::get_columns_count($this->get_board()) - 1;
+        return $this->get_position() == count($this->get_board_columns()) - 1;
     }
 
     //    VALIDATION    //
@@ -106,6 +115,17 @@ class Column extends Model {
         return $errors;
     }
 
+    public function is_unique_title_in_the_board(): bool {
+        $title = $this->get_title();
+        $columns = $this->get_board_columns();
+        $count = 0;
+        foreach($columns as $column) {
+            if($column->get_title() === $title){
+                ++$count;
+            }
+        }
+        return $count == 0;
+    }
 
     //    QUERIES    //
 
@@ -119,22 +139,6 @@ class Column extends Model {
             $createdAt,
             $modifiedAt
         );
-    }
-
-    public static function get_by_id(string $id): ?Column {
-        $sql = 
-            "SELECT * 
-             FROM `column` 
-             WHERE ID=:id";
-        $param = array("id"=>$id);
-        $query = self::execute($sql, $param);
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return self::get_instance($data);
-        }
     }
 
     public static function get_all(Board $board): array {
@@ -164,37 +168,11 @@ class Column extends Model {
 
         $columns = array();
         foreach ($data as $rec) {
-            array_push($columns, self::get_instance($rec));
+            $column = self::get_instance($rec);
+            self::add_instance_to_cache($column);
+            array_push($columns, $column);
         }
         return $columns;
-    }
-
-    //nombre de Column du Board
-    public static function get_columns_count(Board $board): string {
-        $sql =
-            "SELECT COUNT(Position) as nbr
-             FROM `column` 
-             WHERE Board=:id";
-        $params= array("id"=>$board->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        return $data["nbr"];
-    }
-
-    public function is_unique_title_in_the_board(): bool {
-        $sql =
-            "SELECT *
-             FROM `column`
-             WHERE Board=:id
-             AND Title=:title";
-        $params= array(
-            "id" => $this->get_board_id(), 
-            "title" => $this->get_title()
-        );
-
-        $query = self::execute($sql, $params);
-        return $query->rowCount() == 0;
     }
 
     public function insert() {
@@ -210,7 +188,7 @@ class Column extends Model {
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     public function update(): void {
@@ -226,7 +204,7 @@ class Column extends Model {
         );
 
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     public function delete(): void {

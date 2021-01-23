@@ -1,5 +1,11 @@
-<?php
+<?php namespace model;
 
+require_once "tests/tools/DB.php";
+use \Board;
+use \User;
+use \Datetime;
+use \TypeError;
+use \tools\DB;
 
 class BoardTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;
@@ -34,28 +40,24 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Board $board): Board {
-        $this->expectException(TypeError::class);
-        $board->get_id();
-        return $board;
+    public function testGetIdReturnNullOnNotSavedInstance(Board $board) {
+        $this->assertEquals(null, $board->get_id());
     }
 
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Board $board): Board {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Board $board) {
         $this->expectException(TypeError::class);
         $board->get_createdAt();
-        return $board;
     }
 
     /**
      * @depends testCreateBoardInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Board $board): Board {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Board $board) {
         $this->expectException(TypeError::class);
         $board->get_modifiedAt();
-        return $board;
     }
 
     /**

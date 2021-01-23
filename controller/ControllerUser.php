@@ -10,7 +10,7 @@ class ControllerUser extends Controller {
 
     public function index() {
         if ($this->user_logged()) {
-            $this->redirect("board");
+            $this->redirect();
         } else {
             $this->login();
         }
@@ -19,21 +19,22 @@ class ControllerUser extends Controller {
     public function login() {
         $email = '';
         $password = '';
-        $errors = [];
+        $error = new ValidationError();
 
         if (isset($_POST['email']) && isset($_POST['password'])) {
             $email = $_POST['email'];
             $password = $_POST['password'];
-
-            $errors = User::validate_login($email, $password);
-            if (empty($errors)) {
+            $error->set_messages_and_add_to_session(User::validate_login($email, $password));
+        
+            if ($error->is_empty()) {
                 $this->log_user(User::get_by_email($email));
             }
         }
+        
         (new View("login"))->show(array(
             "email" => $email, 
             "password" => $password, 
-            "errors" => $errors)
+            "errors" => $error)
         );
     }
 
@@ -45,22 +46,21 @@ class ControllerUser extends Controller {
     public function signup() {
         $email = '';
         $password = '';
-        $fullName='';
-        $confirm='';
-        $errors = [];
-        $user=null;
+        $fullName = '';
+        $confirm = '';
+        $user = null;
+        $error = new ValidationError();
+
         if (isset($_POST['email']) && isset($_POST['password']) && isset($_POST['fullName']) && isset($_POST['confirm'])) {
             $email = $_POST['email'];
             $password = $_POST['password'];
-            $fullName=$_POST['fullName'];
-            $confirm=$_POST['confirm'];
+            $fullName = $_POST['fullName'];
+            $confirm = $_POST['confirm'];
             
-            $user=new User($email,$fullName,$password,null,null,null);
-            $errors = $user->validate();
-            if($confirm!==$password){
-               array_push($errors,"Votre mot de passe et votre confirmation de mot de passe sont différentes");
-            }
-            if (empty($errors)) {
+            $user=new User($email, $fullName, $password, null, null, null);
+            $error->set_messages_and_add_to_session($user->validate($confirm));
+
+            if($error->is_empty()) {
                 $user->insert();
                 $this->log_user($user);
             }
@@ -70,7 +70,7 @@ class ControllerUser extends Controller {
             "password" => $password,
             "fullName" => $fullName,
             "confirm" => $confirm, 
-            "errors" => $errors)
+            "errors" => $error)
         );
     }
 }

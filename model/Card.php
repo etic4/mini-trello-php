@@ -1,10 +1,10 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "model/Comment.php";
 
 
-class Card extends Model {
+class Card extends CachedGet {
     use DateTrait;
 
     private ?string $id;
@@ -13,6 +13,8 @@ class Card extends Model {
     private string $position;
     private User $author;
     private Column $column;
+
+    private ?array $comments = null;
 
     public static function create_new(string $title, User $author, Column $column): Card {
         return new Card(
@@ -79,6 +81,10 @@ class Card extends Model {
         return $this->column;
     }
 
+    public function get_column_title(): string {
+        return $this->column->get_title();
+    }
+
     public function get_column_cards(): array {
         return $this->column->get_cards();
     }
@@ -95,25 +101,31 @@ class Card extends Model {
         return $this->column->get_board_columns();
     }
 
-    public function get_board_id(): string {
-        return $this->column->get_board_id();
-    }
-
     public function get_board() {
         return $this->column->get_board();
     }
 
+    public function get_board_id(): string {
+        return $this->column->get_board_id();
+    }
+
+    public function get_board_title(): string {
+        return $this->column->get_board_title();
+    }
+ 
     public function get_board_owner(): User{
         return $this->column->get_board_owner();
     }
 
     public function get_comments(): array {
-        return Comment::get_comments_for_card($this);
+        if (is_null($this->comments)) {
+            $this->comments = Comment::get_comments_for_card($this);
+        }
+        return $this->comments;
     }
 
     
-
-    // SETTERS //
+    //    SETTERS    //
 
     public function set_id(string $id) {
         $this->id = $id;
@@ -135,16 +147,20 @@ class Card extends Model {
         $this->position = $position;
     }
 
+
+    //    VALIDATION    //
+
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
-        if(!$this->title_is_unique()){
+        if($this->title_is_unique()){
             $errors[] = "Title already exists in this board";
         }
         return $errors;
     }
+
     public function validate_update(): array{
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
@@ -156,42 +172,41 @@ class Card extends Model {
         return $errors;
     }
 
+
+    //    TOOLS    //
+
     public function has_comments(): bool {
-        return $this->get_comments_count() > 0;
+        return count($this->get_comments()) > 0;
     }
 
-    public function get_comments_count(): string {
-        return Comment::get_comments_count($this);
+    public function get_comments_count(): int {
+        return count($this->get_comments());
     }
-
+ 
     public function is_first(): bool {
         return $this->get_position() == 0;
     }
 
     public function is_last(): bool {
-        return $this->get_position() == self::get_cards_count($this->get_column()) - 1;
+        return $this->get_position() == count($this->get_column_cards()) - 1;
     }
-
-    //    QUERIES    //
 
     // renvoie true si le titre de la carte $card est unique pour la colonne de la carte $card
-    public function title_is_unique(){
-        $sql = 
-        "SELECT * 
-         FROM card ca, `column` co
-         WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
-         $params = array("title"=>$this->get_title(), "board_id"=>$this->get_board_id());
-         $query = self::execute($sql, $params);
-         $data=$query->fetch();
-         return $query->rowCount()==0 ;
+    public function title_is_unique() {
+        $title = $this->get_title();
+        return in_array($title, $this->get_column_cards());
     }
+
+
+    //    QUERIES    //
+    
     //renvoie true si le titre de la carte $card pour la colonne de la carte $card est unique
     // update version
     public function title_is_unique_update(){
         $sql = 
-        "SELECT * 
-         FROM card ca, `column` co
-         WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
+            "SELECT * 
+            FROM card ca, `column` co
+            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
          $params = array(
              "title"=>$this->get_title(), 
              "board_id"=>$this->get_board_id(),
@@ -201,6 +216,7 @@ class Card extends Model {
          $data=$query->fetch();
          return $query->rowCount()==0 ;
     }
+
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
         list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
@@ -214,21 +230,6 @@ class Card extends Model {
             $createdAt,
             $modifiedAt
         );
-    }
-    //renvoie un objet Card dont l'id est $id
-    public static function get_by_id($card_id): ?Card {
-        $sql = 
-            "SELECT * 
-             FROM card 
-             WHERE ID=:id";
-        $query = self::execute($sql, array("id"=>$card_id));
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            return self::get_instance($data);
-        }
     }
 
     //renvoie un tableau de cartes triées dont la colonne est $column;
@@ -244,7 +245,9 @@ class Card extends Model {
 
         $cards = [];
         foreach ($data as $rec) {
-            array_push($cards, self::get_instance($rec));
+            $card = self::get_instance($rec);
+            self::add_instance_to_cache($card);
+            array_push($cards, $card);
         }
         return $cards;
     }
@@ -277,7 +280,7 @@ class Card extends Model {
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
@@ -294,7 +297,7 @@ class Card extends Model {
         );
 
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
 
     /*

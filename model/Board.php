@@ -1,17 +1,17 @@
 <?php
 
-require_once "framework/Model.php";
+require_once "CachedGet.php";
 require_once "User.php";
 require_once "Column.php";
 
 
-class Board extends Model {
+class Board extends CachedGet {
     use DateTrait;
 
     private ?string $id;
     private string $title;
     private User $owner;
-    private array $columns;
+    private ?array $columns = null;
 
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
@@ -47,7 +47,10 @@ class Board extends Model {
     }
 
     public function get_columns(): array {
-        return Column::get_columns_for_board($this);
+        if (is_null($this->columns)) {
+            $this->columns = Column::get_columns_for_board($this);
+        }
+        return $this->columns;
     }
 
 
@@ -67,7 +70,7 @@ class Board extends Model {
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] =  "Title must be at least 3 characters long";
+            $errors[] = "Title must be at least 3 characters long";
             
         }
         if (!Validation::is_unique_title($this->title)) {
@@ -91,24 +94,6 @@ class Board extends Model {
         );
     }
 
-    public static function get_by_id(string $board_id): ?Board {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE ID=:id";
-        $params = array("id" => $board_id);
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } 
-
-        else {
-            return self::get_instance($data);
-        }
-    }
-
     public static function get_by_title(string $title): ?Board {
         $sql = 
             "SELECT * 
@@ -120,9 +105,7 @@ class Board extends Model {
 
         if ($query->rowCount() == 0) {
             return null;
-        } 
-
-        else {
+        } else {
             $board = self::get_instance($data);
             return $board;
         }
@@ -133,7 +116,7 @@ class Board extends Model {
             "SELECT * 
              FROM board 
              WHERE Owner=:id";
-        $params= array("id"=>$user->get_id());
+        $params = array("id"=>$user->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -150,7 +133,7 @@ class Board extends Model {
             "SELECT * 
              FROM board 
              WHERE Owner!=:id";
-        $params= array("id"=>$user->get_id());
+        $params = array("id" => $user->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -167,13 +150,13 @@ class Board extends Model {
             "INSERT INTO board(Title, Owner) 
              VALUES(:title, :owner)";
         $params = array(
-            "title"=>$this->get_title(),
-            "owner"=>$this->get_owner_id(),
+            "title" => $this->get_title(),
+            "owner" => $this->get_owner_id(),
             );
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
         $this->set_id($id);
-        $this->set_dates_from_instance(self::get_by_id($id));
+        $this->set_dates_from_db();
     }
 
     public function update(): void {
@@ -182,13 +165,13 @@ class Board extends Model {
              SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
              WHERE ID=:id";
         $params = array(
-            "id"=>$this->get_id(), 
-            "title"=>$this->get_title(), 
-            "owner"=>$this->get_owner_id(),
+            "id" => $this->get_id(), 
+            "title" => $this->get_title(), 
+            "owner" => $this->get_owner_id(),
         );
         
         $this->execute($sql, $params);
-        $this->set_dates_from_instance(self::get_by_id($this->get_id()));
+        $this->set_dates_from_db();
     }
     
     public function delete(): void {

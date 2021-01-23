@@ -1,5 +1,12 @@
-<?php
+<?php namespace model;
 
+require_once "tests/tools/DB.php";
+use \Card;
+use \Column;
+use \User;
+use \Datetime;
+use \TypeError;
+use \tools\DB;
 
 class CardTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;
@@ -41,28 +48,24 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetIdProducesErrorOnNotSavedInstance(Card $card): Card {
-        $this->expectException(TypeError::class);
-        $card->get_id();
-        return $card;
+    public function testGetIdReturnNullOnNotSavedInstance(Card $card) {
+        $this->assertEquals(null, $card->get_id());
     }
 
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Card $card): Card {
+    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Card $card) {
         $this->expectException(TypeError::class);
         $card->get_createdAt();
-        return $card;
     }
 
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Card $card): Card {
+    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Card $card) {
         $this->expectException(TypeError::class);
         $card->get_modifiedAt();
-        return $card;
     }
 
     /**
