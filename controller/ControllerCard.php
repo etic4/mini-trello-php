@@ -113,9 +113,10 @@ class ControllerCard extends Controller {
 
             if($error->is_empty()){  
                 $card->update();
+                $this->redirect("card", "view", $card_id);
             }
 
-            $this->redirect("card","view",$card->get_id());
+            $this->redirect("card", "edit", $card_id);
         }
 
         $this->redirect();

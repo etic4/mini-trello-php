@@ -74,9 +74,9 @@ class ControllerComment extends Controller {
 
         if(isset($_POST['card_id'])) {
             $card_id = $_POST['card_id'];
+
             if(!empty($_POST['body'])) {
                 $body = $_POST['body'];
-
                 $card = Card::get_by_id($card_id);  
                 $comment = new Comment($body, $user, $card);
                 $comment->insert();
