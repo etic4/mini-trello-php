@@ -81,6 +81,10 @@ class Card extends CachedGet {
         return $this->column;
     }
 
+    public function get_column_title(): string {
+        return $this->column->get_title();
+    }
+
     public function get_column_cards(): array {
         return $this->column->get_cards();
     }
@@ -97,14 +101,18 @@ class Card extends CachedGet {
         return $this->column->get_board_columns();
     }
 
-    public function get_board_id(): string {
-        return $this->column->get_board_id();
-    }
-
     public function get_board() {
         return $this->column->get_board();
     }
 
+    public function get_board_id(): string {
+        return $this->column->get_board_id();
+    }
+
+    public function get_board_title(): string {
+        return $this->column->get_board_title();
+    }
+ 
     public function get_board_owner(): User{
         return $this->column->get_board_owner();
     }

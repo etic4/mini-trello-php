@@ -20,11 +20,14 @@
                     <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
                 </header>
                 <div class="main_card">
+                <?php if ($errors->has_errors()): ?>
+                    <?php include('errors.php'); ?>
+                <?php endif; ?>
                     <form id="edit_card" action="card/update" method="post">
                         <div>
                             <label for="title" >Title</label>
                             <!-- value renvoie la valeur de départ si user ne modifie pas le titre -->
-                            <input type="text" name="title" id="title" maxlength="128" value='<?= $card->get_title() ?>' placeholder="code php title_card">
+                            <input type="text" name="title" id="title" maxlength="128" value='<?= $card->get_title() ?>' placeholder='<?= $card->get_title() ?>'>
                         </div>
                         <div>
                             <label for="body">Body</label>
@@ -32,11 +35,11 @@
                         </div>
                         <div>
                             <label for="board">Board</label>
-                            <input type ="text" name="title_board" id="title_board" value='<?= $board->get_title() ?>'  placeholder="php code title_board" disabled>
+                            <input type ="text" name="title_board" id="title_board" value='<?= $card->get_board_title() ?>' disabled>
                         </div>
                         <div>
                             <label for="title_column">Column</label>
-                            <input type ="text" name="title_column" id="title_column" value='<?= $column->get_title() ?>' placeholder="php code title_column" disabled>
+                            <input type ="text" name="title_column" id="title_column" value='<?= $card->get_column_title() ?>' disabled>
                         </div>
                         <div>
                             <input type="text" name="id" value='<?= $card->get_id() ?>' hidden>

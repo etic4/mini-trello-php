@@ -60,6 +60,10 @@ class Column extends CachedGet {
         return $this->board->get_id();
     }
 
+    public function get_board_title(): string {
+        return $this->board->get_title();
+    }
+
     public function get_board_owner(): User {
         return $this->board->get_owner();
     }
