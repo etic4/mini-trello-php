@@ -34,7 +34,7 @@
                         </li>
                         <?php endif; ?>
                         <!-- si l'utilisateur est proprio du tableau ou si l'utilisateur est l'auteur du message -->
-                        <?php if($user->is_owner($board) || $user->is_author($comment)): ?>
+                        <?php if($user->is_owner($card->get_board()) || $user->is_author($comment)): ?>
                             <li>
                             <form class='link' action='comment/delete' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
