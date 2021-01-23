@@ -1,17 +1,16 @@
 <?php
 
 require_once "CachedGet.php";
-require_once "model/Card.php";
+require_once "Card.php";
+require_once "TitleTrait.php";
 
 
 class Column extends CachedGet {
-    use DateTrait;
+    use DateTrait, TitleTrait;
 
     private ?string $id;
-    private string $title;
     private string $position;
     private Board $board;
-
     private ?array $cards = null;
 
 
@@ -42,10 +41,6 @@ class Column extends CachedGet {
 
     public function get_id(): ?string {
         return $this->id;
-    }
-
-    public function get_title(): string {
-        return $this->title;
     }
 
     public function get_position(): string {
@@ -86,10 +81,6 @@ class Column extends CachedGet {
         $this->id = $id;
     }
 
-    public function set_title(string $title): void {
-        $this->title = $title;
-    }
-
     public function set_position(int $position): void {
         $this->position = $position;
     }
@@ -115,7 +106,7 @@ class Column extends CachedGet {
         return $errors;
     }
 
-    public function is_unique_title_in_the_board(): bool {
+    public function has_unique_title_in_board(): bool {
         $title = $this->get_title();
         $columns = $this->get_board_columns();
         $count = 0;

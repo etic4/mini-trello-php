@@ -12,9 +12,8 @@ trait TitleTrait {
         $this->title = $title;
     }
 
-    public function get_truncated_title(): string {
-        $title = $this->getTitle();
-        $length = 14;
+    function get_truncated_title($length): string {
+        $title = $this->get_title();
         if(strlen($title) <= $length) return $title;
         return trim(substr($title, 0, $length)) . "...";
     }

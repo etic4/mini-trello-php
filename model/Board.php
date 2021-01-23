@@ -3,13 +3,13 @@
 require_once "CachedGet.php";
 require_once "User.php";
 require_once "Column.php";
+require_once "TitleTrait.php";
 
 
 class Board extends CachedGet {
-    use DateTrait;
+    use DateTrait, TitleTrait;
 
     private ?string $id;
-    private string $title;
     private User $owner;
     private ?array $columns = null;
 
@@ -28,10 +28,6 @@ class Board extends CachedGet {
 
     public function get_id(): ?string {
         return $this->id;
-    }
-
-    public function get_title(): string {
-        return $this->title;
     }
 
     public function get_owner(): User {
@@ -58,10 +54,6 @@ class Board extends CachedGet {
 
     public function set_id(string $id): void {
         $this->id = $id;
-    }
-
-    public function set_title(string $title): void {
-        $this->title = $title;
     }
 
 

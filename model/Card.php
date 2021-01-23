@@ -1,14 +1,14 @@
 <?php
 
 require_once "CachedGet.php";
-require_once "model/Comment.php";
+require_once "Comment.php";
+require_once "TitleTrait.php";
 
 
 class Card extends CachedGet {
-    use DateTrait;
+    use DateTrait, TitleTrait;
 
     private ?string $id;
-    private string $title;
     private string $body;
     private string $position;
     private User $author;
@@ -51,10 +51,6 @@ class Card extends CachedGet {
 
     public function get_id(): ?string {
         return $this->id;
-    }
-
-    public function get_title(): string {
-        return $this->title;
     }
 
     public function get_body(): string {
@@ -130,10 +126,6 @@ class Card extends CachedGet {
 
     public function set_id(string $id) {
         $this->id = $id;
-    }
-
-    public function set_title(string $title) {
-        $this->title = $title;
     }
 
     public function set_body(string $body) {
