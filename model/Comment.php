@@ -78,9 +78,7 @@ class Comment extends CachedGet {
 
     //   QUERIES
 
-    /*
-        renvoie un comment avec comme attributs les donnee de $data
-    */
+    // renvoie un comment avec comme attributs les donnee de $data
     protected static function get_instance($data): Comment {
         list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Comment(
@@ -93,11 +91,9 @@ class Comment extends CachedGet {
         );
     }
 
-    /*
-         insertion en db avec les valeurs d'instances.
-     */
+    // insertion en db avec les valeurs d'instances.
     public function insert() { 
-        $sql=
+        $sql =
             "INSERT INTO comment (Body, Author, Card) 
              VALUES (:body, :author, :card)";
         $params=array(
@@ -111,15 +107,13 @@ class Comment extends CachedGet {
         $this->set_dates_from_db();
     }
     
+    // rencoie true si l'utilisateur $user a le droit d'éditer le commentaire $id 
     public static function can_edit(int $id, User $user): bool{
-
-        $c=Comment::get_by_id($id);
-        return !( is_null($c) || $c->get_author_id()!==$user->get_id());
-
+        $comment = Comment::get_by_id($id);
+        return !(is_null($comment) || $comment->get_author_id()!==$user->get_id());
     }
-    /*
-        mets a jour la db avec les valeurs de l'instance
-    */
+    
+    //mets a jour la db avec les valeurs de l'instance
     public function update() {
         $sql = 
             "UPDATE comment 
@@ -142,9 +136,7 @@ class Comment extends CachedGet {
         self::execute($sql, $param);
     }
 
-    /*
-        renvoie un tab de comment dont la carte est $card
-    */
+    // renvoie un tableau de comment associé à la carte $card
     public static function get_comments_for_card(Card $card): array {
         $sql = 
             "SELECT * 
@@ -161,16 +153,7 @@ class Comment extends CachedGet {
         }
         return $comments;
     }
-
-    public static function get_comments_count(Card $card): string {
-        $sql = "SELECT COUNT(*) as nbr FROM comment WHERE Card=:cardId";
-        $params = array("cardId" => $card->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        return $data["nbr"];
-    }
-
+    
     // fonction utilitaires
     public function get_author_name(): String{
         return $this->get_author()->get_fullName();

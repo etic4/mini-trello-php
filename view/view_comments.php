@@ -52,10 +52,7 @@
     </div>
     <footer>
         <form class="add" action="Comment/add" method="post">
-            <input type='text' name='card_id' value='<?= $card->get_id() ?>' hidden>
-            <?php if(isset($edit)): ?>
-                <input type='text' name='edit' value='yes' hidden>
-            <?php endif;?>
+            <input type='text' name='idcard' value='<?= $card->get_id() ?>' hidden>
             <input type="text" name="body">
             <input type="submit" value="Add a comment">
         </form>

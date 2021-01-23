@@ -151,17 +151,18 @@ class Card extends CachedGet {
 
     //    VALIDATION    //
 
+    // fonction de validation en cas d'ajout de nouvelle carte
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
-        if($this->title_is_unique()){
+        if(!$this->title_is_unique()){
             $errors[] = "Title already exists in this board";
         }
         return $errors;
     }
-
+    // fonction de validation en cas d'update d'une carte deja existante
     public function validate_update(): array{
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
@@ -192,17 +193,27 @@ class Card extends CachedGet {
         return $this->get_position() == count($this->get_column_cards()) - 1;
     }
 
-    // renvoie true si le titre de la carte $card est unique pour la colonne de la carte $card
-    public function title_is_unique() {
-        $title = $this->get_title();
-        return in_array($title, $this->get_column_cards());
-    }
 
 
     //    QUERIES    //
     
-    //renvoie true si le titre de la carte $card pour la colonne de la carte $card est unique
-    // update version
+    // renvoie true si le titre de la carte est unique pour le tableau contenant la carte
+    public function title_is_unique() {
+        $sql = 
+            "SELECT * 
+            FROM card ca, `column` co
+            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
+        $params = array(
+            "title"=>$this->get_title(), 
+            "board_id"=>$this->get_board_id(),
+            );
+        $query = self::execute($sql, $params);
+        $data=$query->fetch();
+        return $query->rowCount()==0 ;
+    }
+
+    //renvoie true si le titre de la carte est unique pour le tableau contenant la carte
+    // version a utiliser en cas d'update
     public function title_is_unique_update(){
         $sql = 
             "SELECT * 
@@ -233,7 +244,7 @@ class Card extends CachedGet {
         );
     }
 
-    //renvoie un tableau de cartes triées dont la colonne est $column;
+    //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
     public static function get_cards_for_column(Column $column): array {
         $sql = 
             "SELECT * 
@@ -301,9 +312,7 @@ class Card extends CachedGet {
         $this->set_dates_from_db();
     }
 
-    /*
-        supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
-    */
+    //supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
     public function delete() {
         foreach ($this->get_comments() as $comment) {
             $comment->delete();
