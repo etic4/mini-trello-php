@@ -116,7 +116,7 @@ class Board extends CachedGet {
             "SELECT * 
              FROM board 
              WHERE Owner=:id";
-        $params= array("id"=>$user->get_id());
+        $params = array("id"=>$user->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -133,7 +133,7 @@ class Board extends CachedGet {
             "SELECT * 
              FROM board 
              WHERE Owner!=:id";
-        $params= array("id"=>$user->get_id());
+        $params = array("id" => $user->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -150,8 +150,8 @@ class Board extends CachedGet {
             "INSERT INTO board(Title, Owner) 
              VALUES(:title, :owner)";
         $params = array(
-            "title"=>$this->get_title(),
-            "owner"=>$this->get_owner_id(),
+            "title" => $this->get_title(),
+            "owner" => $this->get_owner_id(),
             );
         $this->execute($sql, $params);
         $id = $this->lastInsertId();
@@ -165,9 +165,9 @@ class Board extends CachedGet {
              SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
              WHERE ID=:id";
         $params = array(
-            "id"=>$this->get_id(), 
-            "title"=>$this->get_title(), 
-            "owner"=>$this->get_owner_id(),
+            "id" => $this->get_id(), 
+            "title" => $this->get_title(), 
+            "owner" => $this->get_owner_id(),
         );
         
         $this->execute($sql, $params);

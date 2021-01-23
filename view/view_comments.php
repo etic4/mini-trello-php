@@ -18,11 +18,11 @@
                         </form>
                     <?php else: ?>
                         <p><?= $comment->get_body() ?> </p>
-                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_modified_intvl() ?></p>
+                        <p>by <strong><?= $comment->get_author_fullName() ?></strong> <?= $comment->get_created_intvl() ?>.</p>
                     <?php endif; ?>
                     <ul class="icons">
                         <!-- si l'utilisateur est l'auteur du message -->
-                         <?php if($user->get_id() == $comment->get_author_id() && !isset($show_comment)): ?>
+                         <?php if($user->is_author($comment)): ?>
                          <li>
                             <form class='link' action='comment/edit' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
@@ -34,7 +34,7 @@
                         </li>
                         <?php endif; ?>
                         <!-- si l'utilisateur est proprio du tableau ou si l'utilisateur est l'auteur du message -->
-                        <?php if($user->get_id() == $board->get_owner_id() || $user->get_id() == $comment->get_author_id()): ?>
+                        <?php if($user->is_owner($board) || $user->is_author($comment)): ?>
                             <li>
                             <form class='link' action='comment/delete' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
@@ -52,7 +52,7 @@
     </div>
     <footer>
         <form class="add" action="Comment/add" method="post">
-            <input type='text' name='idcard' value='<?= $card->get_id() ?>' hidden>
+            <input type='text' name='card_id' value='<?= $card->get_id() ?>' hidden>
             <?php if(isset($edit)): ?>
                 <input type='text' name='edit' value='yes' hidden>
             <?php endif;?>

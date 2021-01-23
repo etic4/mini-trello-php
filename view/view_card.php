@@ -33,8 +33,8 @@
                             </li>
                         </ul>
                     </div>
-                    <p class="credit">Created <?=$card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name()?>'</strong>. <?= $card->get_modified_intvl() ?></p>
-                    <p>This card is on the board "<strong><?= $board->get_title() ?></strong>", column "<strong><?= $column->get_title() ?></strong>" at position <?= $card->get_position() ?>.</p>
+                    <p class="credit">Created <?=$card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name()?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
+                    <p>This card is on the board "<strong><?= $card->get_board_title() ?></strong>", column "<strong><?= $card->get_column_title() ?></strong>" at position <?= $card->get_position() ?>.</p>
                 </header>
                 <div class="main_card">
                     <section class="display_card">

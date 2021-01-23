@@ -137,7 +137,6 @@ class ControllerBoard extends Controller {
         $this->redirect();
     }
 
-
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
         if(isset($_POST["id"])) {

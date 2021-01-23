@@ -60,12 +60,7 @@ class ControllerComment extends Controller {
                     $comment->update();
                 }
             }
-
-            if(isset($_POST['edit'])){
-                $this->redirect("card", "edit", $comment->get_card_id());
-            } else {
-                $this->redirect("card", "view", $comment->get_card_id());
-            }
+           $this->card_redirect($comment->get_card_id());
 
         } else {
             $this->redirect();
@@ -77,22 +72,29 @@ class ControllerComment extends Controller {
     public function add(){
         $user = $this->get_user_or_redirect();
 
-        if(isset($_POST['idcard']) && !empty($_POST['body'])) {
-            $card_id = $_POST['idcard'];
-            $body = $_POST['body'];
+        if(isset($_POST['card_id'])) {
+            $card_id = $_POST['card_id'];
 
-            $card = Card::get_by_id($card_id);  
-            $comment = new Comment($body, $user, $card);
-            $comment->insert();
-
-            if(isset($_POST['edit'])){
-                $this->redirect("card", "edit", $comment->get_card_id());
-            } else {
-                $this->redirect("card", "view", $comment->get_card_id());
+            if(!empty($_POST['body'])) {
+                $body = $_POST['body'];
+                $card = Card::get_by_id($card_id);  
+                $comment = new Comment($body, $user, $card);
+                $comment->insert();
             }
+            $this->card_redirect($card_id);
         }
 
         $this->redirect();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private function card_redirect($card_id) {
+        if(isset($_POST['edit'])){
+            $this->redirect("card", "edit", $card_id);
+        } else {
+            $this->redirect("card", "view", $card_id);
+        }
     }
 }
 

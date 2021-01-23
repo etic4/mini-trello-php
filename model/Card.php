@@ -16,7 +16,8 @@ class Card extends CachedGet {
 
     private ?array $comments = null;
 
-    public static function create_new(string $title, User $author, Column $column): Card {
+    public static function create_new(string $title, User $author, string $column_id): Card {
+        $column = Column::get_by_id($column_id);
         return new Card(
             $title,
             "",
@@ -81,6 +82,10 @@ class Card extends CachedGet {
         return $this->column;
     }
 
+    public function get_column_title(): string {
+        return $this->column->get_title();
+    }
+
     public function get_column_cards(): array {
         return $this->column->get_cards();
     }
@@ -97,14 +102,18 @@ class Card extends CachedGet {
         return $this->column->get_board_columns();
     }
 
-    public function get_board_id(): string {
-        return $this->column->get_board_id();
-    }
-
     public function get_board() {
         return $this->column->get_board();
     }
 
+    public function get_board_id(): string {
+        return $this->column->get_board_id();
+    }
+
+    public function get_board_title(): string {
+        return $this->column->get_board_title();
+    }
+ 
     public function get_board_owner(): User{
         return $this->column->get_board_owner();
     }
@@ -117,8 +126,7 @@ class Card extends CachedGet {
     }
 
     
-
-    // SETTERS //
+    //    SETTERS    //
 
     public function set_id(string $id) {
         $this->id = $id;
@@ -140,16 +148,20 @@ class Card extends CachedGet {
         $this->position = $position;
     }
 
+
+    //    VALIDATION    //
+
     public function validate(): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
-        if(!$this->title_is_unique()){
+        if($this->title_is_unique()){
             $errors[] = "Title already exists in this board";
         }
         return $errors;
     }
+
     public function validate_update(): array{
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
@@ -161,36 +173,34 @@ class Card extends CachedGet {
         return $errors;
     }
 
+
+    //    TOOLS    //
+
     public function has_comments(): bool {
-        return $this->get_comments_count() > 0;
+        return count($this->get_comments()) > 0;
     }
 
-    public function get_comments_count(): string {
-        return Comment::get_comments_count($this);
+    public function get_comments_count(): int {
+        return count($this->get_comments());
     }
-
+ 
     public function is_first(): bool {
         return $this->get_position() == 0;
     }
 
     public function is_last(): bool {
-        return $this->get_position() == self::get_cards_count($this->get_column()) - 1;
+        return $this->get_position() == count($this->get_column_cards()) - 1;
     }
-
-    //    QUERIES    //
 
     // renvoie true si le titre de la carte $card est unique pour la colonne de la carte $card
-    public function title_is_unique(){
-        $sql = 
-            "SELECT * 
-            FROM card ca, `column` co
-            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
-         $params = array("title"=>$this->get_title(), "board_id"=>$this->get_board_id());
-         $query = self::execute($sql, $params);
-         $data=$query->fetch();
-         return $query->rowCount()==0 ;
+    public function title_is_unique() {
+        $title = $this->get_title();
+        return in_array($title, $this->get_column_cards());
     }
 
+
+    //    QUERIES    //
+    
     //renvoie true si le titre de la carte $card pour la colonne de la carte $card est unique
     // update version
     public function title_is_unique_update(){

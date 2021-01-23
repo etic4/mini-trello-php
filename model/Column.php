@@ -60,6 +60,10 @@ class Column extends CachedGet {
         return $this->board->get_id();
     }
 
+    public function get_board_title(): string {
+        return $this->board->get_title();
+    }
+
     public function get_board_owner(): User {
         return $this->board->get_owner();
     }
@@ -111,6 +115,17 @@ class Column extends CachedGet {
         return $errors;
     }
 
+    public function is_unique_title_in_the_board(): bool {
+        $title = $this->get_title();
+        $columns = $this->get_board_columns();
+        $count = 0;
+        foreach($columns as $column) {
+            if($column->get_title() === $title){
+                ++$count;
+            }
+        }
+        return $count == 0;
+    }
 
     //    QUERIES    //
 
@@ -158,21 +173,6 @@ class Column extends CachedGet {
             array_push($columns, $column);
         }
         return $columns;
-    }
-
-    public function is_unique_title_in_the_board(): bool {
-        $sql =
-            "SELECT *
-             FROM `column`
-             WHERE Board=:id
-             AND Title=:title";
-        $params= array(
-            "id" => $this->get_board_id(), 
-            "title" => $this->get_title()
-        );
-
-        $query = self::execute($sql, $params);
-        return $query->rowCount() == 0;
     }
 
     public function insert() {

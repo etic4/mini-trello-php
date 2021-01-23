@@ -70,10 +70,10 @@ class User extends CachedGet {
         $user = User::get_by_email($email);
         if ($user) {
             if (!$user->check_password($password)) {
-                $errors[] = "You have entered an invalid username or password";
+                $errors[] = "Invalid username or password";
             }
         } else {
-            $errors[] = "You have entered an invalid username or password";
+            $errors[] = "Invalid username or password";
         }
         return $errors;
     }
@@ -85,10 +85,10 @@ class User extends CachedGet {
         $errors = array();
         //email
         if (!Validation::valid_email($this->email)) {
-            $errors[] = "Unvalid email";
+            $errors[] = "Invalid email";
         }
         if(!Validation::is_unique_email($this->email)){
-            $errors[]="Unvalid email";
+            $errors[] = "Invalid email";
         }
         //fullName
         if (!Validation::str_longer_than($this->fullName, 2)) {
@@ -117,6 +117,14 @@ class User extends CachedGet {
         }
 
         return $errors;
+    }
+
+    public function is_owner(Board $board): bool {
+        return $this == $board->get_owner();
+    } 
+
+    public function is_author(Comment $comment): bool {
+        return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
     }
 
 
@@ -189,7 +197,6 @@ class User extends CachedGet {
 
 
     //    TOOLBOX    //
-
 
     // Prépare la liste des boards pour l'affichage
     private function get_boards_for_view($board_array): array {

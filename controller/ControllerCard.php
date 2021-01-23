@@ -67,21 +67,23 @@ class ControllerCard extends Controller {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        if(!empty($_POST["title"])) {
-            $title = $_POST["title"];
-            $column_id = $_POST["column_id"];
+        if (isset($_POST["board_id"])) {
+            $board_id = $_POST["board_id"];
+            if (!empty($_POST["title"])) {
+                $column_id = $_POST["column_id"];
+                $title = $_POST["title"];
+                
+                $card = Card::create_new($title, $user, $column_id);
 
-            $column = Column::get_by_id($column_id);
-            $card = Card::create_new($title, $user, $column);
+                $error = new ValidationError($card, "add", $column_id);
+                $error->set_messages_and_add_to_session($card->validate());
+                $error->set_id($column_id);
 
-            $error = new ValidationError($card, "add", $column_id);
-            $error->set_messages_and_add_to_session($card->validate());
-            $error->set_id($column_id);
-
-            if($error->is_empty()){                
-                $card->insert(); 
+                if($error->is_empty()){                
+                    $card->insert(); 
+                }
             }
-            $this->redirect("board","board",$card->get_board_id());
+            $this->redirect("board", "board", $board_id);
         }
         $this->redirect();
     }
@@ -110,9 +112,10 @@ class ControllerCard extends Controller {
 
             if($error->is_empty()){  
                 $card->update();
+                $this->redirect("card", "view", $card_id);
             }
 
-            $this->redirect("card","view",$card->get_id());
+            $this->redirect("card", "edit", $card_id);
         }
 
         $this->redirect();
@@ -185,39 +188,33 @@ class ControllerCard extends Controller {
     public function edit(){
         $user = $this->get_user_or_redirect();
         $card = null;
-        $board = null;
-        $column = null;
 
         if (isset($_GET['param1'])) { 
             $card_id = $_GET['param1'];
             $card = Card::get_by_id($card_id);
 
             if(!is_null($card)) {
-                $column = $card->get_column();
-                $board = $column->get_board();
                 $comments = $card->get_comments();
                 $edit="yes";
 
                 if(isset($_GET['param2'])){
                     (new View("card_edit"))->show(array(
                         "user" => $user, 
-                        "board" => $board, 
-                        "column" => $column, 
                         "card" => $card, 
                         "comment" => $comments,
                         "show_comment" => $_GET['param2'],
-                        "edit" => $edit
+                        "edit" => $edit,
+                        "errors" => ValidationError::get_error_and_reset()
                         )
                     );
                     die;
                 } else {
                     (new View("card_edit"))->show(array(
                         "user" => $user, 
-                        "board" => $board, 
-                        "column" => $column, 
                         "card" => $card, 
                         "comment" => $comments,
-                        "edit" => $edit
+                        "edit" => $edit,
+                        "errors" => ValidationError::get_error_and_reset()
                         )
                     );
                     die;
@@ -233,23 +230,17 @@ class ControllerCard extends Controller {
     public function view(){
         $user = $this->get_user_or_redirect();
         $card = null;
-        $board = null;
-        $column = null;
 
         if (isset($_GET['param1'])) { 
             $card_id = $_GET['param1'];
             $card = Card::get_by_id($card_id);
 
             if(!is_null($card)) {
-                $column = $card->get_column();
-                $board = $column->get_board();
                 $comments = $card->get_comments();
 
                 if(isset($_GET['param2'])){
                     (new View("card"))->show(array(
                         "user" => $user, 
-                        "board" => $board, 
-                        "column" => $column, 
                         "card" => $card, 
                         "comment" => $comments,
                         "show_comment" => $_GET['param2']
@@ -259,8 +250,6 @@ class ControllerCard extends Controller {
                 } else {
                     (new View("card"))->show(array(
                         "user" => $user, 
-                        "board" => $board, 
-                        "column" => $column, 
                         "card" => $card, 
                         "comment" => $comments
                         )
