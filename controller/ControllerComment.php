@@ -67,8 +67,12 @@ class ControllerComment extends Controller {
     public function add(){
         $user=$this->get_user_or_redirect();
 
-        if(isset($_POST['idcard'])&& !empty($_POST['body'])){
+        if(isset($_POST['idcard'])){
             $card = Card::get_by_id($_POST['idcard']);  
+            
+            if(empty($_POST['body'])){
+                $error = new ValidationError($card, "add");
+            }
             $instance = new Comment($_POST['body'],$user,$card);
             $instance->insert();
 

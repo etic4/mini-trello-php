@@ -75,7 +75,7 @@ class ControllerCard extends Controller {
                 
                 $card = Card::create_new($title, $user, $column_id);
 
-                $error = new ValidationError($card, "add", $column_id);
+                $error = new ValidationError($card, "add");
                 $error->set_messages_and_add_to_session($card->validate());
                 $error->set_id($column_id);
 
