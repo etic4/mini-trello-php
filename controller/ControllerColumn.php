@@ -91,7 +91,7 @@ class ControllerColumn extends Controller {
                 $column = Column::create_new($title, $board);
 
                 $error = new ValidationError($column, "add");
-                echo $column->is_unique_title_in_the_board();
+                echo $column->has_unique_title_in_board();
                 $error->set_messages_and_add_to_session($column->validate());
 
                 if($error->is_empty()) {

@@ -3,7 +3,7 @@
     <li>
         <section class="card">
             <header>
-                <h4><?= $card->get_title() ?></h4>
+                <h4><?= $card->get_truncated_title(25) ?></h4>
             </header>
             <footer>
                 <ul class="icons">

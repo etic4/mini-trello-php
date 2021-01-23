@@ -13,7 +13,7 @@
                             <input type="submit" class="fas fa-paper-plane" value="&#xf1d8">
                             <button class="control"><i class="fas fa-arrow-left"></i></button>
                             <input type='submit' value="&#xf044" class="fas fa-edit" style="background:none">
-                            <h3><?= $column->get_title() ?></h3>
+                            <h3><?= $column->get_truncated_title(17) ?></h3>
                         </form>
                     </li>
                     <li>

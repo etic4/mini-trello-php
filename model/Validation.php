@@ -36,7 +36,7 @@ class Validation {
     }
 
     public static function is_unique_column_title(Column $column): bool {
-        return $column->is_unique_title_in_the_board();
+        return $column->has_unique_title_in_board();
     }
 
     
