@@ -228,4 +228,8 @@ class User extends CachedGet {
         return $this->get_boards_for_view(Board::get_others_boards($this));
     }
 
+    // vérifie si l'utilisateur peut delete le comment $comment
+    public function can_delete_comment(Card $card, Comment $comment): bool{
+        return $this->is_owner($card->get_board()) || $this->is_author($comment);
+    }
 }

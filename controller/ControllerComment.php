@@ -1,6 +1,7 @@
-e<?php
+<?php
 
 require_once "framework/Controller.php";
+require_once "ValidationError.php";
 require_once "model/Card.php";
 require_once "model/User.php";
 
@@ -74,12 +75,16 @@ class ControllerComment extends Controller {
 
         if(isset($_POST['card_id'])) {
             $card_id = $_POST['card_id'];
+            $card = Card::get_by_id($card_id);
 
             if(!empty($_POST['body'])) {
                 $body = $_POST['body'];
-                $card = Card::get_by_id($card_id);  
                 $comment = new Comment($body, $user, $card);
                 $comment->insert();
+            }else{
+                $error = new ValidationError($card, "add_comment");
+                $err[] = "Comment cannot be void"; 
+                $error->set_messages_and_add_to_session($err);
             }
             $this->card_redirect($card_id);
         }

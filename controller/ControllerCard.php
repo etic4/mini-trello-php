@@ -75,7 +75,7 @@ class ControllerCard extends Controller {
                 
                 $card = Card::create_new($title, $user, $column_id);
 
-                $error = new ValidationError($card, "add", $column_id);
+                $error = new ValidationError($card, "add");
                 $error->set_messages_and_add_to_session($card->validate());
                 $error->set_id($column_id);
 
@@ -92,7 +92,6 @@ class ControllerCard extends Controller {
 
     public function update(){
         $user = $this->get_user_or_redirect();
-        $card = null;
         if (isset($_POST['id'])) {
             $card_id = $_POST['id'];
             $card = Card::get_by_id($card_id);
@@ -243,7 +242,8 @@ class ControllerCard extends Controller {
                         "user" => $user, 
                         "card" => $card, 
                         "comment" => $comments,
-                        "show_comment" => $_GET['param2']
+                        "show_comment" => $_GET['param2'],
+                        "errors" => ValidationError::get_error_and_reset()
                         )
                     );
                     die;
@@ -251,7 +251,8 @@ class ControllerCard extends Controller {
                     (new View("card"))->show(array(
                         "user" => $user, 
                         "card" => $card, 
-                        "comment" => $comments
+                        "comment" => $comments,
+                        "errors" => ValidationError::get_error_and_reset()
                         )
                     );
                     die;

@@ -37,6 +37,9 @@
                     <p>This card is on the board "<strong><?= $card->get_board_title() ?></strong>", column "<strong><?= $card->get_column_title() ?></strong>" at position <?= $card->get_position() ?>.</p>
                 </header>
                 <div class="main_card">
+                    <?php if ($errors->has_errors()): ?>
+                        <?php include('errors.php'); ?>
+                    <?php endif; ?>
                     <section class="display_card">
                         <h3>Body</h3>
                         <div>
