@@ -16,7 +16,8 @@ class Card extends CachedGet {
 
     private ?array $comments = null;
 
-    public static function create_new(string $title, User $author, Column $column): Card {
+    public static function create_new(string $title, User $author, string $column_id): Card {
+        $column = Column::get_by_id($column_id);
         return new Card(
             $title,
             "",
