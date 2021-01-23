@@ -60,12 +60,7 @@ class ControllerComment extends Controller {
                     $comment->update();
                 }
             }
-
-            if(isset($_POST['edit'])){
-                $this->redirect("card", "edit", $comment->get_card_id());
-            } else {
-                $this->redirect("card", "view", $comment->get_card_id());
-            }
+           $this->card_redirect($comment->get_card_id());
 
         } else {
             $this->redirect();
@@ -86,15 +81,20 @@ class ControllerComment extends Controller {
                 $comment = new Comment($body, $user, $card);
                 $comment->insert();
             }
-
-            if(isset($_POST['edit'])){
-                $this->redirect("card", "edit", $card_id);
-            } else {
-                $this->redirect("card", "view", $card_id);
-            }
+            $this->card_redirect($card_id);
         }
 
         $this->redirect();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private function card_redirect($card_id) {
+        if(isset($_POST['edit'])){
+            $this->redirect("card", "edit", $card_id);
+        } else {
+            $this->redirect("card", "view", $card_id);
+        }
     }
 }
 
