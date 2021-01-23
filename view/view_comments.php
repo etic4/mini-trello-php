@@ -6,7 +6,7 @@
         <ul>
             <?php foreach($card->get_comments() as $comment):?>
                 <li class="display_one_comment">
-                    <?php if(isset($show_comment) && $show_comment == $comment->get_id()): ?>
+                    <?php if(isset($show_comment) && $comment->can_be_show($show_comment)): ?>
                         <form class='editconfirm' action="comment/edit_confirm" method="post">
                             <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
                             <?php if(isset($edit)): ?>
@@ -34,7 +34,7 @@
                         </li>
                         <?php endif; ?>
                         <!-- si l'utilisateur est proprio du tableau ou si l'utilisateur est l'auteur du message -->
-                        <?php if($user->is_owner($card->get_board()) || $user->is_author($comment)): ?>
+                        <?php if($user->can_delete_comment($card,$comment)): ?>
                             <li>
                             <form class='link' action='comment/delete' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
@@ -52,7 +52,10 @@
     </div>
     <footer>
         <form class="add" action="Comment/add" method="post">
-            <input type='text' name='idcard' value='<?= $card->get_id() ?>' hidden>
+            <input type='text' name='card_id' value='<?= $card->get_id() ?>' hidden>
+            <?php if(isset($edit)): ?>
+                <input type='text' name='edit' value='yes' hidden>
+            <?php endif;?>
             <input type="text" name="body">
             <input type="submit" value="Add a comment">
         </form>

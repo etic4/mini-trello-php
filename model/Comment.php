@@ -164,4 +164,9 @@ class Comment extends CachedGet {
         $ma=$this->get_modified_intvl();
         return "Created ".$created.". ".$ma.".";
     }
+
+    //renvoie true si le commentaire peut être montré sur la page, false sinon
+    public function can_be_show($show_comment): bool{
+        return $show_comment == $this->get_id();
+    }
 }
