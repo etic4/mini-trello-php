@@ -24,6 +24,7 @@ class ControllerCard extends Controller {
 
             $this->redirect("board", "board", $card->get_board_id());
         }
+        $this->redirect();
     }
 
     public function right() {
@@ -36,6 +37,7 @@ class ControllerCard extends Controller {
 
             $this->redirect("board", "board", $card->get_board_id());
         }
+        $this->redirect();
 
     }
 
@@ -49,6 +51,7 @@ class ControllerCard extends Controller {
 
             $this->redirect("board", "board", $card->get_board_id());
         }
+        $this->redirect();
     }
 
     public function down() {
@@ -61,6 +64,7 @@ class ControllerCard extends Controller {
 
             $this->redirect("board", "board", $card->get_board_id());
         }
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

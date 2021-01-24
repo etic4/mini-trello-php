@@ -77,8 +77,11 @@ class HTTPClient {
         $resp["status"] = $response->getStatusCode();
         $resp["url"] = $final_url;
         $resp["body"] = (string)$response->getBody();
-        $resp["dom"] = new Document($resp["body"]);
+        $resp["dom"] = null;
 
+        if (!empty($resp["body"])) {
+            $resp["dom"] = new Document($resp["body"]);
+        }
         return $resp;
     }
 

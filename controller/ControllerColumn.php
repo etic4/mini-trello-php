@@ -20,6 +20,7 @@ class ControllerColumn extends Controller {
             $column->move_right();
             $this->redirect("board", "board", $column->get_board_id());
         }
+        $this->redirect();
     }
 
     public function left() {
@@ -29,6 +30,7 @@ class ControllerColumn extends Controller {
             $column->move_left();
             $this->redirect("board", "board", $column->get_board_id());
         }
+        $this->redirect();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
