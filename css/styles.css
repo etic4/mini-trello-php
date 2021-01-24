@@ -92,13 +92,17 @@ body {
     color: #cce0f4;
 }
 
+#logged-user {
+    margin-right: 10px;
+}
+
 .fas,
 .far {
     cursor: pointer;
 }
 
 .breadcrumb {
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 .breadcrumb a {

@@ -17,6 +17,10 @@ class ControllerUser extends Controller {
     }
 
     public function login() {
+        if ($this->user_logged()) {
+            $this->redirect();
+        }
+
         $email = '';
         $password = '';
         $error = new ValidationError();

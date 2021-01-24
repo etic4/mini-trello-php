@@ -5,7 +5,7 @@
     <div class="right">
         <?php if (isset($user) && $user instanceof User): ?>
             <?= CtrlTools::breadcrumb(); ?>
-            <p><i class="fas fa-user"></i><?= $user->get_fullName() ?></p>
+            <p id="logged-user"><i class="fas fa-user"></i><?= $user->get_fullName() ?></p>
             <p><a href="user/logout"><i class="fas fa-sign-out-alt"></i></a></p>
         <?php else: ?>
             <p><a class="loginLink" href="user/login"><i class="fas fa-sign-in-alt"></i></a></p>

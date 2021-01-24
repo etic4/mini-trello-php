@@ -23,8 +23,9 @@ class CtrlTools {
             }
 
             $breadcrumb = "<span class='breadcrumb-current'>$class_name \"$title\"</span>". $separator . $breadcrumb;
-            $breadcrumb = "<div class='breadcrumb'>$breadcrumb</div>";
+
         }
+        $breadcrumb = "<div class='breadcrumb'>$breadcrumb</div>";
         return $breadcrumb;
     }
 }
