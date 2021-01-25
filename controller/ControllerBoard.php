@@ -10,6 +10,10 @@ require_once "ValidationError.php";
 class ControllerBoard extends Controller {
 
     public function index() {
+        if(isset($_GET["param1"])) {
+            $this->redirect();
+        }
+
         $user = $this->get_user_or_false();
         $owners = [];
         $others = [];
