@@ -57,7 +57,7 @@ class ControllerBoard extends Controller {
     public function add() {
         $user = $this->get_user_or_redirect();
 
-        if (isset($_POST["title"])) {
+        if (!empty($_POST["title"])) {
             $title = $_POST["title"];
             $board = new Board($title, $user, null, new DateTime(), null);
 
