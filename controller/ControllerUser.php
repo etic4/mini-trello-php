@@ -48,6 +48,9 @@ class ControllerUser extends Controller {
     }
 
     public function signup() {
+        if ($this->user_logged()) {
+            $this->redirect();
+        }
         $email = '';
         $password = '';
         $fullName = '';
