@@ -4,7 +4,7 @@
 class Validation {
     
     public static function str_longer_than(string $str, int $len): bool {
-        return is_string($str) && strlen($str) > $len;
+        return is_string($str) && mb_strlen($str, "utf-8") > $len;
     }
 
     public static function contains_capitals(string $str): bool {
