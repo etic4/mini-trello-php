@@ -23,11 +23,11 @@
                 <ul class="wrapper">
                     <li class="form-row">
                         <label for="email"><i class="fas fa-at"></i></label>
-                        <input type="email" name="email" placeholder="Email">
+                        <input type="email" name="email" placeholder="Email" value="<?= $email ?>">
                     </li>
                     <li class="form-row">
                         <label for="fullname"><i class="fas fa-user"></i></label>
-                        <input type="text" name="fullName" placeholder="Full Name">
+                        <input type="text" name="fullName" placeholder="Full Name" value="<?= $fullName ?>">
                     </li>
                     <li class="form-row">
                         <label for="password"><i class="fas fa-lock"></i></label>
