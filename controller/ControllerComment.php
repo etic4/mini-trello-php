@@ -82,9 +82,11 @@ class ControllerComment extends Controller {
                 $comment = new Comment($body, $user, $card);
                 $comment->insert();
             }else{
+               /* gestion des erreurs. si comment vide
                 $error = new ValidationError($card, "add_comment");
                 $err[] = "Comment cannot be void"; 
                 $error->set_messages_and_add_to_session($err);
+                */
             }
             $this->card_redirect($card_id);
         }
