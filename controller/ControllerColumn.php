@@ -59,9 +59,13 @@ class ControllerColumn extends Controller {
         if (isset($_GET["param1"])) {
             $column_id = $_GET["param1"];
             $column = Column::get_by_id($column_id);
+
             if(!is_null($column) && $user) {
-                (new View("delete_confirm"))->show(array("instance" => $column));
-                die;
+                $cards = $column->get_cards();
+                if (count($cards)) {
+                    (new View("delete_confirm"))->show(array("instance" => $column));
+                    die;
+                }
             }
         }
         $this->redirect();
