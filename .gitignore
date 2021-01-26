@@ -3,10 +3,17 @@
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
+# Ne pas suivre dev.ini
+database/data
 # setup linux
 .htaccess
 config/dev.ini
-database/data
+
+# phpunit
+.cache
+
+# VSCode
+package-lock.json
 
 # Node artifact files
 node_modules/
@@ -53,3 +60,4 @@ Thumbs.db
 *.mov
 *.wmv
 
+.phpunit.result.cache
