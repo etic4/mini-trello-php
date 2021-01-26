@@ -14,7 +14,7 @@
             <?php include('menu.php'); ?>
         </header>
         <main class="delete_confirm">
-            <form action="<?= strtolower(get_class($instance)) ?>/remove" method="post">
+            <form id="main_form" action="<?= strtolower(get_class($instance)) ?>/remove" method="post">
                 <h2><i class="far fa-trash-alt"></i></h2>
                 <p>Are you sure ?</p>
                 <hr>

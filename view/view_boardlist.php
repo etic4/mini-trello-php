@@ -11,12 +11,12 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body class="home">
-        <header>
+        <header id="main_header">
         <?php include('menu.php'); ?>
         </header>
         <?php if($user): ?>
         <main class="list">
-            <article class="up">
+            <article class="up" id="main_article">
                 <h2>Your boards</h2>
                 <div class="displayBoards">
                     <ul class="yourBoards">

@@ -10,11 +10,11 @@
     <link href="css/styles.css" rel="stylesheet" type="text/css"/>
 </head>
 <body class="boardMain">
-	<header>
+	<header id="main_header">
      <?php include('menu.php'); ?>
 	</header>
 	<main class="board">
-        <article>
+        <article id="main_article">
             <header>
                 <div class="title">
                     <?php if ($user->is_owner($board)): ?>

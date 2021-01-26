@@ -10,11 +10,11 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body class="one_card">
-        <header>
+        <header id="main_header">
             <?php include('menu.php'); ?>
         </header>
-        <main>
-            <article>
+        <main >
+            <article id="viewCard">
                 <header>
                     <div class="title">
                         <h2>Card "<?= $card->get_title() ?>"</h2>

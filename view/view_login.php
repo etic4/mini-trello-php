@@ -11,11 +11,11 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body class="login">
-        <header>
+        <header id="main_header">
             <?php include('menu.php'); ?>
         </header>
         <main>
-            <form action="user/login" method="post">
+            <form id="main_form" action="user/login" method="post">
                 <h2>Sign in</h2>
                 <hr>
                 <?php if ($errors->has_errors()): ?>

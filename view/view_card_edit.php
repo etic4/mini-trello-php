@@ -10,11 +10,11 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body class="edit">
-        <header>
+        <header id="main_header">
             <?php include('menu.php') ?>
         </header>
         <main>
-            <article>
+            <article id="editCard">
                 <header>
                     <h2>Edit a card</h2>
                     <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
