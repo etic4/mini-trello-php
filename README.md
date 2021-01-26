@@ -2,7 +2,7 @@
 
 ## Notes de livraison itération 1
 
-- Toutes les fonctionnalités demandées dans le cahier des charges ont été réalisées et fonctionnent sans bug connu. A l'exception d'un léger bug d'affichage du header dans la vue d'un tableau lorsque le nombre de colonnes de ce tableau devient trop important.
+- Toutes les fonctionnalités demandées dans le cahier des charges ont été réalisées et fonctionnent sans bug connu.
 - Aucune fonctionnalité supplémentaire n'a été implémentée.
 - La base de donnée rendue est la même que celle fournie, car nous estimons qu'elle permet de naviguer a travers l'application et de montrer le bon fonctionnement de toutes les fonctionnalités de l'application. Nous vous conseillons de vous connectez lors de votre première visite en tant que `boverhaegen@epfc.eu` et de visualiser le tableau `Projet PRWB`, car c'est là que vous pourrez voir au mieux toutes les différentes fonctionnalités.
 - Dans un souci de ne pas mélanger les langues lors de la phase de programation, ainsi que pour rester le plus universel possible, les menus et messages d'erreur du site sont affichés en anglais.
