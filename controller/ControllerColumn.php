@@ -4,6 +4,7 @@ require_once "framework/Controller.php";
 require_once "model/Column.php";
 require_once "model/User.php";
 require_once "ValidationError.php";
+require_once "CtrlTools.php";
 
 class ControllerColumn extends Controller {
 
@@ -63,7 +64,10 @@ class ControllerColumn extends Controller {
             if(!is_null($column) && $user) {
                 $cards = $column->get_cards();
                 if (count($cards)) {
-                    (new View("delete_confirm"))->show(array("instance" => $column));
+                    (new View("delete_confirm"))->show(array(
+                        "user"=>$user, 
+                        "instance"=>$column
+                        ));
                     die;
                 }
             }
