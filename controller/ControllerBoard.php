@@ -26,25 +26,21 @@ class ControllerBoard extends Controller {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
     public function board() {
         $user = $this->get_user_or_redirect();
+        $board = $this->get_board_or_redirect($_GET, "param1");
 
-        if(isset($_GET["param1"])) {
-            $board = Board::get_by_id($_GET["param1"]);
-
-            if(!is_null($board) && $user->is_owner($board)) {
-                $columns = $board->get_columns();
-                (new View("board"))->show(array(
-                        "user"=>$user,
-                        "board" => $board,
-                        "columns" => $columns,
-                        "errors" => ValidationError::get_error_and_reset()
-                    )
-                );
-                die;
-            }
+        if (!$this->authorize_or_redirect($user, $board, "view")) {
+            $this->redirect();
         }
-        $this->redirect();
+
+        (new View("board"))->show(array(
+                "user" => $user,
+                "board" => $board,
+                "errors" => ValidationError::get_error_and_reset()
+            )
+        );
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,26 +69,31 @@ class ControllerBoard extends Controller {
 
     //edit titre Board
     public function edit() {
-        $this->get_user_or_redirect();
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_board_or_redirect($_POST, "id");
+        $this->authorize_or_redirect($user, $board, "edit" );
+
+        if (empty($_POST["title"])) {
+           $this->redirect();
+        }
+
+        // à ce stade on a un tout ce qu'il faut pour exécuter l'action
+
+        $title = $_POST["title"];
+
+        // TODO: régler la nécessité d'istancier 2x
         $error = new ValidationError();
 
-        if (isset($_POST["id"]) && !empty($_POST["title"])) {
-            $board_id = $_POST["id"];
-            $title = $_POST["title"];
-            $board = Board::get_by_id($board_id);
-
-            if ($board->get_title() != $title) {
-                $board->set_title($title);
-                $error = new ValidationError($board, "edit");
-                $error->set_messages_and_add_to_session($board->validate());
-            }
-
-            if($error->is_empty()) {
-                $board->update();
-            }
-            $this->redirect("board", "board", $board_id);
+        if ($board->get_title() != $title) {
+            $board->set_title($title);
+            $error = new ValidationError($board, "edit");
+            $error->set_messages_and_add_to_session($board->validate());
         }
-        $this->redirect();
+
+        if($error->is_empty()) {
+            $board->update();
+        }
+        $this->redirect("board", "board", $board->get_id());
     }
 
 
@@ -102,35 +103,26 @@ class ControllerBoard extends Controller {
     // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
-        if (isset($_POST['id'])) {
-            $board_id = $_POST['id'];
-            $board = Board::get_by_id($_POST['id']);
-            if ($user->is_owner($board)) {
-                $columns = $board->get_columns();
+        $board = $this->get_board_or_redirect($_POST, "id");
+        $this->authorize_or_redirect($user, $board, "delete");
 
-                if (count($columns) == 0) {
-                    $board->delete();
-                } else {
-                    $this->redirect("board", "delete_confirm", $board_id);
-                }
-            }
+        $columns = $board->get_columns();
+        if (count($columns) == 0) {
+            $board->delete();
+        } else {
+            $this->redirect("board", "delete_confirm", $board->get_id());
         }
-        $this->redirect();
     }
 
     //mise en place de view_delete_confirm
     public function delete_confirm() {
         $user = $this->get_user_or_redirect();
-        if(!empty($_GET["param1"])) {
-            $board_id = $_GET["param1"];
-            $board = Board::get_by_id($board_id);
-            if(!is_null($board) && $board->get_owner() == $user) {
-                (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
-                die;
-            }
-            $this->redirect("board", "board", $board_id);
-        }
-        $this->redirect();
+        $board = $this->get_board_or_redirect($_POST, "param1");
+        $this->authorize_or_redirect($user, $board, "delete");
+
+        (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
+        //TODO: WTF!! ->  die;
+        $this->redirect("board", "board", $board->get_id());
     }
 
     //exécution du delete ou cancel de delete_confirm
@@ -145,6 +137,32 @@ class ControllerBoard extends Controller {
         }
         $this->redirect();
     }
+
+    // retourne le board correspondant à un get ou redirige
+    private function get_board_or_redirect(array $GET_or_POST, string $param_name): Board {
+        $board = null;
+        if (isset($GET_or_POST[$param_name])) {
+            $board = Board::get_by_id($_GET[$param_name]);
+        }
+
+        if (is_null($board)) {
+            $this->redirect();
+        }
+
+        return $board;
+
+    }
+
+    private function authorize_or_redirect(User $user, Board $board, string $action): bool {
+        if (!$user->is_admin() ||
+            !$user->is_owner($board) ||
+            !($action == "view" && $user->is_collaborator($board))
+            )
+        {
+            $this->redirect();
+        }
+    }
+
 }
 
 

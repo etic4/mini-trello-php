@@ -49,6 +49,34 @@ class Board extends CachedGet {
         return $this->columns;
     }
 
+    // retourne la liste des collaborateurs de ce tableau
+    public function get_collaborators() {
+        $sql = "SELECT Collaborator FROM collaborate WHERE Board=:id";
+        $param = array("id" => $this->get_id());
+
+        $query = self::execute($sql, $param);
+        $userIds = $query->fetch();
+
+        $collaborators = [];
+        foreach ($userIds as $userID) {
+            $collaborators[] = User::get_by_id($userID);
+        }
+        return $collaborators;
+    }
+
+    // Ajoute un collaborateur au tableau
+    public function add_collaborator(string $userId) {
+        $sql = "INSERT INTO collaborate (Board, Collaborator) VALUES (:boardId, :collabId)";
+        $params = array("boardId" => $this->get_id(), "collabId" => $userId);
+        $query = self::execute($sql, $params);
+    }
+
+    // supprime un collaborateur du tableau
+    public function remove_collaborator(string $userId) {
+        $sql = "DELETE FROM collaborate where Collaborator=:userID";
+        $param = array("userId" => $userId);
+        $squery = self::execute($sql, $param);
+    }
 
     //    SETTERS    //
 
@@ -136,6 +164,7 @@ class Board extends CachedGet {
 
         return $boards;
     }
+
     
     public function insert() {
         $sql = 

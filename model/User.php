@@ -140,7 +140,16 @@ class User extends CachedGet {
 
     public function is_owner(Board $board): bool {
         return $this == $board->get_owner();
-    } 
+    }
+
+    public function is_collaborator(Board $board): bool {
+        foreach ($board->get_collaborators() as $collaborator) {
+            if ($collaborator == $this) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function is_author(Comment $comment): bool {
         return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
