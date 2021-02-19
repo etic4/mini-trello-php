@@ -204,12 +204,13 @@ class User extends CachedGet {
     public function update() {
         $sql = 
             "UPDATE user 
-             SET Mail=:email, FullName=:fullName, Password=:passwdHash 
+             SET Mail=:email, FullName=:fullName, Role=:role, Password=:passwdHash 
              WHERE ID=:id";
         $params = array(
             "id" => $this->get_id(), 
             "email" => $this->get_email(), 
             "fullName" => $this->get_fullName(),
+            "role" => $this->get_role(),
             "passwdHash" => $this->get_passwdHash());
         $this->execute($sql, $params);
     }
