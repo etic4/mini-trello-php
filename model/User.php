@@ -120,7 +120,7 @@ class User extends CachedGet {
     }
 
     public function is_owner(Board $board): bool {
-        return $this === $board->get_owner();
+        return $this == $board->get_owner();
     } 
 
     public function is_author(Comment $comment): bool {
