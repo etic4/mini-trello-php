@@ -66,7 +66,7 @@ CREATE TABLE `card` (
                         KEY `Author` (`Author`),
                         KEY `Column` (`Column`),
                         CONSTRAINT `card_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `user` (`ID`),
-                        CONSTRAINT `card_ibfk_2` FOREIGN KEY (`Column`) REFERENCES `Column` (`ID`)
+                        CONSTRAINT `card_ibfk_2` FOREIGN KEY (`Column`) REFERENCES `column` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -92,8 +92,8 @@ CREATE TABLE `collaborate` (
                                `Collaborator` int(11) NOT NULL,
                                PRIMARY KEY (`Board`,`Collaborator`),
                                KEY `Collaborator` (`Collaborator`),
-                               CONSTRAINT `collaborate_ibfk_1` FOREIGN KEY (`Collaborator`) REFERENCES `User` (`ID`),
-                               CONSTRAINT `collaborate_ibfk_2` FOREIGN KEY (`Board`) REFERENCES `Board` (`ID`)
+                               CONSTRAINT `collaborate_ibfk_1` FOREIGN KEY (`Collaborator`) REFERENCES `user` (`ID`),
+                               CONSTRAINT `collaborate_ibfk_2` FOREIGN KEY (`Board`) REFERENCES `board` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -154,8 +154,8 @@ CREATE TABLE `comment` (
                            PRIMARY KEY (`ID`),
                            KEY `Author` (`Author`),
                            KEY `Card` (`Card`),
-                           CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `User` (`ID`),
-                           CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`Card`) REFERENCES `Card` (`ID`)
+                           CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`Author`) REFERENCES `user` (`ID`),
+                           CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`Card`) REFERENCES `card` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -181,8 +181,8 @@ CREATE TABLE `participate` (
                                `Card` int(11) NOT NULL,
                                PRIMARY KEY (`Participant`,`Card`),
                                KEY `Card` (`Card`),
-                               CONSTRAINT `participate_ibfk_1` FOREIGN KEY (`Card`) REFERENCES `Card` (`ID`),
-                               CONSTRAINT `participate_ibfk_2` FOREIGN KEY (`Participant`) REFERENCES `User` (`ID`)
+                               CONSTRAINT `participate_ibfk_1` FOREIGN KEY (`Card`) REFERENCES `card` (`ID`),
+                               CONSTRAINT `participate_ibfk_2` FOREIGN KEY (`Participant`) REFERENCES `user` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
