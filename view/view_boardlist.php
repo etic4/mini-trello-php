@@ -21,7 +21,7 @@
                 <div class="displayBoards">
                     <ul class="yourBoards">
                     <?php foreach($user->get_own_boards() as $board): ?>
-                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> (<?= count($board->get_columns())?> columns) </a></li>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?></a></li>
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
@@ -37,7 +37,7 @@
                 <h2>Others' boards</h2>
                     <ul class="otherBoards">
                     <?php foreach($user->get_others_boards() as $board): ?>
-                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> (<?=count($board->get_columns()) ?> columns)<br/>by <?= $board->get_owner_fullName() ?></a></li>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>

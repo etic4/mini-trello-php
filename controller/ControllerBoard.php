@@ -4,6 +4,7 @@ require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "model/Board.php";
 require_once "CtrlTools.php";
+require_once "view/ViewTools.php";
 require_once "ValidationError.php";
 
 
@@ -15,18 +16,9 @@ class ControllerBoard extends Controller {
         }
 
         $user = $this->get_user_or_false();
-        $owners = [];
-        $others = [];
-
-        if($user) {
-            $owners = $user->get_own_boards();
-            $others = $user->get_others_boards();
-        }
 
         (new View("boardlist"))->show(array(
-            "user"=>$user, 
-            "owners" => $owners,
-            "others" => $others,
+            "user"=>$user,
             "errors" => ValidationError::get_error_and_reset()
             )
         );
@@ -40,7 +32,7 @@ class ControllerBoard extends Controller {
         if(isset($_GET["param1"])) {
             $board = Board::get_by_id($_GET["param1"]);
 
-            if(!is_null($board)) {
+            if(!is_null($board) && $user->is_owner($board)) {
                 $columns = $board->get_columns();
                 (new View("board"))->show(array(
                         "user"=>$user,
@@ -109,21 +101,21 @@ class ControllerBoard extends Controller {
     // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm
     public function delete() {
-        $this->get_user_or_redirect();
-        if(isset($_POST['id'])) {
+        $user = $this->get_user_or_redirect();
+        if (isset($_POST['id'])) {
             $board_id = $_POST['id'];
-            $board = Board::get_by_id($board_id);
-            $columns = $board->get_columns();
+            $board = Board::get_by_id($_POST['id']);
+            if ($user->is_owner($board)) {
+                $columns = $board->get_columns();
 
-            if (count($columns) == 0) { 
-                $board->delete();
-                $this->redirect();
-            } else {
-                $this->redirect("board", "delete_confirm", $board_id);
+                if (count($columns) == 0) {
+                    $board->delete();
+                } else {
+                    $this->redirect("board", "delete_confirm", $board_id);
+                }
             }
-        } else {
-            $this->redirect();
         }
+        $this->redirect();
     }
 
     //mise en place de view_delete_confirm
