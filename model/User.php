@@ -46,6 +46,10 @@ class User extends CachedGet {
         return $this->fullName;
     }
 
+    public function get_role(): string {
+        return $this->role;
+    }
+
     public function get_passwdHash(): string {
         return $this->passwdHash;
     }
@@ -61,8 +65,21 @@ class User extends CachedGet {
         $this->id = $id;
     }
 
+    public function set_role($role) {
+        $this->role = Role::USER;
+        if (Role::is_valid_role($role)) {
+            $this->role = $role;
+        }
+    }
+
     public function set_registeredAt(DateTime $registeredAt) {
         $this->registeredAt = $registeredAt;
+    }
+
+    //    OTHERS
+
+    public function is_admin(): bool {
+        return $this->role == Role::ADMIN;
     }
 
     //    VALIDATION    //
@@ -170,11 +187,12 @@ class User extends CachedGet {
 
     public function insert() {
         $sql = 
-            "INSERT INTO user(Mail, FullName, Password) 
-             VALUES(:email, :fullName, :passwdHash)";
+            "INSERT INTO user(Mail, FullName, Role, Password) 
+             VALUES(:email, :fullName, :role, :passwdHash)";
         $params = array(
             "email" => $this->get_email(), 
             "fullName" => $this->get_fullName(),
+            "role" => $this->get_role(),
             "passwdHash" => $this->get_passwdHash()
         );
         $this->execute($sql, $params);
