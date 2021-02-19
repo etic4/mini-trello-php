@@ -10,12 +10,13 @@ class User extends CachedGet {
     private ?string $id;
     private string $email;
     private string $fullName;
+    private string $role;
     private ?string $passwdHash;
     private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
 
-    public function __construct(string $email, string $fullName, ?string $clearPasswd=null,
+    public function __construct(string $email, string $fullName, string $role, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
@@ -24,6 +25,7 @@ class User extends CachedGet {
         $this->id = $id;
         $this->email = $email;
         $this->fullName = $fullName;
+        $this->role = $role;
         $this->passwdHash = $passwdHash;
         $this->clearPasswd = $clearPasswd;
         $this->registeredAt = $registeredAt;
@@ -144,6 +146,7 @@ class User extends CachedGet {
         return new User(
             $data["Mail"],
             $data["FullName"],
+            $data["Role"],
             null,
             $data["ID"],
             $data["Password"],
