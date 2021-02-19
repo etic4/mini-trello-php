@@ -14,16 +14,20 @@ class Card extends CachedGet {
     private User $author;
     private Column $column;
 
+    // !! les dates de création et de modification sont dans le trait !!
+    private ?DateTime $dueDate;
+
     private ?array $comments = null;
 
-    public static function create_new(string $title, User $author, string $column_id): Card {
+    public static function create_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
         $column = Column::get_by_id($column_id);
         return new Card(
             $title,
             "",
             self::get_cards_count($column),
             $author,
-            $column
+            $column,
+            $dueDate
         );
     }
 
@@ -32,6 +36,7 @@ class Card extends CachedGet {
                                 int $position,
                                 User $author, 
                                 Column $column,
+                                ?Datetime $dueDate=null,
                                 ?string $id = null,
                                 ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
@@ -42,6 +47,7 @@ class Card extends CachedGet {
         $this->position = $position;
         $this->author = $author;
         $this->column = $column;
+        $this->dueDate = $dueDate;
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
     }
@@ -121,6 +127,10 @@ class Card extends CachedGet {
         return $this->comments;
     }
 
+    public function set_dueDate(DateTime  $dueDate) {
+        $this->dueDate = $dueDate;
+    }
+
     
     //    SETTERS    //
 
@@ -140,6 +150,10 @@ class Card extends CachedGet {
         $this->position = $position;
     }
 
+    public function get_dueDate(): ?DateTime {
+        return $this->dueDate;
+    }
+
 
     //    VALIDATION    //
 
@@ -149,20 +163,33 @@ class Card extends CachedGet {
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
+
         if(!$this->title_is_unique()){
             $errors[] = "Title already exists in this board";
         }
+
+        if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
+            $errors[] = "the date must be at least 10 seconds later than now";
+        }
+
         return $errors;
     }
+
     // fonction de validation en cas d'update d'une carte deja existante
     public function validate_update(): array{
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
+
         if(!$this->title_is_unique_update()){
             $errors[] = "Title already exists in this board";
         }
+
+        if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
+            $errors[] = "the date must be at least 10 seconds later than now";
+        }
+
         return $errors;
     }
 
@@ -230,6 +257,7 @@ class Card extends CachedGet {
             $data["Position"],
             User::get_by_id($data["Author"]),
             Column::get_by_id($data["Column"]),
+            new DateTime($data["DueDate"]),
             $data["ID"],
             $createdAt,
             $modifiedAt
@@ -271,14 +299,15 @@ class Card extends CachedGet {
     //insère la carte dans la db, la carte reçoit un nouvel id.
     public function insert() {
         $sql = 
-            "INSERT INTO card(Title, Body, Position, Author, `Column`) 
-             VALUES(:title, :body, :position, :author, :column)";
+            "INSERT INTO card(Title, Body, Position, Author, `Column`, DueDate) 
+             VALUES(:title, :body, :position, :author, :column, :dueDate)";
         $params = array(
             "title" => $this->get_title(),
             "body" => $this->get_body(),
             "position" => $this->get_position(),
             "author" => $this->get_author_id(),
-            "column" => $this->get_column_id()
+            "column" => $this->get_column_id(),
+            "dueDate" => self::sql_date($this->get_dueDate())
         );
 
         $this->execute($sql, $params);
@@ -290,14 +319,15 @@ class Card extends CachedGet {
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
     public function update() {
         $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=NOW(), Author=:author, 
-                `Column`=:column WHERE ID=:id";
+                `Column`=:column, DueDate=:dueDate WHERE ID=:id";
         $params = array(
             "id" => $this->get_id(), 
             "title" => $this->get_title(),
             "body" => $this->get_body(), 
             "position" => $this->get_position(),
             "author" => $this->get_author_id(),
-            "column" => $this->get_column_id()
+            "column" => $this->get_column_id(),
+            "dueDate" => self::sql_date($this->get_dueDate())
         );
 
         $this->execute($sql, $params);
