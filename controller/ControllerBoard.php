@@ -30,10 +30,7 @@ class ControllerBoard extends Controller {
     public function board() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_board_or_redirect($_GET, "param1");
-
-        if (!$this->authorize_or_redirect($user, $board, "view")) {
-            $this->redirect();
-        }
+        $this->authorize_or_redirect($user, $board, "view");
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -121,7 +118,9 @@ class ControllerBoard extends Controller {
         $this->authorize_or_redirect($user, $board, "delete");
 
         (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
+
         //TODO: WTF!! ->  die;
+
         $this->redirect("board", "board", $board->get_id());
     }
 
@@ -138,7 +137,7 @@ class ControllerBoard extends Controller {
         $this->redirect();
     }
 
-    // retourne le board correspondant à un get ou redirige
+    // retourne le board correspondant à un get ou un post ou redirige
     private function get_board_or_redirect(array $GET_or_POST, string $param_name): Board {
         $board = null;
         if (isset($GET_or_POST[$param_name])) {
@@ -150,7 +149,6 @@ class ControllerBoard extends Controller {
         }
 
         return $board;
-
     }
 
     private function authorize_or_redirect(User $user, Board $board, string $action): bool {
