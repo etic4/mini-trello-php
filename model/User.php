@@ -120,11 +120,20 @@ class User extends CachedGet {
     }
 
     public function is_owner(Board $board): bool {
-        return $this == $board->get_owner();
+        return $this === $board->get_owner();
     } 
 
     public function is_author(Comment $comment): bool {
         return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
+    }
+
+
+    public function get_own_boards(): array {
+        return Board::get_users_boards($this);
+    }
+
+    public function get_others_boards(): array {
+        return Board::get_others_boards($this);
     }
 
 
@@ -195,38 +204,6 @@ class User extends CachedGet {
         $this->execute($sql, $params);
     }
 
-
-    //    TOOLBOX    //
-
-    // Prépare la liste des boards pour l'affichage
-    private function get_boards_for_view($board_array): array {
-        $boards = [];
-        foreach ($board_array as $board) {
-            $user = $board->get_owner();
-
-            if(count($board->get_columns()) > 1) {
-                $columns = "(" . count($board->get_columns()) . " columns)";
-            } else {
-                $columns = "(" . count($board->get_columns()) . " column)";
-            }
-
-            $boards[] = array(
-                "id" => $board->get_id(), 
-                "title" => $board->get_title(), 
-                "fullName" => $user->get_fullName(), 
-                "columns" => $columns
-            );
-        }
-        return $boards;
-    }
-
-    public function get_own_boards(): array {
-        return $this->get_boards_for_view(Board::get_users_boards($this));
-    }
-
-    public function get_others_boards(): array {
-        return $this->get_boards_for_view(Board::get_others_boards($this));
-    }
 
     // vérifie si l'utilisateur peut delete le comment $comment
     public function can_delete_comment(Card $card, Comment $comment): bool{
