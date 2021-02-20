@@ -33,14 +33,26 @@
                     </form>
                 </div>
             </article>
+
             <article class="down">
-                <h2>Others' boards</h2>
+                <h2>Boards Shared with you</h2>
+                <ul class="collabBoards">
+                    <?php foreach($user->get_collaborating_boards() as $board): ?>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </article>
+
+            <?php if ($user->is_admin()):; ?>
+            <article class="others">
+                <h2>Other's boards</h2>
                     <ul class="otherBoards">
                     <?php foreach($user->get_others_boards() as $board): ?>
                         <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>
+            <?php endif; ?>
         </main>
         <?php else:?>
         <main class="welcome">

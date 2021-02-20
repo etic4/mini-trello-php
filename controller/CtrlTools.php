@@ -7,7 +7,7 @@ class CtrlTools {
     public static function get_object_or_redirect(array $GET_or_POST, string $param_name, string $className) {
         $obj = null;
         if (isset($GET_or_POST[$param_name])) {
-            $obj = $className::get_by_id($_GET[$param_name]);
+            $obj = $className::get_by_id($GET_or_POST[$param_name]);
         }
 
         if (is_null($obj)) {

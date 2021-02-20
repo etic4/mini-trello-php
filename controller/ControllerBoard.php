@@ -121,7 +121,6 @@ class ControllerBoard extends Controller {
 
         (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
 
-        $this->redirect("board", "board", $board->get_id());
     }
 
     //exécution du delete ou cancel de delete_confirm

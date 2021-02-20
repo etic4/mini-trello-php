@@ -57,14 +57,12 @@ class Board extends CachedGet {
             $param = array("id" => $this->get_id());
 
             $query = self::execute($sql, $param);
-            $userIds = $query->fetch();
+            $userIds = $query->fetchAll();
 
             $this->collaborators = [];
 
-            if ($query->rowCount() > 0) {
-                foreach ($userIds as $userID) {
-                    $this->collaborators[] = User::get_by_id($userID);
-                }
+            foreach ($userIds as $userID) {
+                $this->collaborators[] = User::get_by_id($userID);
             }
         }
         return $this->collaborators;
@@ -153,13 +151,15 @@ class Board extends CachedGet {
 
         return $boards;
     }
-    
-    public static function get_others_boards(User $user): array {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE Owner!=:id";
-        $params = array("id" => $user->get_id());
+
+    public static function get_collaborating_boards(User $user): array {
+        $sql =
+            "SELECT b.ID, b.Title, b.Owner, b.CreatedAt, b.ModifiedAt 
+             FROM collaborate 
+             JOIN board b on b.ID = collaborate.Board
+             WHERE Collaborator=:id";
+
+        $params = array("id"=>$user->get_id());
         $query = self::execute($sql, $params);
         $data = $query->fetchAll();
 
@@ -168,6 +168,24 @@ class Board extends CachedGet {
             array_push($boards, self::get_instance($rec));
         }
 
+        return $boards;
+    }
+    
+    public static function get_others_boards(User $user): array {
+        $sql = 
+            "SELECT b.ID, b.Title, b.Owner, b.CreatedAt, b.ModifiedAt 
+             from board b where b.ID not in (
+                SELECT b1.ID FROM board b1 WHERE b1.Owner=:userId 
+                UNION 
+                select b2.ID FROM board b2 join collaborate c on c.Board = b2.ID where c.Collaborator=:userId)";
+        $params = array("userId" => $user->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        $boards = [];
+        foreach ($data as $rec) {
+            $boards[] = self::get_instance($rec);
+        }
         return $boards;
     }
 

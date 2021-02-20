@@ -641,7 +641,8 @@ strong {
 }
 
 .list .up .yourBoards,
-.list .down .otherBoards {
+.list .down .collabBoards,
+.list .others .otherBoards {
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -655,7 +656,8 @@ strong {
 }
 
 .list .up .yourBoards li a,
-.list .down .otherBoards li a {
+.list .down .collabBoards li a,
+.list .others .otherBoards li a {
     font-size: 20px;
     text-decoration: none;
     text-align: center;
@@ -673,11 +675,18 @@ strong {
     color: #ffffff;
 }
 
-.list .down .otherBoards li a {
+.list .down .collabBoards li a {
     display: block;
     color: #ffffff;
     background-color: #009900;
     border: 1px solid #009900;
+}
+
+.list .others .otherBoards li a {
+    display: block;
+    color: #ffffff;
+    background-color: #777977;
+    border: 1px solid #777977;
 }
 
 .welcome {

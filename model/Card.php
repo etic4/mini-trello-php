@@ -161,14 +161,12 @@ class Card extends CachedGet {
             $param = array("id" => $this->get_id());
 
             $query = self::execute($sql, $param);
-            $userIds = $query->fetch();
+            $userIds = $query->fetchAll();
 
             $this->participants = [];
 
-            if ($query->rowCount() > 0) {
-                foreach ($userIds as $userID) {
-                    $this->participants[] = User::get_by_id($userID);
-                }
+            foreach ($userIds as $userID) {
+                $this->participants[] = User::get_by_id($userID);
             }
         }
         return $this->participants;

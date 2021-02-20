@@ -173,6 +173,10 @@ class User extends CachedGet {
         return Board::get_users_boards($this);
     }
 
+    public function get_collaborating_boards(): array {
+        return  Board::get_collaborating_boards($this);
+    }
+
     public function get_others_boards(): array {
         return Board::get_others_boards($this);
     }

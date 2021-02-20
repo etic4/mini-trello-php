@@ -66,7 +66,6 @@ class ControllerColumn extends Controller {
                 "instance"=>$column
             ));
         }
-        $this->redirect("board", "board", $column->get_board_id());
     }
 
     //exécution du delete ou cancel de delete_confirm

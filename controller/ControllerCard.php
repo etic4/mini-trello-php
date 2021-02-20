@@ -61,8 +61,8 @@ class ControllerCard extends Controller {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "board_id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        $board = CtrlTools::get_object_or_redirect($_POST, "board_id", "Board");
+        $this->authorize_or_redirect($user, $board);
 
 
         if (!empty($_POST["title"])) {
@@ -79,7 +79,7 @@ class ControllerCard extends Controller {
                 $card->insert();
             }
         }
-        $this->redirect("board", "board", $card->get_board_id());
+        $this->redirect("board", "board", $board->get_id());
 
     }
 
@@ -133,7 +133,6 @@ class ControllerCard extends Controller {
             "user"=>$user,
             "instance"=>$card
         ));
-        $this->redirect("board", "board", $card->get_board_id());
     }
 
     public function remove() {
