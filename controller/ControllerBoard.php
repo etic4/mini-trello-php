@@ -1,14 +1,16 @@
 <?php
-/**/
+
 require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once "model/Board.php";
 require_once "CtrlTools.php";
 require_once "view/ViewTools.php";
 require_once "ValidationError.php";
+require_once "Authorize.php";
 
 
 class ControllerBoard extends Controller {
+    use Authorize;
 
     public function index() {
         if(isset($_GET["param1"])) {
@@ -29,8 +31,8 @@ class ControllerBoard extends Controller {
 
     public function board() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_board_or_redirect($_GET, "param1");
-        $this->authorize_or_redirect($user, $board, "view");
+        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $this->board_authorize_or_redirect($user, $board, "view");
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -67,8 +69,8 @@ class ControllerBoard extends Controller {
     //edit titre Board
     public function edit() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_board_or_redirect($_POST, "id");
-        $this->authorize_or_redirect($user, $board, "edit" );
+        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $this->board_authorize_or_redirect($user, $board, "edit" );
 
         if (empty($_POST["title"])) {
            $this->redirect();
@@ -100,8 +102,8 @@ class ControllerBoard extends Controller {
     // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_board_or_redirect($_POST, "id");
-        $this->authorize_or_redirect($user, $board, "delete");
+        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $this->board_authorize_or_redirect($user, $board, "delete");
 
         $columns = $board->get_columns();
         if (count($columns) == 0) {
@@ -114,12 +116,10 @@ class ControllerBoard extends Controller {
     //mise en place de view_delete_confirm
     public function delete_confirm() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_board_or_redirect($_POST, "param1");
-        $this->authorize_or_redirect($user, $board, "delete");
+        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $this->board_authorize_or_redirect($user, $board, "delete");
 
         (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
-
-        //TODO: WTF!! ->  die;
 
         $this->redirect("board", "board", $board->get_id());
     }
@@ -137,30 +137,18 @@ class ControllerBoard extends Controller {
         $this->redirect();
     }
 
-    // retourne le board correspondant à un get ou un post ou redirige
-    private function get_board_or_redirect(array $GET_or_POST, string $param_name): Board {
-        $board = null;
-        if (isset($GET_or_POST[$param_name])) {
-            $board = Board::get_by_id($_GET[$param_name]);
+
+    private function board_authorize_or_redirect(User $user, Board $board, string $action): bool {
+        $this->authorize_or_redirect($user, $board, false);
+
+        switch ($action) {
+            case "view":
+            case "edit":
+                return $user->is_collaborator($board);
         }
 
-        if (is_null($board)) {
-            $this->redirect();
-        }
-
-        return $board;
+        $this->redirect();
     }
-
-    private function authorize_or_redirect(User $user, Board $board, string $action): bool {
-        if (!$user->is_admin() ||
-            !$user->is_owner($board) ||
-            !($action == "view" && $user->is_collaborator($board))
-            )
-        {
-            $this->redirect();
-        }
-    }
-
 }
 
 

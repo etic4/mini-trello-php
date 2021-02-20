@@ -54,7 +54,7 @@ class ControllerUser extends Controller {
         $email = '';
         $password = '';
         $fullName = '';
-        $confirm = '';
+        $password_confirm = '';
         $user = null;
         $error = new ValidationError();
 
@@ -62,10 +62,10 @@ class ControllerUser extends Controller {
             $email = $_POST['email'];
             $password = $_POST['password'];
             $fullName = $_POST['fullName'];
-            $confirm = $_POST['confirm'];
+            $password_confirm = $_POST['confirm'];
             
             $user=new User($email, $fullName, $password, null, null, null);
-            $error->set_messages_and_add_to_session($user->validate($confirm));
+            $error->set_messages_and_add_to_session($user->validate($password_confirm));
 
             if($error->is_empty()) {
                 $user->insert();
@@ -76,8 +76,9 @@ class ControllerUser extends Controller {
             "email" => $email, 
             "password" => $password,
             "fullName" => $fullName,
-            "confirm" => $confirm, 
+            "confirm" => $password_confirm,
             "errors" => $error)
         );
     }
+
 }
