@@ -4,6 +4,7 @@
 require_once "CachedGet.php";
 require_once "Board.php";
 require_once "Validation.php";
+require_once "Role.php";
 
 
 class User extends CachedGet {
@@ -16,7 +17,7 @@ class User extends CachedGet {
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
 
-    public function __construct(string $email, string $fullName, string $role, ?string $clearPasswd=null,
+    public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {
             $passwdHash = Tools::my_hash($clearPasswd);
@@ -25,7 +26,7 @@ class User extends CachedGet {
         $this->id = $id;
         $this->email = $email;
         $this->fullName = $fullName;
-        $this->role = $role;
+        $this->role = is_null($role) ? Role::USER : $role;
         $this->passwdHash = $passwdHash;
         $this->clearPasswd = $clearPasswd;
         $this->registeredAt = $registeredAt;
@@ -96,11 +97,12 @@ class User extends CachedGet {
         }
         return $errors;
     }
+
     public function check_password($clearPasswd): bool {
         return $this->passwdHash === Tools::my_hash($clearPasswd);
     }
 
-    public function validate(string $confirm): array {
+    public function validate(string $password_confirm=null): array {
         $errors = array();
         //email
         if (!Validation::valid_email($this->email)) {
@@ -119,8 +121,10 @@ class User extends CachedGet {
             $errors[] = "Password must be at least 8 characters long";
         }
 
-        if (!Validation::is_same_password($this->clearPasswd, $confirm)) {
-            $errors[] = "Passwords don't match";
+        if (isset($password_confirm)) {
+            if (!Validation::is_same_password($this->clearPasswd, $password_confirm)) {
+                $errors[] = "Passwords don't match";
+            }
         }
 
         if (!Validation::contains_capitals($this->clearPasswd)) {
@@ -151,6 +155,15 @@ class User extends CachedGet {
         return false;
     }
 
+    public function is_participant(Card $card) {
+        foreach ($card->get_participants() as $participant) {
+            if ($participant == $this) {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public function is_author(Comment $comment): bool {
         return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
     }
@@ -178,6 +191,23 @@ class User extends CachedGet {
             $data["Password"],
             new DateTime($data["RegisteredAt"])
         );
+    }
+
+    // J'essaie de tirer avantage du cache tel qu'il est implémenté
+    public static function get_all() {
+        $sql =
+            "SELECT ID FROM user";
+        $query = self::execute($sql, array());
+        $data = $query->fetch();
+
+        $userList = [];
+
+        if ($query->rowCount() > 0) {
+            foreach ($data as $userId) {
+                $user[] = self::get_by_id($userId);
+            }
+        }
+        return $userList;
     }
 
     public static function get_by_email(string $email): ?User {
