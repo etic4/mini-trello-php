@@ -18,6 +18,7 @@ class Card extends CachedGet {
     private ?DateTime $dueDate;
 
     private ?array $comments = null;
+    private ?array $participants = null;
 
     public static function create_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
         $column = Column::get_by_id($column_id);
@@ -154,6 +155,36 @@ class Card extends CachedGet {
         return $this->dueDate;
     }
 
+    public function get_participants() {
+        if (is_null($this->participants)) {
+            $sql = "SELECT Participant FROM participate WHERE Card=:id";
+            $param = array("id" => $this->get_id());
+
+            $query = self::execute($sql, $param);
+            $userIds = $query->fetch();
+
+            $this->participants = [];
+
+            if ($query->rowCount() > 0) {
+                foreach ($userIds as $userID) {
+                    $this->participants[] = User::get_by_id($userID);
+                }
+            }
+        }
+        return $this->participants;
+    }
+
+    public function add_participant(User $user) {
+        $sql = "INSERT INTO participate (Participant, Card) VALUES (:userId, :cardId)";
+        $params = array("cardId" => $this->get_id(), "userId" => $user->get_id());
+        self::execute($sql, $params);
+    }
+
+    public function remove_participant(User $user) {
+        $sql = "DELETE FROM participate where Participant=:userID";
+        $param = array("userId" => $user->get_id());
+        self::execute($sql, $param);
+    }
 
     //    VALIDATION    //
 

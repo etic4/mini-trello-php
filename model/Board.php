@@ -12,6 +12,7 @@ class Board extends CachedGet {
     private ?string $id;
     private User $owner;
     private ?array $columns = null;
+    private ?array $collaborators = null;
 
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
@@ -50,32 +51,37 @@ class Board extends CachedGet {
     }
 
     // retourne la liste des collaborateurs de ce tableau
-    public function get_collaborators() {
-        $sql = "SELECT Collaborator FROM collaborate WHERE Board=:id";
-        $param = array("id" => $this->get_id());
+    public function get_collaborators(): array {
+        if (is_null($this->collaborators)) {
+            $sql = "SELECT Collaborator FROM collaborate WHERE Board=:id";
+            $param = array("id" => $this->get_id());
 
-        $query = self::execute($sql, $param);
-        $userIds = $query->fetch();
+            $query = self::execute($sql, $param);
+            $userIds = $query->fetch();
 
-        $collaborators = [];
-        foreach ($userIds as $userID) {
-            $collaborators[] = User::get_by_id($userID);
+            $this->collaborators = [];
+
+            if ($query->rowCount() > 0) {
+                foreach ($userIds as $userID) {
+                    $this->collaborators[] = User::get_by_id($userID);
+                }
+            }
         }
-        return $collaborators;
+        return $this->collaborators;
     }
 
     // Ajoute un collaborateur au tableau
-    public function add_collaborator(string $userId) {
+    public function add_collaborator(User $user) {
         $sql = "INSERT INTO collaborate (Board, Collaborator) VALUES (:boardId, :collabId)";
-        $params = array("boardId" => $this->get_id(), "collabId" => $userId);
-        $query = self::execute($sql, $params);
+        $params = array("boardId" => $this->get_id(), "collabId" => $user->get_id());
+        self::execute($sql, $params);
     }
 
     // supprime un collaborateur du tableau
-    public function remove_collaborator(string $userId) {
+    public function remove_collaborator(User $user) {
         $sql = "DELETE FROM collaborate where Collaborator=:userID";
-        $param = array("userId" => $userId);
-        $squery = self::execute($sql, $param);
+        $param = array("userId" => $user->get_id());
+        self::execute($sql, $param);
     }
 
     //    SETTERS    //
@@ -204,5 +210,7 @@ class Board extends CachedGet {
         $params = array("id"=>$this->get_id());
         $this->execute($sql, $params);
     }
+
+
 
 }
