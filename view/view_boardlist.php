@@ -34,6 +34,7 @@
                 </div>
             </article>
 
+            <?php if ($user->has_collaborating_boards()): ?>
             <article class="down">
                 <h2>Boards Shared with you</h2>
                 <ul class="collabBoards">
@@ -42,6 +43,7 @@
                     <?php endforeach; ?>
                 </ul>
             </article>
+            <?php endif ?>
 
             <?php if ($user->is_admin()):; ?>
             <article class="others">

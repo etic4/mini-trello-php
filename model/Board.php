@@ -77,7 +77,7 @@ class Board extends CachedGet {
 
     // supprime un collaborateur du tableau
     public function remove_collaborator(User $user) {
-        $sql = "DELETE FROM collaborate where Collaborator=:userID";
+        $sql = "DELETE FROM collaborate where Collaborator=:userId";
         $param = array("userId" => $user->get_id());
         self::execute($sql, $param);
     }
@@ -220,6 +220,10 @@ class Board extends CachedGet {
     }
     
     public function delete(): void {
+        foreach ($this->get_collaborators() as $collaborator) {
+            $this->remove_collaborator($collaborator);
+        }
+
         foreach ($this->get_columns() as $col) {
             $col->delete();
         }

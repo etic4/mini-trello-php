@@ -1,7 +1,8 @@
 <ul class="display_cards">
  <?php foreach($column->get_cards() as $card): ?>
     <li>
-        <section class="card">
+
+        <section class="card<?= $card->is_due() ? ' due-card': '' ?>">
             <header>
                 <h4><?= $card->get_truncated_title(25) ?></h4>
             </header>

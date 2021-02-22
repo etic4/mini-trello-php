@@ -103,8 +103,6 @@ class ControllerCard extends Controller {
             $card->set_dueDate(new Datetime($_POST["due-date"]));
         }
 
-        if (isset($_POST[""]))
-
         $error = new ValidationError($card, "update");
         $error->set_messages_and_add_to_session($card->validate_update());
 

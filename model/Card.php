@@ -133,6 +133,12 @@ class Card extends CachedGet {
         return $this->dueDate;
     }
 
+    public function is_due(): bool {
+        if ($this->get_dueDate() != null) {
+            return $this->get_dueDate()->diff(new Datetime())->s > 0;
+        }
+        return false;
+    }
 
     
     //    SETTERS    //
@@ -176,8 +182,10 @@ class Card extends CachedGet {
     }
 
     public function has_dueDate(): bool {
-        return !is_null($this->get_dueDate()) ;
+        return !is_null($this->get_dueDate());
     }
+
+
 
     public function get_participants(): array {
         if (is_null($this->participants)) {
@@ -239,8 +247,8 @@ class Card extends CachedGet {
             $errors[] = "Title already exists in this board";
         }
 
-        if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
-            $errors[] = "the date must be at least 10 seconds later than now";
+        if (!Validation::is_date_after($this->get_dueDate(), $this->get_createdAt())) {
+            $errors[] = "the date must be after the creation date of the card";
         }
 
         return $errors;
@@ -390,6 +398,10 @@ class Card extends CachedGet {
 
     //supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
     public function delete() {
+        foreach ($this->get_participants() as $participant) {
+            $this->remove_participant($participant);
+        }
+
         foreach ($this->get_comments() as $comment) {
             $comment->delete();
         }

@@ -39,12 +39,8 @@ class Validation {
         return $column->has_unique_title_in_board();
     }
 
-    // le laps de temps minimal entre le moment de la créatio de la carte et la due date
-    // est de 10 secondes, ce qui laisse amplement le temps que tout se fasse dans
-    // des cas de lenteur extrême (communication entre php et le db...)
+    // true si 1 seconde d'écart entre les dates
     public static function is_date_after(?Datetime $datet1, DateTime $datet0) {
-        return is_null($datet1) || $datet0->diff($datet1)->s > 9;
+        return is_null($datet1) || $datet0->diff($datet1)->s > 1;
     }
-
-    
 }

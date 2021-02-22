@@ -23,7 +23,7 @@
                 <?php if ($errors->has_errors()): ?>
                     <?php include('errors.php'); ?>
                 <?php endif; ?>
-                    <form id="edit_card" action="card/update" method="post"></form>
+                    <form id="edit-card" action="card/update" method="post"></form>
                         <div>
                             <label for="title" >Title</label>
                             <!-- value renvoie la valeur de départ si user ne modifie pas le titre -->
@@ -40,7 +40,7 @@
 
                         <div class="edit-due-date">
                             <label for="due-date">Due Date</label>
-                            <input form="edit-card" type="date" id="start" name="due-date" min=<?=ViewTools::date_now()?>>
+                            <input form="edit-card" type="date" id="start" name="due-date" min="<?=ViewTools::date_picker_min_due_date($card)?>" value="<?=ViewTools::date_picker_due_date($card->get_dueDate())?>">
 
                         </div>
 
@@ -90,8 +90,8 @@
                         </div>
                         <div>
                             <input form="edit-card" type="text" name="id" value='<?= $card->get_id() ?>' hidden>
-                            <input form="edit-card" type="submit" value="Cancel" form="edit_card" name="edit">
-                            <input form="edit-card" type="submit" value="Edit this card" form="edit_card" name="edit">
+                            <input form="edit-card" type="submit" value="Cancel" name="edit">
+                            <input form="edit-card" type="submit" value="Edit this card" name="edit">
                         </div>
                     </form>
                 </div>

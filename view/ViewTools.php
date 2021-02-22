@@ -6,11 +6,21 @@ class ViewTools {
         return "($cnt column" . ($cnt > 1 ? "s" : "") . ")";
     }
 
+
+
     public static function due_date_string(DateTime $date): string {
         return $date != null ? $date->format('d/m/Y') : "";
     }
 
-    public static function date_now() {
-        return(new Datetime())->format('d/m/Y');
+    public static function date_picker_due_date(DateTime $date): string {
+        return $date != null ? $date->format('Y-m-d') : "";
     }
+
+    public static function date_picker_min_due_date(Card $card) {
+        $due_date = $card->get_createdAt()->add(new DateInterval("P1D"));
+
+        return $due_date->format('Y-m-d');
+    }
+
+
 }

@@ -102,7 +102,7 @@ class ControllerBoard extends Controller {
     // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $board = CtrlTools::get_object_or_redirect($_POST, "id", "Board");
         $this->board_authorize_or_redirect($user, $board, "delete");
 
         $columns = $board->get_columns();
@@ -144,8 +144,9 @@ class ControllerBoard extends Controller {
             case "view":
             case "edit":
                 return $user->is_collaborator($board);
+            case "delete":
+                return $user->is_owner($board);
         }
-
         $this->redirect();
     }
 }

@@ -1010,6 +1010,10 @@ article .comment h3 {
     flex-direction: column !important;
 }
 
+.due-card {
+    border: 2px solid;
+    border-color: #f77588;
+}
 /***  ======RESOLUTION=====  ***/
 
 @media screen and (max-width: 620px) {

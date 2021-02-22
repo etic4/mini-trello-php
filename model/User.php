@@ -181,6 +181,10 @@ class User extends CachedGet {
         return Board::get_others_boards($this);
     }
 
+    public function has_collaborating_boards(): bool {
+        return count($this->get_collaborating_boards()) > 0;
+    }
+
 
     //    QUERIES    //
 
