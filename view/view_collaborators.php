@@ -29,6 +29,7 @@
                         <input type='submit' value="&#xf2ed" class="far fa-trash">
                     </form>
                 </li>
+                <?php endforeach; ?>
             </ul>
         </div>
         <?php if($board->has_user_not_collaborating()): ?>
