@@ -274,4 +274,8 @@ class User extends CachedGet {
     public function can_delete_comment(Card $card, Comment $comment): bool{
         return $this->is_owner($card->get_board()) || $this->is_author($comment);
     }
+
+    public function __toString(): string {
+        return $this->get_fullName() . " (" . $this->get_email() . ")";
+    }
 }

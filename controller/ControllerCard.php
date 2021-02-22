@@ -6,6 +6,7 @@ require_once "model/User.php";
 require_once "CtrlTools.php";
 require_once "ValidationError.php";
 require_once "Authorize.php";
+require_once  "view/ViewTools.php";
 
 class ControllerCard extends Controller {
     use Authorize;
@@ -90,15 +91,19 @@ class ControllerCard extends Controller {
         $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
-        if(isset($_POST['body'])){
-            $body = $_POST['body'];
-            $card->set_body($body);
+        if( isset($_POST['body'])) {
+            $card->set_body($_POST['body']);
         }
 
-        if(isset($_POST['title'])){
-            $title = $_POST['title'];
-            $card->set_title($title);
+        if (isset($_POST['title'])) {
+            $card->set_title($_POST['title']);
         }
+
+        if (isset($_POST["due-date"])) {
+            $card->set_dueDate(new Datetime($_POST["due-date"]));
+        }
+
+        if (isset($_POST[""]))
 
         $error = new ValidationError($card, "update");
         $error->set_messages_and_add_to_session($card->validate_update());
@@ -195,7 +200,7 @@ class ControllerCard extends Controller {
 
     public function view(){
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "param1", "Card");
+        $card = CtrlTools::get_object_or_redirect($_GET, "param1", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $comments = $card->get_comments();

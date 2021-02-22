@@ -57,12 +57,12 @@ class Board extends CachedGet {
             $param = array("id" => $this->get_id());
 
             $query = self::execute($sql, $param);
-            $userIds = $query->fetchAll();
+            $collaborators = $query->fetchAll();
 
             $this->collaborators = [];
 
-            foreach ($userIds as $userID) {
-                $this->collaborators[] = User::get_by_id($userID);
+            foreach ($collaborators as $collab) {
+                $this->collaborators[] = User::get_by_id($collab[0]);
             }
         }
         return $this->collaborators;

@@ -128,9 +128,11 @@ class Card extends CachedGet {
         return $this->comments;
     }
 
-    public function set_dueDate(DateTime  $dueDate) {
-        $this->dueDate = $dueDate;
+
+    public function get_dueDate(): ?DateTime {
+        return $this->dueDate;
     }
+
 
     
     //    SETTERS    //
@@ -151,22 +153,44 @@ class Card extends CachedGet {
         $this->position = $position;
     }
 
-    public function get_dueDate(): ?DateTime {
-        return $this->dueDate;
+    public function set_dueDate(DateTime  $dueDate) {
+        $this->dueDate = $dueDate;
     }
 
-    public function get_participants() {
+
+    // OTHERS
+
+    public function has_participants(): bool {
+        return count($this->get_participants()) > 0;
+    }
+
+    public function has_collabs_no_participating(): bool {
+        return count($this->get_collabs_no_participating()) > 0;
+    }
+
+    public function get_collabs_no_participating(): array {
+        $collab = $this->get_board()->get_collaborators();
+        $collab[] = $this->get_board()->get_owner();
+
+        return array_diff($collab, $this->get_participants());
+    }
+
+    public function has_dueDate(): bool {
+        return !is_null($this->get_dueDate()) ;
+    }
+
+    public function get_participants(): array {
         if (is_null($this->participants)) {
             $sql = "SELECT Participant FROM participate WHERE Card=:id";
             $param = array("id" => $this->get_id());
 
             $query = self::execute($sql, $param);
-            $userIds = $query->fetchAll();
+            $participants = $query->fetchAll();
 
             $this->participants = [];
 
-            foreach ($userIds as $userID) {
-                $this->participants[] = User::get_by_id($userID);
+            foreach ($participants as $particip) {
+                $this->participants[] = User::get_by_id($particip[0]);
             }
         }
         return $this->participants;
@@ -179,7 +203,7 @@ class Card extends CachedGet {
     }
 
     public function remove_participant(User $user) {
-        $sql = "DELETE FROM participate where Participant=:userID";
+        $sql = "DELETE FROM participate where Participant=:userId";
         $param = array("userId" => $user->get_id());
         self::execute($sql, $param);
     }
@@ -280,13 +304,14 @@ class Card extends CachedGet {
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
         list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
+
         return new Card(
             $data["Title"],
             $data["Body"],
             $data["Position"],
             User::get_by_id($data["Author"]),
             Column::get_by_id($data["Column"]),
-            new DateTime($data["DueDate"]),
+            is_null($data["DueDate"]) ? null : new DateTime($data["DueDate"]),
             $data["ID"],
             $createdAt,
             $modifiedAt
@@ -452,4 +477,5 @@ class Card extends CachedGet {
         );
         self::execute($sql,$params);
     }
+
 }
