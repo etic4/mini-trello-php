@@ -17,7 +17,7 @@
         <article id="main_article">
             <header>
                 <div class="title">
-                    <?php if ($user->is_owner($board)): ?>
+                    <?php if ($user->is_owner($board) || $user->is_admin()): ?>
                     <ul class="icons">
                         <li>
                             <form class='editTitle' action='board/edit/<?= $board->get_id() ?>' method='post'>
@@ -30,6 +30,9 @@
                                 <button class="control"><i class="fas fa-arrow-left"></i></button>
                                 <h2>Board "<?= $board->get_title() ?>"</h2>
                             </form>
+                        </li>
+                        <li style="margin-right: 20px">
+                            <a href="board/collaborators/<?= $board->get_id() ?>"><i class="fa fa-users" aria-hidden="true"></i></a>
                         </li>
                         <li>
                             <form class='link' action='board/delete' method='post'>

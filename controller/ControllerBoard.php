@@ -125,27 +125,38 @@ class ControllerBoard extends Controller {
 
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
-        if(isset($_POST["id"])) {
-            $board = Board::get_by_id($_POST["id"]);
-            if(isset($_POST["delete"])) {
-                $board->delete();
-                $this->redirect();
-            }
-            $this->redirect("board", "board", $board->get_id());
+        $user = $this->get_user_or_redirect();
+        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $this->board_authorize_or_redirect($user, $board, "delete");
+
+        if(isset($_POST["delete"])) {
+            $board->delete();
+            $this->redirect();
         }
-        $this->redirect();
+        $this->redirect("board", "board", $board->get_id());
+
+    }
+
+    // Colaborateurs
+
+    public function collaborators() {
+        $user = $this->get_user_or_redirect();
+        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $this->board_authorize_or_redirect($user, $board, "collaborators");
+
+        (new View("collaborators"))->show( array("user" => $user, "board" => $board) );
     }
 
 
     private function board_authorize_or_redirect(User $user, Board $board, string $action): bool {
-        $this->authorize_or_redirect($user, $board, false);
 
         switch ($action) {
             case "view":
             case "edit":
-                return $user->is_collaborator($board);
+                return $this->authorize_or_redirect($user, $board);
             case "delete":
-                return $user->is_owner($board);
+            case "collaborators":
+                return $this->authorize_or_redirect($user, $board, false);
         }
         $this->redirect();
     }

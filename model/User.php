@@ -212,7 +212,7 @@ class User extends CachedGet {
 
         if ($query->rowCount() > 0) {
             foreach ($data as $userId) {
-                $user[] = self::get_by_id($userId);
+                $userList[] = self::get_by_id($userId);
             }
         }
         return $userList;
