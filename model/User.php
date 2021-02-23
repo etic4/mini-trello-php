@@ -70,6 +70,14 @@ class User extends CachedGet {
         $this->id = $id;
     }
 
+    public function set_fullName(string $fullName) {
+        $this->fullName = $fullName;
+    }
+
+    public function set_email(string $email) {
+        $this->email = $email;
+    }
+
     public function set_role($role) {
         $this->role = Role::USER;
         if (Role::is_valid_role($role)) {

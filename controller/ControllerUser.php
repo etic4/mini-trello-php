@@ -102,7 +102,7 @@ class ControllerUser extends Controller {
 
     public function edit() {
         $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "is", "User");
+        $user = CtrlTools::get_object_or_redirect($_POST, "id", "User");
 
         $email = $user->get_email();
         $fullName = $user->get_fullname();
@@ -110,7 +110,7 @@ class ControllerUser extends Controller {
 
         if (isset($_POST['email']) && isset($_POST['name'])) {
             $email = $_POST['email'];
-            $fullName = $_POST['fullName'];
+            $fullName = $_POST['name'];
         }
 
         if (isset($_POST['role'])) {
@@ -124,6 +124,7 @@ class ControllerUser extends Controller {
             $user->set_fullName($fullName);
             $user->set_email($email);
             $user->set_role($role);
+            $user->update();
         }
 
         $this->redirect("user","manage");
