@@ -26,20 +26,20 @@
                             </tr>           
                         </thead>
                         </table>
-                    <?php foreach($users as $user): ?>
+                    <?php foreach($users as $member): ?>
                     <div class="table">
-                        <input class="checkbox_info" type="checkbox" name="edit_user_<?= $user->get_id() ?>" id="edit_user_<?= $user->get_id() ?>" hidden>
+                        <input class="checkbox_info" type="checkbox" name="edit_user_<?= $member->get_id() ?>" id="edit_user_<?= $member->get_id() ?>" hidden>
                         <div class="user_info">
                             <table>
                                 <tr>
-                                    <td><?= $user->get_fullName() ?></td>
-                                    <td><?= $user->get_email() ?></td>
-                                    <td><?= ucfirst($user->get_role()) ?></td>
-                                    <td><label for="edit_user_<?= $user->get_id() ?>"><i class="fas fa-edit"></i></label></td>
-                                    <?php if($admin != $user): ?>
+                                    <td><?= $member->get_fullName() ?></td>
+                                    <td><?= $member->get_email() ?></td>
+                                    <td><?= ucfirst($member->get_role()) ?></td>
+                                    <td><label for="edit_user_<?= $member->get_id() ?>"><i class="fas fa-edit"></i></label></td>
+                                    <?php if($user != $member): ?>
                                     <td>
                                         <form class="link" action="user/delete" method="post">
-                                            <input type="text" name="id" value="<?= $user->get_id() ?>" hidden>
+                                            <input type="text" name="id" value="<?= $member->get_id() ?>" hidden>
                                             <input type="submit" value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                                         </form>
                                     </td>
@@ -47,36 +47,36 @@
                                 </tr>
                             </table>
                         </div>
-                        <?php if ($errors->has_errors("user", "edit", $user->get_id())): ?>
+                        <?php if ($errors->has_errors("user", "edit", $member->get_id())): ?>
                             <?php include('errors.php'); ?>
                         <?php endif; ?>
                         <div class="user_edit">
                             <table>
                                 <tr>
-                                    <form action="user/edit/<?= $user->get_id() ?>" method="post">
+                                    <form action="user/edit/<?= $member->get_id() ?>" method="post">
                                         <td>
-                                            <input type="text" name="name" value="<?= $user->get_fullName() ?>" required>
+                                            <input type="text" name="name" value="<?= $member->get_fullName() ?>" required>
                                         </td>
                                         <td>
-                                            <input type="email" name="email" value="<?= $user->get_email() ?>"required>
+                                            <input type="email" name="email" value="<?= $member->get_email() ?>"required>
                                         </td>
-                                        <?php if($admin != $user): ?>
+                                        <?php if($user != $member): ?>
                                             <td>
                                                 <select name="role">
-                                                    <option value="admin" <?= ViewTools::selected($user, "admin") ?>>Admin</option>
-                                                    <option value="user" <?= ViewTools::selected($user, "user") ?>>User</option>
+                                                    <option value="admin" <?= ViewTools::selected($member, "admin") ?>>Admin</option>
+                                                    <option value="user" <?= ViewTools::selected($member, "user") ?>>User</option>
                                                 </select>
                                             </td>
                                         <?php else: ?>
                                             <td>
-                                                <input type="text" name="role" value="<?= ucfirst($user->get_role()) ?>" disabled>
+                                                <input type="text" name="role" value="<?= ucfirst($member->get_role()) ?>" disabled>
                                             </td>
                                         <?php endif ?>
                                         <td>
-                                            <label for="edit_user_<?= $user->get_id() ?>"><i class="fas fa-arrow-left"></i></label>
+                                            <label for="edit_user_<?= $member->get_id() ?>"><i class="fas fa-arrow-left"></i></label>
                                         </td>
                                         <td>
-                                            <input type="text" name="id" value="<?= $user->get_id() ?>" hidden>
+                                            <input type="text" name="id" value="<?= $member->get_id() ?>" hidden>
                                             <input type="submit" class="fas fa-check" value="&#xf00c">
                                         </td>
                                     </form>

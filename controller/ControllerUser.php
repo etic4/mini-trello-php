@@ -79,10 +79,10 @@ class ControllerUser extends Controller {
 
 
     public function manage() {
-        $admin = $this->get_admin_or_redirect();
+        $user = $this->get_admin_or_redirect();
 
         (new View("manage_users"))->show(array(
-                "admin" => $admin,
+                "user" => $user,
                 "users" => User::get_all(),
                 "errors" => ValidationError::get_error_and_reset())
         );

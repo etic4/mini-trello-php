@@ -25,7 +25,6 @@ class CtrlTools {
 
             $class_name = ucfirst($_GET["controller"]);
             $instance = $class_name::get_by_id($_GET["param1"]);
-//            $title = $instance->get_title();
 
             $breadcrumb = "<span><a href='board/index'> Boards</a></span>";
 
