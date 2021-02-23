@@ -242,6 +242,7 @@ class Board extends CachedGet {
         foreach ($this->get_columns() as $col) {
             $col->delete();
         }
+
         $sql = "DELETE FROM board 
                 WHERE ID = :id";
         $params = array("id"=>$this->get_id());

@@ -181,11 +181,25 @@ class Card extends CachedGet {
         return array_diff($collab, $this->get_participants());
     }
 
+    public static function get_participating_cards(User $user): array {
+        $sql = "SELECT Card FROM participate WHERE Participant=:id";
+        $param = array("id" => $user->get_id());
+
+        $query = self::execute($sql, $param);
+        $result = $query->fetchAll();
+
+        $cards = [];
+
+        foreach ($result as $cardId) {
+            $cards[] = Card::get_by_id($cardId[0]);
+        }
+
+        return $cards;
+    }
+
     public function has_dueDate(): bool {
         return !is_null($this->get_dueDate());
     }
-
-
 
     public function get_participants(): array {
         if (is_null($this->participants)) {
@@ -211,8 +225,8 @@ class Card extends CachedGet {
     }
 
     public function remove_participant(User $user) {
-        $sql = "DELETE FROM participate where Participant=:userId";
-        $param = array("userId" => $user->get_id());
+        $sql = "DELETE FROM participate where Participant=:userId and Card=:cardId";
+        $param = array("userId" => $user->get_id(), "cardId" => $this->get_id());
         self::execute($sql, $param);
     }
 

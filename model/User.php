@@ -16,6 +16,10 @@ class User extends CachedGet {
     private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
+    // TODO: écrire un algo ?
+    public static function get_random_password() {
+        return "Password1,";
+    }
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
@@ -177,6 +181,10 @@ class User extends CachedGet {
         return  Board::get_collaborating_boards($this);
     }
 
+    public function get_participating_cards(): array {
+        return Card::get_participating_cards($this);
+    }
+
     public function get_others_boards(): array {
         return Board::get_others_boards($this);
     }
@@ -261,9 +269,18 @@ class User extends CachedGet {
     }
 
     public function delete() {
+        foreach ($this->get_collaborating_boards() as $board) {
+            $board->remove_collaborator($this);
+        }
+
+        foreach ($this->get_participating_cards() as $card) {
+            $card->remove_participant($this);
+        }
+
         foreach ($this->get_own_boards() as $board) {
             $board->delete();
         }
+
         $sql = 
             "DELETE FROM user 
              WHERE ID = :id";

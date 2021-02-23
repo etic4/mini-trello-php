@@ -1,5 +1,7 @@
 <?php
 
+require_once "model/User.php";
+
 class ViewTools {
     public static function get_columns_string(array $columns): string {
         $cnt = count($columns);
@@ -22,5 +24,8 @@ class ViewTools {
         return $due_date->format('Y-m-d');
     }
 
+    public static function selected(User $user, string $role): string {
+        return $user->get_role() == $role ? "selected" : "";
+    }
 
 }

@@ -140,7 +140,7 @@ class ControllerCard extends Controller {
 
     public function remove() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_GET, "id", "Card");
+        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         if(isset($_POST["delete"])) {
@@ -148,7 +148,7 @@ class ControllerCard extends Controller {
             $card->delete();
         }
 
-        $this->redirect("board", "board", $card->get_column()->get_board_id());
+        $this->redirect("board", "board", $card->get_board_id());
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

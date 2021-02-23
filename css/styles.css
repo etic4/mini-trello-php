@@ -1080,6 +1080,173 @@ article .comment h3 {
     height: 50px;
 }
 
+/***  ========MANAGE=======  ***/
+
+.manage article {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.manage h2 {
+    font-size: 30px;
+    margin-bottom: 70px;
+    margin-left: 35px;
+    padding-top: 25px;
+}
+
+.manage section {
+    background-color: rgba(229, 229, 229, 0.3);
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    margin: 25px 0 0 25px;
+    padding-top: 20px;
+    width: 625px;
+}
+
+.manage table {
+    border-collapse: collapse;
+    margin-left: 35px;
+    margin-top: -20px;
+}
+
+.manage table td {
+    padding-bottom: 3px;
+}
+
+.manage .table_header {
+    background-color: #e5e5e5;
+    border-radius: 6px 6px 0 0;
+    color: #666666;
+    position: relative;
+    top: -25px;
+}
+
+.manage .table_header thead tr th:last-child {
+    width: 90px;
+}
+
+.manage .table_header .fa-user-shield {
+    padding-left: 20px;
+}
+
+.manage .table_header th,
+.manage .user_info td,
+.manage .user_edit input[name="name"],
+.manage .user_edit input[name="email"],
+.manage .user_edit input[name="role"],
+.manage .user_edit select {
+    height: 40px;
+}
+
+.manage .user_info td:nth-child(-n+3) {
+    background-color: rgba(229, 229, 229, 0.6);
+    border-right: none;
+    padding-left: 10px;
+}
+
+.manage .table_header th:first-child,
+.manage .user_info td:first-child {
+    width: 180px;
+}
+
+.manage .user_edit input[name="name"] {
+    width: 170px;
+}
+
+.manage .table_header th:nth-child(2),
+.manage .user_info td:nth-child(2),
+.manage .user_edit input[name="email"] {
+    width: 200px;
+}
+
+.manage td:nth-child(3) {
+    width: 60px;
+}
+
+.manage .user_edit select {
+    border-radius: 4px;
+    margin-right: 5px;
+    width: 67px;
+}
+
+.manage .user_edit input[name="role"] {
+    width: 55px;
+}
+
+.manage .user_edit input[name="name"],
+.manage .user_edit input[name="email"],
+.manage .user_edit input[name="role"] {
+    background-color: #FFFFFF;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    margin-right: 5px;
+    padding-left: 10px;
+}
+
+.manage input[type="submit"] {
+    font-size: 17px;
+    padding-bottom: 3px;
+}
+
+.manage .user_info label,
+.manage .user_info input[type="submit"] {
+    background-color: none;
+    border: none;
+    border-left: 10px solid transparent;
+    color: #000000;
+    height: 40px;
+}
+
+.manage .user_edit label,
+.manage .user_edit input[type="submit"] {
+    background-color: #0066CC;
+    border: none;
+    color: #ffffff;
+    height: 40px;
+    text-align: center;
+    width: 40px;
+}
+
+.manage .user_edit input[type="submit"] {
+    border-radius: 0 4px 4px 0;
+}
+
+.manage .user_edit label {
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid #cccccc;
+    display: block;
+}
+
+.manage .user_edit label i {
+    padding-top: 12px;
+}
+
+.manage .user_info {
+    z-index: 1;
+}
+
+.manage .user_edit {
+    opacity: 0;
+    top: -23px;
+}
+
+.checkbox_info:checked~.user_info {
+    opacity: 0;
+    z-index: 0;
+}
+
+.checkbox_info:checked~.user_edit {
+    opacity: 100;
+    z-index: 1;
+}
+
+.manage .login form {
+    position: relative;
+    top: -50px;
+}
+
+
 
 /***  ======RESOLUTION=====  ***/
 
