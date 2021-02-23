@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr"><!---->
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
@@ -9,44 +9,47 @@
     <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
     <link href="css/styles.css" rel="stylesheet" type="text/css"/>
 </head>
-<body class="boardMain">
-<header id="main_header">
-    <?php include('menu.php'); ?>
-</header>
-<main>
-    <article>
-        <header>
-            <h2>Board "<?= $board->get_title() ?>"</h2>
-        </header>
-        <div>
-            <p>Current collaborator(s)</p>
-            <ul>
-                <?php foreach ($board->get_collaborators() as $collaborator): ?>
-                <li class="flex-row"><?=$collaborator?>
-                    <form id="collaborator-remove" action="collaborators/remove"  method="post">
-                        <input type='text' name='id' value='<?= $collaborator->get_id() ?>' hidden>
-                        <input type="text" name="board-id" value="<?=$board->get_id()?>" hidden>
-                        <input type='submit' value="&#xf2ed" class="far fa-trash">
+<body>
+    <header id="main_header">
+     <?php include("menu.php"); ?>
+    </header>
+    <main class="collab">
+        <article>
+            <header class="title">
+                <h2><?= $board->get_title() ?> : Collaborators</h2>
+            </header>
+            <div class="main_collab>">
+                <section class="current">
+                    <h3>Current collaborator(s):</h3>
+                    <ul id="collab_list">
+                        <?php foreach ($board->get_collaborators() as $collaborator): ?>
+                        <li>
+                            <p><?=$collaborator?></p>
+                            <form class='link' action='collaborator/remove' method='post'>
+                                <input type='text' name='id' value='<?= $collaborator->get_id() ?>' hidden>
+                                <input type='text' name='board-id' value='<?= $board->get_id() ?>' hidden>
+                                <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
+                            </form>
+                        </li>
+                    <?php endforeach ?>
+                    </ul>
+                </section>
+
+                <?php if($board->has_user_not_collaborating()): ?>
+                <section class="add_collab">
+                    <h3>Add a new collaborator</h3>
+                    <form class="add" action="collaborator/add" method="post">
+                        <input type="text" name="board-id" value="<?= $board->get_id() ?>" hidden>
+                        <select name="id" id="others">
+                            <?php foreach ($board->get_not_collaborating() as $collaborator): ?>
+                                <option value="<?=$collaborator->get_id()?>"><?=$collaborator?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <input type="submit" value="&#xf067" class="fas fa-plus">
                     </form>
-                </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-        <?php if($board->has_user_not_collaborating()): ?>
-        <div>
-            <label for="collaborator-add">Add a participant</label>
-            <form id="collaborator-add" action="collaborator/add" method="post">
-                <select name="id" id="collaborator-select">
-                    <?php foreach ($board->get_not_collaborating() as $collaborator): ?>
-                        <option value="<?=$collaborator->get_id()?>"><?=$collaborator?></option>
-                    <?php endforeach; ?>
-                </select>
-                <input type="text" name="board-id" value="<?=$board->get_id()?>" hidden>
-                <input type="submit" class="fas fa-plus" aria-hidden="true" value="">
-            </form>
-        </div>
-        <?php endif ?>
-    </article>
-</main>
+                </section>
+                <?php endif ?>
+            </div>
+        </article>
+    </main>
 </body>
-</html>
