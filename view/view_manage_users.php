@@ -47,6 +47,9 @@
                                 </tr>
                             </table>
                         </div>
+                        <?php if ($errors->has_errors("user", "edit", $user->get_id())): ?>
+                            <?php include('errors.php'); ?>
+                        <?php endif; ?>
                         <div class="user_edit">
                             <table>
                                 <tr>
@@ -80,12 +83,9 @@
                                 </tr>
                                 
                             </table>
-                            
                         </div>
                     </div>
-                    <?php if ($errors->has_errors("user", "edit", $user->get_id())): ?>
-                        <?php include('errors.php'); ?>
-                    <?php endif; ?>
+
                 <?php endforeach ?>
                 </section>
                 <section class="login">
@@ -114,6 +114,9 @@
                         </ul>
                     </form>
                 </section>
+                <?php if ($errors->has_errors("user", "add")): ?>
+                    <?php include('errors.php'); ?>
+                <?php endif; ?>
             </article>
         </main>
     </body>

@@ -117,7 +117,7 @@ class ControllerUser extends Controller {
             $role = $_POST['role'];
         }
 
-        $error = new ValidationError();
+        $error = new ValidationError($user, "edit");
         $error->set_messages_and_add_to_session(User::validate_admin_edit($user, $email, $fullName));
 
         if ($error->is_empty()) {
@@ -157,7 +157,7 @@ class ControllerUser extends Controller {
 
     private function add_user() {
         $user = null;
-        $error = new ValidationError();
+        $error = new ValidationError("user", "add");
 
         if (isset($_POST['email']) && isset($_POST['fullName']) && isset($_POST['role'])) {
             $email = $_POST['email'];
@@ -169,7 +169,6 @@ class ControllerUser extends Controller {
             $user = new User($email, $fullName, $role, $password, null, null, null);
             $error->set_messages_and_add_to_session($user->validate($password_confirm));
         }
-
         return array($user, $error);
     }
 
