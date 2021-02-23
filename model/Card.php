@@ -340,6 +340,21 @@ class Card extends CachedGet {
         );
     }
 
+    public static function get_cards_for_author(User $user) {
+        $sql = "SELECT * FROM card WHERE Author=:userId";
+        $params = array("userId" => $user->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        $cards = [];
+        foreach ($data as $card) {
+            $card = self::get_instance($card);
+            self::add_instance_to_cache($card);
+            $cards[] = $card;
+        }
+        return $cards;
+    }
+
     //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
     public static function get_cards_for_column(Column $column): array {
         $sql = 
@@ -355,7 +370,7 @@ class Card extends CachedGet {
         foreach ($data as $rec) {
             $card = self::get_instance($rec);
             self::add_instance_to_cache($card);
-            array_push($cards, $card);
+            $cards[] = $card;
         }
         return $cards;
     }
@@ -504,4 +519,7 @@ class Card extends CachedGet {
         self::execute($sql,$params);
     }
 
+    public function __toString(): string {
+        return $this->get_title();
+    }
 }

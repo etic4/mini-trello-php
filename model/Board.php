@@ -249,6 +249,8 @@ class Board extends CachedGet {
         $this->execute($sql, $params);
     }
 
-
+    public function __toString(): string {
+        return $this->get_title();
+    }
 
 }

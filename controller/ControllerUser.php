@@ -98,17 +98,58 @@ class ControllerUser extends Controller {
         }
 
         $this->redirect("user","manage");
-
     }
 
     public function edit() {
         $this->get_admin_or_redirect();
+        $user = CtrlTools::get_object_or_redirect($_POST, "is", "User");
 
+        $email = $user->get_email();
+        $fullName = $user->get_fullname();
+        $role = $user->get_role();
+
+        if (isset($_POST['email']) && isset($_POST['name'])) {
+            $email = $_POST['email'];
+            $fullName = $_POST['fullName'];
+        }
+
+        if (isset($_POST['role'])) {
+            $role = $_POST['role'];
+        }
+
+        $error = new ValidationError();
+        $error->set_messages_and_add_to_session(User::validate_admin_edit($user, $email, $fullName));
+
+        if ($error->is_empty()) {
+            $user->set_fullName($fullName);
+            $user->set_email($email);
+            $user->set_role($role);
+        }
+
+        $this->redirect("user","manage");
     }
 
     public function delete() {
         $this->get_admin_or_redirect();
         $user = CtrlTools::get_object_or_redirect($_POST, "id", "User");
+
+        $this->redirect("user", "delete_confirm", $user->get_id());
+    }
+
+    public function delete_confirm() {
+        $admin = $this->get_admin_or_redirect();
+        $user = CtrlTools::get_object_or_redirect($_GET, "param1", "User");
+
+        (new View("delete_confirm"))->show(array(
+            "user"=>$admin,
+            "instance"=>$user
+        ));
+    }
+
+    public function remove() {
+        $this->get_admin_or_redirect();
+        $user = CtrlTools::get_object_or_redirect($_POST, "id", "User");
+
         $user->delete();
         $this->redirect("user","manage");
     }

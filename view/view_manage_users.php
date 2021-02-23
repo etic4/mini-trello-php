@@ -103,7 +103,7 @@
                             <li class="form-row">
                                 <label for="role"><i class="fas fa-user-shield"></i></label>
                                 <select name="role" required>
-                                    <option value="" disabled selected>Select your option</option>
+                                    <option value="" disabled selected>Select a role</option>
                                     <option value="admin">Admin</option>
                                     <option value="user">User</option>
                                 </select>

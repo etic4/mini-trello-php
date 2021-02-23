@@ -252,4 +252,7 @@ class Column extends CachedGet {
         self::execute($sql,$params);
     }
 
+    public function __toString(): string {
+        return $this->get_title();
+    }
 }

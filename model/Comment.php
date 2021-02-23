@@ -169,4 +169,5 @@ class Comment extends CachedGet {
     public function can_be_show($show_comment): bool{
         return $show_comment == $this->get_id();
     }
+
 }

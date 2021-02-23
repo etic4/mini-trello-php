@@ -146,6 +146,28 @@ class User extends CachedGet {
         return $errors;
     }
 
+    public static function validate_admin_edit(User $user, string $new_email, string $newFullName) {
+        $errors = array();
+
+        //email
+        if ($new_email != $user->get_email()) {
+            if (!Validation::valid_email($new_email)) {
+                $errors[] = "Invalid email";
+            }
+
+            if(!Validation::is_unique_email($user->email)){
+                $errors[] = "Invalid email";
+            }
+        }
+
+        //fullName
+        if ($newFullName != $user->get_fullName() && !Validation::str_longer_than($user->fullName, 2)) {
+            $errors[] = "Name must be at least 3 characters long";
+        }
+
+        return $errors;
+    }
+
     public function is_owner(Board $board): bool {
         return $this == $board->get_owner();
     }
@@ -175,6 +197,10 @@ class User extends CachedGet {
 
     public function get_own_boards(): array {
         return Board::get_users_boards($this);
+    }
+
+    public function get_own_cards(): array {
+        return Card::get_cards_for_author($this);
     }
 
     public function get_collaborating_boards(): array {
@@ -209,16 +235,17 @@ class User extends CachedGet {
         );
     }
 
-    // J'essaie de tirer avantage du cache tel qu'il est implémenté
     public static function get_all() {
-        $sql = "SELECT ID FROM user";
+        $sql = "SELECT * FROM user";
         $query = self::execute($sql, null);
         $data = $query->fetchAll();
 
         $userList = [];
         if ($query->rowCount() > 0) {
-            foreach ($data as $userId) {
-                $userList[] = self::get_by_id($userId[0]);
+            foreach ($data as $rec) {
+                $user = self::get_instance($rec);
+                self::add_instance_to_cache($user);
+                $userList[] = $user;
             }
         }
         return $userList;
@@ -275,6 +302,10 @@ class User extends CachedGet {
 
         foreach ($this->get_participating_cards() as $card) {
             $card->remove_participant($this);
+        }
+
+        foreach ($this->get_own_cards() as $card) {
+            $card->delete();
         }
 
         foreach ($this->get_own_boards() as $board) {

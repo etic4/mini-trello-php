@@ -25,7 +25,7 @@ class CtrlTools {
 
             $class_name = ucfirst($_GET["controller"]);
             $instance = $class_name::get_by_id($_GET["param1"]);
-            $title = $instance->get_title();
+//            $title = $instance->get_title();
 
             $breadcrumb = "<span><a href='board/index'> Boards</a></span>";
 
@@ -37,7 +37,7 @@ class CtrlTools {
                 $breadcrumb = "<span><a href='board/board/$parent_id'>Board \"$parent_title\"</a></span>" . $separator . $breadcrumb;
             }
 
-            $breadcrumb = "<span class='breadcrumb-current'>$class_name \"$title\"</span>". $separator . $breadcrumb;
+            $breadcrumb = "<span class='breadcrumb-current'>$class_name \"$instance\"</span>". $separator . $breadcrumb;
 
         }
         $breadcrumb = "<div class='breadcrumb'>$breadcrumb</div>";
