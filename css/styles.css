@@ -224,6 +224,12 @@ strong {
     margin-right: 5px;
 }
 
+.icons li .collab i {
+    font-size: 17px;
+    margin-left: -15px;
+    margin-right: 5px;
+}
+
 .icons li form input {
     cursor: pointer;
 }
@@ -1014,6 +1020,67 @@ article .comment h3 {
     border: 2px solid;
     border-color: #f77588;
 }
+
+/***  =====COLLABORATORS====  ***/
+
+.collab article {
+    margin: 0 0 0 30px;
+}
+
+.collab h3 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.collab ul {
+    padding: 20px;
+    padding-left: 40px;
+}
+
+.collab ul li {
+    color: #0066CC;
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    padding: 4px;
+}
+
+.collab ul li::before {
+    content: '\2022';
+    margin-right: 10px;
+}
+
+.collab ul li .far {
+    font-size: 15px;
+    padding-left: 5px;
+}
+
+.collab ul li input[type="submit"] {
+    border: none;
+}
+
+.collab .add_collab {
+    display: flex;
+    flex-direction: column;
+}
+
+.collab .add select {
+    border: 1px solid #cccccc;
+    border-radius: 4px 0 0 4px;
+    color: #666666;
+    font-size: inherit;
+    height: 50px;
+    margin-left: -10px;
+    margin-top: 17px;
+    width: 370px;
+}
+
+.collab .add input[type="submit"] {
+    height: 50px;
+}
+
+
 /***  ======RESOLUTION=====  ***/
 
 @media screen and (max-width: 620px) {

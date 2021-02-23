@@ -203,16 +203,14 @@ class User extends CachedGet {
 
     // J'essaie de tirer avantage du cache tel qu'il est implémenté
     public static function get_all() {
-        $sql =
-            "SELECT ID FROM user";
-        $query = self::execute($sql, array());
-        $data = $query->fetch();
+        $sql = "SELECT ID FROM user";
+        $query = self::execute($sql, null);
+        $data = $query->fetchAll();
 
         $userList = [];
-
         if ($query->rowCount() > 0) {
             foreach ($data as $userId) {
-                $userList[] = self::get_by_id($userId);
+                $userList[] = self::get_by_id($userId[0]);
             }
         }
         return $userList;
