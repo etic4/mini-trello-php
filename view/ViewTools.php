@@ -12,7 +12,7 @@ class ViewTools {
         return $date != null ? $date->format('d/m/Y') : "";
     }
 
-    public static function date_picker_due_date(DateTime $date): string {
+    public static function date_picker_due_date(?DateTime $date): string {
         return $date != null ? $date->format('Y-m-d') : "";
     }
 
