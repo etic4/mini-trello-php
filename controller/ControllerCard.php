@@ -120,7 +120,7 @@ class ControllerCard extends Controller {
     public function delete() {
         $user = $this->get_user_or_redirect();
         $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        $this->authorize_or_redirect($user, $card->get_board(), true);
 
         if($card!=null){
             $this->redirect("card","delete_confirm",$card->get_id());
