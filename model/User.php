@@ -177,7 +177,7 @@ class User extends CachedGet {
     }
 
     public function is_owner(Board $board): bool {
-        return $this == $board->get_owner();
+        return $this->get_id() == $board->get_owner_id();
     }
 
     public function is_collaborator(Board $board): bool {

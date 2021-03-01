@@ -55,24 +55,19 @@ class ControllerUser extends Controller {
             $this->redirect();
         }
 
-        $email = '';
-        $password = '';
-        $fullName = '';
-        $password_confirm = '';
-        $user = null;
-
         list($user, $error) = $this->add_user();
 
-        if($error->is_empty()) {
+        if($error->is_empty() && !is_null($user)) {
             $user->insert();
             $this->log_user($user);
+            die;
         }
 
         (new View("signup"))->show(array(
-            "email" => $email, 
-            "password" => $password,
-            "fullName" => $fullName,
-            "confirm" => $password_confirm,
+            "email" => is_null($user) ? $this->get_value_or_empty($_POST, "email") : $user->get_email(),
+            "password" => is_null($user) ? $this->get_value_or_empty($_POST, "password") : $user->get_password(),
+            "fullName" => is_null($user) ? $this->get_value_or_empty($_POST, "fullName") : $user->get_fullName(),
+            "confirm" => $this->get_value_or_empty($_POST, "confirm"),
             "errors" => $error)
         );
     }
@@ -155,21 +150,42 @@ class ControllerUser extends Controller {
         $this->redirect("user","manage");
     }
 
+    // Ajoute un user sur base de $_POST ou retourne une liste d'erreur
+    // utilisé par user/signup et user/manage
     private function add_user() {
         $user = null;
-        $error = new ValidationError("user", "add");
+        $error = new ValidationError($user, "add");
 
-        if (isset($_POST['email']) && isset($_POST['fullName']) && isset($_POST['role'])) {
+        if (isset($_POST['email']) && isset($_POST['fullName'])) {
             $email = $_POST['email'];
             $fullName = $_POST['fullName'];
-            $role = $_POST['role'];
-            $password = User::get_random_password();
-            $password_confirm = $password;
+            $role = Role::USER;
+            $password = "";
+            $password_confirm = "";
+
+            if (isset($_POST['role'])) {
+                $role = $_POST['role'];
+            }
+
+            if (isset($_POST['password']) && isset($_POST['confirm'])) {
+                $password = $_POST['password'];
+                $password_confirm = $_POST['confirm'];
+            } else {
+                $password = User::get_random_password();
+                $password_confirm = $password;
+            }
 
             $user = new User($email, $fullName, $role, $password, null, null, null);
+            $error = new ValidationError($user, "add");
             $error->set_messages_and_add_to_session($user->validate($password_confirm));
         }
         return array($user, $error);
     }
 
+    private function get_value_or_empty($GET_or_POST, $name) {
+        if (isset($GET_or_POST[$name])){
+                return $GET_or_POST[$name];
+        }
+        return "";
+    }
 }
