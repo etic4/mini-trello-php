@@ -149,7 +149,6 @@ class ControllerBoard extends Controller {
 
 
     private function board_authorize_or_redirect(User $user, Board $board, string $action): bool {
-
         switch ($action) {
             case "view":
             case "edit":

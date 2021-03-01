@@ -24,8 +24,6 @@ class ControllerUser extends Controller {
             $this->redirect();
         }
 
-        $email = '';
-        $password = '';
         $error = new ValidationError();
 
         if (isset($_POST['email']) && isset($_POST['password'])) {
@@ -37,10 +35,10 @@ class ControllerUser extends Controller {
                 $this->log_user(User::get_by_email($email));
             }
         }
-        
+
         (new View("login"))->show(array(
-            "email" => $email, 
-            "password" => $password, 
+            "email" => $this->get_or_empty($_POST, "email") ,
+            "password" => $this->get_or_empty($_POST, "password"),
             "errors" => $error)
         );
     }
@@ -55,21 +53,30 @@ class ControllerUser extends Controller {
             $this->redirect();
         }
 
-        list($user, $error) = $this->add_user();
+        list($user, $error) = $this->add_user_or_errors();
 
-        if($error->is_empty() && !is_null($user)) {
-            $user->insert();
-            $this->log_user($user);
-            die;
+        if (is_null($user)) {
+            (new View("signup"))->show(array(
+                "email" => $this->get_or_empty($_POST, "email"),
+                "password" => $this->get_or_empty($_POST, "password"),
+                "fullName" => $this->get_or_empty($_POST, "fullName"),
+                "confirm" => $this->get_or_empty($_POST, "confirm"),
+                "errors" => $error)
+            );
+        } else {
+            if($error->is_empty()) {
+                $user->insert();
+                $this->log_user($user);
+            } else {
+                (new View("signup"))->show(array(
+                    "email" => $user->get_email(),
+                    "password" => $user->get_password(),
+                    "fullName" => $user->get_fullName(),
+                    "confirm" => $this->get_or_empty($_POST, "confirm"),
+                    "errors" => $error)
+                );
+            }
         }
-
-        (new View("signup"))->show(array(
-            "email" => is_null($user) ? $this->get_value_or_empty($_POST, "email") : $user->get_email(),
-            "password" => is_null($user) ? $this->get_value_or_empty($_POST, "password") : $user->get_password(),
-            "fullName" => is_null($user) ? $this->get_value_or_empty($_POST, "fullName") : $user->get_fullName(),
-            "confirm" => $this->get_value_or_empty($_POST, "confirm"),
-            "errors" => $error)
-        );
     }
 
 
@@ -86,7 +93,7 @@ class ControllerUser extends Controller {
     public function add() {
         $this->get_admin_or_redirect();
 
-        list($user, $error) = $this->add_user();
+        list($user, $error) = $this->add_user_or_errors();
 
         if($error->is_empty()) {
             $user->insert();
@@ -152,7 +159,7 @@ class ControllerUser extends Controller {
 
     // Ajoute un user sur base de $_POST ou retourne une liste d'erreur
     // utilisé par user/signup et user/manage
-    private function add_user() {
+    private function add_user_or_errors() {
         $user = null;
         $error = new ValidationError($user, "add");
 
@@ -160,8 +167,6 @@ class ControllerUser extends Controller {
             $email = $_POST['email'];
             $fullName = $_POST['fullName'];
             $role = Role::USER;
-            $password = "";
-            $password_confirm = "";
 
             if (isset($_POST['role'])) {
                 $role = $_POST['role'];
@@ -182,7 +187,7 @@ class ControllerUser extends Controller {
         return array($user, $error);
     }
 
-    private function get_value_or_empty($GET_or_POST, $name) {
+    private function get_or_empty($GET_or_POST, $name) {
         if (isset($GET_or_POST[$name])){
                 return $GET_or_POST[$name];
         }
