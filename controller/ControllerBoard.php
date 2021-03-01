@@ -126,7 +126,7 @@ class ControllerBoard extends Controller {
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $board = CtrlTools::get_object_or_redirect($_POST, "id", "Board");
         $this->board_authorize_or_redirect($user, $board, "delete");
 
         if(isset($_POST["delete"])) {
