@@ -1,11 +1,6 @@
 <?php
 
-require_once "framework/Controller.php";
-require_once "ValidationError.php";
-require_once "model/Card.php";
-require_once "model/User.php";
-require_once "Authorize.php";
-require_once "CtrlTools.php";
+require_once "autoload.php";
 
 
 class ControllerComment extends Controller {

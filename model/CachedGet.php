@@ -1,7 +1,7 @@
 <?php
 
-require_once "framework/Model.php";
-require_once "DateTrait.php";
+require_once "autoload.php";
+
 
 /*
  * Le résultat d'un get_by_id est mis en cache dans Class::$data_cache et retourné lors d'appels subséquents.

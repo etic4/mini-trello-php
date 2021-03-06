@@ -1,5 +1,6 @@
 <?php
 
+require_once "autoload.php";
 
 trait Authorize {
     private function authorize_or_redirect(User $user, Board $board, bool $authorize_collaborators=true): bool {

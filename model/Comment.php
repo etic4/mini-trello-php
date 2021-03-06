@@ -1,8 +1,6 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "model/Card.php";
-require_once "model/User.php";
+require_once "autoload.php";
 
 
 class Comment extends CachedGet {

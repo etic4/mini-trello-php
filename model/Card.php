@@ -1,8 +1,6 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "Comment.php";
-require_once "TitleTrait.php";
+require_once "autoload.php";
 
 
 class Card extends CachedGet {

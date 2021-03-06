@@ -1,6 +1,6 @@
 <?php
 
-require_once "framework/Configuration.php";
+require_once "autoload.php";
 
 class CtrlTools {
 

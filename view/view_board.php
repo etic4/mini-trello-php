@@ -41,6 +41,8 @@
                             </form>
                         </li>
                     </ul>
+                    <?php else: ?>
+                        <h2>Board "<?= $board->get_title() ?>"</h2>
                     <?php endif; ?>
                     <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
                         <?php include('errors.php'); ?>

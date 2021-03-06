@@ -1,10 +1,7 @@
 
 <?php
 
-require_once "CachedGet.php";
-require_once "Board.php";
-require_once "Validation.php";
-require_once "Role.php";
+require_once "autoload.php";
 
 
 class User extends CachedGet {

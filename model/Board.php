@@ -1,10 +1,6 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "User.php";
-require_once "Column.php";
-require_once "TitleTrait.php";
-
+require_once "autoload.php";
 
 class Board extends CachedGet {
     use DateTrait, TitleTrait;
@@ -219,6 +215,7 @@ class Board extends CachedGet {
         $this->set_dates_from_db();
     }
 
+
     public function update(): void {
         $sql = 
             "UPDATE board 
@@ -233,7 +230,8 @@ class Board extends CachedGet {
         $this->execute($sql, $params);
         $this->set_dates_from_db();
     }
-    
+
+
     public function delete(): void {
         foreach ($this->get_collaborators() as $collaborator) {
             $this->remove_collaborator($collaborator);
