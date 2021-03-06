@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerCard extends Controller {
+class ControllerCard extends EController {
     use Authorize;
 
     public function index() {
@@ -13,7 +13,7 @@ class ControllerCard extends Controller {
 
     public function left() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $card->move_left();
@@ -23,7 +23,7 @@ class ControllerCard extends Controller {
 
     public function right() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $card->move_right();
@@ -34,7 +34,7 @@ class ControllerCard extends Controller {
 
     public function up() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $card->move_up();
@@ -44,7 +44,7 @@ class ControllerCard extends Controller {
 
     public function down() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $card->move_down();
@@ -56,7 +56,7 @@ class ControllerCard extends Controller {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_POST, "board_id", "Board");
+        $board = $this->get_object_or_redirect($_POST, "board_id", "Board");
         $this->authorize_or_redirect($user, $board);
 
 
@@ -82,7 +82,7 @@ class ControllerCard extends Controller {
 
     public function update(){
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         if( isset($_POST['body'])) {
@@ -113,7 +113,7 @@ class ControllerCard extends Controller {
 
     public function delete() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board(), true);
 
         if($card!=null){
@@ -123,7 +123,7 @@ class ControllerCard extends Controller {
 
     public function delete_confirm(){
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_GET, "param1", "Card");
+        $card = $this->get_object_or_redirect($_GET, "param1", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         (new View("delete_confirm"))->show(array(
@@ -134,7 +134,7 @@ class ControllerCard extends Controller {
 
     public function remove() {
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         if(isset($_POST["delete"])) {
@@ -149,7 +149,7 @@ class ControllerCard extends Controller {
     
     public function edit_link(){
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_POST, "id", "Card");
+        $card = $this->get_object_or_redirect($_POST, "id", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $this->redirect("card", "edit", $card->get_id());
@@ -157,7 +157,7 @@ class ControllerCard extends Controller {
 
     public function edit(){
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_GET, "param1", "Card");
+        $card = $this->get_object_or_redirect($_GET, "param1", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $comments = $card->get_comments();
@@ -170,6 +170,7 @@ class ControllerCard extends Controller {
                 "comment" => $comments,
                 "show_comment" => $_GET['param2'],
                 "edit" => $edit,
+                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
                 "errors" => ValidationError::get_error_and_reset()
                 )
             );
@@ -180,6 +181,7 @@ class ControllerCard extends Controller {
                 "card" => $card,
                 "comment" => $comments,
                 "edit" => $edit,
+                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
                 "errors" => ValidationError::get_error_and_reset()
                 )
             );
@@ -192,7 +194,7 @@ class ControllerCard extends Controller {
 
     public function view(){
         $user = $this->get_user_or_redirect();
-        $card = CtrlTools::get_object_or_redirect($_GET, "param1", "Card");
+        $card = $this->get_object_or_redirect($_GET, "param1", "Card");
         $this->authorize_or_redirect($user, $card->get_board());
 
         $comments = $card->get_comments();
@@ -203,6 +205,7 @@ class ControllerCard extends Controller {
                 "card" => $card,
                 "comment" => $comments,
                 "show_comment" => $_GET['param2'],
+                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
                 "errors" => ValidationError::get_error_and_reset()
                 )
             );
@@ -212,6 +215,7 @@ class ControllerCard extends Controller {
                 "user" => $user,
                 "card" => $card,
                 "comment" => $comments,
+                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
                 "errors" => ValidationError::get_error_and_reset()
                 )
             );

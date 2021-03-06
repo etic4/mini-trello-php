@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class ControllerAdminuser extends Controller {
+class ControllerAdminuser extends EController {
     use Authorize;
 
     public function index() {
@@ -50,14 +50,14 @@ class ControllerAdminuser extends Controller {
 
     public function delete() {
         $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "userId", "User");
+        $user = $this->get_object_or_redirect($_POST, "userId", "User");
 
         $this->redirect("adminuser", "delete_confirm", $user->get_id());
     }
 
     public function delete_confirm() {
         $admin = $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "userId", "User");
+        $user = $this->get_object_or_redirect($_POST, "userId", "User");
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,
@@ -69,7 +69,7 @@ class ControllerAdminuser extends Controller {
 
     public function edit() {
         $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "userId", "User");
+        $user = $this->get_object_or_redirect($_POST, "userId", "User");
 
         $email = '';
         $password = '';

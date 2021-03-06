@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class ControllerBoard extends Controller {
+class ControllerBoard extends EController {
     use Authorize;
 
     public function index() {
@@ -25,12 +25,13 @@ class ControllerBoard extends Controller {
 
     public function board() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
         $this->board_authorize_or_redirect($user, $board, "view");
 
         (new View("board"))->show(array(
                 "user" => $user,
                 "board" => $board,
+                "breadcrumb" => new BreadCrumb(array($board)),
                 "errors" => ValidationError::get_error_and_reset()
             )
         );
@@ -63,7 +64,7 @@ class ControllerBoard extends Controller {
     //edit titre Board
     public function edit() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
         $this->board_authorize_or_redirect($user, $board, "edit" );
 
         if (empty($_POST["title"])) {
@@ -96,7 +97,7 @@ class ControllerBoard extends Controller {
     // sinon -> delete_confirm
     public function delete() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_POST, "id", "Board");
+        $board = $this->get_object_or_redirect($_POST, "id", "Board");
         $this->board_authorize_or_redirect($user, $board, "delete");
 
         $columns = $board->get_columns();
@@ -111,7 +112,7 @@ class ControllerBoard extends Controller {
     //mise en place de view_delete_confirm
     public function delete_confirm() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
         $this->board_authorize_or_redirect($user, $board, "delete");
 
         (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
@@ -121,7 +122,7 @@ class ControllerBoard extends Controller {
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_POST, "id", "Board");
+        $board = $this->get_object_or_redirect($_POST, "id", "Board");
         $this->board_authorize_or_redirect($user, $board, "delete");
 
         if(isset($_POST["delete"])) {
@@ -136,10 +137,14 @@ class ControllerBoard extends Controller {
 
     public function collaborators() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_GET, "param1", "Board");
+        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
         $this->board_authorize_or_redirect($user, $board, "collaborators");
 
-        (new View("collaborators"))->show( array("user" => $user, "board" => $board) );
+        (new View("collaborators"))->show(
+            array(
+                "user" => $user,
+                "breadcrumb" => new BreadCrumb(array($board), "Collaborators"),
+                "board" => $board) );
     }
 
 

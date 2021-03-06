@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerColumn extends Controller {
+class ControllerColumn extends EController {
     use Authorize;
 
     public function index() {
@@ -13,7 +13,7 @@ class ControllerColumn extends Controller {
 
     public function right() {
         $user = $this->get_user_or_redirect();
-        $column = CtrlTools::get_object_or_redirect($_POST, "id", "Column");
+        $column = $this->get_object_or_redirect($_POST, "id", "Column");
         $this->authorize_or_redirect($user, $column->get_board());
 
         $column->move_right();
@@ -23,7 +23,7 @@ class ControllerColumn extends Controller {
 
     public function left() {
         $user = $this->get_user_or_redirect();
-        $column = CtrlTools::get_object_or_redirect($_POST, "id", "Column");
+        $column = $this->get_object_or_redirect($_POST, "id", "Column");
         $this->authorize_or_redirect($user, $column->get_board());
 
         $column->move_left();
@@ -35,7 +35,7 @@ class ControllerColumn extends Controller {
     
     public function delete() {
         $user = $this->get_user_or_redirect();
-        $column = CtrlTools::get_object_or_redirect($_POST, "id", "Column");
+        $column = $this->get_object_or_redirect($_POST, "id", "Column");
         $this->authorize_or_redirect($user, $column->get_board());
 
         $cards = $column->get_cards();
@@ -51,7 +51,7 @@ class ControllerColumn extends Controller {
 
     public function delete_confirm() {
         $user = $this->get_user_or_redirect();
-        $column = CtrlTools::get_object_or_redirect($_GET, "param1", "Column");
+        $column = $this->get_object_or_redirect($_GET, "param1", "Column");
         $this->authorize_or_redirect($user, $column->get_board());
 
         $cards = $column->get_cards();
@@ -66,7 +66,7 @@ class ControllerColumn extends Controller {
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
         $user = $this->get_user_or_redirect();
-        $column = CtrlTools::get_object_or_redirect($_POST, "id", "Column");
+        $column = $this->get_object_or_redirect($_POST, "id", "Column");
         $this->authorize_or_redirect($user, $column->get_board());
 
         if(isset($_POST["delete"])) {
@@ -81,7 +81,7 @@ class ControllerColumn extends Controller {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $board = CtrlTools::get_object_or_redirect($_POST, "id", "Board");
+        $board = $this->get_object_or_redirect($_POST, "id", "Board");
         $this->authorize_or_redirect($user, $board);
 
         if (!empty($_POST["title"])) {
@@ -103,7 +103,7 @@ class ControllerColumn extends Controller {
     // edit titre Column
     public function edit() {
         $user = $this->get_user_or_redirect();
-        $column = CtrlTools::get_object_or_redirect($_POST, "id", "Column");
+        $column = $this->get_object_or_redirect($_POST, "id", "Column");
         $this->authorize_or_redirect($user, $column->get_board());
 
         if (!empty($_POST["title"])) {

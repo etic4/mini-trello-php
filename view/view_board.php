@@ -13,6 +13,7 @@
 	<header id="main_header">
      <?php include('menu.php'); ?>
 	</header>
+    <?= $breadcrumb->get_trace(); ?>
 	<main class="board">
         <article id="main_article">
             <header>

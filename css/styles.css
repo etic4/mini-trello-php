@@ -99,13 +99,15 @@ body {
 .menu .right a {
     text-decoration: none;
     color: #7fb2e5;
-    padding-right: 10px;
 }
 
 .menu .right a:hover {
     color: #cce0f4;
 }
 
+.menu-item {
+    padding-right: 20px;
+}
 #logged-user {
     margin-right: 10px;
 }
@@ -115,16 +117,24 @@ body {
     cursor: pointer;
 }
 
+.no-pointer {
+    cursor: auto;
+}
 .breadcrumb {
-    margin-right: 10px;
+    margin-top: 20px;
+    margin-left: 25px;
+    /*font-weight: bold;*/
+    font-size: 110%;
+
 }
 
 .breadcrumb a {
-    padding: 0 !important;
+    text-decoration: none;
+    color: #0258ad;
 }
 
-.breadcrumb-current {
-    color: #FFFFFF;
+    .breadcrumb-current {
+    color: #666666;
 }
 
 .breadcrumb-separator {

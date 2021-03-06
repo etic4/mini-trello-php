@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerUser extends Controller {
+class ControllerUser extends EController {
     use Authorize;
 
     public function index() {
@@ -98,7 +98,7 @@ class ControllerUser extends Controller {
 
     public function edit() {
         $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "id", "User");
+        $user = $this->get_object_or_redirect($_POST, "id", "User");
 
         $email = $user->get_email();
         $fullName = $user->get_fullname();
@@ -128,14 +128,14 @@ class ControllerUser extends Controller {
 
     public function delete() {
         $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "id", "User");
+        $user = $this->get_object_or_redirect($_POST, "id", "User");
 
         $this->redirect("user", "delete_confirm", $user->get_id());
     }
 
     public function delete_confirm() {
         $admin = $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_GET, "param1", "User");
+        $user = $this->get_object_or_redirect($_GET, "param1", "User");
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,
@@ -145,7 +145,7 @@ class ControllerUser extends Controller {
 
     public function remove() {
         $this->get_admin_or_redirect();
-        $user = CtrlTools::get_object_or_redirect($_POST, "id", "User");
+        $user = $this->get_object_or_redirect($_POST, "id", "User");
 
         $user->delete();
         $this->redirect("user","manage");
