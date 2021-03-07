@@ -9,22 +9,18 @@ class ControllerCollaborator extends EController {
     }
 
     public function add() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_POST, "board-id", "Board");
-        $this->authorize_or_redirect($user, $board, false);
+        list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
 
-        $collaborator = $this->get_object_or_redirect($_POST, "id", "User");
+        $collaborator = $this->get_object_or_redirect("id", "User");
         $board->add_collaborator($collaborator);
 
         $this->redirect("board", "collaborators", $board->get_id());
     }
 
     public function remove() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_POST, "board-id", "Board");
-        $this->authorize_or_redirect($user, $board, false);
+        list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
 
-        $collaborator = $this->get_object_or_redirect($_POST, "id", "User");
+        $collaborator = $this->get_object_or_redirect("id", "User");
         $board->remove_collaborator($collaborator);
 
         $this->redirect("board", "collaborators", $board->get_id());

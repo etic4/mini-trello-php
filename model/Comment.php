@@ -54,6 +54,10 @@ class Comment extends CachedGet {
         return $this->card->get_id();
     }
 
+    // nécessaire pour gestion des permissions
+    public function get_board() {
+        return $this->card->get_board();
+    }
     //   SETTERS
 
     public function set_id($id){

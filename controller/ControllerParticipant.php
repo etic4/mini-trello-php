@@ -11,11 +11,9 @@ class ControllerParticipant extends EController {
     }
 
     public function add() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "card-id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("card_id", "Card");
 
-        $participant = $this->get_object_or_redirect($_POST, "id", "User");
+        $participant = $this->get_object_or_redirect("id", "User");
         $card->add_participant($participant);
 
         $this->redirect("card", "edit", $card->get_id());
@@ -23,11 +21,9 @@ class ControllerParticipant extends EController {
     }
 
     public function remove() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "card-id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("card_id", "Card");
 
-        $participant = $this->get_object_or_redirect($_POST, "id", "User");
+        $participant = $this->get_object_or_redirect("id", "User");
         $card->remove_participant($participant);
 
         $this->redirect("card", "edit", $card->get_id());

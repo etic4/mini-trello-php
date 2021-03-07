@@ -11,9 +11,7 @@ class ControllerCard extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function left() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         $card->move_left();
 
@@ -21,9 +19,7 @@ class ControllerCard extends EController {
     }
 
     public function right() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         $card->move_right();
 
@@ -32,9 +28,7 @@ class ControllerCard extends EController {
     }
 
     public function up() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         $card->move_up();
 
@@ -42,9 +36,7 @@ class ControllerCard extends EController {
     }
 
     public function down() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         $card->move_down();
 
@@ -54,10 +46,7 @@ class ControllerCard extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_POST, "board_id", "Board");
-        $this->authorize_or_redirect($user, $board);
-
+        list($user, $board) = $this->authorize_or_redirect("board_id", "Board");
 
         if (!empty($_POST["title"])) {
             $column_id = $_POST["column_id"];
@@ -80,9 +69,7 @@ class ControllerCard extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function update(){
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         if( isset($_POST['body'])) {
             $card->set_body($_POST['body']);
@@ -111,9 +98,7 @@ class ControllerCard extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function delete() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board(), true);
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         if($card!=null){
             $this->redirect("card","delete_confirm",$card->get_id());
@@ -121,9 +106,7 @@ class ControllerCard extends EController {
     }
 
     public function delete_confirm(){
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_GET, "param1", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($user, $card) = $this->authorize_or_redirect("param1", "Card");
 
         (new View("delete_confirm"))->show(array(
             "user"=>$user,
@@ -132,9 +115,7 @@ class ControllerCard extends EController {
     }
 
     public function remove() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($_, $card) = $this->authorize_or_redirect("id", "Card");
 
         if(isset($_POST["delete"])) {
             Card::decrement_following_cards_position($card);
@@ -147,17 +128,13 @@ class ControllerCard extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public function edit_link(){
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($user, $card) = $this->authorize_or_redirect("id", "Card");
 
         $this->redirect("card", "edit", $card->get_id());
     }
 
     public function edit(){
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_GET, "param1", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($user, $card) = $this->authorize_or_redirect("param1", "Card");
 
         $comments = $card->get_comments();
         $edit="yes";
@@ -192,9 +169,7 @@ class ControllerCard extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function view(){
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_GET, "param1", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($user, $card) = $this->authorize_or_redirect("param1", "Card");
 
         $comments = $card->get_comments();
 
@@ -220,7 +195,6 @@ class ControllerCard extends EController {
             );
             die;
         }
-
     }
 
 }

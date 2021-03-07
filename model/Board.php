@@ -46,6 +46,11 @@ class Board extends CachedGet {
         return $this->columns;
     }
 
+    // nécessaire pour la gestion des authorisations
+    public function get_board() {
+        return $this;
+    }
+
     // retourne la liste des collaborateurs de ce tableau
     public function get_collaborators(): array {
         if (is_null($this->collaborators)) {

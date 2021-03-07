@@ -12,9 +12,7 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public function delete() {
-        $user = $this->get_user_or_redirect();
-        $comment = $this->get_object_or_redirect($_POST, "id", "Comment");
-        $this->authorize_or_redirect($user, $comment->get_board());
+        list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
 
         $comment->delete();
         $this->redirect("card", "view", $comment->get_card_id());
@@ -24,9 +22,7 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function edit() {
-        $user = $this->get_user_or_redirect();
-        $comment = $this->get_object_or_redirect($_POST, "id", "Comment");
-        $this->authorize_or_redirect($user, $comment->get_board());
+        list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
 
         if(isset($_POST['edit'])) {
             $this->redirect("card","edit", $comment->get_card_id(), $comment->get_id());
@@ -37,9 +33,7 @@ class ControllerComment extends EController {
     }
 
     public function edit_confirm() {
-        $user = $this->get_user_or_redirect();
-        $comment = $this->get_object_or_redirect($_POST, "id", "Comment");
-        $this->authorize_or_redirect($user, $comment->get_board());
+        list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
 
         if(isset($_POST['validate'])){
 
@@ -57,9 +51,7 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add(){
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_object_or_redirect($_POST, "card_id", "Card");
-        $this->authorize_or_redirect($user, $card->get_board());
+        list($user, $card) = $this->authorize_or_redirect("card_id", "Card");
 
 
         if(!empty($_POST['body'])) {

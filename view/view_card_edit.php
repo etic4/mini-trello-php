@@ -53,7 +53,7 @@
                                 <li class="flex-row"  style="color:#0029CC; align-items: center;"><?=$participant?>
                                     <form id="participants-remove" action="participant/remove"  method="post">
                                         <input type='text' name='id' value='<?= $participant->get_id() ?>' hidden>
-                                        <input type="text" name="card-id" value="<?=$card->get_id()?>" hidden>
+                                        <input type="text" name="card_id" value="<?=$card->get_id()?>" hidden>
                                         <input type='submit' value="&#xf2ed" class="far fa-trash" style="background:none; color:black; border:none;">
                                     </form>
                                 </li>
@@ -76,7 +76,7 @@
                                             <option value="<?=$participant->get_id()?>"><?=$participant?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <input type="text" name="card-id" value="<?=$card->get_id()?>" hidden>
+                                    <input type="text" name="card_id" value="<?=$card->get_id()?>" hidden>
                                     <input type="submit" class="fas fa-plus" aria-hidden="true" value="">
                                 </form>
 

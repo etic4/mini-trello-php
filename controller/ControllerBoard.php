@@ -23,9 +23,7 @@ class ControllerBoard extends EController {
 
 
     public function board() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
-        $this->board_authorize_or_redirect($user, $board, "view");
+        list($user, $board) = $this->authorize_or_redirect("param1", "Board");
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -42,8 +40,8 @@ class ControllerBoard extends EController {
     public function add() {
         $user = $this->get_user_or_redirect();
 
-        if (!empty($_POST["title"])) {
-            $title = $_POST["title"];
+        if (!Post::empty("title")) {
+            $title = Post::get("title");
             $board = new Board($title, $user, null, new DateTime(), null);
 
             $error = new ValidationError($board, "add");
@@ -62,17 +60,15 @@ class ControllerBoard extends EController {
 
     //edit titre Board
     public function edit() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
-        $this->board_authorize_or_redirect($user, $board, "edit" );
+        list($_, $board) = $this->authorize_or_redirect("param1", "Board");
 
-        if (empty($_POST["title"])) {
+        if (Post::empty("title")) {
            $this->redirect();
         }
 
         // à ce stade on a un tout ce qu'il faut pour exécuter l'action
 
-        $title = $_POST["title"];
+        $title = Post::get("title");
 
         // TODO: régler la nécessité d'istancier 2x
         $error = new ValidationError();
@@ -95,9 +91,7 @@ class ControllerBoard extends EController {
     // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm
     public function delete() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_POST, "id", "Board");
-        $this->board_authorize_or_redirect($user, $board, "delete");
+        list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
 
         $columns = $board->get_columns();
         if (count($columns) == 0) {
@@ -110,9 +104,7 @@ class ControllerBoard extends EController {
 
     //mise en place de view_delete_confirm
     public function delete_confirm() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
-        $this->board_authorize_or_redirect($user, $board, "delete");
+        list($user, $board) = $this->authorize_or_redirect("param1", "Board", false);
 
         (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
 
@@ -120,9 +112,7 @@ class ControllerBoard extends EController {
 
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_POST, "id", "Board");
-        $this->board_authorize_or_redirect($user, $board, "delete");
+        list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
 
         if(isset($_POST["delete"])) {
             $board->delete();
@@ -135,28 +125,13 @@ class ControllerBoard extends EController {
     // Colaborateurs
 
     public function collaborators() {
-        $user = $this->get_user_or_redirect();
-        $board = $this->get_object_or_redirect($_GET, "param1", "Board");
-        $this->board_authorize_or_redirect($user, $board, "collaborators");
+        list($user, $board) = $this->authorize_or_redirect("param1", "Board", false);
 
         (new View("collaborators"))->show(
             array(
                 "user" => $user,
                 "breadcrumb" => new BreadCrumb(array($board), "Collaborators"),
                 "board" => $board) );
-    }
-
-
-    private function board_authorize_or_redirect(User $user, Board $board, string $action): bool {
-        switch ($action) {
-            case "view":
-            case "edit":
-                return $this->authorize_or_redirect($user, $board);
-            case "delete":
-            case "collaborators":
-                return $this->authorize_or_redirect($user, $board, false);
-        }
-        $this->redirect();
     }
 }
 

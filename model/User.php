@@ -13,10 +13,20 @@ class User extends CachedGet {
     private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
-    // TODO: écrire un algo ?
+
+    public static function from_post(): User {
+        $email = Post::get("email");
+        $fullName = Post::get("fullName");
+        $password = Post::get_or_default("password", User::get_random_password());
+        $role = Post::get_or_default("role", Role::USER);
+
+        return new User($email, $fullName, $role, $password);
+    }
+
     public static function get_random_password() {
         return "Password1,";
     }
+
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
@@ -94,17 +104,14 @@ class User extends CachedGet {
 
     //    VALIDATION    //
 
-    public static function validate_login($email, $password): array {
-        $errors = [];
-        $user = User::get_by_email($email);
-        if ($user) {
-            if (!$user->check_password($password)) {
-                $errors[] = "Invalid username or password";
+    public static function validate_login(string $email, string $password): array {
+        if (!empty($email)) {
+            $user = User::get_by_email($email);
+            if ($user && $user->check_password($password)) {
+                return array();
             }
-        } else {
-            $errors[] = "Invalid username or password";
         }
-        return $errors;
+        return array("Invalid username or password");
     }
 
     public function check_password($clearPasswd): bool {

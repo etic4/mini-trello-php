@@ -17,21 +17,22 @@ class ControllerUser extends EController {
             $this->redirect();
         }
 
+        $email = Post::get('email');
+        $password = Post::get('password');
+
         $error = new ValidationError();
 
-        if (isset($_POST['email']) && isset($_POST['password'])) {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+        if (Post::any_non_empty("email", "password")) {
             $error->set_messages_and_add_to_session(User::validate_login($email, $password));
-        
+
             if ($error->is_empty()) {
                 $this->log_user(User::get_by_email($email));
             }
         }
 
         (new View("login"))->show(array(
-            "email" => $this->get_or_empty($_POST, "email") ,
-            "password" => $this->get_or_empty($_POST, "password"),
+            "email" => $email,
+            "password" => $password,
             "errors" => $error)
         );
     }
@@ -46,29 +47,24 @@ class ControllerUser extends EController {
             $this->redirect();
         }
 
-        list($user, $error) = $this->add_user_or_errors();
+        $user = User::from_post();
 
-        if (is_null($user)) {
-            (new View("signup"))->show(array(
-                "email" => $this->get_or_empty($_POST, "email"),
-                "password" => $this->get_or_empty($_POST, "password"),
-                "fullName" => $this->get_or_empty($_POST, "fullName"),
-                "confirm" => $this->get_or_empty($_POST, "confirm"),
-                "errors" => $error)
-            );
+        $error = new ValidationError($user, "add");
+
+        $passwordConfirm = Post::get("confirm");;
+        $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
+
+        if($error->is_empty()) {
+            $user->insert();
+            $this->log_user($user);
         } else {
-            if($error->is_empty()) {
-                $user->insert();
-                $this->log_user($user);
-            } else {
-                (new View("signup"))->show(array(
+            (new View("signup"))->show(array(
                     "email" => $user->get_email(),
-                    "password" => $user->get_password(),
+                    "password" => Post::get("password"),
                     "fullName" => $user->get_fullName(),
-                    "confirm" => $this->get_or_empty($_POST, "confirm"),
+                    "confirm" => Post::get("confirm"),
                     "errors" => $error)
-                );
-            }
+            );
         }
     }
 
@@ -86,7 +82,7 @@ class ControllerUser extends EController {
     public function add() {
         $this->get_admin_or_redirect();
 
-        list($user, $error) = $this->add_user_or_errors();
+        list($user, $error) = $this->get_user_and_errors();
 
         if($error->is_empty()) {
             $user->insert();
@@ -97,20 +93,11 @@ class ControllerUser extends EController {
 
     public function edit() {
         $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect($_POST, "id", "User");
+        $user = $this->get_object_or_redirect("id", "User");
 
-        $email = $user->get_email();
-        $fullName = $user->get_fullname();
-        $role = $user->get_role();
-
-        if (isset($_POST['email']) && isset($_POST['name'])) {
-            $email = $_POST['email'];
-            $fullName = $_POST['name'];
-        }
-
-        if (isset($_POST['role'])) {
-            $role = $_POST['role'];
-        }
+        $email = Post::get_or_default("email",  $user->get_email());
+        $fullName = Post::get_or_default("name", $user->get_fullname()) ;
+        $role = Post::get_or_default("role", $user->get_role());
 
         $error = new ValidationError($user, "edit");
         $error->set_messages_and_add_to_session(User::validate_admin_edit($user, $email, $fullName));
@@ -127,14 +114,14 @@ class ControllerUser extends EController {
 
     public function delete() {
         $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect($_POST, "id", "User");
+        $user = $this->get_object_or_redirect("id", "User");
 
         $this->redirect("user", "delete_confirm", $user->get_id());
     }
 
     public function delete_confirm() {
         $admin = $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect($_GET, "param1", "User");
+        $user = $this->get_object_or_redirect("param1", "User");
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,
@@ -144,7 +131,7 @@ class ControllerUser extends EController {
 
     public function remove() {
         $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect($_POST, "id", "User");
+        $user = $this->get_object_or_redirect("id", "User");
 
         $user->delete();
         $this->redirect("user","manage");
@@ -152,38 +139,14 @@ class ControllerUser extends EController {
 
     // Ajoute un user sur base de $_POST ou retourne une liste d'erreur
     // utilisé par user/signup et user/manage
-    private function add_user_or_errors() {
-        $user = null;
+    private function get_user_and_errors() {
+        $user = User::from_post();
+
         $error = new ValidationError($user, "add");
 
-        if (isset($_POST['email']) && isset($_POST['fullName'])) {
-            $email = $_POST['email'];
-            $fullName = $_POST['fullName'];
-            $role = Role::USER;
+        $passwordConfirm = Post::get("confirm");
+        $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
 
-            if (isset($_POST['role'])) {
-                $role = $_POST['role'];
-            }
-
-            if (isset($_POST['password']) && isset($_POST['confirm'])) {
-                $password = $_POST['password'];
-                $password_confirm = $_POST['confirm'];
-            } else {
-                $password = User::get_random_password();
-                $password_confirm = $password;
-            }
-
-            $user = new User($email, $fullName, $role, $password, null, null, null);
-            $error = new ValidationError($user, "add");
-            $error->set_messages_and_add_to_session($user->validate($password_confirm));
-        }
         return array($user, $error);
-    }
-
-    private function get_or_empty($GET_or_POST, $name) {
-        if (isset($GET_or_POST[$name])){
-                return $GET_or_POST[$name];
-        }
-        return "";
     }
 }

@@ -28,7 +28,7 @@
                             <p><?=$collaborator?></p>
                             <form class='link' action='collaborator/remove' method='post'>
                                 <input type='text' name='id' value='<?= $collaborator->get_id() ?>' hidden>
-                                <input type='text' name='board-id' value='<?= $board->get_id() ?>' hidden>
+                                <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
                                 <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
                             </form>
                         </li>
@@ -40,7 +40,7 @@
                 <section class="add_collab">
                     <h3>Add a new collaborator</h3>
                     <form class="add" action="collaborator/add" method="post">
-                        <input type="text" name="board-id" value="<?= $board->get_id() ?>" hidden>
+                        <input type="text" name="id" value="<?= $board->get_id() ?>" hidden>
                         <select name="id" id="others">
                             <?php foreach ($board->get_not_collaborating() as $collaborator): ?>
                                 <option value="<?=$collaborator->get_id()?>"><?=$collaborator?></option>
