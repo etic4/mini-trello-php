@@ -36,7 +36,7 @@ abstract class EController extends Controller {
     //Retourne l'objet de type $className dont l'id est contenue dans $param_name
     protected function get_object_or_redirect(string $param_name, string $className) {
         $GoT = $_POST;
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $GoT = $_GET;
         }
         $obj = null;

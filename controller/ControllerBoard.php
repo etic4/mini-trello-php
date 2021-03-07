@@ -60,7 +60,7 @@ class ControllerBoard extends EController {
 
     //edit titre Board
     public function edit() {
-        list($_, $board) = $this->authorize_or_redirect("param1", "Board");
+        list($_, $board) = $this->authorize_or_redirect("id", "Board");
 
         if (Post::empty("title")) {
            $this->redirect();
@@ -131,7 +131,8 @@ class ControllerBoard extends EController {
             array(
                 "user" => $user,
                 "breadcrumb" => new BreadCrumb(array($board), "Collaborators"),
-                "board" => $board) );
+                "board" => $board)
+        );
     }
 }
 
