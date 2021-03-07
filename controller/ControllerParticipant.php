@@ -4,7 +4,6 @@ require_once "autoload.php";
 
 
 class ControllerParticipant extends EController {
-    use Authorize;
 
     public function index() {
         // TODO: Implement index() method.

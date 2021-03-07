@@ -4,7 +4,6 @@ require_once "autoload.php";
 
 
 class ControllerAdminuser extends EController {
-    use Authorize;
 
     public function index() {
         $this->get_admin_or_redirect();

@@ -3,7 +3,6 @@
 require_once "autoload.php";
 
 class ControllerCollaborator extends EController {
-    use Authorize;
 
     public function index() {
         $this->redirect();

@@ -4,7 +4,6 @@ require_once "autoload.php";
 
 
 class ControllerBoard extends EController {
-    use Authorize;
 
     public function index() {
         if(isset($_GET["param1"])) {

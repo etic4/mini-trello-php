@@ -3,7 +3,6 @@
 require_once "autoload.php";
 
 class ControllerUser extends EController {
-    use Authorize;
 
     public function index() {
         if ($this->user_logged()) {

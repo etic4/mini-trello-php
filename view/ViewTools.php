@@ -9,7 +9,6 @@ class ViewTools {
     }
 
 
-
     public static function due_date_string(DateTime $date): string {
         return $date != null ? $date->format('d/m/Y') : "";
     }
