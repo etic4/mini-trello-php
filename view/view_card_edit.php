@@ -41,7 +41,7 @@
 
                         <div class="edit-due-date">
                             <label for="due-date">Due Date</label>
-                            <input form="edit-card" type="date" id="start" name="due-date" min="<?=ViewTools::date_picker_min_due_date($card)?>" value="<?=ViewTools::date_picker_due_date($card->get_dueDate())?>">
+                            <input form="edit-card" type="date" id="start" name="due_date" min="<?=ViewTools::date_picker_min_due_date($card)?>" value="<?=ViewTools::date_picker_due_date($card->get_dueDate())?>">
 
                         </div>
 

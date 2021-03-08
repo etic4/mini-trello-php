@@ -4,17 +4,17 @@
 abstract class GetPost {
 
 
-    protected static ?array $GP = null;
+    protected static ?array $GoP = null;
 
-    // Set $GP avec $_POST ou $_GET par les enfants
+    // Set $GoP avec $_POST ou $_GET par les enfants
     abstract protected static function set_super_global();
 
 
     public static function get(string $key) {
         static::set_super_global();
 
-        if (isset(static::$GP[$key])) {
-            return static::$GP[$key];
+        if (isset(static::$GoP[$key])) {
+            return static::$GoP[$key];
         }
         return "";
     }
@@ -22,8 +22,8 @@ abstract class GetPost {
     public static function get_or_null(string $key) {
         static::set_super_global();
 
-        if (isset(static::$GP[$key])) {
-            return static::$GP[$key];
+        if (isset(static::$GoP[$key])) {
+            return static::$GoP[$key];
         }
         return null;
     }
@@ -37,7 +37,7 @@ abstract class GetPost {
     public static function isset(string $key): bool {
         static::set_super_global();
 
-        return isset(static::$GP[$key]);
+        return isset(static::$GoP[$key]);
     }
 
     // retourne true si toutes les clés sont set

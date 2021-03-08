@@ -12,7 +12,8 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public function delete() {
-        list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
+        $comment = $this->get_object_or_redirect("id", "Comment");
+        $this->authorize_for_board_or_redirect($comment);
 
         $comment->delete();
         $this->redirect("card", "view", $comment->get_card_id());
@@ -22,7 +23,8 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function edit() {
-        list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
+        $comment = $this->get_object_or_redirect("id", "Comment");
+        $this->authorize_for_board_or_redirect($comment);
 
         if(Post::isset("edit")) {
             $this->redirect("card","edit", $comment->get_card_id(), $comment->get_id());
@@ -33,7 +35,8 @@ class ControllerComment extends EController {
     }
 
     public function edit_confirm() {
-        list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
+        $comment = $this->get_object_or_redirect("id", "Comment");
+        $this->authorize_for_board_or_redirect($comment);
 
         if(Post::all_sets("validate", "body")){
             $body = Post::get("body");
@@ -48,7 +51,8 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add(){
-        list($user, $card) = $this->authorize_or_redirect("card_id", "Card");
+        $card = $this->get_object_or_redirect("card_id", "Card");
+        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
 
         if(!Post::empty("body")) {

@@ -9,7 +9,8 @@ class ControllerCollaborator extends EController {
     }
 
     public function add() {
-        list($_, $board) = $this->authorize_or_redirect("board_id", "Board", false);
+        $board = $this->get_object_or_redirect("board_id", "Board");
+        $this->authorize_for_board_or_redirect($board, false);
 
         $collaborator = $this->get_object_or_redirect("collab_id", "User");
         $board->add_collaborator($collaborator);
@@ -18,7 +19,8 @@ class ControllerCollaborator extends EController {
     }
 
     public function remove() {
-        list($_, $board) = $this->authorize_or_redirect("board_id", "Board", false);
+        $board = $this->get_object_or_redirect("board_id", "Board");
+        $this->authorize_for_board_or_redirect($board, false);
 
         $collaborator = $this->get_object_or_redirect("collab_id", "User");
         $board->remove_collaborator($collaborator);

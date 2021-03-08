@@ -3,21 +3,20 @@
 /* Ajouts à la classe Controller du framework */
 abstract class EController extends Controller {
 
-    //Autorise ou redirige l'utilisateur pour le board concerné par la requête
+    // Autorise ou redirige l'utilisateur pour le board concerné par la requête
     // retourne une instance de User et une instance de $className
-    protected function authorize_or_redirect(string $param_name, string $className, bool $authorize_collaborators=true): array {
+    // $paramName & $className permettent de récupérer l'objet principalement concerné par la requête
+    protected function authorize_for_board_or_redirect(Board $board, bool $authorize_collaborators=true): array {
         $user = $this->get_user_or_redirect();
-        $object = $this->get_object_or_redirect($param_name, $className);
-        $board = $object->get_board();
 
         if ($user->is_admin() || $user->is_owner($board)) {
-            return array($user, $object);
+            return $user;
         }
 
         // Permet de n'authoriser que admin et le owner.
         // Notamment pour les board que seuls les owner admin peuvent deleter
         if ($authorize_collaborators && $user->is_collaborator($board)) {
-            return array($user, $object);
+            return $user;
         }
 
         $this->redirect();
@@ -36,9 +35,11 @@ abstract class EController extends Controller {
     //Retourne l'objet de type $className dont l'id est contenue dans $param_name
     protected function get_object_or_redirect(string $param_name, string $className) {
         $GoT = $_POST;
+
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $GoT = $_GET;
         }
+
         $obj = null;
 
         if (isset($GoT[$param_name])) {
@@ -46,12 +47,8 @@ abstract class EController extends Controller {
         }
 
         if (is_null($obj)) {
-            // Soit ça soit mettre méthode à static dans framework
             $this->redirect();
         }
-
         return $obj;
     }
-
-
 }

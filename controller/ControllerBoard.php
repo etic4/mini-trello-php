@@ -6,14 +6,14 @@ require_once "autoload.php";
 class ControllerBoard extends EController {
 
     public function index() {
-        if(isset($_GET["param1"])) {
+        if(Get::isset("param1")) {
             $this->redirect();
         }
 
         $user = $this->get_user_or_false();
 
         (new View("boardlist"))->show(array(
-            "user"=>$user,
+            "user" => $user,
             "errors" => ValidationError::get_error_and_reset()
             )
         );
@@ -23,7 +23,8 @@ class ControllerBoard extends EController {
 
 
     public function board() {
-        list($user, $board) = $this->authorize_or_redirect("param1", "Board");
+        $board = $this->get_object_or_redirect("param1", "Board");
+        $user = $this->authorize_for_board_or_redirect($board);
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -60,7 +61,8 @@ class ControllerBoard extends EController {
 
     //edit titre Board
     public function edit() {
-        list($_, $board) = $this->authorize_or_redirect("id", "Board");
+        $board = $this->get_object_or_redirect("id", "Board");
+        $this->authorize_for_board_or_redirect($board);
 
         if (Post::empty("title")) {
            $this->redirect();
@@ -91,7 +93,8 @@ class ControllerBoard extends EController {
     // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm
     public function delete() {
-        list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
+        $board = $this->get_object_or_redirect("id", "Board");
+        $this->authorize_for_board_or_redirect($board, false);
 
         $columns = $board->get_columns();
         if (count($columns) == 0) {
@@ -104,7 +107,8 @@ class ControllerBoard extends EController {
 
     //mise en place de view_delete_confirm
     public function delete_confirm() {
-        list($user, $board) = $this->authorize_or_redirect("param1", "Board", false);
+        $board = $this->get_object_or_redirect("param1", "Board");
+        $user = $this->authorize_for_board_or_redirect($board, false);
 
         (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
 
@@ -112,7 +116,8 @@ class ControllerBoard extends EController {
 
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
-        list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
+        $board = $this->get_object_or_redirect("id", "Board");
+        $this->authorize_for_board_or_redirect($board, false);
 
         if(Post::isset("delete")) {
             $board->delete();
@@ -125,7 +130,8 @@ class ControllerBoard extends EController {
     // Colaborateurs
 
     public function collaborators() {
-        list($user, $board) = $this->authorize_or_redirect("param1", "Board", false);
+        $board = $this->get_object_or_redirect("param1", "Board");
+        $user = $this->authorize_for_board_or_redirect($board, false);
 
         (new View("collaborators"))->show(
             array(

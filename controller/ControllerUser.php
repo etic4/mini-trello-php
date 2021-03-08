@@ -70,10 +70,10 @@ class ControllerUser extends EController {
 
 
     public function manage() {
-        $user = $this->get_admin_or_redirect();
+        $admin = $this->get_admin_or_redirect();
 
         (new View("manage_users"))->show(array(
-                "user" => $user,
+                "user" => $admin,
                 "users" => User::get_all(),
                 "errors" => ValidationError::get_error_and_reset())
         );

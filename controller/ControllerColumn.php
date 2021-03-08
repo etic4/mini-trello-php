@@ -11,7 +11,8 @@ class ControllerColumn extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function right() {
-        list($_, $column) = $this->authorize_or_redirect("id", "Column");
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
 
         $column->move_right();
         $this->redirect("board", "board", $column->get_board_id());
@@ -19,7 +20,8 @@ class ControllerColumn extends EController {
     }
 
     public function left() {
-        list($_, $column) = $this->authorize_or_redirect("id", "Column");
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
 
         $column->move_left();
         $this->redirect("board", "board", $column->get_board_id());
@@ -29,7 +31,8 @@ class ControllerColumn extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public function delete() {
-        list($_, $column) = $this->authorize_or_redirect("id", "Column");
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
 
         $cards = $column->get_cards();
         if (count($cards) == 0) {
@@ -43,7 +46,8 @@ class ControllerColumn extends EController {
     }
 
     public function delete_confirm() {
-        list($user, $column) = $this->authorize_or_redirect("param1", "Column");
+        $column = $this->get_object_or_redirect("param1", "Column");
+        $user = $this->authorize_for_board_or_redirect($column->get_board());
 
         $cards = $column->get_cards();
         if (count($cards)) {
@@ -56,7 +60,8 @@ class ControllerColumn extends EController {
 
     //exécution du delete ou cancel de delete_confirm
     public function remove() {
-        list($_, $column) = $this->authorize_or_redirect("id", "Column");
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
 
         if(Post::isset("delete")) {
             $column->delete();
@@ -69,7 +74,8 @@ class ControllerColumn extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add() {
-        list($_, $board) = $this->authorize_or_redirect("id", "Board");
+        $board = $this->get_object_or_redirect("id", "Board");
+        $this->authorize_for_board_or_redirect($board);
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
@@ -89,7 +95,8 @@ class ControllerColumn extends EController {
 
     // edit titre Column
     public function edit() {
-        list($_, $column) = $this->authorize_or_redirect("id", "Column");
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
