@@ -58,7 +58,7 @@ class ControllerColumn extends EController {
     public function remove() {
         list($_, $column) = $this->authorize_or_redirect("id", "Column");
 
-        if(isset($_POST["delete"])) {
+        if(Post::isset("delete")) {
             $column->delete();
             Column::decrement_following_columns_position($column);
         }
@@ -71,8 +71,8 @@ class ControllerColumn extends EController {
     public function add() {
         list($_, $board) = $this->authorize_or_redirect("id", "Board");
 
-        if (!empty($_POST["title"])) {
-            $title = $_POST["title"];
+        if (!Post::empty("title")) {
+            $title = Post::get("title");
             $column = Column::create_new($title, $board);
 
             $error = new ValidationError($column, "add");
@@ -91,8 +91,8 @@ class ControllerColumn extends EController {
     public function edit() {
         list($_, $column) = $this->authorize_or_redirect("id", "Column");
 
-        if (!empty($_POST["title"])) {
-            $title = $_POST["title"];
+        if (!Post::empty("title")) {
+            $title = Post::get("title");
             $error = new ValidationError();
 
             if ($column->get_title() !== $title) {

@@ -24,7 +24,7 @@ class ControllerComment extends EController {
     public function edit() {
         list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
 
-        if(isset($_POST['edit'])) {
+        if(Post::isset("edit")) {
             $this->redirect("card","edit", $comment->get_card_id(), $comment->get_id());
         } else {
             $this->redirect("card","view", $comment->get_card_id(), $comment->get_id());
@@ -35,16 +35,13 @@ class ControllerComment extends EController {
     public function edit_confirm() {
         list($_, $comment) = $this->authorize_or_redirect("id", "Comment");
 
-        if(isset($_POST['validate'])){
-
-            if(isset($_POST['body'])){
-                $body = $_POST['body'];
-                $comment->set_body($body);
-                $comment->update();
-            }
+        if(Post::all_sets("validate", "body")){
+            $body = Post::get("body");
+            $comment->set_body($body);
+            $comment->update();
         }
-       $this->card_redirect($comment->get_card_id());
 
+       $this->card_redirect($comment->get_card_id());
 
     }
 
@@ -54,8 +51,8 @@ class ControllerComment extends EController {
         list($user, $card) = $this->authorize_or_redirect("card_id", "Card");
 
 
-        if(!empty($_POST['body'])) {
-            $body = $_POST['body'];
+        if(!Post::empty("body")) {
+            $body = Post::get("body");
             $comment = new Comment($body, $user, $card);
             $comment->insert();
         }else{
@@ -72,7 +69,7 @@ class ControllerComment extends EController {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private function card_redirect($card_id) {
-        if(isset($_POST['edit'])){
+        if(Post::isset("edit")){
             $this->redirect("card", "edit", $card_id);
         } else {
             $this->redirect("card", "view", $card_id);

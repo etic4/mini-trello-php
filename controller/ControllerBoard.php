@@ -114,7 +114,7 @@ class ControllerBoard extends EController {
     public function remove() {
         list($_, $board) = $this->authorize_or_redirect("id", "Board", false);
 
-        if(isset($_POST["delete"])) {
+        if(Post::isset("delete")) {
             $board->delete();
             $this->redirect();
         }
