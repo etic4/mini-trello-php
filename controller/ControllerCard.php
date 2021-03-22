@@ -8,7 +8,6 @@ class ControllerCard extends ExtendedController {
         $this->redirect();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function left() {
         $card = $this->get_object_or_redirect("id", "Card");
@@ -47,7 +46,6 @@ class ControllerCard extends ExtendedController {
         $this->redirect("board", "board", $card->get_board_id());
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function add() {
         $column = $this->get_object_or_redirect("column_id", "Column");
@@ -71,7 +69,6 @@ class ControllerCard extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function update(){
         $card = $this->get_object_or_redirect("id", "Card");
@@ -101,7 +98,6 @@ class ControllerCard extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function delete() {
         $card = $this->get_object_or_redirect("id", "Card");
@@ -134,8 +130,7 @@ class ControllerCard extends ExtendedController {
         $this->redirect("board", "board", $card->get_board_id());
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     public function edit_link(){
         $card = $this->get_object_or_redirect("id", "Card");
         $this->authorize_for_board_or_redirect($card->get_board());
@@ -176,8 +171,6 @@ class ControllerCard extends ExtendedController {
         }
 
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function view(){
         $card = $this->get_object_or_redirect("param1", "Card");

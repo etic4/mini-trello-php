@@ -31,8 +31,6 @@ class ControllerBoard extends ExtendedController {
         );
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     // ajout nouveau Board
     public function add() {
         $user = $this->get_user_or_redirect();
@@ -52,8 +50,6 @@ class ControllerBoard extends ExtendedController {
         $this->redirect();
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //edit titre Board
     public function edit() {
@@ -83,8 +79,6 @@ class ControllerBoard extends ExtendedController {
         $this->redirect("board", "board", $board->get_id());
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // si pas de colonne -> delete -> redirect index
     // sinon -> delete_confirm

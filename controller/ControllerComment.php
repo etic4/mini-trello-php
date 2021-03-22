@@ -9,8 +9,6 @@ class ControllerComment extends ExtendedController {
         $this->redirect();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
     public function delete() {
         $comment = $this->get_object_or_redirect("id", "Comment");
         $this->authorize_for_board_or_redirect($comment);
@@ -20,7 +18,6 @@ class ControllerComment extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public function edit() {
         $comment = $this->get_object_or_redirect("id", "Comment");
@@ -48,8 +45,6 @@ class ControllerComment extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     public function add(){
         $card = $this->get_object_or_redirect("card_id", "Card");
         $user = $this->authorize_for_board_or_redirect($card->get_board());
@@ -70,7 +65,6 @@ class ControllerComment extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private function card_redirect($card_id) {
         if(Post::isset("edit")){

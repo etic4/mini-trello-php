@@ -8,8 +8,6 @@ class ControllerColumn extends ExtendedController {
         $this->redirect();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     public function right() {
         $column = $this->get_object_or_redirect("id", "Column");
         $this->authorize_for_board_or_redirect($column->get_board());
@@ -28,8 +26,6 @@ class ControllerColumn extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
     public function delete() {
         $column = $this->get_object_or_redirect("id", "Column");
         $this->authorize_for_board_or_redirect($column->get_board());
@@ -71,8 +67,6 @@ class ControllerColumn extends ExtendedController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     public function add() {
         $board = $this->get_object_or_redirect("id", "Board");
         $this->authorize_for_board_or_redirect($board);
@@ -91,7 +85,6 @@ class ControllerColumn extends ExtendedController {
         $this->redirect("board", "board", $board->get_id());
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // edit titre Column
     public function edit() {
