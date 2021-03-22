@@ -3,8 +3,7 @@
 require_once "autoload.php";
 
 
-class ControllerBoard extends EController {
-
+class ControllerBoard extends ExtendedController {
     public function index() {
         if(Get::isset("param1")) {
             $this->redirect();
@@ -18,9 +17,6 @@ class ControllerBoard extends EController {
             )
         );
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     public function board() {
         $board = $this->get_object_or_redirect("param1", "Board");

@@ -12,6 +12,8 @@ class BreadCrumb {
         $this->last_elem = $last_elem;
     }
 
+    // Construit et retourne le breadcrumb
+    // construit d'abord le premier élément (home), puis le dernier, s'il existe, puis les intermédiaires s'ils existent
     public function get_trace() {
         $home = $this->get_home();
         $last = $this->get_last();
@@ -35,7 +37,8 @@ class BreadCrumb {
 
         if (!is_null($this->last_elem)) {
             $last_elem = $this->last_elem;
-        } else if (count($this->breadcrumb) > 0) {
+        }
+        else if (count($this->breadcrumb) > 0) {
             $elem = array_pop($this->breadcrumb);
             $name = get_class($elem);
             $last_elem = $name . " \"" . $elem->get_title() . "\"";

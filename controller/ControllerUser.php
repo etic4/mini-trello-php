@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerUser extends EController {
+class ControllerUser extends ExtendedController {
 
     public function index() {
         if ($this->user_logged()) {

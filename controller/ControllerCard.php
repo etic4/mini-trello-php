@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerCard extends EController {
+class ControllerCard extends ExtendedController {
 
     public function index() {
         $this->redirect();

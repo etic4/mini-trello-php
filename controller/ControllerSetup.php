@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerSetup extends EController
+class ControllerSetup extends ExtendedController
 {
     public function index() {
         $this->install();

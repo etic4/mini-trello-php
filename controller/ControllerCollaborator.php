@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerCollaborator extends EController {
+class ControllerCollaborator extends ExtendedController {
 
     public function index() {
         $this->redirect();

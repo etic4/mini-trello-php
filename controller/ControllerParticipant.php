@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class ControllerParticipant extends EController {
+class ControllerParticipant extends ExtendedController {
 
     public function index() {
         // TODO: Implement index() method.

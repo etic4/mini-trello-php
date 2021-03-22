@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class ControllerComment extends EController {
+class ControllerComment extends ExtendedController {
 
     public function index() {
         $this->redirect();

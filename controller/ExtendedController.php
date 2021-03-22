@@ -1,12 +1,11 @@
 <?php
 
 /* Ajouts à la classe Controller du framework */
-abstract class EController extends Controller {
+abstract class ExtendedController extends Controller {
 
     // Autorise ou redirige l'utilisateur pour le board concerné par la requête
-    // retourne une instance de User et une instance de $className
-    // $paramName & $className permettent de récupérer l'objet principalement concerné par la requête
-    protected function authorize_for_board_or_redirect(Board $board, bool $authorize_collaborators=true): array {
+    // retourne une instance de User
+    protected function authorize_for_board_or_redirect(Board $board, bool $authorize_collaborators=true) {
         $user = $this->get_user_or_redirect();
 
         if ($user->is_admin() || $user->is_owner($board)) {

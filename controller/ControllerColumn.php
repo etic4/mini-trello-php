@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerColumn extends EController {
+class ControllerColumn extends ExtendedController {
 
     public function index() {
         $this->redirect();
