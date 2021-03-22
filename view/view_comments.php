@@ -51,7 +51,7 @@
         </ul>
     </div>
     <footer>
-        <form class="add" action="Comment/add" method="post">
+        <form class="add" action="comment/add" method="post">
             <input type='text' name='card_id' value='<?= $card->get_id() ?>' hidden>
             <?php if(isset($edit)): ?>
                 <input type='text' name='edit' value='yes' hidden>

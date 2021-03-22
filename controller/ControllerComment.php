@@ -21,7 +21,7 @@ class ControllerComment extends ExtendedController {
 
     public function edit() {
         $comment = $this->get_object_or_redirect("id", "Comment");
-        $this->authorize_for_board_or_redirect($comment);
+        $this->authorize_for_board_or_redirect($comment->get_board());
 
         if(Post::isset("edit")) {
             $this->redirect("card","edit", $comment->get_card_id(), $comment->get_id());
@@ -33,7 +33,7 @@ class ControllerComment extends ExtendedController {
 
     public function edit_confirm() {
         $comment = $this->get_object_or_redirect("id", "Comment");
-        $this->authorize_for_board_or_redirect($comment);
+        $this->authorize_for_board_or_redirect($comment->get_board());
 
         if(Post::all_sets("validate", "body")){
             $body = Post::get("body");

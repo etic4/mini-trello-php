@@ -18,7 +18,6 @@ class User extends CachedGet {
         return "Password1,";
     }
 
-
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
         if (is_null($id)) {

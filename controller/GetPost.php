@@ -3,7 +3,6 @@
 /*wrapper autour de $_GET et $_POST pour en faciliter l'usage*/
 abstract class GetPost {
 
-
     protected static ?array $GoP = null;
 
     // Set $GoP avec $_POST ou $_GET par les enfants
