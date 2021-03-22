@@ -47,9 +47,7 @@ class ControllerUser extends ExtendedController {
             $this->redirect();
         }
 
-        $user = User::from_post();
-
-        $error = new ValidationError($user, "add");
+        list($user, $error) = $this->get_user_and_errors();
 
         $passwordConfirm = Post::get("confirm");;
         $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
@@ -140,7 +138,12 @@ class ControllerUser extends ExtendedController {
     // Ajoute un user sur base de $_POST ou retourne une liste d'erreur
     // utilisé par user/signup et user/manage
     private function get_user_and_errors() {
-        $user = User::from_post();
+        $email = Post::get("email");
+        $fullName = Post::get("fullName");
+        $password = Post::get_or_default("password", User::get_random_password());
+        $role = Post::get_or_default("role", Role::USER);
+
+        $user = new User($email, $fullName, $role, $password);
 
         $error = new ValidationError($user, "add");
 

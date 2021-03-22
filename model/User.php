@@ -14,15 +14,6 @@ class User extends CachedGet {
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
 
-    public static function from_post(): User {
-        $email = Post::get("email");
-        $fullName = Post::get("fullName");
-        $password = Post::get_or_default("password", User::get_random_password());
-        $role = Post::get_or_default("role", Role::USER);
-
-        return new User($email, $fullName, $role, $password);
-    }
-
     public static function get_random_password() {
         return "Password1,";
     }
