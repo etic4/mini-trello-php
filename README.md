@@ -13,12 +13,12 @@ Dans un souci de ne pas mélanger les langues lors de la phase de programation, 
 Nous avons considéré qu'ajouter un tableau/colonne/carte/commentaire vide n'était pas permis, mais que cela ne devait pas afficher d'erreur. Si l'utilisateur clique sur le bouton 'ajouter' sans remplir le corps, la page est simplement rechargée à l'identique.
 
 ## Notes de livraison itération 2
+Changement dans framework/Controller de 'redirect' en méthode statique
 
 ## Notes de livraison itération 3
 
 ## Utilisateurs
 
 Tous les utilisateurs (`boverhaegen@epfc.eu`, `bepenelle@epfc.eu`, `brlacroix@epfc.eu` et `xapigeolet@epfc.eu`) ont le mot de passe `Password1,` (remarquez qu'il se termine par une virgule).
-
 
 

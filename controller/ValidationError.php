@@ -1,5 +1,6 @@
 <?php
 
+require_once "autoload.php";
 
 class ValidationError {
 
@@ -11,6 +12,7 @@ class ValidationError {
     /* Retourne l'erreur et reset l'erreur pour la session */
     public static function get_error_and_reset(): ValidationError {
         $error = new ValidationError();
+
         if (isset($_SESSION["error"])) {
             $error = $_SESSION["error"];
             $_SESSION["error"] = new ValidationError();

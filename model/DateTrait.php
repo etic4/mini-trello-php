@@ -12,11 +12,13 @@ trait DateTrait {
     private ?Datetime $createdAt;
 
     public static function sql_date($datetime) {
-        return $datetime->format('Y-m-d H:i:s');
+        return $datetime != null ? $datetime->format('Y-m-d H:i:s') : null;
     }
 
     /* Crée des intances de Datetime à partir d'un string provenant de la DB
     Si $modifiedAt est null, il est set à la valeur de $createdAt
+    retourne une array de 2 DateTime.
+    TODO: revoir toute cette logique ultérieurement, c'est foireux.
 */
     public static function get_dates_from_sql($createdAt, $modifiedAt): array {
         $createdAtInst = new DateTime($createdAt);

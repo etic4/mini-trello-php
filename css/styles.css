@@ -99,13 +99,15 @@ body {
 .menu .right a {
     text-decoration: none;
     color: #7fb2e5;
-    padding-right: 10px;
 }
 
 .menu .right a:hover {
     color: #cce0f4;
 }
 
+.menu-item {
+    padding-right: 20px;
+}
 #logged-user {
     margin-right: 10px;
 }
@@ -115,16 +117,24 @@ body {
     cursor: pointer;
 }
 
+.no-pointer {
+    cursor: auto;
+}
 .breadcrumb {
-    margin-right: 10px;
+    margin-top: 20px;
+    margin-left: 25px;
+    /*font-weight: bold;*/
+    font-size: 110%;
+
 }
 
 .breadcrumb a {
-    padding: 0 !important;
+    text-decoration: none;
+    color: #0258ad;
 }
 
-.breadcrumb-current {
-    color: #FFFFFF;
+    .breadcrumb-current {
+    color: #666666;
 }
 
 .breadcrumb-separator {
@@ -221,6 +231,12 @@ strong {
 .icons li p,
 .icons .link input[type=submit] {
     border: none;
+    margin-right: 5px;
+}
+
+.icons li .collab i {
+    font-size: 17px;
+    margin-left: -15px;
     margin-right: 5px;
 }
 
@@ -641,7 +657,8 @@ strong {
 }
 
 .list .up .yourBoards,
-.list .down .otherBoards {
+.list .down .collabBoards,
+.list .others .otherBoards {
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -655,7 +672,8 @@ strong {
 }
 
 .list .up .yourBoards li a,
-.list .down .otherBoards li a {
+.list .down .collabBoards li a,
+.list .others .otherBoards li a {
     font-size: 20px;
     text-decoration: none;
     text-align: center;
@@ -673,11 +691,18 @@ strong {
     color: #ffffff;
 }
 
-.list .down .otherBoards li a {
+.list .down .collabBoards li a {
     display: block;
     color: #ffffff;
     background-color: #009900;
     border: 1px solid #009900;
+}
+
+.list .others .otherBoards li a {
+    display: block;
+    color: #ffffff;
+    background-color: #777977;
+    border: 1px solid #777977;
 }
 
 .welcome {
@@ -835,14 +860,18 @@ strong {
     padding-bottom: 15px;
 }
 
-.one_card .main_card .display_card div {
+.one_card .main_card .display_card .encadre {
     height: 80px;
     padding: 10px;
+    margin-bottom: 20px;
     border-radius: 4px;
     border: 1px solid #cccccc;
     background-color: rgba(229, 229, 229, 0.7);
 }
 
+.simple-text {
+    margin-bottom: 20px;
+}
 
 /***  ======COMMENT======  ***/
 
@@ -983,6 +1012,250 @@ article .comment h3 {
     color: #ffffff;
     background-color: #0066CC;
 }
+
+
+/* Ajouts temporaires Etienne*/
+
+.flex-row {
+    display: flex;
+    flex-direction: row  !important;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column !important;
+}
+
+.due-card {
+    border: 2px solid;
+    border-color: #f77588;
+}
+
+/***  =====COLLABORATORS====  ***/
+
+.collab article {
+    margin: 0 0 0 30px;
+}
+
+.collab h3 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.collab ul {
+    padding: 20px;
+    padding-left: 40px;
+}
+
+.collab ul li {
+    color: #0066CC;
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    padding: 4px;
+}
+
+.collab ul li::before {
+    content: '\2022';
+    margin-right: 10px;
+}
+
+.collab ul li .far {
+    font-size: 15px;
+    padding-left: 5px;
+}
+
+.collab ul li input[type="submit"] {
+    border: none;
+}
+
+.collab .add_collab {
+    display: flex;
+    flex-direction: column;
+}
+
+.collab .add select {
+    border: 1px solid #cccccc;
+    border-radius: 4px 0 0 4px;
+    color: #666666;
+    font-size: inherit;
+    height: 50px;
+    margin-left: -10px;
+    margin-top: 17px;
+    width: 370px;
+}
+
+.collab .add input[type="submit"] {
+    height: 50px;
+}
+
+/***  ========MANAGE=======  ***/
+
+.manage article {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.manage h2 {
+    font-size: 30px;
+    margin-bottom: 70px;
+    margin-left: 35px;
+    padding-top: 25px;
+}
+
+.manage section {
+    background-color: rgba(229, 229, 229, 0.3);
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    margin: 25px 0 0 25px;
+    padding-top: 20px;
+    width: 625px;
+}
+
+.manage table {
+    border-collapse: collapse;
+    margin-left: 35px;
+    margin-top: -20px;
+}
+
+.manage table td {
+    padding-bottom: 3px;
+}
+
+.manage .table_header {
+    background-color: #e5e5e5;
+    border-radius: 6px 6px 0 0;
+    color: #666666;
+    position: relative;
+    top: -25px;
+}
+
+.manage .table_header thead tr th:last-child {
+    width: 90px;
+}
+
+.manage .table_header .fa-user-shield {
+    padding-left: 20px;
+}
+
+.manage .table_header th,
+.manage .user_info td,
+.manage .user_edit input[name="name"],
+.manage .user_edit input[name="email"],
+.manage .user_edit input[name="role"],
+.manage .user_edit select {
+    height: 40px;
+}
+
+.manage .user_info td:nth-child(-n+3) {
+    background-color: rgba(229, 229, 229, 0.6);
+    border-right: none;
+    padding-left: 10px;
+}
+
+.manage .table_header th:first-child,
+.manage .user_info td:first-child {
+    width: 180px;
+}
+
+.manage .user_edit input[name="name"] {
+    width: 170px;
+}
+
+.manage .table_header th:nth-child(2),
+.manage .user_info td:nth-child(2),
+.manage .user_edit input[name="email"] {
+    width: 200px;
+}
+
+.manage td:nth-child(3) {
+    width: 60px;
+}
+
+.manage .user_edit select {
+    border-radius: 4px;
+    margin-right: 5px;
+    width: 67px;
+}
+
+.manage .user_edit input[name="role"] {
+    width: 55px;
+}
+
+.manage .user_edit input[name="name"],
+.manage .user_edit input[name="email"],
+.manage .user_edit input[name="role"] {
+    background-color: #FFFFFF;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    margin-right: 5px;
+    padding-left: 10px;
+}
+
+.manage input[type="submit"] {
+    font-size: 17px;
+    padding-bottom: 3px;
+}
+
+.manage .user_info label,
+.manage .user_info input[type="submit"] {
+    background-color: none;
+    border: none;
+    border-left: 10px solid transparent;
+    color: #000000;
+    height: 40px;
+}
+
+.manage .user_edit label,
+.manage .user_edit input[type="submit"] {
+    background-color: #0066CC;
+    border: none;
+    color: #ffffff;
+    height: 40px;
+    text-align: center;
+    width: 40px;
+}
+
+.manage .user_edit input[type="submit"] {
+    border-radius: 0 4px 4px 0;
+}
+
+.manage .user_edit label {
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid #cccccc;
+    display: block;
+}
+
+.manage .user_edit label i {
+    padding-top: 12px;
+}
+
+.manage .user_info {
+    z-index: 1;
+}
+
+.manage .user_edit {
+    opacity: 0;
+    top: -23px;
+}
+
+.checkbox_info:checked~.user_info {
+    opacity: 0;
+    z-index: 0;
+}
+
+.checkbox_info:checked~.user_edit {
+    opacity: 100;
+    z-index: 1;
+}
+
+.manage .login form {
+    position: relative;
+    top: -50px;
+}
+
 
 
 /***  ======RESOLUTION=====  ***/

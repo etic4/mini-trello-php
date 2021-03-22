@@ -1,8 +1,6 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "model/Card.php";
-require_once "model/User.php";
+require_once "autoload.php";
 
 
 class Comment extends CachedGet {
@@ -56,6 +54,10 @@ class Comment extends CachedGet {
         return $this->card->get_id();
     }
 
+    // nécessaire pour gestion des permissions
+    public function get_board() {
+        return $this->card->get_board();
+    }
     //   SETTERS
 
     public function set_id($id){
@@ -169,4 +171,5 @@ class Comment extends CachedGet {
     public function can_be_show($show_comment): bool{
         return $show_comment == $this->get_id();
     }
+
 }

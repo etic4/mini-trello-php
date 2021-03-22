@@ -1,8 +1,6 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "Comment.php";
-require_once "TitleTrait.php";
+require_once "autoload.php";
 
 
 class Card extends CachedGet {
@@ -14,16 +12,21 @@ class Card extends CachedGet {
     private User $author;
     private Column $column;
 
-    private ?array $comments = null;
+    // !! les dates de création et de modification sont dans le trait !!
+    private ?DateTime $dueDate;
 
-    public static function create_new(string $title, User $author, string $column_id): Card {
+    private ?array $comments = null;
+    private ?array $participants = null;
+
+    public static function create_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
         $column = Column::get_by_id($column_id);
         return new Card(
             $title,
             "",
             self::get_cards_count($column),
             $author,
-            $column
+            $column,
+            $dueDate
         );
     }
 
@@ -32,6 +35,7 @@ class Card extends CachedGet {
                                 int $position,
                                 User $author, 
                                 Column $column,
+                                ?Datetime $dueDate=null,
                                 ?string $id = null,
                                 ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
@@ -42,6 +46,7 @@ class Card extends CachedGet {
         $this->position = $position;
         $this->author = $author;
         $this->column = $column;
+        $this->dueDate = $dueDate;
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
     }
@@ -121,6 +126,18 @@ class Card extends CachedGet {
         return $this->comments;
     }
 
+
+    public function get_dueDate(): ?DateTime {
+        return $this->dueDate;
+    }
+
+    public function is_due(): bool {
+        if ($this->get_dueDate() != null) {
+            return $this->get_dueDate()->diff(new Datetime())->s > 0;
+        }
+        return false;
+    }
+
     
     //    SETTERS    //
 
@@ -140,6 +157,76 @@ class Card extends CachedGet {
         $this->position = $position;
     }
 
+    public function set_dueDate(DateTime  $dueDate) {
+        $this->dueDate = $dueDate;
+    }
+
+
+    // OTHERS
+
+    public function has_participants(): bool {
+        return count($this->get_participants()) > 0;
+    }
+
+    public function has_collabs_no_participating(): bool {
+        return count($this->get_collabs_no_participating()) > 0;
+    }
+
+    public function get_collabs_no_participating(): array {
+        $collab = $this->get_board()->get_collaborators();
+        $collab[] = $this->get_board()->get_owner();
+
+        return array_diff($collab, $this->get_participants());
+    }
+
+    public static function get_participating_cards(User $user): array {
+        $sql = "SELECT Card FROM participate WHERE Participant=:id";
+        $param = array("id" => $user->get_id());
+
+        $query = self::execute($sql, $param);
+        $result = $query->fetchAll();
+
+        $cards = [];
+
+        foreach ($result as $cardId) {
+            $cards[] = Card::get_by_id($cardId[0]);
+        }
+
+        return $cards;
+    }
+
+    public function has_dueDate(): bool {
+        return !is_null($this->get_dueDate());
+    }
+
+    public function get_participants(): array {
+        if (is_null($this->participants)) {
+            $sql = "SELECT Participant FROM participate WHERE Card=:id";
+            $param = array("id" => $this->get_id());
+
+            $query = self::execute($sql, $param);
+            $participants = $query->fetchAll();
+
+            $this->participants = [];
+
+            foreach ($participants as $particip) {
+                $this->participants[] = User::get_by_id($particip[0]);
+            }
+        }
+        return $this->participants;
+    }
+
+    public function add_participant(User $user) {
+        $sql = "INSERT INTO participate (Participant, Card) VALUES (:userId, :cardId)";
+        $params = array("cardId" => $this->get_id(), "userId" => $user->get_id());
+        self::execute($sql, $params);
+    }
+
+    public function remove_participant(User $user) {
+        $sql = "DELETE FROM participate where Participant=:userId and Card=:cardId";
+        $param = array("userId" => $user->get_id(), "cardId" => $this->get_id());
+        self::execute($sql, $param);
+    }
 
     //    VALIDATION    //
 
@@ -149,20 +236,33 @@ class Card extends CachedGet {
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
+
         if(!$this->title_is_unique()){
             $errors[] = "Title already exists in this board";
         }
+
+        if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
+            $errors[] = "the date must be at least 10 seconds later than now";
+        }
+
         return $errors;
     }
+
     // fonction de validation en cas d'update d'une carte deja existante
     public function validate_update(): array{
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
+
         if(!$this->title_is_unique_update()){
             $errors[] = "Title already exists in this board";
         }
+
+        if (!Validation::is_date_after($this->get_dueDate(), $this->get_createdAt())) {
+            $errors[] = "the date must be after the creation date of the card";
+        }
+
         return $errors;
     }
 
@@ -224,16 +324,33 @@ class Card extends CachedGet {
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
         list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
+
         return new Card(
             $data["Title"],
             $data["Body"],
             $data["Position"],
             User::get_by_id($data["Author"]),
             Column::get_by_id($data["Column"]),
+            is_null($data["DueDate"]) ? null : new DateTime($data["DueDate"]),
             $data["ID"],
             $createdAt,
             $modifiedAt
         );
+    }
+
+    public static function get_cards_for_author(User $user) {
+        $sql = "SELECT * FROM card WHERE Author=:userId";
+        $params = array("userId" => $user->get_id());
+        $query = self::execute($sql, $params);
+        $data = $query->fetchAll();
+
+        $cards = [];
+        foreach ($data as $card) {
+            $card = self::get_instance($card);
+            self::add_instance_to_cache($card);
+            $cards[] = $card;
+        }
+        return $cards;
     }
 
     //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
@@ -251,7 +368,7 @@ class Card extends CachedGet {
         foreach ($data as $rec) {
             $card = self::get_instance($rec);
             self::add_instance_to_cache($card);
-            array_push($cards, $card);
+            $cards[] = $card;
         }
         return $cards;
     }
@@ -271,14 +388,15 @@ class Card extends CachedGet {
     //insère la carte dans la db, la carte reçoit un nouvel id.
     public function insert() {
         $sql = 
-            "INSERT INTO card(Title, Body, Position, Author, `Column`) 
-             VALUES(:title, :body, :position, :author, :column)";
+            "INSERT INTO card(Title, Body, Position, Author, `Column`, DueDate) 
+             VALUES(:title, :body, :position, :author, :column, :dueDate)";
         $params = array(
             "title" => $this->get_title(),
             "body" => $this->get_body(),
             "position" => $this->get_position(),
             "author" => $this->get_author_id(),
-            "column" => $this->get_column_id()
+            "column" => $this->get_column_id(),
+            "dueDate" => self::sql_date($this->get_dueDate())
         );
 
         $this->execute($sql, $params);
@@ -290,14 +408,15 @@ class Card extends CachedGet {
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
     public function update() {
         $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=NOW(), Author=:author, 
-                `Column`=:column WHERE ID=:id";
+                `Column`=:column, DueDate=:dueDate WHERE ID=:id";
         $params = array(
             "id" => $this->get_id(), 
             "title" => $this->get_title(),
             "body" => $this->get_body(), 
             "position" => $this->get_position(),
             "author" => $this->get_author_id(),
-            "column" => $this->get_column_id()
+            "column" => $this->get_column_id(),
+            "dueDate" => self::sql_date($this->get_dueDate())
         );
 
         $this->execute($sql, $params);
@@ -306,6 +425,10 @@ class Card extends CachedGet {
 
     //supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
     public function delete() {
+        foreach ($this->get_participants() as $participant) {
+            $this->remove_participant($participant);
+        }
+
         foreach ($this->get_comments() as $comment) {
             $comment->delete();
         }
@@ -392,5 +515,9 @@ class Card extends CachedGet {
             "pos" => $card->get_position()
         );
         self::execute($sql,$params);
+    }
+
+    public function __toString(): string {
+        return $this->get_title();
     }
 }

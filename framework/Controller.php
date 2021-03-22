@@ -31,7 +31,7 @@ abstract class Controller
      * Remarque : si un des paramètres est vide (null ou string vide), les suivants sont ignorés.
      */
 
-    public function redirect($controller = "", $action = "index", $param1 = "", $param2 = "", $param3 = "", $statusCode = 303)
+    public static function redirect($controller = "", $action = "index", $param1 = "", $param2 = "", $param3 = "", $statusCode = 303)
     {
         $web_root = Configuration::get("web_root");
         $default_controller = Configuration::get("default_controller");
@@ -54,6 +54,7 @@ abstract class Controller
         header($header, true, $statusCode);
         die();
     }
+
 
     //indique si un l'utilisateur est connecté
     public function user_logged()

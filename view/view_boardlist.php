@@ -20,8 +20,8 @@
                 <h2>Your boards</h2>
                 <div class="displayBoards">
                     <ul class="yourBoards">
-                    <?php foreach($owners as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?></a></li>
+                    <?php foreach($user->get_own_boards() as $board): ?>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?></a></li>
                     <?php endforeach; ?>
                     </ul>
                     <form class="add" action="board/add" method="post">
@@ -33,14 +33,28 @@
                     </form>
                 </div>
             </article>
+
+            <?php if ($user->has_collaborating_boards()): ?>
             <article class="down">
-                <h2>Others' boards</h2>
+                <h2>Boards Shared with you</h2>
+                <ul class="collabBoards">
+                    <?php foreach($user->get_collaborating_boards() as $board): ?>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </article>
+            <?php endif ?>
+
+            <?php if ($user->is_admin()):; ?>
+            <article class="others">
+                <h2>Other's boards</h2>
                     <ul class="otherBoards">
-                    <?php foreach($others as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?> <br/>by <?= $board['fullName'] ?></a></li>
+                    <?php foreach($user->get_others_boards() as $board): ?>
+                        <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a></li>
                     <?php endforeach; ?>
                     </ul>
             </article>
+            <?php endif; ?>
         </main>
         <?php else:?>
         <main class="welcome">

@@ -13,11 +13,12 @@
 	<header id="main_header">
      <?php include('menu.php'); ?>
 	</header>
+    <?= $breadcrumb->get_trace(); ?>
 	<main class="board">
         <article id="main_article">
             <header>
                 <div class="title">
-                    <?php if ($user->is_owner($board)): ?>
+                    <?php if ($user->is_owner($board) || $user->is_admin()): ?>
                     <ul class="icons">
                         <li>
                             <form class='editTitle' action='board/edit/<?= $board->get_id() ?>' method='post'>
@@ -31,6 +32,9 @@
                                 <h2>Board "<?= $board->get_title() ?>"</h2>
                             </form>
                         </li>
+                        <li style="margin-right: 20px">
+                            <a href="board/collaborators/<?= $board->get_id() ?>"><i class="fa fa-users" aria-hidden="true"></i></a>
+                        </li>
                         <li>
                             <form class='link' action='board/delete' method='post'>
                                 <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
@@ -38,6 +42,8 @@
                             </form>
                         </li>
                     </ul>
+                    <?php else: ?>
+                        <h2>Board "<?= $board->get_title() ?>"</h2>
                     <?php endif; ?>
                     <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
                         <?php include('errors.php'); ?>

@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Configuration.php';
-require_once 'model/DateTrait.php';
 
 
 abstract class Model

@@ -39,5 +39,8 @@ class Validation {
         return $column->has_unique_title_in_board();
     }
 
-    
+    // true si 1 seconde d'écart entre les dates
+    public static function is_date_after(?Datetime $datet1, DateTime $datet0) {
+        return is_null($datet1) || $datet0->diff($datet1)->s > 1;
+    }
 }

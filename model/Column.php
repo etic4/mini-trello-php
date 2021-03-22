@@ -1,9 +1,6 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "Card.php";
-require_once "TitleTrait.php";
-
+require_once "autoload.php";
 
 class Column extends CachedGet {
     use DateTrait, TitleTrait;
@@ -252,4 +249,7 @@ class Column extends CachedGet {
         self::execute($sql,$params);
     }
 
+    public function __toString(): string {
+        return $this->get_title();
+    }
 }
