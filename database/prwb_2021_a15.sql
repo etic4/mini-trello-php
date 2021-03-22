@@ -20,7 +20,7 @@ CREATE TABLE `board` (
   `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
   `ModifiedAt` datetime NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Owner`) REFERENCES `User`(`ID`),
+  FOREIGN KEY(`Owner`) REFERENCES `user`(`ID`),
   UNIQUE(`Title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
@@ -32,7 +32,7 @@ CREATE TABLE `column` (
   `ModifiedAt` datetime NULL,
   `Board` int(11) NOT NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Board`) REFERENCES `Board`(`ID`)
+  FOREIGN KEY(`Board`) REFERENCES `board`(`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `card` (
@@ -43,10 +43,10 @@ CREATE TABLE `card` (
   `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
   `ModifiedAt` datetime NULL,
   `Author` int(11) NOT NULL,
-  `Column` int(11) NOT NULL,
+  `column` int(11) NOT NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Author`) REFERENCES `User`(`ID`),
-  FOREIGN KEY(`Column`) REFERENCES `Column`(`ID`)
+  FOREIGN KEY(`Author`) REFERENCES `user`(`ID`),
+  FOREIGN KEY(`column`) REFERENCES `column`(`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
   
 CREATE TABLE `comment` (
@@ -57,6 +57,6 @@ CREATE TABLE `comment` (
   `Author` int(11) NOT NULL,
   `Card` int(11) NOT NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Author`) REFERENCES `User`(`ID`),
-  FOREIGN KEY(`Card`) REFERENCES `Card`(`ID`)
+  FOREIGN KEY(`Author`) REFERENCES `user`(`ID`),
+  FOREIGN KEY(`Card`) REFERENCES `card`(`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
