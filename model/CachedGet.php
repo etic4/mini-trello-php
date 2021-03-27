@@ -15,67 +15,62 @@ abstract class CachedGet extends Model {
 
     protected static array $data_cache = [];
 
-    protected static abstract function get_instance($data);
+    //cache un résultat ou retourne la version en cache si existe
+    // si le requête n'est pas sur l'id, l'exécute et cache le résultat sur l'id
 
-    /* si $id n'est pas en cache, requêtre en DB, construction de l'instance, on la mets en cache et la retourne*/
-    public static function get_by_id(string $id) {
-        if (!self::is_in_cache($id)) {
-            $table_name = strtolower(static::class);
-            $sql =
-                "SELECT * 
-             FROM `$table_name` 
-             WHERE ID=:id";
+    public static function cache_get_one(Callable $callable, string $sql, array $params) {
+        $className = $callable[0];
+        $methodName = $callable[1];
 
-            $params = array("id" => $id);
-            $query = self::execute($sql, $params);
-            $data = $query->fetch();
+        $key = self::get_key_for($params);
 
-            if ($query->rowCount() == 0) {
-                self::add_null_for_id($id);
-            } else {
-                self::add_instance_to_cache(static::get_instance($data));
-            }
+        if (!self::is_in_cache($key)) {
+            $result = call_user_func_array($className::$methodName, array($sql, $params));
+            self::cache_result($result, $key);
         }
-        return self::get_cached($id);
+        return self::get_cached($key);
     }
 
-    /* Crée un array avec comme clé static::class si n'existe pas*/
-    private static function ensure_cache_for_class() {
-        $class_name = static::class;
-        if (!array_key_exists($class_name, self::$data_cache)) {
-            self::$data_cache[$class_name] = [];
+    // cache individuellement les résultats d'un get_many
+    public static function cache_get_many(array $results): array {
+        foreach ($results as $res ) {
+            $key = self::get_key_for(array("ID" => $res->get_id()));
+            self::cache_result($res, $key);
         }
+        return $results;
     }
 
-    protected static function add_instance_to_cache($instance) {
-        self::ensure_cache_for_class();
-        self::$data_cache[static::class][$instance->get_id()] = $instance;
+    // retourne une clé (string) pour le query params
+    private static function get_key_for($queryParams): string {
+        $keys = [];
+        foreach ($queryParams as $key => $value) {
+            $key[] = $key . "_ " . $value;
+        }
+        return join("_", $keys);
     }
 
-    protected static function add_null_for_id($id) {
+    private static function cache_result($result, $key) {
         self::ensure_cache_for_class();
-        self::$data_cache[static::class][$id] = null;
-    }
-
-    /* Ajoute un élément quelconque au cache */
-    protected static function add_to_cache(string $key, $value) {
-        self::ensure_cache_for_class();
-        static::$data_cache[$key] = $value;
+        self::$data_cache[static::class][$key] = $result;
     }
 
     /* Check si $key existe en cache */
     protected static function is_in_cache($key): bool {
-        $class_name = static::class;
-        if (array_key_exists($class_name, self::$data_cache)) {
-            return array_key_exists($key, self::$data_cache[$class_name]);
-        }
-        return false;
+        return isset(self::$data_cache[static::class][$key]) ;
     }
 
     /* Cf. https://www.php.net/manual/fr/migration70.new-features.php#migration70.new-features.null-coalesce-op
     */
     protected static function get_cached($key) {
+        return self::is_in_cache($key) ? static::$data_cache[static::class][$key] :  null;
+    }
+
+
+    /* Crée un array avec comme clé static::class si n'existe pas*/
+    protected static function ensure_cache_for_class() {
         $class_name = static::class;
-        return static::$data_cache[$class_name][$key] ?? null;
+        if (!isset(self::$data_cache[$class_name])) {
+            self::$data_cache[$class_name] = [];
+        }
     }
 }

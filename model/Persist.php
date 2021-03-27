@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-abstract class Persist extends Model {
+abstract class Persist extends CachedGet {
     public static abstract function get_tableName();
     protected static abstract function get_FKName();
     protected abstract function get_object_map();
@@ -11,38 +11,38 @@ abstract class Persist extends Model {
     protected abstract function set_id(string $id);
     protected abstract function get_childs();
 
+
     public static function get_by($col, $val) {
         $sql = "SELECT * FROM " .  static::get_tableName()  ." WHERE " . $col . "=:" . $col;
         $params = array($col=>$val);
-        return self::get_one($sql, $params);
+
+        return self::cache_get_one(array(static::class, "get_one"), $sql, $params);
     }
 
     public static function get_by_id($id) {
         return self::get_by("ID", $id);
     }
 
-    public static function get_all($object=null): array {
+    public static function get_all($col=null, $val=null): array {
         $sql = "SELECT * FROM " . static::get_tableName();
-        $params = null;
 
-        if ($object != null) {
-            $fkName = $object->get_fKName();
-            $sql = $sql . " WHERE $fkName=:$fkName";
-            $params = array($fkName=>$object->get_id());
+        $params = null;
+        if ($col != null && $val != null) {
+            $sql = $sql . " WHERE $col=:$col";
+            $params = array($col=>$val);
         }
-        return self::get_many($sql, $params);
+        return self::cache_get_many(self::get_many($sql, $params));
     }
 
-    public static function get_count($object=null): int {
+    public static function get_count($col=null, $val=null): int {
         $sql = "SELECT COUNT(*) AS total FROM " . static::get_tableName();
+
         $params = null;
-        if ($object != null) {
-            $fkName = $object->get_fKName();
-            $sql = $sql . " WHERE $fkName=:$fkName";
-            $params = array($fkName=>$object->get_id());
+        if ($col != null && $val != null) {
+            $sql = $sql . " WHERE $col=:$col";
+            $params = array($col=>$val);
         }
         $data = self::execute($sql, $params)->fetch();
-
         return $data["total"];
     }
 
@@ -96,19 +96,11 @@ abstract class Persist extends Model {
         $datas = $query->fetchAll();
 
         $objects = array();
-        $prev = null;
         foreach ($datas as $data) {
             $rec = static::get_instance($data);
-            if (self::class instanceof MoveIFace) {
-                if ($prev !== null) {
-                    $prev->set_next($rec);
-                }
-                $rec->set_prev($prev);
-                $rec->set_next(null);
-                $prev = $rec;
-            }
             array_push($objects, $rec);
         }
         return $objects;
     }
+
 }

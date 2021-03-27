@@ -359,7 +359,7 @@ class Card extends CachedGet {
         $cards = [];
         foreach ($data as $card) {
             $card = self::get_instance($card);
-            self::add_instance_to_cache($card);
+            self::add_instance_under_id($card);
             $cards[] = $card;
         }
         return $cards;
@@ -379,7 +379,7 @@ class Card extends CachedGet {
         $cards = [];
         foreach ($data as $rec) {
             $card = self::get_instance($rec);
-            self::add_instance_to_cache($card);
+            self::add_instance_under_id($card);
             $cards[] = $card;
         }
         return $cards;

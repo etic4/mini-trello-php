@@ -258,7 +258,7 @@ class User extends CachedGet {
         if ($query->rowCount() > 0) {
             foreach ($data as $rec) {
                 $user = self::get_instance($rec);
-                self::add_instance_to_cache($user);
+                self::add_instance_under_id($user);
                 $userList[] = $user;
             }
         }
