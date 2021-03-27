@@ -123,14 +123,22 @@ class Board extends CachedGet {
 
     //    QUERIES    //
 
+    protected function get_object_map(): array {
+        return array (
+            "Title" => $this->get_title(),
+            "Owner" => $this->get_owner(),
+            "ID" => $this->get_id(),
+            "ModifiedAt" => self::sql_date($this->get_modifiedAt())
+        );
+    }
+
     protected static function get_instance($data): Board {
-        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Board(
             $data["Title"],
             User::get_by_id($data["Owner"]),
             $data["ID"],
-            $createdAt,
-            $modifiedAt
+            self::php_date($data["CreatedAt"]),
+            self::php_date($data["ModifiedAt"])
         );
     }
 

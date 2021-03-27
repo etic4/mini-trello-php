@@ -321,20 +321,32 @@ class Card extends CachedGet {
          return $query->rowCount()==0 ;
     }
 
+    protected function get_object_map(): array {
+        return array(
+            "Title" => $this->get_title(),
+            "Body" => $this->get_body(),
+            "Position" => $this->get_position(),
+            "Author" => $this->get_author()->get_id(),
+            "`Column`" => $this->get_column()->get_id(),
+            "DueDate" => $this->get_dueDate(),
+            "ID" => $this->get_id(),
+            "ModifiedAt" => self::sql_date($this->get_createdAt()),
+        );
+    }
+
+
     //renvoie un objet Card dont les attributs ont pour valeur les données $data
     protected static function get_instance($data) :Card {
-        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
-
         return new Card(
             $data["Title"],
             $data["Body"],
             $data["Position"],
             User::get_by_id($data["Author"]),
             Column::get_by_id($data["Column"]),
-            is_null($data["DueDate"]) ? null : new DateTime($data["DueDate"]),
+            self::php_date($data["DueDate"]),
             $data["ID"],
-            $createdAt,
-            $modifiedAt
+            self::php_date($data["CreatedAt"]),
+            self::php_date($data["ModifiedAt"])
         );
     }
 
@@ -396,7 +408,7 @@ class Card extends CachedGet {
             "position" => $this->get_position(),
             "author" => $this->get_author_id(),
             "column" => $this->get_column_id(),
-            "dueDate" => self::sql_date($this->get_dueDate())
+            "dueDate" => $this->get_dueDate()
         );
 
         $this->execute($sql, $params);

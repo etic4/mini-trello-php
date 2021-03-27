@@ -224,6 +224,18 @@ class User extends CachedGet {
 
     //    QUERIES    //
 
+    public function get_object_map(): array {
+        return array(
+
+            "Mail" => $this->get_email(),
+            "FullName" => $this->get_fullName(),
+            "Role" => $this->get_role(),
+            "ID" => $this->get_id(),
+            "Password" => $this->get_passwdHash(),
+            "RegisteredAt" => $this->get_registeredAt()
+        );
+    }
+
     /* Retourne une instance de User à partir d'une colonne de la DB */
     protected static function get_instance($data): User {
         return new User(

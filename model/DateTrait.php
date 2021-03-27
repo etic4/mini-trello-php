@@ -11,30 +11,20 @@ trait DateTrait {
     private ?DateTime $modifiedAt;
     private ?Datetime $createdAt;
 
-    public static function sql_date($datetime) {
-        return $datetime != null ? $datetime->format('Y-m-d H:i:s') : null;
+
+    public static function php_date($sqlDate): ?DateTime {
+        return $sqlDate != null ? new DateTime($sqlDate) : null;
     }
 
-    /* Crée des intances de Datetime à partir d'un string provenant de la DB
-    Si $modifiedAt est null, il est set à la valeur de $createdAt
-    retourne une array de 2 DateTime.
-    TODO: revoir toute cette logique ultérieurement, c'est foireux.
-*/
-    public static function get_dates_from_sql($createdAt, $modifiedAt): array {
-        $createdAtInst = new DateTime($createdAt);
-        $modifiedAtInst = $createdAtInst;
-        if (!is_null($modifiedAt)) {
-            $modifiedAtInst = new DateTime($modifiedAt);
-        }
-        return array($createdAtInst, $modifiedAtInst);
+    public static function sql_date(?DateTime $dateTime): ?string {
+        return $dateTime != null ? $dateTime->format('Y-m-d H:i:s') : null;
     }
-
 
     public function get_createdAt(): DateTime {
         return $this->createdAt;
     }
 
-    public function get_modifiedAt(): DateTime {
+    public function get_modifiedAt(): ?DateTime {
         return $this->modifiedAt;
     }
 
@@ -42,7 +32,7 @@ trait DateTrait {
         $this->createdAt = $createdAt;
     }
 
-    public function set_modifiedAt(DateTime $modifiedAt) {
+    public function set_modifiedAt(?DateTime $modifiedAt) {
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -62,7 +52,7 @@ trait DateTrait {
         $query = $this->execute($sql, $params);
         $data = $query->fetch();
 
-        return self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
+        return array(self::php_date($data["CreatedAt"]), self::php_date($data["ModifiedAt"]));
     }
 
     public function get_created_intvl() {
@@ -70,7 +60,7 @@ trait DateTrait {
     }
 
     public function get_modified_intvl() {
-        if ($this->get_createdAt() != $this->get_modifiedAt()) {
+        if ($this->get_modifiedAt() != null && $this->get_createdAt() != $this->get_modifiedAt()) {
             return "Modified " . $this->intvl($this->get_modifiedAt(), new DateTime());
         }
         return "Never modified";

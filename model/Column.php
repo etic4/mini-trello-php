@@ -117,15 +117,25 @@ class Column extends CachedGet {
 
     //    QUERIES    //
 
+    public function get_object_map(): array {
+        return array(
+
+            "Title" => $this->get_title(),
+            "Position" => $this->get_position(),
+            "Board" => $this->get_board_id(),
+            "ID" => $this->get_id(),
+            "ModifiedAt" => self::sql_date($this->get_createdAt()),
+        );
+    }
+
     protected static function get_instance($data, $board=null) :Column {
-        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
         return new Column(
             $data["Title"],
             $data["Position"],
             Board::get_by_id($data["Board"]),
             $data["ID"],
-            $createdAt,
-            $modifiedAt
+            self::php_date($data["CreatedAt"]),
+            self::php_date($data["ModifiedAt"])
         );
     }
 

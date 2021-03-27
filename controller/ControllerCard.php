@@ -82,7 +82,7 @@ class ControllerCard extends ExtendedController {
             $card->set_title(Post::get("title"));
         }
 
-        if(Post::isset("due-date")) {
+        if(Post::isset("due_date")) {
             $card->set_dueDate(new Datetime(Post::get("due_date")));
         }
 
