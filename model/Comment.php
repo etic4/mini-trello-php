@@ -3,13 +3,27 @@
 require_once "autoload.php";
 
 
-class Comment extends CachedGet {
+class Comment extends Persist {
     use DateTrait;
 
     private ?String $id;
     private String $body;
     private User $author;
     private Card $card;
+
+    public static function get_tableName(): string {
+        return "`comment`";
+    }
+
+    public static function get_FKName(): string {
+        return "`Comment`";
+    }
+
+    protected function get_childs() {
+        return [];
+    }
+
+
 
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null){

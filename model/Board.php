@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class Board extends CachedGet {
+class Board extends Persist {
     use DateTrait, TitleTrait;
 
     private ?string $id;
@@ -10,6 +10,18 @@ class Board extends CachedGet {
     private ?array $columns = null;
     private ?array $collaborators = null;
 
+
+    public static function get_tableName(): string {
+        return "`board`";
+    }
+
+    public static function get_FKName(): string {
+        return "`Board`";
+    }
+
+    protected function get_childs() {
+        return $this->get_columns();
+    }
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {

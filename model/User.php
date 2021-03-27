@@ -4,7 +4,7 @@
 require_once "autoload.php";
 
 
-class User extends CachedGet {
+class User extends Persist {
     private ?string $id;
     private string $email;
     private string $fullName;
@@ -13,6 +13,18 @@ class User extends CachedGet {
     private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
 
+
+    public static function get_tableName(): string {
+        return "`user`";
+    }
+
+    public static function get_FKName(): string {
+        return "`Owner`";
+    }
+
+    public function get_childs(): array {
+        return $this->get_own_boards();
+    }
 
     public static function get_random_password() {
         return "Password1,";

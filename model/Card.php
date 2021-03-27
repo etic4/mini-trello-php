@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class Card extends CachedGet {
+class Card extends Persist {
     use DateTrait, TitleTrait;
 
     private ?string $id;
@@ -17,6 +17,19 @@ class Card extends CachedGet {
 
     private ?array $comments = null;
     private ?array $participants = null;
+
+
+    public static function get_tableName(): string {
+        return "`card`";
+    }
+
+    protected static function get_FKName(): string {
+        return "`Card`";
+    }
+
+    protected function get_childs() {
+        return $this->get_comments();
+    }
 
     public static function create_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
         $column = Column::get_by_id($column_id);

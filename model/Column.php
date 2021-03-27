@@ -2,13 +2,26 @@
 
 require_once "autoload.php";
 
-class Column extends CachedGet {
+class Column extends Persist {
     use DateTrait, TitleTrait;
 
     private ?string $id;
     private string $position;
     private Board $board;
     private ?array $cards = null;
+
+
+    public static function get_tableName(): string {
+        return "`column`";
+    }
+
+    public static function get_FKName(): string {
+        return "`Column`";
+    }
+
+    protected function get_childs() {
+        return $this->get_cards();
+    }
 
 
     public static function create_new(string $title, Board $board): Column {
