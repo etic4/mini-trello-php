@@ -36,6 +36,10 @@ class Board extends Persist {
         return $this->id;
     }
 
+    public function set_id(string $id): void {
+        $this->id = $id;
+    }
+
     public function get_owner(): User {
         return $this->owner;
     }
@@ -55,10 +59,6 @@ class Board extends Persist {
         return $this->columns;
     }
 
-    // nécessaire pour la gestion des authorisations
-    public function get_board() {
-        return $this;
-    }
 
     // retourne la liste des collaborateurs de ce tableau
     public function get_collaborators(): array {
@@ -103,12 +103,6 @@ class Board extends Persist {
 
     public function has_user_not_collaborating():bool {
         return count($this->get_not_collaborating()) > 0;
-    }
-
-    //    SETTERS    //
-
-    public function set_id(string $id): void {
-        $this->id = $id;
     }
 
 
@@ -194,7 +188,6 @@ class Board extends Persist {
 
         return $boards;
     }
-
 
     
     public function insert() {

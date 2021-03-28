@@ -19,10 +19,6 @@ class Column extends Persist {
         return "`Column`";
     }
 
-    protected function cascade_delete() {
-        return $this->get_cards();
-    }
-
 
     public static function create_new(string $title, Board $board): Column {
         return new Column(
@@ -32,11 +28,7 @@ class Column extends Persist {
         );
     }
 
-    public function __construct(string $title, 
-                                int $position, 
-                                Board $board, 
-                                string $id=null, 
-                                ?DateTime $createdAt=null,
+    public function __construct(string $title, int $position, Board $board, string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
@@ -47,14 +39,22 @@ class Column extends Persist {
     }
 
 
-    //    GETTERS    //
+    // --- getters & setters ---
 
     public function get_id(): ?string {
         return $this->id;
     }
 
+    public function set_id(string $id): void {
+        $this->id = $id;
+    }
+
     public function get_position(): string {
         return $this->position;
+    }
+
+    public function set_position(int $position): void {
+        $this->position = $position;
     }
 
     public function get_board(): Board {
@@ -85,15 +85,7 @@ class Column extends Persist {
     }
 
 
-    //    SETTERS    //
-
-    public function set_id(string $id): void {
-        $this->id = $id;
-    }
-
-    public function set_position(int $position): void {
-        $this->position = $position;
-    }
+    // --- booleans ---
 
     public function is_first(): bool {
         return $this->get_position() == 0;
@@ -102,6 +94,7 @@ class Column extends Persist {
     public function is_last(): bool {
         return $this->get_position() == count($this->get_board_columns()) - 1;
     }
+
 
     //    VALIDATION    //
 
@@ -152,86 +145,39 @@ class Column extends Persist {
         );
     }
 
-    public static function sql_select_all(Board $board): array {
-        $sql = 
-            "SELECT * 
-             FROM `column` 
-             WHERE Board=:id ORDER BY Position";
-        $params= array("id"=>$board->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
+    public static function get_by_id(string $id) {
+        return self::sql_select("ID", $id);
+    }
 
-        $columns = array();
-        foreach ($data as $rec) {
-            array_push($columns, self::get_instance($rec));
-        }
-        return $columns;
+    public static function get_all(Board $board): array {
+        return self::sql_select_all("Board", $board->get_id());
     }
 
     public static function get_columns_for_board(Board $board): array {
-        $sql = 
-            "SELECT * 
-             FROM `column` 
-             WHERE Board=:id ORDER BY Position";
-        $params= array("id"=>$board->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
+        $columns =  self::sql_select_all("Board", $board->get_id());
+        usort($columns, function(Column $c1, Column $c2) {return $c1->get_position() - $c2->get_position();});
 
-        $columns = array();
-        foreach ($data as $rec) {
-            $column = self::get_instance($rec);
-            self::add_instance_under_id($column);
-            array_push($columns, $column);
-        }
         return $columns;
     }
 
     public function insert() {
-        $sql = 
-            "INSERT INTO `column`(Title, Position, Board) 
-             VALUES(:title, :position, :board)";
-        $params = array(
-            "title" => $this->get_title(), 
-            "position" => $this->get_position(),
-            "board" => $this->get_board_id()
-        );
-
-        $this->execute($sql, $params);
-        $id = $this->lastInsertId();
-        $this->set_id($id);
-        $this->set_dates_from_db();
+        self::sql_insert();
     }
 
     public function update(): void {
-        $sql = 
-            "UPDATE `column` 
-             SET Title=:title, Position=:position, Board=:board, ModifiedAt=NOW() 
-             WHERE ID=:id";
-        $params = array(
-            "id" => $this->get_id(), 
-            "title" => $this->get_title(), 
-            "position" => $this->get_position(),
-            "board" => $this->get_board_id()
-        );
+        self::sql_update();
+    }
 
-        $this->execute($sql, $params);
-        $this->set_dates_from_db();
+    protected function cascade_delete() {
+        return $this->get_cards();
     }
 
     public function delete(): void {
-        foreach ($this->get_cards() as $card) {
-            $card->delete();
-        }
-
-        $sql = "DELETE 
-                FROM `column` 
-                WHERE ID = :id";
-        $params = array("id"=>$this->get_id());
-        $this->execute($sql, $params);
+        self::sql_delete();
     }
 
 
-    // MOVE COLUMN //
+    // --- move ---
 
     public function move_left(): void {
         $pos = $this->get_position();
@@ -264,7 +210,7 @@ class Column extends Persist {
         $sql = "UPDATE `column` 
                 SET Position = Position - 1
                 WHERE Board=:board 
-                AND Position>:pos";
+                AND Position >:pos";
         $params = array(
             "board" => $column->get_board_id(),
             "pos" => $column->get_position()
