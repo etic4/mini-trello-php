@@ -72,7 +72,7 @@ class ControllerUser extends ExtendedController {
 
         (new View("manage_users"))->show(array(
                 "user" => $admin,
-                "users" => User::get_all(),
+                "users" => User::sql_select_all(),
                 "errors" => ValidationError::get_error_and_reset())
         );
     }

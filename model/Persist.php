@@ -9,21 +9,17 @@ abstract class Persist extends CachedGet {
     protected static abstract function get_instance($data);
     protected abstract function get_id();
     protected abstract function set_id(string $id);
-    protected abstract function get_childs();
+    protected abstract function cascade_delete();
 
 
-    public static function get_by($col, $val) {
+    public static function sql_select($col, $val) {
         $sql = "SELECT * FROM " .  static::get_tableName()  ." WHERE " . $col . "=:" . $col;
         $params = array($col=>$val);
 
-        return self::cache_get_one(array(static::class, "get_one"), $sql, $params);
+        return self::cache_get_one(array(static::class, "sql_get_one"), $sql, $params);
     }
 
-    public static function get_by_id($id) {
-        return self::get_by("ID", $id);
-    }
-
-    public static function get_all($col=null, $val=null): array {
+    public static function sql_select_all($col=null, $val=null): array {
         $sql = "SELECT * FROM " . static::get_tableName();
 
         $params = null;
@@ -31,10 +27,10 @@ abstract class Persist extends CachedGet {
             $sql = $sql . " WHERE $col=:$col";
             $params = array($col=>$val);
         }
-        return self::cache_get_many(self::get_many($sql, $params));
+        return self::cache_get_many(self::sql_get_many($sql, $params));
     }
 
-    public static function get_count($col=null, $val=null): int {
+    public static function sql_get_count($col=null, $val=null): int {
         $sql = "SELECT COUNT(*) AS total FROM " . static::get_tableName();
 
         $params = null;
@@ -46,7 +42,7 @@ abstract class Persist extends CachedGet {
         return $data["total"];
     }
 
-    public function insert() {
+    public function sql_insert() {
         $map = $this->get_object_map();
         $table = $this->get_tableName();
         $colsNames =  join(", ", array_keys($map));
@@ -58,7 +54,7 @@ abstract class Persist extends CachedGet {
         $this->set_id(self::lastInsertId());
     }
 
-    public function update() {
+    public function sql_update() {
         $map = $this->get_object_map();
         $table = $this->get_tableName();
 
@@ -72,8 +68,8 @@ abstract class Persist extends CachedGet {
         self::execute($sql, $map);
     }
 
-    public function delete() {
-        foreach ($this->get_childs() as $child) {
+    public function sql_delete() {
+        foreach ($this->cascade_delete() as $child) {
             $child->delete();
         }
         $sql = "DELETE FROM " . $this->get_tableName() . " WHERE ID=:ID";
@@ -81,7 +77,7 @@ abstract class Persist extends CachedGet {
         $this->execute($sql, $params);
     }
 
-    protected static function get_one($sql, $params) {
+    protected static function sql_get_one($sql, $params) {
         $query = self::execute($sql, $params);
         $data = $query->fetch();
         if ($query->rowCount() == 0) {
@@ -91,7 +87,7 @@ abstract class Persist extends CachedGet {
         }
     }
 
-    protected static function get_many($sql, $params): array {
+    protected static function sql_get_many($sql, $params): array {
         $query = self::execute($sql, $params);
         $datas = $query->fetchAll();
 

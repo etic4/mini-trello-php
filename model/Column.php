@@ -19,7 +19,7 @@ class Column extends Persist {
         return "`Column`";
     }
 
-    protected function get_childs() {
+    protected function cascade_delete() {
         return $this->get_cards();
     }
 
@@ -152,7 +152,7 @@ class Column extends Persist {
         );
     }
 
-    public static function get_all(Board $board): array {
+    public static function sql_select_all(Board $board): array {
         $sql = 
             "SELECT * 
              FROM `column` 

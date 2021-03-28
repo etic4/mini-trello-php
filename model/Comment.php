@@ -19,7 +19,7 @@ class Comment extends Persist {
         return "`Comment`";
     }
 
-    protected function get_childs() {
+    protected function cascade_delete() {
         return [];
     }
 

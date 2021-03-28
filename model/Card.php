@@ -27,7 +27,7 @@ class Card extends Persist {
         return "`Card`";
     }
 
-    protected function get_childs() {
+    protected function cascade_delete() {
         return $this->get_comments();
     }
 

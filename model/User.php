@@ -11,7 +11,7 @@ class User extends Persist {
     private string $role;
     private ?string $passwdHash;
     private ?DateTime $registeredAt;
-    private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validate
+    private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validation
 
 
     public static function get_tableName(): string {
@@ -22,13 +22,10 @@ class User extends Persist {
         return "`Owner`";
     }
 
-    public function get_childs(): array {
-        return $this->get_own_boards();
-    }
-
     public static function get_random_password() {
         return "Password1,";
     }
+
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
@@ -39,29 +36,45 @@ class User extends Persist {
         $this->id = $id;
         $this->email = $email;
         $this->fullName = $fullName;
-        $this->role = is_null($role) ? Role::USER : $role;
+        $this->set_role($role);
         $this->passwdHash = $passwdHash;
         $this->clearPasswd = $clearPasswd;
         $this->registeredAt = $registeredAt;
     }
 
 
-    //    GETTERS    //
+    // --- getters & setters ---
 
     public function get_id(): ?string {
         return $this->id;
+    }
+
+    public function set_id($id) {
+        $this->id = $id;
     }
 
     public function get_email(): string {
         return $this->email;
     }
 
+    public function set_email(string $email) {
+        $this->email = $email;
+    }
+
     public function get_fullName(): string {
         return $this->fullName;
     }
 
+    public function set_fullName(string $fullName) {
+        $this->fullName = $fullName;
+    }
+
     public function get_role(): string {
         return $this->role;
+    }
+
+    public function set_role($role) {
+        $this->role = is_null($role) ? Role::USER : $role;
     }
 
     public function get_passwdHash(): string {
@@ -72,40 +85,57 @@ class User extends Persist {
         return $this->registeredAt;
     }
 
-
-    //    SETTERS    //
-
-    public function set_id($id) {
-        $this->id = $id;
-    }
-
-    public function set_fullName(string $fullName) {
-        $this->fullName = $fullName;
-    }
-
-    public function set_email(string $email) {
-        $this->email = $email;
-    }
-
-    public function set_role($role) {
-        $this->role = Role::USER;
-        if (Role::is_valid_role($role)) {
-            $this->role = $role;
-        }
-    }
-
     public function set_registeredAt(DateTime $registeredAt) {
         $this->registeredAt = $registeredAt;
     }
 
-    //    OTHERS
+
+    // --- booleans ---
 
     public function is_admin(): bool {
         return $this->role == Role::ADMIN;
     }
 
-    //    VALIDATION    //
+    public function is_owner(Board $board): bool {
+        return $this->get_id() == $board->get_owner_id();
+    }
 
+    public function is_collaborator(Board $board): bool {
+        foreach ($board->get_collaborators() as $collaborator) {
+            if ($collaborator == $this) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function is_participant(Card $card):bool {
+        foreach ($card->get_participants() as $participant) {
+            if ($participant == $this) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+
+    public function is_author(Comment $comment): bool {
+        return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
+    }
+
+    public function has_collaborating_boards(): bool {
+        return count($this->get_collaborating_boards()) > 0;
+    }
+
+    // vérifie si l'utilisateur peut delete le comment $comment
+    public function can_delete_comment(Card $card, Comment $comment): bool{
+        return $this->is_owner($card->get_board()) || $this->is_author($comment);
+    }
+
+
+    // --- validation ---
+
+    // TODO: extraire ça de là (classe propre ?)
     public static function validate_login(string $email, string $password): array {
         if (!empty($email)) {
             $user = User::get_by_email($email);
@@ -182,59 +212,8 @@ class User extends Persist {
         return $errors;
     }
 
-    public function is_owner(Board $board): bool {
-        return $this->get_id() == $board->get_owner_id();
-    }
 
-    public function is_collaborator(Board $board): bool {
-        foreach ($board->get_collaborators() as $collaborator) {
-            if ($collaborator == $this) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function is_participant(Card $card) {
-        foreach ($card->get_participants() as $participant) {
-            if ($participant == $this) {
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public function is_author(Comment $comment): bool {
-        return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
-    }
-
-
-    public function get_own_boards(): array {
-        return Board::get_users_boards($this);
-    }
-
-    public function get_own_cards(): array {
-        return Card::get_cards_for_author($this);
-    }
-
-    public function get_collaborating_boards(): array {
-        return  Board::get_collaborating_boards($this);
-    }
-
-    public function get_participating_cards(): array {
-        return Card::get_participating_cards($this);
-    }
-
-    public function get_others_boards(): array {
-        return Board::get_others_boards($this);
-    }
-
-    public function has_collaborating_boards(): bool {
-        return count($this->get_collaborating_boards()) > 0;
-    }
-
-
-    //    QUERIES    //
+    // --- sql ---
 
     public function get_object_map(): array {
         return array(
@@ -261,64 +240,24 @@ class User extends Persist {
         );
     }
 
-    public static function get_all() {
-        $sql = "SELECT * FROM user";
-        $query = self::execute($sql, null);
-        $data = $query->fetchAll();
-
-        $userList = [];
-        if ($query->rowCount() > 0) {
-            foreach ($data as $rec) {
-                $user = self::get_instance($rec);
-                self::add_instance_under_id($user);
-                $userList[] = $user;
-            }
-        }
-        return $userList;
+    public static function get_by_id($id) {
+        return self::sql_select("ID", $id);
     }
 
     public static function get_by_email(string $email): ?User {
-        $sql = 
-            "SELECT * 
-             FROM user 
-             WHERE Mail=:email";
-        $query = self::execute($sql, array("email"=>$email));
-
-        $data = $query->fetch();
-        if ($query->rowCount() == 0) {
-            return null;
-        }
-        return self::get_instance($data);
+        return self::sql_select("Mail", $email);
     }
 
     public function insert() {
-        $sql = 
-            "INSERT INTO user(Mail, FullName, Role, Password) 
-             VALUES(:email, :fullName, :role, :passwdHash)";
-        $params = array(
-            "email" => $this->get_email(), 
-            "fullName" => $this->get_fullName(),
-            "role" => $this->get_role(),
-            "passwdHash" => $this->get_passwdHash()
-        );
-        $this->execute($sql, $params);
-        $user = self::get_by_id($this->lastInsertId());
-        $this->set_id($user->get_id());
-        $this->set_registeredAt($user->get_registeredAt());
+        self::sql_insert();
     }
 
     public function update() {
-        $sql = 
-            "UPDATE user 
-             SET Mail=:email, FullName=:fullName, Role=:role, Password=:passwdHash 
-             WHERE ID=:id";
-        $params = array(
-            "id" => $this->get_id(), 
-            "email" => $this->get_email(), 
-            "fullName" => $this->get_fullName(),
-            "role" => $this->get_role(),
-            "passwdHash" => $this->get_passwdHash());
-        $this->execute($sql, $params);
+        self::sql_update();
+    }
+
+    public function cascade_delete(): array {
+        return array_merge(Card::get_cards_for_author($this), $this->get_own_boards());
     }
 
     public function delete() {
@@ -330,25 +269,23 @@ class User extends Persist {
             $card->remove_participant($this);
         }
 
-        foreach ($this->get_own_cards() as $card) {
-            $card->delete();
-        }
-
-        foreach ($this->get_own_boards() as $board) {
-            $board->delete();
-        }
-
-        $sql = 
-            "DELETE FROM user 
-             WHERE ID = :id";
-        $params = array("id"=>$this->get_id());
-        $this->execute($sql, $params);
+        self::sql_delete();
     }
 
+    public function get_own_boards(): array {
+        return Board::get_users_boards($this);
+    }
 
-    // vérifie si l'utilisateur peut delete le comment $comment
-    public function can_delete_comment(Card $card, Comment $comment): bool{
-        return $this->is_owner($card->get_board()) || $this->is_author($comment);
+    public function get_collaborating_boards(): array {
+        return  Board::get_collaborating_boards($this);
+    }
+
+    public function get_participating_cards(): array {
+        return Card::get_participating_cards($this);
+    }
+
+    public function get_others_boards(): array {
+        return Board::get_others_boards($this);
     }
 
     public function __toString(): string {

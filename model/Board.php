@@ -19,7 +19,7 @@ class Board extends Persist {
         return "`Board`";
     }
 
-    protected function get_childs() {
+    protected function cascade_delete() {
         return $this->get_columns();
     }
 
@@ -96,13 +96,11 @@ class Board extends Persist {
     }
 
     public function get_non_owner(): array {
-        $users = User::get_all();
-        $tst = array_diff(User::get_all(), [$this->get_owner()]);
-        return array_diff(User::get_all(), [$this->get_owner()]);
+        $users = User::sql_select_all();
+        return array_diff(User::sql_select_all(), [$this->get_owner()]);
     }
 
     public function get_not_collaborating(): array {
-        $tst = array_diff($this->get_non_owner(), $this->get_collaborators());
         return array_diff($this->get_non_owner(), $this->get_collaborators());
     }
 
