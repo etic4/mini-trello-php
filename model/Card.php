@@ -43,15 +43,8 @@ class Card extends Persist {
         );
     }
 
-    public function __construct(string $title, 
-                                string $body, 
-                                int $position,
-                                User $author, 
-                                Column $column,
-                                ?Datetime $dueDate=null,
-                                ?string $id = null,
-                                ?DateTime $createdAt=null,
-                                ?DateTime $modifiedAt=null) {
+    public function __construct(string $title, string $body, int $position, User $author, Column $column, ?Datetime $dueDate=null,
+                                ?string $id = null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
 
         $this->id = $id;
         $this->title = $title;

@@ -4,7 +4,7 @@ spl_autoload_register(
     function($class) {
         $SEP = DIRECTORY_SEPARATOR;
         $baseDir =  __DIR__;
-        $dirs = array("framework", "controller", "model", "view", "tests");
+        $dirs = array("framework", "controller", "model", "model".$SEP."persist", "view", "tests");
 
         $found = false;
         $i = 0;
@@ -18,6 +18,4 @@ spl_autoload_register(
             ++$i;
         }
     },
-    true,
-    false
 );
