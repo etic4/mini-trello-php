@@ -16,7 +16,7 @@ abstract class CachedGet extends Model {
     protected static array $data_cache = [];
 
     //cache un résultat ou retourne la version en cache si existe
-    // si le requête n'est pas sur l'id, l'exécute et cache le résultat sur l'id
+    // la clé en cache est la concaténation ("_") des noms des paramètres et des valeurs des paramètres
 
     public static function cache_get_one(Callable $callable, string $sql, array $params) {
         $className = $callable[0];

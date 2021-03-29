@@ -11,6 +11,7 @@ class Comment extends Persist {
     private User $author;
     private Card $card;
 
+
     public static function get_tableName(): string {
         return "`comment`";
     }
@@ -19,11 +20,11 @@ class Comment extends Persist {
         return "`Comment`";
     }
 
-    protected function cascade_delete() {
-        return [];
+
+
+    public static function create_new(String $body, User $author, Card $card): Comment{
+        return new Comment($body, $author, $card, null);
     }
-
-
 
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null){
@@ -34,9 +35,7 @@ class Comment extends Persist {
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
     }
-    public static function create_new(String $body, User $author, Card $card): Comment{
-        return new Comment($body, $author, $card, null);
-    }
+
 
     // GETTERS
 
@@ -44,12 +43,27 @@ class Comment extends Persist {
         return $this->id;
     }
 
+
+    public function set_id($id){
+        $this->id=$id;
+    }
+
     public function get_body(): string {
         return $this->body;
     }
 
+
+    public function set_body($body){
+        $this->body=$body;
+    }
+
     public function get_author(): User {
         return $this->author;
+    }
+
+
+    public function set_author($author){
+        $this->author=$author;
     }
 
     public function get_author_fullName(): string {
@@ -64,35 +78,23 @@ class Comment extends Persist {
         return $this->card;
     }
 
-    public function get_card_id(): String {
-        return $this->card->get_id();
-    }
-
-    // nécessaire pour gestion des permissions
-    public function get_board() {
-        return $this->card->get_board();
-    }
-    //   SETTERS
-
-    public function set_id($id){
-        $this->id=$id;
-    }
-
-    public function set_body($body){
-        $this->body=$body;
-    }
-
-    public function set_author($author){
-        $this->author=$author;
-    }
-
     public function set_card($card){
         $this->card=$card;
     }
 
+    public function get_card_id(): String {
+        return $this->card->get_id();
+    }
+
+    public function get_board() {
+        return $this->card->get_board();
+    }
 
 
-    //   QUERIES
+
+
+
+    // --- sql ---
 
 
     public function get_object_map(): array {
@@ -118,20 +120,13 @@ class Comment extends Persist {
         );
     }
 
+    public static function get_by_id(string $id) {
+        return self::sql_select("ID", $id);
+    }
+
     // insertion en db avec les valeurs d'instances.
     public function insert() { 
-        $sql =
-            "INSERT INTO comment (Body, Author, Card) 
-             VALUES (:body, :author, :card)";
-        $params=array(
-            "body"=>$this->get_body(),
-            "author"=>$this->get_author()->get_id(),
-            "card"=>$this->get_card()->get_id()
-        );
-        $this->execute($sql, $params);
-        $id = $this->lastInsertId();
-        $this->set_id($id);
-        $this->set_dates_from_db();
+        self::sql_insert();
     }
     
     // rencoie true si l'utilisateur $user a le droit d'éditer le commentaire $id 
@@ -142,29 +137,26 @@ class Comment extends Persist {
     
     //mets a jour la db avec les valeurs de l'instance
     public function update() {
-        $sql = 
-            "UPDATE comment 
-             SET Body=:body, Author=:author, Card=:card , ModifiedAt=NOW()
-             WHERE ID=:id";
-        $params = array(
-            "id"=>$this->get_id(),
-            "body"=>$this->get_body(), 
-            "author"=>$this->get_author()->get_id(),
-            "card"=>$this->get_card()->get_id()
-        );
-        $this->execute($sql, $params);
-        $this->set_dates_from_db();
+        self::sql_update();
+    }
+
+    protected function cascade_delete() {
+        return [];
     }
 
     public function delete() {
-        $sql = "DELETE FROM comment 
-                WHERE ID = :id";
-        $param = array('id' => $this->id);
-        self::execute($sql, $param);
+        self::sql_delete();
     }
 
     // renvoie un tableau de comment associé à la carte $card
     public static function get_comments_for_card(Card $card): array {
+        $comments = self::sql_select_all("Card", $card->get_id());
+        usort($comments, function (Comment $c1, Comment $c2) {
+            return $c2->get_modifiedAt()->getTimestamp() -  $c1->get_modifiedAt()->getTimestamp();});
+        usort($comments, function (Comment $c1, Comment $c2) {
+            return $c2->get_createdAt()->getTimestamp() -  $c1->get_createdAt()->getTimestamp();});
+
+        return $comments;
         $sql = 
             "SELECT * 
              FROM comment 
