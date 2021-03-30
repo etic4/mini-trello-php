@@ -15,41 +15,16 @@ abstract class CachedGet extends Model {
 
     protected static array $data_cache = [];
 
-    //cache un résultat ou retourne la version en cache si existe
-    // la clé en cache est la concaténation ("_") des noms des paramètres et des valeurs des paramètres
-
-    public static function cache_get_one(Callable $callable, string $sql, array $params) {
-        $className = $callable[0];
-        $methodName = $callable[1];
-
-        $key = self::get_key_for($params);
-
-        if (!self::is_in_cache($key)) {
-            $result = call_user_func_array($className::$methodName, array($sql, $params));
-            self::cache_result($result, $key);
-        }
-        return self::get_cached($key);
-    }
-
-    // cache individuellement les résultats d'un get_many
-    public static function cache_get_many(array $results): array {
-        foreach ($results as $res ) {
-            $key = self::get_key_for(array("ID" => $res->get_id()));
-            self::cache_result($res, $key);
-        }
-        return $results;
-    }
-
     // retourne une clé (string) pour le query params
-    private static function get_key_for($queryParams): string {
+    protected static function get_key_for($queryParams): string {
         $keys = [];
         foreach ($queryParams as $key => $value) {
-            $key[] = $key . "_ " . $value;
+            $keys[] = $key . "_" . $value;
         }
         return join("_", $keys);
     }
 
-    private static function cache_result($result, $key) {
+    protected static function cache_result($result, $key) {
         self::ensure_cache_for_class();
         self::$data_cache[static::class][$key] = $result;
     }
