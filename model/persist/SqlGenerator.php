@@ -2,7 +2,7 @@
 
 //require_once "autoload.php";
 
-class SimpleQuery {
+class SqlGenerator {
     private string $tableName;
     private string $select_string;
     private string $from_string;
@@ -17,8 +17,8 @@ class SimpleQuery {
     private ?array $params;
 
 
-    private static function new_from(SimpleQuery $query) {
-        return new SimpleQuery($query->tableName, $query->select_string, $query->from_string, $query->where_string,
+    private static function new_from(SqlGenerator $query) {
+        return new SqlGenerator($query->tableName, $query->select_string, $query->from_string, $query->where_string,
             $query->order_string, $query->join_string, $query->insert_string, $query->update_string, $query->delete_string, $query->params);
     }
 
@@ -37,13 +37,13 @@ class SimpleQuery {
     }
 
 
-    public function select(array $columns_array=null): SimpleQuery {
+    public function select(array $columns_array=null): SqlGenerator {
         $columns = empty($columns_array) ? "*" : join(", ", array_values($columns_array));
 
         $this->select_string = "SELECT ".$columns;
         $this->from_string = "FROM " . $this->tableName;
 
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
     public function insert(array $object_map) {
@@ -57,10 +57,10 @@ class SimpleQuery {
         $this->insert_string = "INSERT INTO $this->tableName($colsNames) VALUES ($colsPH)";
         $this->merge_params($object_map);
 
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
-    public function update(array $object_map): SimpleQuery {
+    public function update(array $object_map): SqlGenerator {
         //ne pas retenir ces éléments (en cas d'update d'une ligne, quand $object_map est obtenu auprès d'instance)
         $dontKeep = function($key) {return !in_array($key, array("ID", "CreatedAt", "RegisteredAt"));};
 
@@ -75,29 +75,29 @@ class SimpleQuery {
         $this->update_string = "UPDATE $this->tableName SET $setCols";
         $this->merge_params($object_map);
 
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
     public function delete() {
         $this->delete_string = "DELETE FROM " . $this->tableName;
 
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
     public function from(array $tablesNames) {
         if (!empty($tablesNames)) {
             $this->from_string = "FROM " . join(", ", $tablesNames);
         }
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
     public function join(array $joins_list) {
         $to_join = array_map(function($col1, $col2){return "$col1=$col2";}, array_keys($joins_list), $joins_list);
         $this->join_string = join(", ", $to_join);
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
-    public function where(array $where_array): SimpleQuery {
+    public function where(array $where_array): SqlGenerator {
         $columns = array_keys($where_array);
 
         // remplacer les "." par des "_" en cas de join
@@ -113,22 +113,22 @@ class SimpleQuery {
         $this->where_string = "WHERE " . $where_args;
         $this->merge_params($this->dot_to_underscore($where_array));
 
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
-    public function order_by(array $order_array): SimpleQuery {
+    public function order_by(array $order_array): SqlGenerator {
         $args = [];
         foreach ($order_array as $col => $order) {
             $args[] = "$col $order";
         }
         $this->order_string = "ORDER BY " . join(", ", $args);
 
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
-    public function count(): SimpleQuery {
+    public function count(): SqlGenerator {
         $this->select_string = "SELECT COUNT(*)";
-        return SimpleQuery::new_from($this);
+        return SqlGenerator::new_from($this);
     }
 
     private function process_join() {
