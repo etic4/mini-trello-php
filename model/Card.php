@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class Card extends Persist {
+class Card {
     use DateTrait, TitleTrait;
 
     private ?string $id;
@@ -19,29 +19,18 @@ class Card extends Persist {
     private ?array $participants = null;
 
 
-    public static function get_tableName(): string {
-        return "`card`";
-    }
-
-    protected static function get_FKName(): string {
-        return "`Card`";
-    }
-
-    protected function cascade_delete() {
-        return $this->get_comments();
-    }
-
-    public static function create_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
-        $column = Column::get_by_id($column_id);
+    public static function get_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
+        $column = ColumnDao::get_by_id($column_id);
         return new Card(
             $title,
             "",
-            self::get_cards_count($column),
+            count($column->get_cards()),
             $author,
             $column,
             $dueDate
         );
     }
+
 
     public function __construct(string $title, string $body, int $position, User $author, Column $column, ?Datetime $dueDate=null,
                                 ?string $id = null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
@@ -58,19 +47,31 @@ class Card extends Persist {
     }
 
 
-    //    GETTERS    //
+    // --- getters & setters ---
 
     public function get_id(): ?string {
         return $this->id;
+    }
+
+    public function set_id(string $id) {
+        $this->id = $id;
     }
 
     public function get_body(): string {
         return $this->body;
     }
 
-    public function get_position(): string {
+    public function set_body(string $body) {
+        $this->body = $body;
+    }
 
+
+    public function get_position(): string {
         return $this->position;
+    }
+
+    public function set_position(string $position) {
+        $this->position = $position;
     }
 
     public function get_author(): User {
@@ -88,6 +89,27 @@ class Card extends Persist {
     public function get_column(): Column {
         return $this->column;
     }
+
+    public function set_column(Column $column) {
+        $this->column = $column;
+    }
+
+    public function get_dueDate(): ?DateTime {
+        return $this->dueDate;
+    }
+
+    public function set_dueDate(DateTime  $dueDate) {
+        $this->dueDate = $dueDate;
+    }
+
+    public function get_comments(): array {
+        if (is_null($this->comments)) {
+            $this->comments = CommentDao::get_comments_for_card($this);
+        }
+        return $this->comments;
+    }
+
+    // --- demeter ---
 
     public function get_column_title(): string {
         return $this->column->get_title();
@@ -125,17 +147,9 @@ class Card extends Persist {
         return $this->column->get_board_owner();
     }
 
-    public function get_comments(): array {
-        if (is_null($this->comments)) {
-            $this->comments = Comment::get_comments_for_card($this);
-        }
-        return $this->comments;
-    }
 
 
-    public function get_dueDate(): ?DateTime {
-        return $this->dueDate;
-    }
+    // --- booleans ---
 
     public function is_due(): bool {
         if ($this->get_dueDate() != null) {
@@ -143,32 +157,6 @@ class Card extends Persist {
         }
         return false;
     }
-
-    
-    //    SETTERS    //
-
-    public function set_id(string $id) {
-        $this->id = $id;
-    }
-
-    public function set_body(string $body) {
-        $this->body = $body;
-    }
-
-    public function set_column(Column $column) {
-        $this->column = $column;
-    }
-
-    public function set_position(string $position) {
-        $this->position = $position;
-    }
-
-    public function set_dueDate(DateTime  $dueDate) {
-        $this->dueDate = $dueDate;
-    }
-
-
-    // OTHERS
 
     public function has_participants(): bool {
         return count($this->get_participants()) > 0;
@@ -178,6 +166,10 @@ class Card extends Persist {
         return count($this->get_collabs_no_participating()) > 0;
     }
 
+    public function has_dueDate(): bool {
+        return !is_null($this->get_dueDate());
+    }
+
     public function get_collabs_no_participating(): array {
         $collab = $this->get_board()->get_collaborators();
         $collab[] = $this->get_board()->get_owner();
@@ -185,25 +177,7 @@ class Card extends Persist {
         return array_diff($collab, $this->get_participants());
     }
 
-    public static function get_participating_cards(User $user): array {
-        $sql = "SELECT Card FROM participate WHERE Participant=:id";
-        $param = array("id" => $user->get_id());
 
-        $query = self::execute($sql, $param);
-        $result = $query->fetchAll();
-
-        $cards = [];
-
-        foreach ($result as $cardId) {
-            $cards[] = Card::get_by_id($cardId[0]);
-        }
-
-        return $cards;
-    }
-
-    public function has_dueDate(): bool {
-        return !is_null($this->get_dueDate());
-    }
 
     public function get_participants(): array {
         if (is_null($this->participants)) {
@@ -237,14 +211,18 @@ class Card extends Persist {
     //    VALIDATION    //
 
     // fonction de validation en cas d'ajout de nouvelle carte
-    public function validate(): array {
+    public function validate($update=null): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
 
-        if(!$this->title_is_unique()){
-            $errors[] = "Title already exists in this board";
+        $title_count = CardDao::title_count($this);
+        if ($title_count != 0) {
+            $stored = CardDao::get_by_id($this->get_id());
+            if (is_null($update) || ($update == true && $stored->get_title() != $this->get_title())) {
+                $errors[] = "Title already exists in this board";
+            }
         }
 
         if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
@@ -254,23 +232,6 @@ class Card extends Persist {
         return $errors;
     }
 
-    // fonction de validation en cas d'update d'une carte deja existante
-    public function validate_update(): array{
-        $errors = [];
-        if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $errors[] = "Title must be at least 3 characters long";
-        }
-
-        if(!$this->title_is_unique_update()){
-            $errors[] = "Title already exists in this board";
-        }
-
-        if (!Validation::is_date_after($this->get_dueDate(), $this->get_createdAt())) {
-            $errors[] = "the date must be after the creation date of the card";
-        }
-
-        return $errors;
-    }
 
 
     //    TOOLS    //
@@ -293,84 +254,6 @@ class Card extends Persist {
 
 
 
-    //    QUERIES    //
-    
-    // renvoie true si le titre de la carte est unique pour le tableau contenant la carte
-    public function title_is_unique() {
-        $sql = 
-            "SELECT * 
-            FROM card ca, `column` co
-            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
-        $params = array(
-            "title"=>$this->get_title(), 
-            "board_id"=>$this->get_board_id(),
-            );
-        $query = self::execute($sql, $params);
-        $data=$query->fetch();
-        return $query->rowCount()==0 ;
-    }
-
-    //renvoie true si le titre de la carte est unique pour le tableau contenant la carte
-    // version a utiliser en cas d'update
-    public function title_is_unique_update(){
-        $sql = 
-            "SELECT * 
-            FROM card ca, `column` co
-            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
-         $params = array(
-             "title"=>$this->get_title(), 
-             "board_id"=>$this->get_board_id(),
-             "card_id"=>$this->get_id()
-            );
-         $query = self::execute($sql, $params);
-         $data=$query->fetch();
-         return $query->rowCount()==0 ;
-    }
-
-    protected function get_object_map(): array {
-        return array(
-            "Title" => $this->get_title(),
-            "Body" => $this->get_body(),
-            "Position" => $this->get_position(),
-            "Author" => $this->get_author()->get_id(),
-            "`Column`" => $this->get_column()->get_id(),
-            "DueDate" => $this->get_dueDate(),
-            "ID" => $this->get_id(),
-            "ModifiedAt" => self::sql_date($this->get_createdAt()),
-        );
-    }
-
-
-    //renvoie un objet Card dont les attributs ont pour valeur les données $data
-    protected static function get_instance($data) :Card {
-        return new Card(
-            $data["Title"],
-            $data["Body"],
-            $data["Position"],
-            User::get_by_id($data["Author"]),
-            Column::get_by_id($data["Column"]),
-            self::php_date($data["DueDate"]),
-            $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
-        );
-    }
-
-    public static function get_cards_for_author(User $user) {
-        $sql = "SELECT * FROM card WHERE Author=:userId";
-        $params = array("userId" => $user->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $cards = [];
-        foreach ($data as $card) {
-            $card = self::get_instance($card);
-            self::add_instance_under_id($card);
-            $cards[] = $card;
-        }
-        return $cards;
-    }
-
     //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
     public static function get_cards_for_column(Column $column): array {
         $sql = 
@@ -384,76 +267,32 @@ class Card extends Persist {
 
         $cards = [];
         foreach ($data as $rec) {
-            $card = self::get_instance($rec);
+            $card = self::from_query($rec);
             self::add_instance_under_id($card);
             $cards[] = $card;
         }
         return $cards;
     }
 
-    //nombre de cartes dans la colonne
-    public static function get_cards_count(Column $column) {
-        $sql =
-            "SELECT COUNT(Position)  as nbr
-             FROM card 
-             WHERE `Column`=:id";
-        $params = array("id"=>$column->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-        return $data["nbr"];
-    }
 
     //insère la carte dans la db, la carte reçoit un nouvel id.
     public function insert() {
-        $sql = 
-            "INSERT INTO card(Title, Body, Position, Author, `Column`, DueDate) 
-             VALUES(:title, :body, :position, :author, :column, :dueDate)";
-        $params = array(
-            "title" => $this->get_title(),
-            "body" => $this->get_body(),
-            "position" => $this->get_position(),
-            "author" => $this->get_author_id(),
-            "column" => $this->get_column_id(),
-            "dueDate" => $this->get_dueDate()
-        );
-
-        $this->execute($sql, $params);
-        $id = $this->lastInsertId();
-        $this->set_id($id);
-        $this->set_dates_from_db();
+        self::sql_insert();
     }
 
     //met à jour la db avec les valeurs des attributs actuels de l'objet Card
     public function update() {
-        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=NOW(), Author=:author, 
-                `Column`=:column, DueDate=:dueDate WHERE ID=:id";
-        $params = array(
-            "id" => $this->get_id(), 
-            "title" => $this->get_title(),
-            "body" => $this->get_body(), 
-            "position" => $this->get_position(),
-            "author" => $this->get_author_id(),
-            "column" => $this->get_column_id(),
-            "dueDate" => self::sql_date($this->get_dueDate())
-        );
+        self::sql_update();
+    }
 
-        $this->execute($sql, $params);
-        $this->set_dates_from_db();
+
+    protected function cascade_delete() {
+        return $this->get_comments();
     }
 
     //supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
     public function delete() {
-        foreach ($this->get_participants() as $participant) {
-            $this->remove_participant($participant);
-        }
-
-        foreach ($this->get_comments() as $comment) {
-            $comment->delete();
-        }
-        $sql = "DELETE FROM card 
-                WHERE ID = :id";
-        $param = array('id' => $this->get_id());
-        self::execute($sql, $param);
+        self::sql_delete();
     }
 
 
@@ -467,7 +306,7 @@ class Card extends Persist {
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
-            $this->update();
+            CardDao::update($this);
             $target->update();
         }
     }
@@ -481,7 +320,7 @@ class Card extends Persist {
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
-            $this->update();
+            CardDao::update($this);
             $target->update();;
         }
     }
@@ -493,11 +332,11 @@ class Card extends Persist {
             $target = $this->get_all_columns()[$pos-1];
 
             /*Faut décrémenter les suivantes avant de changer de colonne*/
-            Card::decrement_following_cards_position($this);
+            CardDao::decrement_following_cards_position($this);
 
             $this->set_column($target);
-            $this->set_position(Card::get_cards_count($target));
-            $this->update();
+            $this->set_position(count($target->get_cards()));
+            CardDao::update($this);
         }
     }
 
@@ -509,31 +348,15 @@ class Card extends Persist {
             $target = $colList[$pos+1];
 
             /*Faut décrémenter les suivantes avant de changer de colonne*/
-            Card::decrement_following_cards_position($this);
+            CardDao::decrement_following_cards_position($this);
 
             $this->set_column($target);
-            $this->set_position(Card::get_cards_count($target));
-            $this->update();
+            $this->set_position(count($target->get_cards()));
+            CardDao::update($this);
 
         }
     }
 
-    /*
-        fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
-        on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 
-        l'utilisateur, mais juste une conséquence d'une autre action
-    */
-    public static function decrement_following_cards_position($card){
-        $sql = "UPDATE card 
-                SET Position = Position - 1
-                WHERE `Column`=:column 
-                AND Position>:pos";
-        $params = array(
-            "column" => $card->get_column_id(),
-            "pos" => $card->get_position()
-        );
-        self::execute($sql,$params);
-    }
 
     public function __toString(): string {
         return $this->get_title();

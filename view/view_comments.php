@@ -22,7 +22,7 @@
                     <?php endif; ?>
                     <ul class="icons">
                         <!-- si l'utilisateur est l'auteur du message -->
-                         <?php if($user->is_author($comment)): ?>
+                         <?php if($user->is_author($comment)  && !isset($show_comment)): ?>
                          <li>
                             <form class='link' action='comment/edit' method='post'>
                                 <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>

@@ -17,5 +17,5 @@ spl_autoload_register(
             }
             ++$i;
         }
-    },
+    }
 );

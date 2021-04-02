@@ -22,7 +22,7 @@ class SqlGenerator {
             $query->order_string, $query->join_string, $query->insert_string, $query->update_string, $query->delete_string, $query->params);
     }
 
-    public function __construct(string $tableName, string $select="", string $from="", string $where="", string $order="",
+    public function __construct(string $tableName="", string $select="", string $from="", string $where="", string $order="",
         $join="", $insert="", $update="", $delete="", array $params=[]) {
         $this->tableName = $tableName;
         $this->select_string = $select;
@@ -37,10 +37,11 @@ class SqlGenerator {
     }
 
 
-    public function select(array $columns_array=null): SqlGenerator {
-        $columns = empty($columns_array) ? "*" : join(", ", array_values($columns_array));
+    public function select(array $columns=null, $distinct=false): SqlGenerator {
+        $cols = empty($columns) ? "*" : join(", ", array_values($columns));
+        $distinct = $distinct ? " DISTINCT " : " ";
 
-        $this->select_string = "SELECT ".$columns;
+        $this->select_string = "SELECT$distinct".$cols;
         $this->from_string = "FROM " . $this->tableName;
 
         return SqlGenerator::new_from($this);
@@ -78,35 +79,39 @@ class SqlGenerator {
         return SqlGenerator::new_from($this);
     }
 
-    public function delete() {
+    public function delete(): object {
         $this->delete_string = "DELETE FROM " . $this->tableName;
 
         return SqlGenerator::new_from($this);
     }
 
-    public function from(array $tablesNames) {
+    public function join(array $tablesNames): SqlGenerator {
         if (!empty($tablesNames)) {
             $this->from_string = "FROM " . join(", ", $tablesNames);
         }
         return SqlGenerator::new_from($this);
     }
 
-    public function join(array $joins_list) {
+    public function on(array $joins_list): SqlGenerator {
         $to_join = array_map(function($col1, $col2){return "$col1=$col2";}, array_keys($joins_list), $joins_list);
         $this->join_string = join(", ", $to_join);
         return SqlGenerator::new_from($this);
     }
 
-    public function where(array $where_array): SqlGenerator {
+
+    public function where(array $where_array, array $operators=null): SqlGenerator {
         $columns = array_keys($where_array);
 
-        // remplacer les "." par des "_" en cas de join
+        if (is_null($operators)) {
+            $operators = array_fill(0, count($columns), "=");
+        }
+
         $interpolate = array_map(
-            function($col){
-                $no_dot = $this->repl_dot($col);
-                return "$col=:$no_dot";
+            function($col, $op){
+                $no_dot = $this->repl_dot($col); // remplacer les "." par des "_" en cas de join
+                return "$col$op:$no_dot";
             },
-            $columns);
+            $columns, $operators);
 
         $where_args = join(" AND ", $interpolate);
 
@@ -127,7 +132,7 @@ class SqlGenerator {
     }
 
     public function count(): SqlGenerator {
-        $this->select_string = "SELECT COUNT(*)";
+        $this->select_string = "SELECT COUNT(*) as total";
         return SqlGenerator::new_from($this);
     }
 
@@ -153,7 +158,7 @@ class SqlGenerator {
         return $this->params;
     }
 
-    public function get_preparable(): array {
+    public function get(): array {
         return array($this->get_sql(), $this->params);
     }
 

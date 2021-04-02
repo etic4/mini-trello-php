@@ -13,7 +13,8 @@ Dans un souci de ne pas mélanger les langues lors de la phase de programation, 
 Nous avons considéré qu'ajouter un tableau/colonne/carte/commentaire vide n'était pas permis, mais que cela ne devait pas afficher d'erreur. Si l'utilisateur clique sur le bouton 'ajouter' sans remplir le corps, la page est simplement rechargée à l'identique.
 
 ## Notes de livraison itération 2
-
+simplification de la gestion des dates
+cache des requêtes étendu et exécuté au moment de l'exécution de la requête;
 
 ## Notes de livraison itération 3
 

@@ -30,7 +30,7 @@ class CardTest extends \PHPUnit\Framework\TestCase {
         $title = "Titre de la carte";
         $body = "the body";
         $column = Column::get_by_id(1);
-        $position = Card::get_cards_count($column);
+        $position = count($column->get_cards());
         $author = User::get_by_id(1);
 
         $card = new Card($title, $body, $position, $author, $column);

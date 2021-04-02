@@ -2,23 +2,14 @@
 
 require_once "autoload.php";
 
-class Board extends Persist {
+class Board {
     use DateTrait, TitleTrait;
 
     private ?string $id;
     private User $owner;
     private ?array $columns = null;
+
     private ?array $collaborators = null;
-
-
-    public static function get_tableName(): string {
-        return "`board`";
-    }
-
-    public static function get_FKName(): string {
-        return "`Board`";
-    }
-
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
@@ -54,7 +45,7 @@ class Board extends Persist {
 
     public function get_columns(): array {
         if (is_null($this->columns)) {
-            $this->columns = Column::get_columns_for_board($this);
+            $this->columns = ColumnDao::get_columns_for_board($this);
         }
         return $this->columns;
     }
@@ -93,8 +84,7 @@ class Board extends Persist {
     }
 
     public function get_non_owner(): array {
-        $users = User::sql_select_all();
-        return array_diff(User::sql_select_all(), [$this->get_owner()]);
+        return array_diff(UserDao::get_all(), [$this->get_owner()]);
     }
 
     public function get_not_collaborating(): array {
@@ -122,84 +112,16 @@ class Board extends Persist {
     }
 
 
-    // --- sql ---
-
-    protected function get_object_map(): array {
-        return array (
-            "Title" => $this->get_title(),
-            "Owner" => $this->get_owner(),
-            "ID" => $this->get_id(),
-            "ModifiedAt" => self::sql_date($this->get_modifiedAt())
-        );
-    }
-
-    protected static function get_instance($data): Board {
-        return new Board(
-            $data["Title"],
-            User::get_by_id($data["Owner"]),
-            $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
-        );
-    }
-
     public static function get_by_title(string $title): ?Board {
-        return self::sql_select("Title", $title);
+        return BoardDao::get_by_title($title);
     }
 
-    public static function get_users_boards(User $user): array {
-        return self::sql_select_all("Owner", $user->get_id());
-    }
-
-    public static function get_collaborating_boards(User $user): array {
-        $sql =
-            "SELECT b.ID, b.Title, b.Owner, b.CreatedAt, b.ModifiedAt 
-             FROM collaborate 
-             JOIN board b on b.ID = collaborate.Board
-             WHERE Collaborator=:id";
-
-        $params = array("id"=>$user->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $boards = array();
-        foreach ($data as $rec) {
-            array_push($boards, self::get_instance($rec));
-        }
-
-        return $boards;
-    }
-    
-    public static function get_others_boards(User $user): array {
-        $sql = 
-            "SELECT b.ID, b.Title, b.Owner, b.CreatedAt, b.ModifiedAt 
-             from board b where b.ID not in (
-                SELECT b1.ID FROM board b1 WHERE b1.Owner=:userId 
-                UNION 
-                select b2.ID FROM board b2 join collaborate c on c.Board = b2.ID where c.Collaborator=:userId)";
-        $params = array("userId" => $user->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $boards = [];
-        foreach ($data as $rec) {
-            $boards[] = self::get_instance($rec);
-        }
-
-        return $boards;
-    }
-
-    
     public function insert() {
-        self::sql_insert();
+        BoardDao::insert($this);
     }
 
     public function update(): void {
-        self::sql_update();
-    }
-
-    protected function cascade_delete() {
-        return $this->get_columns();
+        BoardDao::update($this);
     }
 
     public function delete(): void {
@@ -207,7 +129,7 @@ class Board extends Persist {
             $this->remove_collaborator($collaborator);
         }
 
-        self::sql_delete();
+        BoardDao::cascade_delete($this);
     }
 
     public function __toString(): string {

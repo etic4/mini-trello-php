@@ -3,7 +3,7 @@
 require_once "autoload.php";
 
 
-class Comment extends Persist {
+class Comment {
     use DateTrait;
 
     private ?String $id;
@@ -108,17 +108,7 @@ class Comment extends Persist {
     }
 
 
-    // renvoie un comment avec comme attributs les donnee de $data
-    protected static function get_instance($data): Comment {
-        return new Comment(
-            $data["Body"],
-            User::get_by_id($data["Author"]),
-            Card::get_by_id($data["Card"]),
-            $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
-        );
-    }
+
 
     public static function get_by_id(string $id) {
         return self::sql_select("ID", $id);
@@ -168,7 +158,7 @@ class Comment extends Persist {
 
         $comments = array();
         foreach ($data as $rec) {
-            array_push($comments, self::get_instance($rec));
+            array_push($comments, self::from_query($rec));
         }
         return $comments;
     }

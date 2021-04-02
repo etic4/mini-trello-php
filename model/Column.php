@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class Column extends Persist {
+class Column {
     use DateTrait, TitleTrait;
 
     private ?string $id;
@@ -96,7 +96,7 @@ class Column extends Persist {
     }
 
 
-    //    VALIDATION    //
+    // --- Validation ---
 
     public function validate(): array {
         $errors = [];
@@ -122,28 +122,6 @@ class Column extends Persist {
     }
 
     //    QUERIES    //
-
-    public function get_object_map(): array {
-        return array(
-
-            "Title" => $this->get_title(),
-            "Position" => $this->get_position(),
-            "Board" => $this->get_board_id(),
-            "ID" => $this->get_id(),
-            "ModifiedAt" => self::sql_date($this->get_createdAt()),
-        );
-    }
-
-    protected static function get_instance($data, $board=null) :Column {
-        return new Column(
-            $data["Title"],
-            $data["Position"],
-            Board::get_by_id($data["Board"]),
-            $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
-        );
-    }
 
     public static function get_by_id(string $id) {
         return self::sql_select("ID", $id);
@@ -187,8 +165,8 @@ class Column extends Persist {
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
-            $this->update();
-            $target->update();
+            ColumnDao::update($this);
+            ColumnDao::update($target);
         }
     }
 
@@ -201,8 +179,8 @@ class Column extends Persist {
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
-            $this->update();
-            $target->update();;
+            ColumnDao::update($this);
+            ColumnDao::update($target);
         }
     }
 

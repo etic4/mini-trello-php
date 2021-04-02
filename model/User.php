@@ -4,7 +4,7 @@
 require_once "autoload.php";
 
 
-class User extends Persist {
+class User {
     private ?string $id;
     private string $email;
     private string $fullName;
@@ -13,19 +13,14 @@ class User extends Persist {
     private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validation
 
-
-    public static function get_tableName(): string {
-        return "`user`";
-    }
-
-    public static function get_FKName(): string {
-        return "`Owner`";
-    }
+    private array $own_boards;
+    private array $admin_visible_boards;
+    private array $collaborations;
+    private array $participations;
 
     public static function get_random_password() {
         return "Password1,";
     }
-
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
                                 ?string $id=null, ?string $passwdHash=null, ?DateTime $registeredAt=null) {
@@ -101,26 +96,15 @@ class User extends Persist {
     }
 
     public function is_collaborator(Board $board): bool {
-        foreach ($board->get_collaborators() as $collaborator) {
-            if ($collaborator == $this) {
-                return true;
-            }
-        }
-        return false;
+        return in_array($board, $board->get_collaborators());
     }
 
     public function is_participant(Card $card):bool {
-        foreach ($card->get_participants() as $participant) {
-            if ($participant == $this) {
-                return true;
-            }
-            return false;
-        }
+        return in_array($card, $card->get_participants());
     }
 
-
     public function is_author(Comment $comment): bool {
-        return $this->get_id() == $comment->get_author_id() && !isset($show_comment);
+        return $this->get_id() == $comment->get_author_id();
     }
 
     public function has_collaborating_boards(): bool {
@@ -129,7 +113,7 @@ class User extends Persist {
 
     // vérifie si l'utilisateur peut delete le comment $comment
     public function can_delete_comment(Card $card, Comment $comment): bool{
-        return $this->is_owner($card->get_board()) || $this->is_author($comment);
+        return $this->is_owner($card->get_board()) || ($this->is_author($comment)  && !isset($show_comment));
     }
 
 
@@ -213,79 +197,47 @@ class User extends Persist {
     }
 
 
-    // --- sql ---
-
-    public function get_object_map(): array {
-        return array(
-
-            "Mail" => $this->get_email(),
-            "FullName" => $this->get_fullName(),
-            "Role" => $this->get_role(),
-            "ID" => $this->get_id(),
-            "Password" => $this->get_passwdHash(),
-            "RegisteredAt" => $this->get_registeredAt()
-        );
-    }
-
-    /* Retourne une instance de User à partir d'une colonne de la DB */
-    protected static function get_instance($data): User {
-        return new User(
-            $data["Mail"],
-            $data["FullName"],
-            $data["Role"],
-            null,
-            $data["ID"],
-            $data["Password"],
-            new DateTime($data["RegisteredAt"])
-        );
-    }
-
-    public static function get_by_id($id) {
-        return self::sql_select("ID", $id);
-    }
-
-    public static function get_by_email(string $email): ?User {
-        return self::sql_select("Mail", $email);
-    }
-
-    public function insert() {
-        self::sql_insert();
-    }
-
-    public function update() {
-        self::sql_update();
-    }
-
-    public function cascade_delete(): array {
-        return array_merge(Card::get_cards_for_author($this), $this->get_own_boards());
-    }
 
     public function delete() {
-        foreach ($this->get_collaborating_boards() as $board) {
-            $board->remove_collaborator($this);
-        }
+        UserDao::cascade_delete($this);
+    }
 
-        foreach ($this->get_participating_cards() as $card) {
-            $card->remove_participant($this);
-        }
+    public function get_boards(): array {
+        return [
+            $this->get_own_boards(),
+            $this->get_collaborating_boards(),
+            $this->get_admin_visible_boards()
+        ];
+    }
 
-        self::sql_delete();
+    public function get_admin_visible_boards(): array {
+        if (!isset($this->admin_visible_boards) && $this->is_admin()) {
+            $this->admin_visible_boards = BoardDao::get_admin_visible_boards($this);
+        } else {
+            $this->admin_visible_boards = [];
+        }
+        return $this->admin_visible_boards;
     }
 
     public function get_own_boards(): array {
-        return Board::get_users_boards($this);
+        if (!isset($this->own_boards)) {
+            $this->own_boards = BoardDao::get_users_boards($this);
+        }
+        return $this->own_boards;
     }
 
     public function get_collaborating_boards(): array {
-        return  Board::get_collaborating_boards($this);
+        if (!isset($this->collaborations)) {
+            $this->collaborations = CollaborationDao::get_collaborating_boards($this);
+        }
+        return $this->collaborations;
     }
 
-    public function get_participating_cards(): array {
-        return Card::get_participating_cards($this);
-    }
-
-    public function get_others_boards(): array {
-        return Board::get_others_boards($this);
+    public function get_participating_cards($board): array {
+        if (!isset($this->participations)) {
+            $this->participations = CardDao::get_participating_cards($this, $board);
+        }
+        return $this->participations;
     }
 
     public function __toString(): string {
