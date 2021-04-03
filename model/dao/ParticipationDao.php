@@ -33,7 +33,8 @@ class ParticipationDao extends BaseDao {
 
     public static function remove(Card $card, User $participant) {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->delete()->where(["Card" => $card->get_id(), "Participant" => $participant->get_id()]);
+        list($sql, $params) = $sql->delete()
+            ->where(["Card" => $card->get_id(), "Participant" => $participant->get_id()])->get();
         self::execute($sql, $params);
     }
 

@@ -8,43 +8,35 @@ class ControllerCard extends ExtendedController {
         $this->redirect();
     }
 
-    public function left() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+    public function view(){
+        $card = $this->get_object_or_redirect("param1", "Card");
+        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
-        $card->move_left();
+        $comments = $card->get_comments();
 
-        $this->redirect("board", "board", $card->get_board_id());
+        if(isset($_GET['param2'])){
+            (new View("card"))->show(array(
+                    "user" => $user,
+                    "card" => $card,
+                    "comment" => $comments,
+                    "show_comment" => $_GET['param2'],
+                    "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
+                    "errors" => ValidationError::get_error_and_reset()
+                )
+            );
+            die;
+        } else {
+            (new View("card"))->show(array(
+                    "user" => $user,
+                    "card" => $card,
+                    "comment" => $comments,
+                    "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
+                    "errors" => ValidationError::get_error_and_reset()
+                )
+            );
+            die;
+        }
     }
-
-    public function right() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
-
-        $card->move_right();
-
-        $this->redirect("board", "board", $card->get_board_id());
-
-    }
-
-    public function up() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
-
-        $card->move_up();
-
-        $this->redirect("board", "board", $card->get_board_id());
-    }
-
-    public function down() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
-
-        $card->move_down();
-
-        $this->redirect("board", "board", $card->get_board_id());
-    }
-
 
     public function add() {
         $column = $this->get_object_or_redirect("column_id", "Column");
@@ -68,7 +60,6 @@ class ControllerCard extends ExtendedController {
 
     }
 
-
     public function update(){
         $card = $this->get_object_or_redirect("id", "Card");
         $this->authorize_for_board_or_redirect($card->get_board());
@@ -81,7 +72,7 @@ class ControllerCard extends ExtendedController {
             $card->set_title(Post::get("title"));
         }
 
-        if(Post::isset("due_date")) {
+        if(!Post::empty("due_date")) {
             $card->set_dueDate(new Datetime(Post::get("due_date")));
         }
 
@@ -89,7 +80,7 @@ class ControllerCard extends ExtendedController {
         $error->set_messages_and_add_to_session($card->validate($update=true));
 
         if($error->is_empty()){
-            BoardDao::update($card);
+            CardDao::update($card);
             $this->redirect("card", "view", $card->get_id());
         }
 
@@ -171,34 +162,45 @@ class ControllerCard extends ExtendedController {
 
     }
 
-    public function view(){
-        $card = $this->get_object_or_redirect("param1", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
-        $comments = $card->get_comments();
 
-        if(isset($_GET['param2'])){
-            (new View("card"))->show(array(
-                "user" => $user,
-                "card" => $card,
-                "comment" => $comments,
-                "show_comment" => $_GET['param2'],
-                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                "errors" => ValidationError::get_error_and_reset()
-                )
-            );
-            die;
-        } else {
-            (new View("card"))->show(array(
-                "user" => $user,
-                "card" => $card,
-                "comment" => $comments,
-                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                "errors" => ValidationError::get_error_and_reset()
-                )
-            );
-            die;
-        }
+    public function left() {
+        $card = $this->get_object_or_redirect("id", "Card");
+        $this->authorize_for_board_or_redirect($card->get_board());
+
+        $card->move_left();
+
+        $this->redirect("board", "board", $card->get_board_id());
     }
+
+    public function right() {
+        $card = $this->get_object_or_redirect("id", "Card");
+        $this->authorize_for_board_or_redirect($card->get_board());
+
+        $card->move_right();
+
+        $this->redirect("board", "board", $card->get_board_id());
+
+    }
+
+    public function up() {
+        $card = $this->get_object_or_redirect("id", "Card");
+        $this->authorize_for_board_or_redirect($card->get_board());
+
+        $card->move_up();
+
+        $this->redirect("board", "board", $card->get_board_id());
+    }
+
+    public function down() {
+        $card = $this->get_object_or_redirect("id", "Card");
+        $this->authorize_for_board_or_redirect($card->get_board());
+
+        $card->move_down();
+
+        $this->redirect("board", "board", $card->get_board_id());
+    }
+
+
 
 }

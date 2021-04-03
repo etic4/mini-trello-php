@@ -236,8 +236,8 @@ class Card {
             }
         }
 
-        if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
-            $errors[] = "The date must be at least 10 seconds later than now";
+        if (Validation::due_date_before($this->get_dueDate(), new DateTime())) {
+            $errors[] = "The date can't be in the past";
         }
 
         return $errors;

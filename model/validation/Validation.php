@@ -2,8 +2,6 @@
 
 require_once "autoload.php";
 
-use \UserDao;
-
 class Validation {
     
     public static function str_longer_than(string $str, int $len): bool {
@@ -45,5 +43,10 @@ class Validation {
     // true si 1 seconde d'écart entre les dates
     public static function is_date_after(?Datetime $datet1, DateTime $datet0) {
         return is_null($datet1) || $datet0->diff($datet1)->s > 1;
+    }
+
+    // vrai si date 1 jour avant aujourd'hui
+    public static function due_date_before(?Datetime $date, DateTime $dateNow) {
+        return !is_null($date) && $dateNow->diff($date)->format("%r%a") < 0;
     }
 }
