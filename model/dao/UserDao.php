@@ -16,6 +16,7 @@ class UserDao extends BaseDao {
 
         // attribue toutes les cartes créées par user à "Anonyme"
         CardDao::to_anonymous($user);
+        CommentDao::to_anonymous($user);
 
         UserDao::delete_one($user);
     }
@@ -41,7 +42,6 @@ class UserDao extends BaseDao {
             "Mail" => $object->get_email(),
             "FullName" => $object->get_fullName(),
             "Role" => $object->get_role(),
-            "ID" => $object->get_id(),
             "Password" => $object->get_passwdHash()
         );
     }

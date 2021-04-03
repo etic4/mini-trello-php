@@ -27,6 +27,17 @@ class CommentDao extends BaseDao {
         return self::count($sql, $params);
     }
 
+    // attribue les commentaires de cet utilisateur à utilisateur 'Anonyme' dont l'ID est '6'
+    // utilisé lors de la suppression d'un utilisateur
+    public static function to_anonymous(User $user, string $anonID="6") {
+        $sql = new SqlGenerator(self::tableName);
+        list($sql, $params) =
+            $sql->update()->set(["NewAuthor" => $anonID], ["Author" => "NewAuthor"])
+                ->where(["Author" => $user->get_id()])->get();
+        self::execute($sql, $params);
+    }
+
+
     public static function from_query($data): Comment {
         return new Comment(
             $data["Body"],
@@ -43,7 +54,6 @@ class CommentDao extends BaseDao {
             "Body" => $object->get_body(),
             "Author" => $object->get_author()->get_id(),
             "Card" => $object->get_card()->get_id(),
-            "ID" => $object->get_id(),
             "ModifiedAt" => self::sql_date($object->get_createdAt()),
         );
     }

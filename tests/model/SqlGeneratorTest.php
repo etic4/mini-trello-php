@@ -29,6 +29,18 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $this->assertEquals($expected_params, $params);
     }
 
+    public function testUpdateWithSet() {
+        $expected_sql = "UPDATE user SET ID=:NewId WHERE ID=:ID";
+        $params_cols =  ["NewId" => "6"];
+        $params_where =  ["ID" => "2"];
+        $expected_params = array_merge($params_cols, $params_where);
+
+        list($sql, $params) = (new \SqlGenerator("user"))->update()->set(["NewId" => "6"], ["ID" => "NewId"])->where($params_where)->get();
+
+        $this->assertEquals($expected_sql, $sql);
+        $this->assertEquals($expected_params, $params);
+    }
+
     public function testDelete() {
         $expected_sql = "DELETE FROM user WHERE Mail=:Mail";
         $params_where =  ["Mail" => "email@machin"];

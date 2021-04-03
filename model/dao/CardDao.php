@@ -38,9 +38,11 @@ class CardDao extends BaseDao {
 
     // attribue les cartes de cet utilisateur à utilisateur 'Anonyme' dont l'ID est '6'
     // utilisé lors de la suppression d'un utilisateur
-    public static function to_anonymous(User $user) {
+    public static function to_anonymous(User $user, string $anonID="6") {
         $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) = $sql->update(["ID" => "6"])->where(["ID" => $user->get_id()])->get();
+        list($sql, $params) =
+            $sql->update()->set(["NewAuthor" => $anonID], ["Author" => "NewAuthor"])
+                ->where(["Author" => $user->get_id()])->get();
         self::execute($sql, $params);
     }
 
@@ -81,7 +83,6 @@ class CardDao extends BaseDao {
             "Author" => $object->get_author()->get_id(),
             "`Column`" => $object->get_column()->get_id(),
             "DueDate" => self::sql_date($object->get_dueDate()),
-            "ID" => $object->get_id(),
             "ModifiedAt" => self::sql_date($object->get_createdAt()),
         );
     }

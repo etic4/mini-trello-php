@@ -36,6 +36,11 @@ class SqlGenerator {
         $this->params = $params;
     }
 
+    // update me pose de petits problèmes, pas le temps de repenser les bazard, donc méthode had hoc
+    public function set_set_string(string $set_string) {
+        $this->set_string = $set_string;
+    }
+
 
     public function select(array $columns=null, $distinct=false): SqlGenerator {
         $cols = empty($columns) ? "*" : join(", ", array_values($columns));
@@ -61,42 +66,56 @@ class SqlGenerator {
         return SqlGenerator::new($this);
     }
 
-    public function update(array $object_map): SqlGenerator {
-        //ne pas retenir ces éléments (en cas d'update d'une ligne, quand $object_map est obtenu auprès d'instance)
-        $dontKeep = function($key) {return !in_array($key, array("ID", "CreatedAt", "RegisteredAt"));};
+    // plutôt pour update un objet en entier
+    public function update(array $object_map=null): SqlGenerator {
+        $this->update_string = "UPDATE $this->tableName SET";
 
-        $keys = array_filter(array_keys($object_map), $dontKeep);
+        if (!empty($object_map)) {
+            $this->set_string = $this->placeholders_from_cols_names(array_keys($object_map));
+            $this->merge_params($object_map);
+        }
+        return SqlGenerator::new($this);
+    }
 
-        $setCols = join(", ", array_map(
-                function($key){
-                    $place_older = $this->get_place_holder($key);
-                    return "$key=:$place_older";},
-                $keys)
-        );
+    // plutôt pour des sets plus particuliers genre:
+    // UPDATE user SET ID=6 WHERE ID=2
+    // le double ID ne permet pas de merge les array
+    // ceci permet de de faire: set(["NewId" => 6], ["ID" => "NewID"]->Where("ID" => 2)
+    // -> UPDATE user SET ID=:NewId WHERE ID=:ID
+    public function set(array $object_map, array $place_holders=[]): SqlGenerator {
+        if (!empty($place_holders)) {
+            $this->set_string = $this->direct_placeholders($place_holders);
+        } else {
+            $this->set_string = $this->placeholders_from_cols_names(array_keys($object_map));
+        }
 
-        $this->update_string = "UPDATE $this->tableName SET $setCols";
         $this->merge_params($object_map);
 
         return SqlGenerator::new($this);
     }
 
-    public function set(array $object_map): SqlGenerator {
-        //ne pas retenir ces éléments (en cas d'update d'une ligne, quand $object_map est obtenu auprès d'instance)
-        $dontKeep = function($key) {return !in_array($key, array("ID", "CreatedAt", "RegisteredAt"));};
-
-        $keys = array_filter(array_keys($object_map), $dontKeep);
-
-        $setCols = join(", ", array_map(
-                function($key){
-                    $place_older = $this->get_place_holder($key);
-                    return "$key=:$place_older";},
-                $keys)
+    // retourne à partir de ["Column" => 5, "Title" => "le titre"]
+    // une liste de string de la forme "Column=:Column, Title=:Title"
+    private function placeholders_from_cols_names(array $array): string {
+        return join(", ", array_map(
+            function ($key) {
+                $place_older = $this->get_place_holder($key);
+                return "$key=:$place_older";
+            },
+            $array)
         );
+    }
 
-        $this->update_string = "UPDATE $this->tableName SET $setCols";
-        $this->merge_params($object_map);
-
-        return SqlGenerator::new($this);
+    // retourne à partir de ["Column" => "col", "Title" => "newTitle"]
+    // une liste de string de la forme "Column=:col, Title=:newTitle"
+    private function direct_placeholders(array $placeholders): string {
+        return join(", ", array_map(
+                function ($key, $ph) {
+                    $place_older = $this->get_place_holder($ph);
+                    return "$key=:$place_older";
+                },
+            array_keys($placeholders), $placeholders)
+        );
     }
 
     public function delete(): object {

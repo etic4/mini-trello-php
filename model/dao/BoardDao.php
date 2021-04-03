@@ -47,7 +47,6 @@ class BoardDao extends BaseDao {
         return array (
             "Title" => $board->get_title(),
             "Owner" => $board->get_owner_id(),
-            "ID" => $board->get_id(),
             "ModifiedAt" => self::sql_date($board->get_modifiedAt())
         );
     }
