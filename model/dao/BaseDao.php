@@ -74,16 +74,17 @@ abstract class BaseDao extends CachedGet {
     }
 
 
+    // Ne cache pas le résultat si $cache == true ou PkName == null
     protected static function get_one($sql, $params, $cache=true) {
         $key = self::get_key_for($params);
 
-        if (!self::is_in_cache($key)) {
+        if (!$cache || !self::is_in_cache($key)) {
             $query = self::execute($sql, $params);
             $data = $query->fetch();
 
             $result = $query->rowCount() != 0 ? static::from_query($data) : null;
 
-            // static::PkName == null dans les tables de jointure
+            // static::PkName == null dans les tables de jointure -> on cache pas
             if (!$cache || static::PkName == null) {
                 return $result;
             }

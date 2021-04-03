@@ -66,7 +66,7 @@ class Board {
         if (!isset($this->cards)) {
             $this->cards = [];
             foreach ($this->get_columns() as $col){
-                array_merge($this->cards, $col->get_cards());
+                $this->cards = array_merge($this->cards, $col->get_cards());
             }
         }
         return $this->cards;
