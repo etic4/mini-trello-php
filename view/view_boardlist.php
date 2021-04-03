@@ -41,7 +41,7 @@
             <article class="others">
                 <h2>Other's boards</h2>
                     <ul class="otherBoards">
-                    <?php foreach($user->get_others_boards() as $board): ?>
+                    <?php foreach($user->get_admin_visible_boards() as $board): ?>
                         <li><a href="board/board/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewTools::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a></li>
                     <?php endforeach; ?>
                     </ul>

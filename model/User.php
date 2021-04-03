@@ -14,9 +14,6 @@ class User {
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validation
 
     private array $own_boards;
-    private array $admin_visible_boards;
-    private array $collaborations;
-    private array $participations;
 
     public static function get_random_password() {
         return "Password1,";
@@ -107,6 +104,7 @@ class User {
         return $this->get_id() == $comment->get_author_id();
     }
 
+    //TODO: plus en cache donc modifier;
     public function has_collaborating_boards(): bool {
         return count($this->get_collaborating_boards()) > 0;
     }
@@ -196,42 +194,25 @@ class User {
         return $errors;
     }
 
-    public function get_boards(): array {
-        return [
-            $this->get_own_boards(),
-            $this->get_collaborating_boards(),
-            $this->get_admin_visible_boards()
-        ];
-    }
 
-    public function get_admin_visible_boards(): array {
-        if (!isset($this->admin_visible_boards) && $this->is_admin()) {
-            $this->admin_visible_boards = BoardDao::get_admin_visible_boards($this);
-        } else {
-            $this->admin_visible_boards = [];
-        }
-        return $this->admin_visible_boards;
-    }
-
+    // pas de lazzy loading possible simplement pcq l'instance de User en conservée en session
     public function get_own_boards(): array {
-        if (!isset($this->own_boards)) {
-            $this->own_boards = BoardDao::get_users_boards($this);
-        }
-        return $this->own_boards;
+        return BoardDao::get_users_boards($this);
     }
 
+    // pas de lazzy loading possible simplement pcq l'instance de User en conservée en session
+    public function get_admin_visible_boards(): array {
+        return BoardDao::get_admin_visible_boards($this);
+    }
+
+    // pas de lazzy loading possible simplement pcq l'instance de User est conservée en session
     public function get_collaborating_boards(): array {
-        if (!isset($this->collaborations)) {
-            $this->collaborations = CollaborationDao::get_collaborating_boards($this);
-        }
-        return $this->collaborations;
+        return CollaborationDao::get_collaborating_boards($this);
     }
 
+    // pas de lazzy loading possible simplement pcq l'instance de User est conservée en session
     public function get_participating_cards($board): array {
-        if (!isset($this->participations)) {
-            $this->participations = CardDao::get_participating_cards($this, $board);
-        }
-        return $this->participations;
+        return CardDao::get_participating_cards($this, $board);
     }
 
     public function __toString(): string {
