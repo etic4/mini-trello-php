@@ -255,7 +255,7 @@ class Card {
             $target->set_position($pos);
 
             CardDao::update($this);
-            $target->update();
+            CardDao::update($target);
         }
     }
 
@@ -269,7 +269,7 @@ class Card {
             $target->set_position($pos);
 
             CardDao::update($this);
-            $target->update();;
+            CardDao::update($target);
         }
     }
 

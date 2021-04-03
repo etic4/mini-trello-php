@@ -5,6 +5,10 @@ require_once "autoload.php";
 class CommentDao extends BaseDao {
     protected const tableName = "`comment`";
 
+    public static function delete(Comment $comment) {
+        self::delete_one($comment);
+    }
+
     // renvoie un tableau de comment associé à la carte $card
     public static function get_comments(Card $card): array {
         $sql = new SqlGenerator(self::tableName);

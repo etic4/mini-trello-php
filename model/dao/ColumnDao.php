@@ -23,11 +23,11 @@ class ColumnDao extends BaseDao {
 
 
 
-    public static function cascade_delete(Column $column) {
+    public static function delete(Column $column) {
         foreach ($column->get_cards() as $card) {
-            CardDao::cascade_delete($card);
+            CardDao::delete($card);
         }
-        ColumnDao::delete($column);
+        ColumnDao::delete_one($column);
     }
 
     public static function from_query($data) :Column {

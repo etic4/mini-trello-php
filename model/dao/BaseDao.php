@@ -49,9 +49,9 @@ abstract class BaseDao extends CachedGet {
         self::execute($sql, $params);
     }
 
-    public static function delete($object) {
+    protected static function delete_one($object) {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->delete()->where([static::PkName => $object->get_id()])->get_preparable();
+        list($sql, $params) = $sql->delete()->where([static::PkName => $object->get_id()])->get();
         self::execute($sql, $params);
 
     }

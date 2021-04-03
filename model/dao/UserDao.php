@@ -6,18 +6,18 @@ class UserDao extends BaseDao {
     protected const tableName = "`user`";
     protected const FKName = "`Owner`";
 
-    public static function cascade_delete(User $user) {
+    public static function delete(User $user) {
         CollaborationDao::delete_all(["Collaborator" => $user->get_id()]);
         ParticipationDao::delete_all(["Participant" => $user->get_id()]);
 
         foreach ($user->get_own_boards() as $board) {
-            BoardDao::cascade_delete($board);
+            BoardDao::delete($board);
         }
 
         // attribue toutes les cartes créées par user à "Anonyme"
         CardDao::to_anonymous($user);
 
-        UserDao::delete($user);
+        UserDao::delete_one($user);
     }
 
     public static function get_by_email(string $email) {

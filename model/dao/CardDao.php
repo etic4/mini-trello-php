@@ -13,14 +13,14 @@ class CardDao extends BaseDao {
         return self::get_many($sql, $params);
     }
 
-    public static function cascade_delete(Card $card) {
+    public static function delete(Card $card) {
         ParticipationDao::delete_all(["Card" => $card->get_id()]);
 
         foreach ($card->get_comments() as $comment) {
             CommentDao::delete($comment);
         }
 
-        CardDao::delete($card);
+        CardDao::delete_one($card);
     }
 
 
@@ -80,7 +80,7 @@ class CardDao extends BaseDao {
             "Position" => $object->get_position(),
             "Author" => $object->get_author()->get_id(),
             "`Column`" => $object->get_column()->get_id(),
-            "DueDate" => $object->get_dueDate(),
+            "DueDate" => self::sql_date($object->get_dueDate()),
             "ID" => $object->get_id(),
             "ModifiedAt" => self::sql_date($object->get_createdAt()),
         );
