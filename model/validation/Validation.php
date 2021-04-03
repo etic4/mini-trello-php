@@ -32,11 +32,11 @@ class Validation {
     }
 
     public static function is_unique_title(string $title): bool {
-        return is_null(Board::get_by_title($title));
+        return is_null(BoardDao::get_by_title($title));
     }
 
     public static function is_unique_column_title(Column $column): bool {
-        return $column->has_unique_title_in_board();
+        return $column->is_unique_title_in_board();
     }
 
     // true si 1 seconde d'écart entre les dates

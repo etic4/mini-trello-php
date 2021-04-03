@@ -4,18 +4,29 @@ require_once "autoload.php";
 
 class ColumnDao extends BaseDao {
     protected const tableName = "`column`";
-    protected const FKName = "`Column`";
 
-
-    public static function get_columns_for_board(Board $board): array {
+    public static function get_columns(Board $board): array {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) = $sql->select()->where(["Board" => $board->get_id()])->order_by(["Position ASC"])->get();
 
         return self::get_many($sql, $params);
     }
 
-    public static function cascade_delete($column) {
-        CardDao::delete_all([self::FKName => $column->get_id()]);
+    public static function decrement_following_columns_position(Column $column): void {
+        $sql = "UPDATE `column` 
+                SET Position = Position - 1
+                WHERE Board=:board 
+                AND Position >:pos";
+        $params = array( "board" => $column->get_board_id(), "pos" => $column->get_position());
+        self::execute($sql,$params);
+    }
+
+
+
+    public static function cascade_delete(Column $column) {
+        foreach ($column->get_cards() as $card) {
+            CardDao::cascade_delete($card);
+        }
         ColumnDao::delete($column);
     }
 
@@ -39,5 +50,4 @@ class ColumnDao extends BaseDao {
             "ModifiedAt" => self::sql_date($object->get_createdAt()),
         );
     }
-
 }

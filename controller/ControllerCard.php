@@ -62,7 +62,7 @@ class ControllerCard extends ExtendedController {
             $error->set_id($column_id);
 
             if($error->is_empty()){
-                $card->insert();
+                $card = CardDao::insert($card);
             }
         }
         $this->redirect("board", "board", $column->get_board_id());
@@ -124,6 +124,7 @@ class ControllerCard extends ExtendedController {
 
         if(Post::isset("delete")) {
             CardDao::decrement_following_cards_position($card);
+            CardDao::update_cards_position($card->get_column());
             $card->delete();
         }
 

@@ -6,9 +6,13 @@ class BoardDao extends BaseDao {
     protected const tableName = "`board`";
     protected const FKName = "`Board`";
 
-    public static function cascade_delete($user) {
-        CollaborationDao::delete_all(["Collaborator" => $user->get_id()]);
-        ColumnDao::delete_all([self::FKName => $board->get_id()]);
+    public static function cascade_delete(Board $board) {
+        CollaborationDao::delete_all([self::FKName => $board->get_id()]);
+
+        foreach ($board->get_columns() as $col) {
+            ColumnDao::cascade_delete($col);
+        }
+
         BoardDao::delete($board);
     }
 

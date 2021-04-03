@@ -8,7 +8,6 @@ class ViewTools {
         return "($cnt column" . ($cnt > 1 ? "s" : "") . ")";
     }
 
-
     public static function due_date_string(DateTime $date): string {
         return $date != null ? $date->format('d/m/Y') : "";
     }
@@ -17,7 +16,7 @@ class ViewTools {
         return $date != null ? $date->format('Y-m-d') : "";
     }
 
-    public static function date_picker_min_due_date(Card $card) {
+    public static function date_picker_min_due_date(Card $card): string {
         $due_date = $card->get_createdAt()->add(new DateInterval("P1D"));
 
         return $due_date->format('Y-m-d');

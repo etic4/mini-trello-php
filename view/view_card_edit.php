@@ -11,7 +11,7 @@
             <article id="editCard">
                 <header>
                     <h2>Edit a card</h2>
-                    <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
+                    <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_fullName() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
                 </header>
                 <div class="main_card">
                 <?php if ($errors->has_errors()): ?>
@@ -65,7 +65,7 @@
                             <div class="flex-row">
                                 <form id="participants-add" action="participant/add" method="post">
                                     <select name="id" id="participants-select">
-                                        <?php foreach ($card->get_collabs_no_participating() as $participant): ?>
+                                        <?php foreach ($card->get_collaborators($participating=false) as $participant): ?>
                                             <option value="<?=$participant->get_id()?>"><?=$participant?></option>
                                         <?php endforeach; ?>
                                     </select>

@@ -221,7 +221,13 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'boverhaegen@epfc.eu','Boris Verhaegen','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:46:19','admin'),(2,'bepenelle@epfc.eu','Benoît Penelle','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:46:19','admin'),(3,'brlacroix@epfc.eu','Bruno Lacroix','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:47:20','user'),(4,'xapigeolet@epfc.eu','Xavier Pigeolet','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:47:20','admin'),(5,'galagaffe@epfc.eu','Gaston Lagaffe','56ce92d1de4f05017cf03d6cd514d6d1','2020-11-25 18:46:55','user');
+INSERT INTO `user` VALUES (
+                           1,'boverhaegen@epfc.eu','Boris Verhaegen','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:46:19','admin'),
+                          (2,'bepenelle@epfc.eu','Benoît Penelle','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:46:19','admin'),
+                          (3,'brlacroix@epfc.eu','Bruno Lacroix','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:47:20','user'),
+                          (4,'xapigeolet@epfc.eu','Xavier Pigeolet','56ce92d1de4f05017cf03d6cd514d6d1','2020-10-11 17:47:20','admin'),
+                          (5,'galagaffe@epfc.eu','Gaston Lagaffe','56ce92d1de4f05017cf03d6cd514d6d1','2020-11-25 18:46:55','user'),
+                          (6,'anonyme@epfc.eu','Anonyme','','2000-01-01 00:00:00','user');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

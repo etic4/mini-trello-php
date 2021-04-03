@@ -53,7 +53,7 @@ class ControllerComment extends ExtendedController {
         if(!Post::empty("body")) {
             $body = Post::get("body");
             $comment = new Comment($body, $user, $card);
-            $comment->insert();
+            $comment = CommentDao::insert($comment);
         }else{
            /* gestion des erreurs. si comment vide
             $error = new ValidationError($card, "add_comment");

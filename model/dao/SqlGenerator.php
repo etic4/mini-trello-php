@@ -1,6 +1,6 @@
 <?php
 
-//require_once "autoload.php";
+require_once "autoload.php";
 
 class SqlGenerator {
     private string $tableName;
@@ -8,7 +8,6 @@ class SqlGenerator {
     private string $from_string;
     private string $where_string;
     private string $order_string;
-
     private string $join_string;
     private string $insert_string;
     private string $update_string;
@@ -49,13 +48,13 @@ class SqlGenerator {
 
     public function insert(array $object_map) {
         $colsNames =  join(", ", array_keys($object_map));
-        $colsPH = join(", ", array_map(
+        $cols_place_holders = join(", ", array_map(
             function($key) {
                 $no_dot = $this->repl_dot($key);
                 return ":$no_dot";},
             array_keys($object_map)));
 
-        $this->insert_string = "INSERT INTO $this->tableName($colsNames) VALUES ($colsPH)";
+        $this->insert_string = "INSERT INTO $this->tableName($colsNames) VALUES ($cols_place_holders)";
         $this->merge_params($object_map);
 
         return SqlGenerator::new_from($this);
@@ -68,10 +67,11 @@ class SqlGenerator {
         $keys = array_filter(array_keys($object_map), $dontKeep);
 
         $setCols = join(", ", array_map(
-            function($key){
-                $no_dot = $this->repl_dot($key);
-                return "$key=:$no_dot";},
-            $keys));
+                function($key){
+                    $no_dot = $this->repl_dot($key);
+                    return "$key=:$no_dot";},
+                $keys)
+        );
 
         $this->update_string = "UPDATE $this->tableName SET $setCols";
         $this->merge_params($object_map);

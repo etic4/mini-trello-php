@@ -53,7 +53,7 @@ class ControllerUser extends ExtendedController {
         $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
 
         if($error->is_empty()) {
-            $user->insert();
+            $user = UserDao::insert($user);
             $this->log_user($user);
         } else {
             (new View("signup"))->show(array(
@@ -72,7 +72,7 @@ class ControllerUser extends ExtendedController {
 
         (new View("manage_users"))->show(array(
                 "user" => $admin,
-                "users" => User::sql_select_all(),
+                "users" => UserDao::get_all(),
                 "errors" => ValidationError::get_error_and_reset())
         );
     }
@@ -83,7 +83,7 @@ class ControllerUser extends ExtendedController {
         list($user, $error) = $this->get_user_and_errors();
 
         if($error->is_empty()) {
-            $user->insert();
+            $user = UserDao::insert($user);
         }
 
         $this->redirect("user","manage");

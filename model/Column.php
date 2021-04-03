@@ -8,19 +8,11 @@ class Column {
     private ?string $id;
     private string $position;
     private Board $board;
-    private ?array $cards = null;
+
+    private array $cards;
 
 
-    public static function get_tableName(): string {
-        return "`column`";
-    }
-
-    public static function get_FKName(): string {
-        return "`Column`";
-    }
-
-
-    public static function create_new(string $title, Board $board): Column {
+    public static function new(string $title, Board $board): Column {
         return new Column(
             $title,
             count($board->get_columns()),
@@ -78,8 +70,8 @@ class Column {
     }
 
     public function get_cards(): array {
-        if (is_null($this->cards)) {
-            $this->cards = Card::get_cards_for_column($this);
+        if (!isset($this->cards)) {
+            $this->cards = CardDao::get_cards($this);
         }
         return $this->cards;
     }
@@ -98,61 +90,30 @@ class Column {
 
     // --- Validation ---
 
-    public function validate(): array {
+
+    public function is_unique_title_in_board(): bool {
+        $title_filter = function($col) {return $col->get_title() == $this->get_title()
+            && $col->get_id() != $this->get_id();};
+
+        $titles = array_filter($this->get_board_columns(), $title_filter);
+
+        return count($titles) == 0;
+    }
+
+    public function validate($update=false): array {
         $errors = [];
         if (!Validation::str_longer_than($this->title, 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
-        if(!Validation::is_unique_column_title($this)) {
-            $errors[] = "A column with the same title already exists in this board";
+
+        if (!$update || ColumnDao::title_has_changed($this)) {
+            if (!$this->is_unique_title_in_board()){
+                $errors[] = "Title already exists in this board";
+            }
         }
         return $errors;
     }
 
-    public function has_unique_title_in_board(): bool {
-        $title = $this->get_title();
-        $columns = $this->get_board_columns();
-        $count = 0;
-        foreach($columns as $column) {
-            if($column->get_title() === $title){
-                ++$count;
-            }
-        }
-        return $count == 0;
-    }
-
-    //    QUERIES    //
-
-    public static function get_by_id(string $id) {
-        return self::sql_select("ID", $id);
-    }
-
-    public static function get_all(Board $board): array {
-        return self::sql_select_all("Board", $board->get_id());
-    }
-
-    public static function get_columns_for_board(Board $board): array {
-        $columns =  self::sql_select_all("Board", $board->get_id());
-        usort($columns, function(Column $c1, Column $c2) {return $c1->get_position() - $c2->get_position();});
-
-        return $columns;
-    }
-
-    public function insert() {
-        self::sql_insert();
-    }
-
-    public function update(): void {
-        self::sql_update();
-    }
-
-    protected function cascade_delete() {
-        return $this->get_cards();
-    }
-
-    public function delete(): void {
-        self::sql_delete();
-    }
 
 
     // --- move ---
@@ -184,17 +145,6 @@ class Column {
         }
     }
 
-    public static function decrement_following_columns_position(Column $column): void {
-        $sql = "UPDATE `column` 
-                SET Position = Position - 1
-                WHERE Board=:board 
-                AND Position >:pos";
-        $params = array(
-            "board" => $column->get_board_id(),
-            "pos" => $column->get_position()
-        );
-        self::execute($sql,$params);
-    }
 
     public function __toString(): string {
         return $this->get_title();

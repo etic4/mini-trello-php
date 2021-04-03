@@ -13,7 +13,9 @@ class ControllerCollaborator extends ExtendedController {
         $this->authorize_for_board_or_redirect($board, false);
 
         $collaborator = $this->get_object_or_redirect("collab_id", "User");
-        $board->add_collaborator($collaborator);
+
+        $collaboration = new Collaboration($board, $collaborator);
+        CollaborationDao::insert($collaboration);
 
         $this->redirect("board", "collaborators", $board->get_id());
     }
@@ -23,7 +25,8 @@ class ControllerCollaborator extends ExtendedController {
         $this->authorize_for_board_or_redirect($board, false);
 
         $collaborator = $this->get_object_or_redirect("collab_id", "User");
-        $board->remove_collaborator($collaborator);
+
+        CollaborationDao::remove($board, $collaborator);
 
         $this->redirect("board", "collaborators", $board->get_id());
     }

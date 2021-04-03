@@ -2,27 +2,27 @@
 
 
 class Participation {
-    private string $cardId;
-    private string $participantId;
+    private Card $card;
+    private User $participant;
 
-    public function __construct(string $cardId, string $participantId) {
-        $this->cardId = $cardId;
-        $this->participantId = $participantId;
+    public function __construct(Card $card, User $participant) {
+        $this->card = $card;
+        $this->participant = $participant;
     }
 
-    public function getCardId(): string {
-        return $this->cardId;
+    public function get_CardId(): string {
+        return $this->card->get_id();
     }
 
-    public function getParticipantId(): string {
-        return $this->participantId;
+    public function get_ParticipantId(): string {
+        return $this->participant->get_id();
     }
 
-    public function get_card() {
-        return CardDao::get_by_id($this->cardId);
+    public function get_card(): Card {
+        return $this->card;
     }
 
-    public function get_participant() {
-        return UserDao::get_by_id($this->participantId);
+    public function get_participant(): User {
+        return $this->participant;
     }
 }

@@ -15,22 +15,15 @@ class Card {
     // !! les dates de création et de modification sont dans le trait !!
     private ?DateTime $dueDate;
 
-    private ?array $comments = null;
-    private ?array $participants = null;
+    private array $comments;
+    private array $participants;
+    private array $collaborators;
 
 
     public static function get_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
         $column = ColumnDao::get_by_id($column_id);
-        return new Card(
-            $title,
-            "",
-            count($column->get_cards()),
-            $author,
-            $column,
-            $dueDate
-        );
+        return new Card( $title,  "", count($column->get_cards()), $author, $column, $dueDate);
     }
-
 
     public function __construct(string $title, string $body, int $position, User $author, Column $column, ?Datetime $dueDate=null,
                                 ?string $id = null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
@@ -65,7 +58,6 @@ class Card {
         $this->body = $body;
     }
 
-
     public function get_position(): string {
         return $this->position;
     }
@@ -78,7 +70,7 @@ class Card {
         return $this->author;
     }
 
-    public function get_author_name(): string {
+    public function get_author_fullName(): string {
         return $this->author->get_fullName();
     }
 
@@ -100,13 +92,6 @@ class Card {
 
     public function set_dueDate(DateTime  $dueDate) {
         $this->dueDate = $dueDate;
-    }
-
-    public function get_comments(): array {
-        if (is_null($this->comments)) {
-            $this->comments = CommentDao::get_comments_for_card($this);
-        }
-        return $this->comments;
     }
 
     // --- demeter ---
@@ -148,8 +133,57 @@ class Card {
     }
 
 
+    public function get_comments_count(): int {
+        if (!isset($this->comments)) {
+            return CommentDao::comments_count($this);
+        }
+        return count($this->get_comments());
+    }
+
+    // --- lazy get lists ---
+
+    public function get_comments(): array {
+        if (!isset($this->comments)) {
+            $this->comments = CommentDao::get_comments($this);
+        }
+        return $this->comments;
+    }
+
+    public function get_boards_cards(): array {
+        return $this->get_board()->get_cards();
+    }
+
+    public function get_collaborators($participating=true): array {
+        if (!isset($this->collaborators)) {
+            $this->collaborators = $this->get_board()->get_collaborators();
+        }
+        if (!$participating) {
+            return array_diff($this->collaborators, $this->get_participants());
+        }
+        return $this->collaborators;
+    }
+
+    public function get_participants(): array {
+        if (!isset($this->participants)) {
+            $this->participants = ParticipationDao::get_participating_users($this);
+        }
+        return $this->participants;
+    }
+
 
     // --- booleans ---
+
+    public function has_comments(): bool {
+        return count($this->get_comments()) > 0;
+    }
+
+    public function is_first(): bool {
+        return $this->get_position() == 0;
+    }
+
+    public function is_last(): bool {
+        return $this->get_position() == count($this->get_column_cards()) - 1;
+    }
 
     public function is_due(): bool {
         if ($this->get_dueDate() != null) {
@@ -163,136 +197,39 @@ class Card {
     }
 
     public function has_collabs_no_participating(): bool {
-        return count($this->get_collabs_no_participating()) > 0;
+        return count($this->get_collaborators($participating=false)) > 0;
     }
 
     public function has_dueDate(): bool {
         return !is_null($this->get_dueDate());
     }
 
-    public function get_collabs_no_participating(): array {
-        $collab = $this->get_board()->get_collaborators();
-        $collab[] = $this->get_board()->get_owner();
-
-        return array_diff($collab, $this->get_participants());
-    }
-
-
-
-    public function get_participants(): array {
-        if (is_null($this->participants)) {
-            $sql = "SELECT Participant FROM participate WHERE Card=:id";
-            $param = array("id" => $this->get_id());
-
-            $query = self::execute($sql, $param);
-            $participants = $query->fetchAll();
-
-            $this->participants = [];
-
-            foreach ($participants as $particip) {
-                $this->participants[] = User::get_by_id($particip[0]);
-            }
-        }
-        return $this->participants;
-    }
-
-    public function add_participant(User $user) {
-        $sql = "INSERT INTO participate (Participant, Card) VALUES (:userId, :cardId)";
-        $params = array("cardId" => $this->get_id(), "userId" => $user->get_id());
-        self::execute($sql, $params);
-    }
-
-    public function remove_participant(User $user) {
-        $sql = "DELETE FROM participate where Participant=:userId and Card=:cardId";
-        $param = array("userId" => $user->get_id(), "cardId" => $this->get_id());
-        self::execute($sql, $param);
+    private function is_title_unique_in_board(): bool {
+        $same_title_filter = function($card) {return $card->get_title() == $this->get_title()
+                                                && $card->get_id() != $this->get_id();};
+        $titles = array_filter($this->get_boards_cards(), $same_title_filter);
+        return count($titles) == 0;
     }
 
     //    VALIDATION    //
 
-    // fonction de validation en cas d'ajout de nouvelle carte
-    public function validate($update=null): array {
+    public function validate($update=false): array {
         $errors = [];
         if (!Validation::str_longer_than($this->get_title(), 2)) {
             $errors[] = "Title must be at least 3 characters long";
         }
 
-        $title_count = CardDao::title_count($this);
-        if ($title_count != 0) {
-            $stored = CardDao::get_by_id($this->get_id());
-            if (is_null($update) || ($update == true && $stored->get_title() != $this->get_title())) {
+        if (!$update || CardDao::title_has_changed($this)) {
+            if (!$this->is_title_unique_in_board()){
                 $errors[] = "Title already exists in this board";
             }
         }
 
         if (!Validation::is_date_after($this->get_dueDate(), new DateTime())) {
-            $errors[] = "the date must be at least 10 seconds later than now";
+            $errors[] = "The date must be at least 10 seconds later than now";
         }
 
         return $errors;
-    }
-
-
-
-    //    TOOLS    //
-
-    public function has_comments(): bool {
-        return count($this->get_comments()) > 0;
-    }
-
-    public function get_comments_count(): int {
-        return count($this->get_comments());
-    }
- 
-    public function is_first(): bool {
-        return $this->get_position() == 0;
-    }
-
-    public function is_last(): bool {
-        return $this->get_position() == count($this->get_column_cards()) - 1;
-    }
-
-
-
-    //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
-    public static function get_cards_for_column(Column $column): array {
-        $sql = 
-            "SELECT * 
-             FROM card 
-             WHERE `Column`=:column 
-             ORDER BY Position";
-        $params = array("column"=>$column->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $cards = [];
-        foreach ($data as $rec) {
-            $card = self::from_query($rec);
-            self::add_instance_under_id($card);
-            $cards[] = $card;
-        }
-        return $cards;
-    }
-
-
-    //insère la carte dans la db, la carte reçoit un nouvel id.
-    public function insert() {
-        self::sql_insert();
-    }
-
-    //met à jour la db avec les valeurs des attributs actuels de l'objet Card
-    public function update() {
-        self::sql_update();
-    }
-
-
-    protected function cascade_delete() {
-        return $this->get_comments();
-    }
-
-    //supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
-    public function delete() {
-        self::sql_delete();
     }
 
 

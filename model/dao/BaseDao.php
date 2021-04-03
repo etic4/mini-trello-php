@@ -64,6 +64,17 @@ abstract class BaseDao extends CachedGet {
     }
 
 
+    // En cas d'update, faut récupérer la ligne sans la mettre en cache
+    public static function title_has_changed($object): bool {
+        $sql = new SqlGenerator(static::tableName);
+
+        list($sql, $params) = $sql->select() ->where(["ID" => $object->get_id()])->get();
+        $stored = self::get_one($sql, $params, $cache=false);
+
+        return $stored->get_title() != $object->get_title();
+    }
+
+
     protected static function get_one($sql, $params, $cache=true) {
         $key = self::get_key_for($params);
 
@@ -74,7 +85,7 @@ abstract class BaseDao extends CachedGet {
             $result = $query->rowCount() != 0 ? static::from_query($data) : null;
 
             // static::PkName == null dans les tables de jointure
-            if (static::PkName == null) {
+            if (!$cache || static::PkName == null) {
                 return $result;
             }
 

@@ -7,9 +7,10 @@ class Board {
 
     private ?string $id;
     private User $owner;
-    private ?array $columns = null;
 
-    private ?array $collaborators = null;
+    private array $columns;
+    private array $cards;
+    private array $collaborators;
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
@@ -21,7 +22,7 @@ class Board {
     }
 
 
-    //    GETTERS    //
+    // --- getters & setters ---
 
     public function get_id(): ?string {
         return $this->id;
@@ -44,43 +45,28 @@ class Board {
     }
 
     public function get_columns(): array {
-        if (is_null($this->columns)) {
-            $this->columns = ColumnDao::get_columns_for_board($this);
+        if (!isset($this->columns)) {
+            $this->columns = ColumnDao::get_columns($this);
         }
         return $this->columns;
     }
 
+    public function get_cards(): array {
+        if (!isset($this->cards)) {
+            $this->cards = [];
+            foreach ($this->get_columns() as $col){
+                array_merge($this->cards, $col->get_cards());
+            }
+        }
+        return $this->cards;
+    }
 
     // retourne la liste des collaborateurs de ce tableau
     public function get_collaborators(): array {
-        if (is_null($this->collaborators)) {
-            $sql = "SELECT Collaborator FROM collaborate WHERE Board=:id";
-            $param = array("id" => $this->get_id());
-
-            $query = self::execute($sql, $param);
-            $collaborators = $query->fetchAll();
-
-            $this->collaborators = [];
-
-            foreach ($collaborators as $collab) {
-                $this->collaborators[] = User::get_by_id($collab[0]);
-            }
+        if (!isset($this->collaborators)) {
+            $this->collaborators = CollaborationDao::get_collaborating_users($this);
         }
         return $this->collaborators;
-    }
-
-    // Ajoute un collaborateur au tableau
-    public function add_collaborator(User $user) {
-        $sql = "INSERT INTO collaborate (Board, Collaborator) VALUES (:boardId, :collabId)";
-        $params = array("boardId" => $this->get_id(), "collabId" => $user->get_id());
-        self::execute($sql, $params);
-    }
-
-    // supprime un collaborateur du tableau
-    public function remove_collaborator(User $user) {
-        $sql = "DELETE FROM collaborate where Collaborator=:userId";
-        $param = array("userId" => $user->get_id());
-        self::execute($sql, $param);
     }
 
     public function get_non_owner(): array {
@@ -111,26 +97,6 @@ class Board {
         return $errors;
     }
 
-
-    public static function get_by_title(string $title): ?Board {
-        return BoardDao::get_by_title($title);
-    }
-
-    public function insert() {
-        BoardDao::insert($this);
-    }
-
-    public function update(): void {
-        BoardDao::update($this);
-    }
-
-    public function delete(): void {
-        foreach ($this->get_collaborators() as $collaborator) {
-            $this->remove_collaborator($collaborator);
-        }
-
-        BoardDao::cascade_delete($this);
-    }
 
     public function __toString(): string {
         return $this->get_title();

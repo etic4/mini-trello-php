@@ -122,7 +122,7 @@ class User {
     // TODO: extraire ça de là (classe propre ?)
     public static function validate_login(string $email, string $password): array {
         if (!empty($email)) {
-            $user = User::get_by_email($email);
+            $user = UserDao::get_by_email($email);
             if ($user && $user->check_password($password)) {
                 return array();
             }
@@ -194,12 +194,6 @@ class User {
         }
 
         return $errors;
-    }
-
-
-
-    public function delete() {
-        UserDao::cascade_delete($this);
     }
 
     public function get_boards(): array {

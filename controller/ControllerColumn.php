@@ -33,7 +33,7 @@ class ControllerColumn extends ExtendedController {
         $cards = $column->get_cards();
         if (count($cards) == 0) {
             $column->delete();
-            Column::decrement_following_columns_position($column);
+            ColumnDao::decrement_following_columns_position($column);
             $this->redirect("board", "board", $column->get_board_id());
         } else {
             $this->redirect("column", "delete_confirm", $column->get_id());
@@ -61,7 +61,7 @@ class ControllerColumn extends ExtendedController {
 
         if(Post::isset("delete")) {
             $column->delete();
-            Column::decrement_following_columns_position($column);
+            ColumnDao::decrement_following_columns_position($column);
         }
         $this->redirect("board", "board", $column->get_board_id());
 
@@ -73,13 +73,13 @@ class ControllerColumn extends ExtendedController {
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
-            $column = Column::create_new($title, $board);
+            $column = Column::new($title, $board);
 
             $error = new ValidationError($column, "add");
             $error->set_messages_and_add_to_session($column->validate());
 
             if($error->is_empty()) {
-                $column->insert();
+                $column = ColumnDao::insert($column);
             }
         }
         $this->redirect("board", "board", $board->get_id());

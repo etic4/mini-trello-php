@@ -2,27 +2,27 @@
 
 
 class Collaboration {
-    private string $boardId;
-    private string $collaboratorId;
+    private Board $board;
+    private User $user;
 
-    public function __construct(string $boardId, string $collaboratorId) {
-        $this->boardId = $boardId;
-        $this->collaboratorId = $collaboratorId;
+    public function __construct(Board $board, User $user) {
+        $this->board = $board;
+        $this->collaborator = $user;
     }
 
     protected function get_boardId(): string {
-        return $this->boardId;
+        return $this->board->get_id();
     }
 
     protected function get_collaboratorId(): string {
-        return $this->collaboratorId;
+        return $this->collaborator->get_id();
     }
 
-    public function get_board() {
-        return BoardDao::get_by_id($this->boardId);
+    public function get_board(): Board {
+        return $this->board;
     }
 
-    public function get_collaborator() {
-        return UserDao::get_by_id($this->collaboratorId);
+    public function get_collaborator(): User {
+        return $this->user;
     }
 }

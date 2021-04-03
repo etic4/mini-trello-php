@@ -43,7 +43,7 @@ class ControllerBoard extends ExtendedController {
             $error->set_messages_and_add_to_session($board->validate());
 
             if($error->is_empty()) {
-                $board->insert();
+                $board = BoardDao::insert($board);
                 $this->redirect("board", "board", $board->get_id());
             }
         }

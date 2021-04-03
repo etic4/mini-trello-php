@@ -7,11 +7,6 @@ class UserDao extends BaseDao {
     protected const FKName = "`Owner`";
 
     public static function cascade_delete(User $user) {
-/*        CollaborationDao::delete_all(["Collaborator" => $user->get_id()]);
-        ParticipationDao::delete_all(["Participant" => $user->get_id()]);
-
-        BoardDao::delete_all(["Owner" => $user->get_id()]);*/
-
         CollaborationDao::delete_all(["Collaborator" => $user->get_id()]);
         ParticipationDao::delete_all(["Participant" => $user->get_id()]);
 
@@ -19,10 +14,8 @@ class UserDao extends BaseDao {
             BoardDao::cascade_delete($board);
         }
 
-        //TODO: remplacer par anonyme
-        CardDao::delete_all(["Author" => $user->get_id()]);
-
-
+        // attribue toutes les cartes créées par user à "Anonyme"
+        CardDao::to_anonymous($user);
         UserDao::delete($user);
     }
 

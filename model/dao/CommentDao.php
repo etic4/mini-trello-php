@@ -4,7 +4,24 @@ require_once "autoload.php";
 
 class CommentDao extends BaseDao {
     protected const tableName = "`comment`";
-    protected const FKName = "`Comment`";
+
+    // renvoie un tableau de comment associé à la carte $card
+    public static function get_comments(Card $card): array {
+        $sql = new SqlGenerator(self::tableName);
+
+        list($sql, $params) = $sql->select()->where(["Card" => $card->get_id()])
+            ->order_by(["ModifiedAt DESC", "CreatedAt DESC"])->get();
+
+        return self::get_many($sql, $params);
+    }
+
+    public static function comments_count($card): int {
+        $sql = new SqlGenerator(self::tableName);
+
+        list($sql, $params) = $sql->select()->where(["Card"  => $card->get_id()])->count()->get();
+
+        return self::count($sql, $params);
+    }
 
     public static function from_query($data): Comment {
         return new Comment(

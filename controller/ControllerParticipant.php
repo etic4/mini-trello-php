@@ -15,7 +15,10 @@ class ControllerParticipant extends ExtendedController {
         $this->authorize_for_board_or_redirect($card->get_board());
 
         $participant = $this->get_object_or_redirect("id", "User");
-        $card->add_participant($participant);
+
+        $participation = new Participation($card, $participant);
+
+        ParticipationDao::insert($participation);
 
         $this->redirect("card", "edit", $card->get_id());
 
@@ -26,10 +29,9 @@ class ControllerParticipant extends ExtendedController {
         $this->authorize_for_board_or_redirect($card->get_board());
 
         $participant = $this->get_object_or_redirect("id", "User");
-        $card->remove_participant($participant);
+
+        ParticipationDao::remove($card, $participant);
 
         $this->redirect("card", "edit", $card->get_id());
-
-
     }
 }
