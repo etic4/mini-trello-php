@@ -55,7 +55,7 @@ class ControllerCard extends ExtendedController {
             $column_id = Post::get("column_id");
             $title = Post::get("title");
 
-            $card = Card::get_new($title, $user, $column_id);
+            $card = Card::new($title, $user, $column_id);
 
             $error = new ValidationError($card, "add");
             $error->set_messages_and_add_to_session($card->validate());
@@ -90,7 +90,7 @@ class ControllerCard extends ExtendedController {
         $error->set_messages_and_add_to_session($card->validate($update=true));
 
         if($error->is_empty()){
-            $card->update();
+            BoardDao::update($card);
             $this->redirect("card", "view", $card->get_id());
         }
 
@@ -125,7 +125,7 @@ class ControllerCard extends ExtendedController {
         if(Post::isset("delete")) {
             CardDao::decrement_following_cards_position($card);
             CardDao::update_cards_position($card->get_column());
-            $card->delete();
+            CardDao::delete($card);
         }
 
         $this->redirect("board", "board", $card->get_board_id());

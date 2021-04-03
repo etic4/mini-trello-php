@@ -20,7 +20,7 @@ class Card {
     private array $collaborators;
 
 
-    public static function get_new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
+    public static function new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
         $column = ColumnDao::get_by_id($column_id);
         return new Card( $title,  "", count($column->get_cards()), $author, $column, $dueDate);
     }

@@ -13,9 +13,8 @@ class ControllerComment extends ExtendedController {
         $comment = $this->get_object_or_redirect("id", "Comment");
         $this->authorize_for_board_or_redirect($comment);
 
-        $comment->delete();
+        CommentDao::delete($comment);
         $this->redirect("card", "view", $comment->get_card_id());
-
     }
 
 
@@ -38,7 +37,7 @@ class ControllerComment extends ExtendedController {
         if(Post::all_sets("validate", "body")){
             $body = Post::get("body");
             $comment->set_body($body);
-            $comment->update();
+            CommentDao::update($comment);
         }
 
        $this->card_redirect($comment->get_card_id());

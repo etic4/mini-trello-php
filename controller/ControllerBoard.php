@@ -74,7 +74,7 @@ class ControllerBoard extends ExtendedController {
         }
 
         if($error->is_empty()) {
-            $board->update();
+            BoardDao::update($board);
         }
         $this->redirect("board", "board", $board->get_id());
     }
@@ -88,7 +88,7 @@ class ControllerBoard extends ExtendedController {
 
         $columns = $board->get_columns();
         if (count($columns) == 0) {
-            $board->delete();
+            BoardDao::delete($board);
             $this->redirect();
         } else {
             $this->redirect("board", "delete_confirm", $board->get_id());
@@ -110,7 +110,7 @@ class ControllerBoard extends ExtendedController {
         $this->authorize_for_board_or_redirect($board, false);
 
         if(Post::isset("delete")) {
-            $board->delete();
+            BoardDao::delete($board);
             $this->redirect();
         }
         $this->redirect("board", "board", $board->get_id());

@@ -26,7 +26,7 @@ class ControllerUser extends ExtendedController {
             $error->set_messages_and_add_to_session(User::validate_login($email, $password));
 
             if ($error->is_empty()) {
-                $this->log_user(User::get_by_email($email));
+                $this->log_user(UserDao::get_by_email($email));
             }
         }
 
@@ -104,7 +104,7 @@ class ControllerUser extends ExtendedController {
             $user->set_fullName($fullName);
             $user->set_email($email);
             $user->set_role($role);
-            $user->update();
+            UserDao::update($user);
         }
 
         $this->redirect("user","manage");
@@ -131,7 +131,7 @@ class ControllerUser extends ExtendedController {
         $this->get_admin_or_redirect();
         $user = $this->get_object_or_redirect("id", "User");
 
-        $user->delete();
+        UserDao::delete($user);
         $this->redirect("user","manage");
     }
 
