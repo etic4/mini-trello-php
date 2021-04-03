@@ -1,6 +1,5 @@
 <?php
 
-require_once "autoload.php";
 
 class SqlGenerator {
     private string $tableName;
@@ -11,18 +10,19 @@ class SqlGenerator {
     private string $join_string;
     private string $insert_string;
     private string $update_string;
+    private string $set_string;
     private string $delete_string;
     private string $sql = "";
     private ?array $params;
 
 
-    private static function new_from(SqlGenerator $query) {
+    private static function new(SqlGenerator $query): SqlGenerator {
         return new SqlGenerator($query->tableName, $query->select_string, $query->from_string, $query->where_string,
-            $query->order_string, $query->join_string, $query->insert_string, $query->update_string, $query->delete_string, $query->params);
+            $query->order_string, $query->join_string, $query->insert_string, $query->update_string, $query->set_string, $query->delete_string, $query->params);
     }
 
     public function __construct(string $tableName="", string $select="", string $from="", string $where="", string $order="",
-        $join="", $insert="", $update="", $delete="", array $params=[]) {
+        $join="", $insert="", $update="", $set="", $delete="", array $params=[]) {
         $this->tableName = $tableName;
         $this->select_string = $select;
         $this->from_string = $from;
@@ -31,6 +31,7 @@ class SqlGenerator {
         $this->join_string = $join;
         $this->insert_string = $insert;
         $this->update_string = $update;
+        $this->set_string = $set;
         $this->delete_string = $delete;
         $this->params = $params;
     }
@@ -43,21 +44,21 @@ class SqlGenerator {
         $this->select_string = "SELECT$distinct".$cols;
         $this->from_string = "FROM " . $this->tableName;
 
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     public function insert(array $object_map) {
         $colsNames =  join(", ", array_keys($object_map));
         $cols_place_holders = join(", ", array_map(
             function($key) {
-                $no_dot = $this->repl_dot($key);
-                return ":$no_dot";},
+                $place_older = $this->get_place_holder($key);
+                return ":$place_older";},
             array_keys($object_map)));
 
         $this->insert_string = "INSERT INTO $this->tableName($colsNames) VALUES ($cols_place_holders)";
         $this->merge_params($object_map);
 
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     public function update(array $object_map): SqlGenerator {
@@ -68,34 +69,53 @@ class SqlGenerator {
 
         $setCols = join(", ", array_map(
                 function($key){
-                    $no_dot = $this->repl_dot($key);
-                    return "$key=:$no_dot";},
+                    $place_older = $this->get_place_holder($key);
+                    return "$key=:$place_older";},
                 $keys)
         );
 
         $this->update_string = "UPDATE $this->tableName SET $setCols";
         $this->merge_params($object_map);
 
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
+    }
+
+    public function set(array $object_map): SqlGenerator {
+        //ne pas retenir ces éléments (en cas d'update d'une ligne, quand $object_map est obtenu auprès d'instance)
+        $dontKeep = function($key) {return !in_array($key, array("ID", "CreatedAt", "RegisteredAt"));};
+
+        $keys = array_filter(array_keys($object_map), $dontKeep);
+
+        $setCols = join(", ", array_map(
+                function($key){
+                    $place_older = $this->get_place_holder($key);
+                    return "$key=:$place_older";},
+                $keys)
+        );
+
+        $this->update_string = "UPDATE $this->tableName SET $setCols";
+        $this->merge_params($object_map);
+
+        return SqlGenerator::new($this);
     }
 
     public function delete(): object {
         $this->delete_string = "DELETE FROM " . $this->tableName;
 
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     public function join(array $tablesNames): SqlGenerator {
         if (!empty($tablesNames)) {
             $this->from_string = "FROM " . join(", ", $tablesNames);
         }
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     public function on(array $joins_list): SqlGenerator {
         $to_join = array_map(function($col1, $col2){return "$col1=$col2";}, array_keys($joins_list), $joins_list);
         $this->join_string = join(", ", $to_join);
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
 
@@ -108,8 +128,8 @@ class SqlGenerator {
 
         $interpolate = array_map(
             function($col, $op){
-                $no_dot = $this->repl_dot($col); // remplacer les "." par des "_" en cas de join
-                return "$col$op:$no_dot";
+                $place_older = $this->get_place_holder($col);
+                return "$col$op:$place_older";
             },
             $columns, $operators);
 
@@ -118,7 +138,7 @@ class SqlGenerator {
         $this->where_string = "WHERE " . $where_args;
         $this->merge_params($this->dot_to_underscore($where_array));
 
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     public function order_by(array $order_array): SqlGenerator {
@@ -128,12 +148,12 @@ class SqlGenerator {
         }
         $this->order_string = "ORDER BY " . join(", ", $args);
 
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     public function count(): SqlGenerator {
         $this->select_string = "SELECT COUNT(*) as total";
-        return SqlGenerator::new_from($this);
+        return SqlGenerator::new($this);
     }
 
     private function process_join() {
@@ -148,7 +168,7 @@ class SqlGenerator {
         if (empty($this->sql)) {
             $this->process_join();
             $elements = [$this->insert_string, $this->update_string, $this->delete_string, $this->select_string];
-            $elements = array_merge($elements, [$this->from_string, $this->where_string, $this->join_string, $this->order_string]);
+            $elements = array_merge($elements, [$this->from_string, $this->set_string, $this->where_string, $this->join_string, $this->order_string]);
             $this->sql = join(" ", array_filter($elements));
         }
         return $this->sql;
@@ -169,8 +189,10 @@ class SqlGenerator {
     }
 
     // remplacer les "." par un "_".
-    private function repl_dot($value) {
-        return str_replace(".", "_", $value);
+    private function get_place_holder($value) {
+        $ph = str_replace("`", "", $value);
+        $ph = str_replace(".", "_", $ph);
+        return $ph;
     }
 
     // remplacer les "." par des "_" dans les paramètres pour l'interpolation (nécessaire en cas de join)
@@ -178,7 +200,7 @@ class SqlGenerator {
         $result = [];
 
         foreach ($params as $key => $val) {
-            $new_k = $this->repl_dot($key);
+            $new_k = $this->get_place_holder($key);
             $result[$new_k] = $val;
         }
         return $result;

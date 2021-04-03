@@ -10,7 +10,7 @@ class CommentDao extends BaseDao {
         $sql = new SqlGenerator(self::tableName);
 
         list($sql, $params) = $sql->select()->where(["Card" => $card->get_id()])
-            ->order_by(["ModifiedAt DESC", "CreatedAt DESC"])->get();
+            ->order_by(["ModifiedAt" => "DESC", "CreatedAt" => "DESC"])->get();
 
         return self::get_many($sql, $params);
     }

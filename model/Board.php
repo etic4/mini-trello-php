@@ -7,6 +7,8 @@ class Board {
 
     private ?string $id;
     private User $owner;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
     private array $columns;
     private array $cards;
@@ -17,7 +19,7 @@ class Board {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
-        $this->createdAt = $createdAt;
+        $this->createdAt = self::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -50,6 +52,15 @@ class Board {
         }
         return $this->columns;
     }
+
+    public function get_createdAt(): DateTime {
+        return $this->createdAt;
+    }
+
+    public function get_modifiedAt(): ?DateTime {
+        return $this->modifiedAt;
+    }
+
 
     public function get_cards(): array {
         if (!isset($this->cards)) {

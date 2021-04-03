@@ -1,5 +1,7 @@
 <?php namespace database;
 
+require_once "tests/tools/DB.php";
+
 use PHPUnit\Framework\TestCase;
 use tools\DB;
 
@@ -17,11 +19,13 @@ class DatabaseTest extends TestCase {
 
     public function tableNamesProvider(): array {
         return [
-            ["user", 5],
+            ["user", 6],
             ["board", 3],
             ["`column`", 10],
             ["card", 5],
-            ["comment", 3]
+            ["comment", 2],
+            ["participate", 2],
+            ["collaborate", 4]
         ];
     }
 

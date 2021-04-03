@@ -59,6 +59,7 @@ class NonLoggedUrlsChecksTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertEquals(200, $response["status"]);
         $this->assertEquals(true, $response["dom"]->has("main > p"), "Pas de noeud 'main > p' dans le DOM");
+
         if ($response["dom"]->has("main > p")) {
             $this->assertEquals($hello, $response["dom"]->first("main > p")->text());
         }

@@ -1,6 +1,7 @@
 <?php
 
 namespace model;
+use \SqlGenerator;
 
 class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
 
@@ -9,7 +10,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "INSERT INTO user(Mail, FullName, Password) VALUES (:Mail, :FullName, :Password)";
         $expected_params = ["Mail" => "email@machin", "FullName" => "FullName", "Password" => "pass" ];
 
-        list($sql, $params) = (new \SqlGenerator("user"))->insert($expected_params)->get();
+        list($sql, $params) = (new SqlGenerator("user"))->insert($expected_params)->get();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -57,6 +58,15 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_params = ["ID" => "1"];
 
         list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->where(["ID" => "1"])->get();
+        $this->assertEquals($expected_sql, $sql);
+        $this->assertEquals($expected_params, $params);
+    }
+
+    public function testSelectColumnsAndWhere() {
+        $expected_sql = "SELECT * FROM card WHERE `Column`=:Column";
+        $expected_params = ["Column" => "1"];
+
+        list($sql, $params) = (new \SqlGenerator("card"))->select()->where(["`Column`" => "1"])->get();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
     }

@@ -34,7 +34,7 @@ class User {
         $this->set_role($role);
         $this->passwdHash = $passwdHash;
         $this->clearPasswd = $clearPasswd;
-        $this->registeredAt = $registeredAt;
+        $this->registeredAt = DateUtils::now_if_null($registeredAt);
     }
 
 

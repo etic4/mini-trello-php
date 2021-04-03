@@ -4,7 +4,11 @@ spl_autoload_register(
     function($class) {
         $SEP = DIRECTORY_SEPARATOR;
         $baseDir =  __DIR__;
-        $dirs = array("framework", "controller", "model", "model".$SEP."persist", "view", "tests");
+        $dirs = array("framework",
+            "controller",
+            "model", "model".$SEP."dao", "model".$SEP."common", "model".$SEP."validation",
+            "view",
+            "tests");
 
         $found = false;
         $i = 0;

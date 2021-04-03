@@ -8,51 +8,16 @@
 
 trait DateTrait {
 
-    private ?DateTime $modifiedAt;
-    private ?Datetime $createdAt;
-
+    public static function now_if_null(?DateTime $date): DateTime {
+        return DateUtils::now_if_null($date);
+    }
 
     public static function php_date($sqlDate): ?DateTime {
-        return $sqlDate != null ? new DateTime($sqlDate) : null;
+        return DateUtils::php_date($sqlDate);
     }
 
     public static function sql_date(?DateTime $dateTime): ?string {
-        return $dateTime != null ? $dateTime->format('Y-m-d H:i:s') : null;
-    }
-
-    public function get_createdAt(): DateTime {
-        return $this->createdAt;
-    }
-
-    public function get_modifiedAt(): ?DateTime {
-        return $this->modifiedAt;
-    }
-
-    public function set_createdAt(DateTime $createdAt) {
-        $this->createdAt = $createdAt;
-    }
-
-    public function set_modifiedAt(?DateTime $modifiedAt) {
-        $this->modifiedAt = $modifiedAt;
-    }
-
-    /* Comme la date de création est set en db,
-    cette méthode set les dates de l'instance après insertion ou update */
-    public function set_dates_from_db() {
-        list($createdAt, $modifiedAt) = $this->query_dates();
-        $this->set_createdAt($createdAt);
-        $this->set_modifiedAt($modifiedAt);
-    }
-
-    /* Récupère les dates de création et de modification en DB après insertion*/
-    private function query_dates() {
-        $tableName = strtolower(get_class($this));
-        $sql = "SELECT CreatedAt, ModifiedAt FROM `$tableName` WHERE ID=:id";
-        $params = array("id" => $this->get_id());
-        $query = $this->execute($sql, $params);
-        $data = $query->fetch();
-
-        return array(self::php_date($data["CreatedAt"]), self::php_date($data["ModifiedAt"]));
+        return DateUtils::sql_date($dateTime);
     }
 
     public function get_created_intvl() {
@@ -67,45 +32,6 @@ trait DateTrait {
     }
 
     private function intvl($firstDate, $secondDate): string {
-        $intvl = $secondDate->diff($firstDate);
-        $laps = "1 second ago";
-        if ($intvl->y != 0) {
-            if($intvl->y == 1) {
-                $laps = "1 year ago";
-            } else {
-                $laps = $intvl->y . " years ago";
-            }
-        } elseif ($intvl->m != 0) {
-            if($intvl->m == 1) {
-                $laps = "1 month ago";
-            } else {
-                $laps = $intvl->m . " months ago";
-            }
-        } elseif ($intvl->d != 0) {
-            if($intvl->d == 1) {
-                $laps = "1 day ago";
-            } else {
-                $laps = $intvl->d . " days ago";
-            }
-        } elseif ($intvl->h != 0) {
-            if($intvl->h == 1) {
-                $laps = "1 hour ago";
-            } else {
-                $laps = $intvl->h . " hours ago";
-            }
-        } elseif ($intvl->i != 0) {
-            if($intvl->i == 1) {
-                $laps = "1 minute ago";
-            } else {
-                $laps = $intvl->i . " minutes ago";
-            }
-        } elseif ($intvl->s != 0) {
-            if($intvl->s == 1) {
-                $laps = "1 second ago";
-            } else {
-                $laps = $intvl->s . " seconds ago";
-            }
-        }
-    return $laps;
+        return DateUtils::intvl($firstDate, $secondDate);
     }
 }

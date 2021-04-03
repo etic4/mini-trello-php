@@ -37,12 +37,11 @@ abstract class BaseDao extends CachedGet {
         if (static::PkName != null) {
             $object->set_id(self::lastInsertId());
         }
-
         return $object;
     }
 
     public static function update($object) {
-        $map = $object->get_object_map();
+        $map = static::get_object_map($object);
         $sql = new SqlGenerator(static::tableName);
 
         list($sql, $params) = $sql->update($map)->where([static::PkName => $object->get_id()])->get();

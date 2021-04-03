@@ -1,12 +1,18 @@
 <?php namespace model;
 
 require_once "tests/tools/DB.php";
+
+use \BoardDao;
+use \CardDao;
+use \ColumnDao;
+use \CommentDao;
 use \User;
 use \Board;
 use \Column;
 use \Card;
 use \Comment;
 use \tools\DB;
+use \UserDao;
 
 
 class CacheTest extends \PHPUnit\Framework\TestCase {
@@ -22,11 +28,11 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testGetByIdOnDifferentClassesReturnsInstancesOfRightClass() {
-        $user = User::get_by_id(1);
-        $board = Board::get_by_id(1);
-        $column = Column::get_by_id(1);
-        $card = Card::get_by_id(1);
-        $comment = Comment::get_by_id(1);
+        $user = UserDao::get_by_id(1);
+        $board = BoardDao::get_by_id(1);
+        $column = ColumnDao::get_by_id(1);
+        $card = CardDao::get_by_id(1);
+        $comment = CommentDao::get_by_id(1);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertInstanceOf(Board::class, $board);
@@ -37,32 +43,32 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testMultipleBoardGetByIDReturnsSameInstance() {
-        $board = Board::get_by_id(1);
+        $board = BoardDao::get_by_id(1);
 
         $this->assertNotEquals("!", $board->get_title());
         $board->set_title("!");  //n'est pas update en DB
 
-        $board2 = Board::get_by_id(1);  // sans cache retournerait une nouvelle instance depuis la DB avec le titre original
+        $board2 = BoardDao::get_by_id(1);  // sans cache retournerait une nouvelle instance depuis la DB avec le titre original
         $this->assertSame($board, $board2);
 
         $this->assertEquals($board->get_title(), $board2->get_title());
     }
 
     public function testGetByIdInexistentIdReturnsNull() {
-        $board = Board::get_by_id(42);
+        $board = BoardDao::get_by_id(42);
         $this->assertNull($board);
     }
 
     public function testMultipleGetByIdInexistentIDReturnsNull() {
-        $board = Board::get_by_id(42);
-        $board = Board::get_by_id(42);
+        $board = BoardDao::get_by_id(42);
+        $board = BoardDao::get_by_id(42);
         $this->assertNull($board);
     }
 
     public function testGetColumnsGetCardsGetCommentsReturnsCached() {
-        $columns = Board::get_by_id(1)->get_columns();
-        $cards = Column::get_by_id(1)->get_cards();
-        $comments = Card::get_by_id(6)->get_comments();
+        $columns = BoardDao::get_by_id(1)->get_columns();
+        $cards = ColumnDao::get_by_id(1)->get_cards();
+        $comments = CardDao::get_by_id(6)->get_comments();
 
 
         $this->assertNotEquals("-", $columns[0]->get_title());
@@ -74,9 +80,9 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
         $cards[0]->set_title("?");
         $comments[0]->set_body("!");
 
-        $columns = Board::get_by_id(1)->get_columns();
-        $cards = Column::get_by_id(1)->get_cards();
-        $comments = Card::get_by_id(6)->get_comments();
+        $columns = BoardDao::get_by_id(1)->get_columns();
+        $cards = ColumnDao::get_by_id(1)->get_cards();
+        $comments = CardDao::get_by_id(6)->get_comments();
 
         //Comme pas sauvegardé, si valeurs identiques c'est que vient de cache
         $this->assertEquals("-", $columns[0]->get_title());

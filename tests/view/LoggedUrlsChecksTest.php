@@ -17,7 +17,7 @@ class LoggedUrlsChecksTest extends \PHPUnit\Framework\TestCase {
         self::$db->init();
 
         self::$http = new HTTPClient();
-        self::$http->login("boverhaegen@epfc.eu", "Pass1!");
+        self::$http->login("boverhaegen@epfc.eu", "Password1,");
     }
 
 

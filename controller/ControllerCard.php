@@ -8,7 +8,6 @@ class ControllerCard extends ExtendedController {
         $this->redirect();
     }
 
-
     public function left() {
         $card = $this->get_object_or_redirect("id", "Card");
         $this->authorize_for_board_or_redirect($card->get_board());
@@ -124,7 +123,6 @@ class ControllerCard extends ExtendedController {
 
         if(Post::isset("delete")) {
             CardDao::decrement_following_cards_position($card);
-            CardDao::update_cards_position($card->get_column());
             CardDao::delete($card);
         }
 

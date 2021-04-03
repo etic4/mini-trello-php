@@ -2,11 +2,14 @@
 
 require_once "tests/tools/DB.php";
 use \Card;
+use CardDao;
 use \Column;
+use ColumnDao;
 use \User;
 use \Datetime;
 use \TypeError;
 use \tools\DB;
+use UserDao;
 
 class CardTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;
@@ -21,7 +24,7 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testGetCardInstanceFromDB() {
-        $card = Card::get_by_id(1);
+        $card = CardDao::get_by_id(1);
         $this->assertInstanceOf(Card::class, $card);
         $this->assertEquals(1, $card->get_id());
     }
@@ -29,9 +32,9 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     public function testCreateCardInstance(): Card {
         $title = "Titre de la carte";
         $body = "the body";
-        $column = Column::get_by_id(1);
+        $column = ColumnDao::get_by_id(1);
         $position = count($column->get_cards());
-        $author = User::get_by_id(1);
+        $author = UserDao::get_by_id(1);
 
         $card = new Card($title, $body, $position, $author, $column);
 
@@ -55,27 +58,11 @@ class CardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCreateCardInstance
      */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Card $card) {
-        $this->expectException(TypeError::class);
-        $card->get_createdAt();
-    }
-
-    /**
-     * @depends testCreateCardInstance
-     */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Card $card) {
-        $this->expectException(TypeError::class);
-        $card->get_modifiedAt();
-    }
-
-    /**
-     * @depends testCreateCardInstance
-     */
     public function testCountPlus1AfterInsert(Card $card): Card {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM `card`")->fetch();
         $count = $data["total"];
 
-        $card->insert();
+        $card = CardDao::insert($card);
         $data = self::$db->execute("SELECT COUNT(*) as total FROM `card`")->fetch();
 
         $this->assertEquals($count + 1, $data["total"]);
@@ -90,33 +77,4 @@ class CardTest extends \PHPUnit\Framework\TestCase {
         $this->assertIsString($card->get_id());
     }
 
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testCreatedAtSetAfterInsert(Card $card) {
-        $this->assertInstanceOf(DateTime::class, $card->get_createdAt());
-    }
-
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testModifiedAtSetAfterInsert(Card $card) {
-        $this->assertInstanceOf(DateTime::class, $card->get_modifiedAt());
-    }
-
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testModifiedAtEqualsCreatedAtAfterInsert(Card $inst) {
-        $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
-    }
-
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Card $inst) {
-        sleep(1);
-        $inst->update();
-        $this->assertNotEquals($inst->get_createdAt(), $inst->get_modifiedAt());
-    }
 }

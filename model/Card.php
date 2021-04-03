@@ -11,6 +11,8 @@ class Card {
     private string $position;
     private User $author;
     private Column $column;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
     // !! les dates de création et de modification sont dans le trait !!
     private ?DateTime $dueDate;
@@ -35,7 +37,7 @@ class Card {
         $this->author = $author;
         $this->column = $column;
         $this->dueDate = $dueDate;
-        $this->createdAt = $createdAt;
+        $this->createdAt = self::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -86,6 +88,14 @@ class Card {
         $this->column = $column;
     }
 
+    public function get_createdAt(): DateTime {
+        return $this->createdAt;
+    }
+
+    public function get_modifiedAt(): ?DateTime {
+        return $this->modifiedAt;
+    }
+
     public function get_dueDate(): ?DateTime {
         return $this->dueDate;
     }
@@ -93,6 +103,7 @@ class Card {
     public function set_dueDate(DateTime  $dueDate) {
         $this->dueDate = $dueDate;
     }
+
 
     // --- demeter ---
 

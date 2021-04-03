@@ -10,6 +10,8 @@ class Comment {
     private String $body;
     private User $author;
     private Card $card;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
 
     public function __construct(string $body, User $author, Card $card, ?string $id=null, ?DateTime $createdAt=null,
@@ -18,7 +20,7 @@ class Comment {
         $this->body=$body;
         $this->author=$author;
         $this->card=$card;
-        $this->createdAt = $createdAt;
+        $this->createdAt = self::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -70,6 +72,14 @@ class Comment {
 
     public function get_board() {
         return $this->card->get_board();
+    }
+
+    public function get_createdAt(): DateTime {
+        return $this->createdAt;
+    }
+
+    public function get_modifiedAt(): ?DateTime {
+        return $this->modifiedAt;
     }
 
     // --- booleans ---

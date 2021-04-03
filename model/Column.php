@@ -8,6 +8,8 @@ class Column {
     private ?string $id;
     private string $position;
     private Board $board;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
     private array $cards;
 
@@ -26,7 +28,7 @@ class Column {
         $this->title = $title;
         $this->position = $position;
         $this->board = $board;
-        $this->createdAt = $createdAt;
+        $this->createdAt = self::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -51,6 +53,14 @@ class Column {
 
     public function get_board(): Board {
         return $this->board;
+    }
+
+    public function get_createdAt(): DateTime {
+        return $this->createdAt;
+    }
+
+    public function get_modifiedAt(): ?DateTime {
+        return $this->modifiedAt;
     }
 
     public function get_board_id(): string {

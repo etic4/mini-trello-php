@@ -9,7 +9,7 @@ class CardDao extends BaseDao {
     //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
     public static function get_cards(Column $column): array {
         $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) = $sql->select()->where(["`Column`" => $column->get_id()])->order_by(["Position"]);
+        list($sql, $params) = $sql->select()->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->get();
         return self::get_many($sql, $params);
     }
 
@@ -23,15 +23,6 @@ class CardDao extends BaseDao {
         CardDao::delete($card);
     }
 
-    // En cas d'update, faut récupérer la ligne sans la mettre en cache
-    public static function title_has_changed(Card $card): bool {
-        $sql = new SqlGenerator(self::tableName);
-
-        list($sql, $params) = $sql->select() ->where(["ID" => $card->get_id()])->get();
-        $stored = self::get_one($sql, $params, $cache=false);
-
-        return $stored->get_title() != $card->get_title();
-    }
 
     public static function get_participating_cards(User $user, Board $board): array {
         $sql = new SqlGenerator();
@@ -45,7 +36,7 @@ class CardDao extends BaseDao {
     }
 
 
-    // attribue les cartes de cet utilisateur à utilisateur anonyme
+    // attribue les cartes de cet utilisateur à utilisateur 'Anonyme' dont l'ID est '6'
     // utilisé lors de la suppression d'un utilisateur
     public static function to_anonymous(User $user) {
         $sql = new SqlGenerator(self::tableName);

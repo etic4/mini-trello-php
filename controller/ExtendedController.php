@@ -42,7 +42,8 @@ abstract class ExtendedController extends Controller {
         $obj = null;
 
         if (isset($GoT[$param_name])) {
-            $obj = $className::get_by_id($GoT[$param_name]);
+            $dao = $className."Dao";
+            $obj = $dao::get_by_id($GoT[$param_name]);
         }
 
         if (is_null($obj)) {

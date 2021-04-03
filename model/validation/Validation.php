@@ -1,5 +1,8 @@
 <?php
 
+require_once "autoload.php";
+
+use \UserDao;
 
 class Validation {
     
@@ -24,7 +27,7 @@ class Validation {
     }
 
     public static function is_unique_email(string $email): bool {
-        return is_null(User::get_by_email($email));
+        return is_null(UserDAO::get_by_email($email));
     }
 
     public static function is_same_password(string $passw1, string $passw2): bool {

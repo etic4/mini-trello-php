@@ -33,7 +33,6 @@ class BoardDao extends BaseDao {
         return self::get_many($sql, $params);
     }
 
-
     public static function from_query($data): Board {
         return new Board(
             $data["Title"],
@@ -47,7 +46,7 @@ class BoardDao extends BaseDao {
     protected static function get_object_map(Board $board): array {
         return array (
             "Title" => $board->get_title(),
-            "Owner" => $board->get_owner(),
+            "Owner" => $board->get_owner_id(),
             "ID" => $board->get_id(),
             "ModifiedAt" => self::sql_date($board->get_modifiedAt())
         );
