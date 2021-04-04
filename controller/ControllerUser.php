@@ -49,19 +49,17 @@ class ControllerUser extends ExtendedController {
 
         list($user, $error) = $this->get_user_and_errors();
 
-        $passwordConfirm = Post::get("confirm");;
-        $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
-
-        if($error->is_empty()) {
+        if(!is_null($user) && $error->is_empty()) {
             $user = UserDao::insert($user);
             $this->log_user($user);
         } else {
             (new View("signup"))->show(array(
-                    "email" => $user->get_email(),
+                    "email" => Post::get("email"),
                     "password" => Post::get("password"),
-                    "fullName" => $user->get_fullName(),
+                    "fullName" => Post::get("fullname"),
                     "confirm" => Post::get("confirm"),
-                    "errors" => $error)
+                    "role" => Post::get_or_default("role", Role::USER),
+                    "errors" => ValidationError::get_error_and_reset())
             );
         }
     }
@@ -79,7 +77,7 @@ class ControllerUser extends ExtendedController {
     public function add() {
         $this->get_admin_or_redirect();
 
-        list($user, $error) = $this->get_user_and_errors();
+        list($user, $error) = $this->get_user_and_errors($admin_added=true);
 
         if($error->is_empty()) {
             $user = UserDao::insert($user);
@@ -136,23 +134,26 @@ class ControllerUser extends ExtendedController {
 
     // Ajoute un user sur base de $_POST ou retourne une liste d'erreur
     // utilisé par user/signup et user/manage
-    private function get_user_and_errors() {
+    private function get_user_and_errors($admin_added=false) {
         $email = Post::get("email");
         $fullName = Post::get("fullName");
         $role = Post::get_or_default("role", Role::USER);
         $password = Post::get("password");
         $passwordConfirm = Post::get("confirm");
 
-       if ((bool) Post::get_or_default("admin_created", "false")) {
+       if ($admin_added) {
            $password = User::get_random_password();
            $passwordConfirm = $password;
        }
 
-        $user = new User($email, $fullName, $role, $password);
+       $user = null;
+       $error = new ValidationError($user, "add");
 
-        $error = new ValidationError($user, "add");
-
-        $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
+       if (!empty($email)) {
+           $user = new User($email, $fullName, $role, $password);
+           $error = new ValidationError($user, "add");
+           $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
+       }
 
         return array($user, $error);
     }
