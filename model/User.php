@@ -120,7 +120,7 @@ class User {
     // TODO: extraire ça de là (classe propre ?)
     public static function validate_login(string $email, string $password): array {
         //
-        // TODO: login de "anonyme" exclus. L'idéal serait d'avoir une colonne en DB ou qqch en config
+        // TODO: login de "anonyme" exclus : 'mettre ça dans config ou attribut de classe (idéal serait colonne en db)
         if (!empty($email) && $email != "anonyme@epfc.eu") {
             $user = UserDao::get_by_email($email);
             if ($user && $user->check_password($password)) {
