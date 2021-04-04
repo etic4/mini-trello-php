@@ -81,7 +81,7 @@ class Board {
     }
 
     public function get_non_owner(): array {
-        return array_diff(UserDao::get_all(), [$this->get_owner()]);
+        return array_diff(UserDao::get_all_users(), [$this->get_owner()]);
     }
 
     public function get_not_collaborating(): array {

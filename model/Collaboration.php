@@ -10,11 +10,11 @@ class Collaboration {
         $this->collaborator = $user;
     }
 
-    protected function get_boardId(): string {
+    public function get_boardId(): string {
         return $this->board->get_id();
     }
 
-    protected function get_collaboratorId(): string {
+    public function get_collaboratorId(): string {
         return $this->collaborator->get_id();
     }
 

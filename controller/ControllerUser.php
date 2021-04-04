@@ -66,13 +66,12 @@ class ControllerUser extends ExtendedController {
         }
     }
 
-
     public function manage() {
         $admin = $this->get_admin_or_redirect();
 
         (new View("manage_users"))->show(array(
                 "user" => $admin,
-                "users" => UserDao::get_all(),
+                "users" => UserDao::get_all_users(),
                 "errors" => ValidationError::get_error_and_reset())
         );
     }
@@ -140,14 +139,19 @@ class ControllerUser extends ExtendedController {
     private function get_user_and_errors() {
         $email = Post::get("email");
         $fullName = Post::get("fullName");
-        $password = Post::get_or_default("password", User::get_random_password());
         $role = Post::get_or_default("role", Role::USER);
+        $password = Post::get("password");
+        $passwordConfirm = Post::get("confirm");
+
+       if ((bool) Post::get_or_default("admin_created", "false")) {
+           $password = User::get_random_password();
+           $passwordConfirm = $password;
+       }
 
         $user = new User($email, $fullName, $role, $password);
 
         $error = new ValidationError($user, "add");
 
-        $passwordConfirm = Post::get("confirm");
         $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
 
         return array($user, $error);

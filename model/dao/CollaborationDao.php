@@ -33,7 +33,8 @@ class CollaborationDao extends BaseDao {
 
     public static function remove(Board $board, User $collaborator) {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->delete()->where(["Board" => $board->get_id(), "Collaborator" => $collaborator->get_id()]);
+        list($sql, $params) = $sql->delete()
+            ->where(["Board" => $board->get_id(), "Collaborator" => $collaborator->get_id()])->get();
         self::execute($sql, $params);
 
     }
@@ -43,6 +44,13 @@ class CollaborationDao extends BaseDao {
             BoardDao::get_by_id($data["Board"]),
             UserDao::get_by_id($data["Collaborator"])
         );
+    }
+
+    public static function has_collaborating_boards(User $user): bool {
+        $sql = new SqlGenerator(static::tableName);
+        list($sql, $params) = $sql->select()->where(["Collaborator" => $user->get_id()])->count()->get();
+        return self::count($sql, $params) > 0;
+
     }
 
     protected static function get_object_map($object): array {

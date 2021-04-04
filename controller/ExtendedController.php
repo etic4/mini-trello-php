@@ -8,12 +8,14 @@ abstract class ExtendedController extends Controller {
     protected function authorize_for_board_or_redirect(Board $board, bool $authorize_collaborators=true) {
         $user = $this->get_user_or_redirect();
 
+        // Permet de n'authoriser que admin et le owner.
+        // Notamment pour les board que seuls les owner admin peuvent deleter
         if ($user->is_admin() || $user->is_owner($board)) {
             return $user;
         }
 
-        // Permet de n'authoriser que admin et le owner.
-        // Notamment pour les board que seuls les owner admin peuvent deleter
+        $test = $user->is_collaborator($board);
+
         if ($authorize_collaborators && $user->is_collaborator($board)) {
             return $user;
         }

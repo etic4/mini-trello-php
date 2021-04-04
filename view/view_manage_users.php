@@ -96,12 +96,13 @@
                             <li class="form-row">
                                 <label for="role"><i class="fas fa-user-shield"></i></label>
                                 <select name="role" required>
-                                    <option value="" disabled selected>Select a role</option>
+                                    <option selected="user">User</option>
                                     <option value="admin">Admin</option>
                                     <option value="user">User</option>
                                 </select>
                             </li>
                             <li class="form-row">
+                                <input type="hidden" name="admin_created" value="true">
                                 <input type="submit" value="Add">
                             </li>
                         </ul>

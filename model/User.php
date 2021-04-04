@@ -93,11 +93,11 @@ class User {
     }
 
     public function is_collaborator(Board $board): bool {
-        return in_array($board, $board->get_collaborators());
+        return in_array($this, $board->get_collaborators());
     }
 
     public function is_participant(Card $card):bool {
-        return in_array($card, $card->get_participants());
+        return in_array($this, $card->get_participants());
     }
 
     public function is_author(Comment $comment): bool {
@@ -106,7 +106,7 @@ class User {
 
     //TODO: plus en cache donc modifier;
     public function has_collaborating_boards(): bool {
-        return count($this->get_collaborating_boards()) > 0;
+        return CollaborationDao::has_collaborating_boards($this);
     }
 
     // vérifie si l'utilisateur peut delete le comment $comment
@@ -134,7 +134,7 @@ class User {
         return $this->passwdHash === Tools::my_hash($clearPasswd);
     }
 
-    public function validate(string $password_confirm=null): array {
+    public function validate(string $password_confirm=""): array {
         $errors = array();
         //email
         if (!Validation::valid_email($this->email)) {
@@ -148,15 +148,10 @@ class User {
             $errors[] = "Name must be at least 3 characters long";
         }
 
-        //password
+        // --- password ---
+
         if (!Validation::str_longer_than($this->clearPasswd, 7)) {
             $errors[] = "Password must be at least 8 characters long";
-        }
-
-        if (isset($password_confirm)) {
-            if (!Validation::is_same_password($this->clearPasswd, $password_confirm)) {
-                $errors[] = "Passwords don't match";
-            }
         }
 
         if (!Validation::contains_capitals($this->clearPasswd)) {
@@ -169,6 +164,10 @@ class User {
 
         if (!Validation::contains_non_alpha($this->clearPasswd)) {
             $errors[] = "Password must contain at least one special character";
+        }
+
+        if (!Validation::is_same_password($this->clearPasswd, $password_confirm)) {
+            $errors[] = "Passwords don't match";
         }
 
         return $errors;

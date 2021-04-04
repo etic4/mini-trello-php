@@ -1,6 +1,9 @@
 <?php
 
 require_once "autoload.php";
+// pour une raison que j'ignore ça ne passe pas dans l'autoload
+require_once "model/dao/UserDao.php";
+require_once "model/dao/BoardDao.php";
 
 class Validation {
     

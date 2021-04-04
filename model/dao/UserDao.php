@@ -4,7 +4,16 @@ require_once "autoload.php";
 
 class UserDao extends BaseDao {
     protected const tableName = "`user`";
-    protected const FKName = "`Owner`";
+
+    public static function get_all_users() {
+        $all_users = self::get_all();
+        return array_filter($all_users, fn($user) => $user->get_id() != "6");
+
+    }
+
+    public static function get_by_email(string $email) {
+        return self::get_by(["Mail" => $email]);
+    }
 
     public static function delete(User $user) {
         CollaborationDao::delete_all(["Collaborator" => $user->get_id()]);
@@ -19,10 +28,6 @@ class UserDao extends BaseDao {
         CommentDao::to_anonymous($user);
 
         UserDao::delete_one($user);
-    }
-
-    public static function get_by_email(string $email) {
-        return self::get_by(["Mail" => $email]);
     }
 
     public static function from_query($data): User {
