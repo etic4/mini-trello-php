@@ -14,9 +14,7 @@ class ParticipationDao extends BaseDao {
             ->join([static::tableName . " p", "card c"])->on(["p.Card" => "c.ID"])
             ->where(["Participant" => $user->get_id()])->get();
 
-        $constructor = function($data) {return CardDao::from_query($data);};
-
-        return self::get_many($sql, $params, $constructor);
+        return self::get_many($sql, $params, fn($data) => CardDao::from_query($data));
     }
 
     public static function get_participating_users(Card $card): array {
@@ -26,9 +24,7 @@ class ParticipationDao extends BaseDao {
             ->join([static::tableName . " p", "user u"])->on(["p.Participant" => "u.ID"])
             ->where(["Card" => $card->get_id()])->get();
 
-        $constructor = function($data) {return UserDao::from_query($data);};
-
-        return self::get_many($sql, $params, $constructor);
+        return self::get_many($sql, $params, fn($data) => UserDao::from_query($data));
     }
 
     public static function remove(Card $card, User $participant) {

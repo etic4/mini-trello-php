@@ -13,9 +13,7 @@ class CollaborationDao extends BaseDao {
                                 ->join([static::tableName . " c", "board b"])->on(["c.Board" => "b.ID"])
                                 ->where(["Collaborator" => $user->get_id()])->get();
 
-        $constructor = function($data) {return BoardDao::from_query($data);};
-
-        return self::get_many($sql, $params, $constructor);
+        return self::get_many($sql, $params, fn($data) => BoardDao::from_query($data));
     }
 
     public static function get_collaborating_users(Board $board): array {
@@ -25,9 +23,7 @@ class CollaborationDao extends BaseDao {
             ->join([static::tableName . " c", "user u"])->on(["c.Collaborator" => "u.ID"])
             ->where(["Board" => $board->get_id()])->get();
 
-        $constructor = function($data) {return UserDao::from_query($data);};
-
-        return self::get_many($sql, $params, $constructor);
+        return self::get_many($sql, $params, fn($data) => UserDao::from_query($data));
     }
 
 

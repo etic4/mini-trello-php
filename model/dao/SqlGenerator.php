@@ -55,9 +55,7 @@ class SqlGenerator {
     public function insert(array $object_map) {
         $colsNames =  join(", ", array_keys($object_map));
         $cols_place_holders = join(", ", array_map(
-            function($key) {
-                $place_older = $this->get_place_holder($key);
-                return ":$place_older";},
+            fn($key) => ":".$this->get_place_holder($key),
             array_keys($object_map)));
 
         $this->insert_string = "INSERT INTO $this->tableName($colsNames) VALUES ($cols_place_holders)";
@@ -132,7 +130,7 @@ class SqlGenerator {
     }
 
     public function on(array $joins_list): SqlGenerator {
-        $to_join = array_map(function($col1, $col2){return "$col1=$col2";}, array_keys($joins_list), $joins_list);
+        $to_join = array_map(fn($col1, $col2) => "$col1=$col2", array_keys($joins_list), $joins_list);
         $this->join_string = join(", ", $to_join);
         return SqlGenerator::new($this);
     }
@@ -146,10 +144,7 @@ class SqlGenerator {
         }
 
         $interpolate = array_map(
-            function($col, $op){
-                $place_older = $this->get_place_holder($col);
-                return "$col$op:$place_older";
-            },
+            fn($col, $op) => "$col$op:".$this->get_place_holder($col),
             $columns, $operators);
 
         $where_args = join(" AND ", $interpolate);

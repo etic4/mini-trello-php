@@ -106,7 +106,7 @@ abstract class BaseDao extends CachedGet {
         $datas = $query->fetchAll();
 
         if (is_null($constructor)) {
-            $constructor = function($data) {return static::from_query($data);};
+            $constructor = fn($data) => static::from_query($data);
         }
 
         $instances = [];

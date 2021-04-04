@@ -216,8 +216,7 @@ class Card {
     }
 
     private function is_title_unique_in_board(): bool {
-        $same_title_filter = function($card) {return $card->get_title() == $this->get_title()
-                                                && $card->get_id() != $this->get_id();};
+        $same_title_filter = fn($card) => $card->get_title() == $this->get_title() && $card->get_id() != $this->get_id();
         $titles = array_filter($this->get_boards_cards(), $same_title_filter);
         return count($titles) == 0;
     }

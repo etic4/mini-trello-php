@@ -102,9 +102,7 @@ class Column {
 
 
     public function is_unique_title_in_board(): bool {
-        $title_filter = function($col) {return $col->get_title() == $this->get_title()
-            && $col->get_id() != $this->get_id();};
-
+        $title_filter = fn($col) =>  $col->get_title() == $this->get_title() && $col->get_id() != $this->get_id();
         $titles = array_filter($this->get_board_columns(), $title_filter);
 
         return count($titles) == 0;
