@@ -53,7 +53,7 @@ class ControllerCard extends ExtendedController {
             Session::set_error($error);
 
             if($error->is_empty()){
-                CardDao::insert($card);
+                $card = CardDao::insert($card);
             }
         }
         $this->redirect("board", "board", $column->get_board_id());
@@ -64,29 +64,29 @@ class ControllerCard extends ExtendedController {
         $card = $this->get_object_or_redirect("id", "Card");
         $this->authorize_for_board_or_redirect($card->get_board());
 
-        if (Post::isset("body")) {
-            $card->set_body(Post::get("body"));
+        if (Post::get("edit") != "Cancel") {
+            if (Post::isset("body")) {
+                $card->set_body(Post::get("body"));
+            }
+
+            if (Post::isset("title")) {
+                $card->set_title(Post::get("title"));
+            }
+
+            if(!Post::empty("due_date")) {
+                $card->set_dueDate(new Datetime(Post::get("due_date")));
+            }
+
+            $error = new DisplayableError($card, "update");
+            $error->set_messages(CardDao::validate($card, $update=true));
+            Session::set_error($error);
+
+            if($error->is_empty()){
+                CardDao::update($card);
+                $this->redirect("card", "view", $card->get_id());
+            }
         }
-
-        if (Post::isset("title")) {
-            $card->set_title(Post::get("title"));
-        }
-
-        if(!Post::empty("due_date")) {
-            $card->set_dueDate(new Datetime(Post::get("due_date")));
-        }
-
-        $error = new DisplayableError($card, "update");
-        $error->set_messages(CardDao::validate($card, $update=true));
-        Session::set_error($error);
-
-        if($error->is_empty()){
-            CardDao::update($card);
-            $this->redirect("card", "view", $card->get_id());
-        }
-
         $this->redirect("card", "edit", $card->get_id());
-
     }
 
 

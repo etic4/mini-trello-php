@@ -32,7 +32,7 @@ class UserDao extends BaseDao {
     public static function email_has_changed(User $user): bool {
         $sql = new SqlGenerator(static::tableName);
 
-        list($sql, $params) = $sql->select() ->where(["Mail" => $user->get_email()])->get();
+        list($sql, $params) = $sql->select() ->where([self::PkName => $user->get_id()])->get();
         $stored = self::get_one($sql, $params, $cache=false);
 
         return $stored->get_email() != $user->get_email();

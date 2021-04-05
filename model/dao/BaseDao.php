@@ -79,7 +79,7 @@ abstract class BaseDao extends CachedGet {
     public static function title_has_changed($object): bool {
         $sql = new SqlGenerator(static::tableName);
 
-        list($sql, $params) = $sql->select() ->where(["ID" => $object->get_id()])->get();
+        list($sql, $params) = $sql->select()->where(["ID" => $object->get_id()])->get();
         $stored = self::get_one($sql, $params, $cache=false);
 
         return $stored->get_title() != $object->get_title();

@@ -8,7 +8,7 @@ class CardValidation extends TitleValidation {
     }
 
     public function validate(object $card, $update=false): CardValidation {
-        parent::validate($update, $update);
+        parent::validate($card, $update);
 
         if (self::date_before($card->get_dueDate(), new DateTime())) {
             $this->errors[] = "The date can't be in the past";

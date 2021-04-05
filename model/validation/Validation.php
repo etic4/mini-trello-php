@@ -10,7 +10,11 @@ abstract class Validation {
     }
     
     public static function str_lower_than(string $str, int $len): bool {
-        return is_string($str) && mb_strlen($str, "utf-8") < $len;
+        return mb_strlen($str, "utf-8") < $len;
+    }
+
+    protected static function str_contains_only_spaces($str): bool {
+        return self::str_lower_than(str_replace(" ", "", $str), 1) ;
     }
 
     public static function doesnt_contains_capitals(string $str): bool {

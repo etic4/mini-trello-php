@@ -14,7 +14,11 @@ class TitleValidation extends Validation {
             $this->errors[] = "Title must be at least 3 characters long";
         }
 
-        if (!$update || $this->dao::title_has_changed($object->get_title())) {
+        if (self::str_contains_only_spaces($object->get_title())) {
+            $this->errors[] = "Title can't contains only spaces";
+        }
+
+        if (!$update || $this->dao::title_has_changed($object)) {
             if (!$this->dao::is_title_unique($object->get_title())){
                 $obj_class_name = strtolower(get_class($object));
                 $this->errors[] = "A $obj_class_name with the same title already exists";
