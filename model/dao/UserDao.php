@@ -8,7 +8,6 @@ class UserDao extends BaseDao {
     public static function get_all_users() {
         $all_users = self::get_all();
         return array_filter($all_users, fn($user) => $user->get_id() != "6");
-
     }
 
     public static function get_by_email(string $email) {
@@ -30,6 +29,19 @@ class UserDao extends BaseDao {
         UserDao::delete_one($user);
     }
 
+    public static function email_has_changed(User $user): bool {
+        $sql = new SqlGenerator(static::tableName);
+
+        list($sql, $params) = $sql->select() ->where(["Mail" => $user->get_email()])->get();
+        $stored = self::get_one($sql, $params, $cache=false);
+
+        return $stored->get_email() != $user->get_email();
+    }
+
+    public static function is_email_unique(string $email): bool {
+        return self::is_unique("Mail", $email);
+    }
+
     public static function from_query($data): User {
         return new User(
             $data["Mail"],
@@ -49,6 +61,29 @@ class UserDao extends BaseDao {
             "Role" => $object->get_role(),
             "Password" => $object->get_passwdHash()
         );
+    }
+
+    // --- Validation ---
+
+    public static function validate_signup(User $user, $password, $password_confirm): array {
+        $valid = (new UserValidation(static::class))->validate_datas($user);
+        $valid->validate_password($password, $password_confirm);
+        return $valid->get_errors();
+    }
+
+    public static function validate_add(User $user): array {
+        $valid = (new UserValidation(static::class))->validate_datas($user);
+        return $valid->get_errors();
+    }
+
+    public static function validate_edit(User $user): array {
+        $valid = (new UserValidation(static::class))->validate_datas($user, $update=true);
+        return $valid->get_errors();
+    }
+
+    public static function validate_login(string $email, string $password): array {
+        $valid = (new UserValidation(static::class))->validate_login($email, $password);
+        return $valid->get_errors();
     }
     
 }

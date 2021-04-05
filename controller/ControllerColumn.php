@@ -75,8 +75,9 @@ class ControllerColumn extends ExtendedController {
             $title = Post::get("title");
             $column = Column::new($title, $board);
 
-            $error = new ValidationError($column, "add");
-            $error->set_messages_and_add_to_session($column->validate());
+            $error = new DisplayableError($column, "add");
+            $error->set_messages(ColumnDao::validate($column));
+            Session::set_error($error);
 
             if($error->is_empty()) {
                 $column = ColumnDao::insert($column);
@@ -93,12 +94,14 @@ class ControllerColumn extends ExtendedController {
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
-            $error = new ValidationError();
+            $error = new DisplayableError();
 
             if ($column->get_title() !== $title) {
                 $column->set_title($title);
-                $error = new ValidationError($column, "edit");
-                $error->set_messages_and_add_to_session($column->validate());
+
+                $error = new DisplayableError($column, "edit");
+                $error->set_messages(ColumnDao::validate($column));
+                Session::set_error($error);
             }
 
             if ($error->is_empty()) {

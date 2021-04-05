@@ -2,29 +2,20 @@
 
 require_once "autoload.php";
 
-class ValidationError {
-
+class DisplayableError {
     private ?string $instance_name;
     private ?string $action;
     private ?string $id;
-    private array $messages;
+    private array $messages = [];
 
-    /* Retourne l'erreur et reset l'erreur pour la session */
-    public static function get_error_and_reset(): ValidationError {
-        $error = new ValidationError();
-
-        if (isset($_SESSION["error"])) {
-            $error = $_SESSION["error"];
-            $_SESSION["error"] = new ValidationError();
-        }
-        return $error;
-    }
-
-    public function __construct($instance=null, ?string $action=null) {
+    public function __construct($instance=null, string $action=null, string $id=null) {
         $this->instance_name = is_null($instance) ? null : strtolower(get_class($instance));
         $this->action = $action;
-        $this->id = is_null($instance) ? null : $instance->get_id();
-        $this->messages = [];
+
+        $this->id = $id;
+        if ($id == null) {
+            $this->id = is_null($instance) ? null : $instance->get_id();
+        }
     }
 
     public function set_id(string $id) {
@@ -32,9 +23,8 @@ class ValidationError {
     }
     
     /* set la liste des messages et ajoute l'erreur à la session */
-    public function set_messages_and_add_to_session($messages_list) {
+    public function set_messages($messages_list) {
         $this->messages = $messages_list;
-        $_SESSION["error"] = $this;
     }
 
     public function is_empty(): bool {

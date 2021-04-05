@@ -9,13 +9,13 @@ abstract class GetPost {
     abstract protected static function set_super_global();
 
 
-    public static function get(string $key) {
+    public static function get(string $key, string $default="") {
         static::set_super_global();
 
         if (isset(static::$GoP[$key])) {
             return static::$GoP[$key];
         }
-        return "";
+        return $default;
     }
 
     public static function get_or_null(string $key) {
@@ -25,12 +25,6 @@ abstract class GetPost {
             return static::$GoP[$key];
         }
         return null;
-    }
-
-    public static function get_or_default(string $key, $default) {
-        static::set_super_global();
-
-        return static::isset($key) ? static::get($key) : $default;
     }
 
     public static function isset(string $key): bool {
@@ -63,6 +57,7 @@ abstract class GetPost {
         return false;
     }
 
+    // retourne true si la clé est empty
     public static function empty(string $key): bool {
         return empty(static::get($key));
     }

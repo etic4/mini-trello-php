@@ -38,8 +38,8 @@ class BoardDao extends BaseDao {
             $data["Title"],
             UserDao::get_by_id($data["Owner"]),
             $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
+            DateUtils::php_date($data["CreatedAt"]),
+            DateUtils::php_date($data["ModifiedAt"])
         );
     }
 
@@ -47,7 +47,11 @@ class BoardDao extends BaseDao {
         return array (
             "Title" => $board->get_title(),
             "Owner" => $board->get_owner_id(),
-            "ModifiedAt" => self::sql_date($board->get_modifiedAt())
+            "ModifiedAt" => DateUtils::sql_date($board->get_modifiedAt())
         );
+    }
+
+    public static function validate(Board $board, $update=false): array {
+        return self::validate_title($board, $update);
     }
 }

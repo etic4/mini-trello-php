@@ -36,8 +36,8 @@ class ColumnDao extends BaseDao {
             $data["Position"],
             BoardDao::get_by_id($data["Board"]),
             $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
+            DateUtils::php_date($data["CreatedAt"]),
+            DateUtils::php_date($data["ModifiedAt"])
         );
     }
 
@@ -46,7 +46,11 @@ class ColumnDao extends BaseDao {
             "Title" => $object->get_title(),
             "Position" => $object->get_position(),
             "Board" => $object->get_board_id(),
-            "ModifiedAt" => self::sql_date($object->get_createdAt()),
+            "ModifiedAt" => DateUtils::sql_date($object->get_createdAt()),
         );
+    }
+
+    public static function validate(Column $column, $update=false): array {
+        return self::validate_title($column, $update);
     }
 }

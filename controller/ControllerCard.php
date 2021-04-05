@@ -21,7 +21,7 @@ class ControllerCard extends ExtendedController {
                     "comment" => $comments,
                     "show_comment" => $_GET['param2'],
                     "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                    "errors" => ValidationError::get_error_and_reset()
+                    "errors" => Session::get_error()
                 )
             );
             die;
@@ -31,7 +31,7 @@ class ControllerCard extends ExtendedController {
                     "card" => $card,
                     "comment" => $comments,
                     "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                    "errors" => ValidationError::get_error_and_reset()
+                    "errors" => Session::get_error()
                 )
             );
             die;
@@ -48,12 +48,12 @@ class ControllerCard extends ExtendedController {
 
             $card = Card::new($title, $user, $column_id);
 
-            $error = new ValidationError($card, "add");
-            $error->set_messages_and_add_to_session($card->validate());
-            $error->set_id($column_id);
+            $error = new DisplayableError($card, "add", $column_id);
+            $error->set_messages(CardDao::validate($card));
+            Session::set_error($error);
 
             if($error->is_empty()){
-                $card = CardDao::insert($card);
+                CardDao::insert($card);
             }
         }
         $this->redirect("board", "board", $column->get_board_id());
@@ -76,8 +76,9 @@ class ControllerCard extends ExtendedController {
             $card->set_dueDate(new Datetime(Post::get("due_date")));
         }
 
-        $error = new ValidationError($card, "update");
-        $error->set_messages_and_add_to_session($card->validate($update=true));
+        $error = new DisplayableError($card, "update");
+        $error->set_messages(CardDao::validate($card, $update=true));
+        Session::set_error($error);
 
         if($error->is_empty()){
             CardDao::update($card);
@@ -143,7 +144,7 @@ class ControllerCard extends ExtendedController {
                 "show_comment" => $_GET['param2'],
                 "edit" => $edit,
                 "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                "errors" => ValidationError::get_error_and_reset()
+                "errors" => Session::get_error()
                 )
             );
             die;
@@ -154,7 +155,7 @@ class ControllerCard extends ExtendedController {
                 "comment" => $comments,
                 "edit" => $edit,
                 "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                "errors" => ValidationError::get_error_and_reset()
+                "errors" => Session::get_error()
                 )
             );
             die;

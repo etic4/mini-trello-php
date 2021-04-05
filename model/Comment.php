@@ -88,7 +88,7 @@ class Comment {
 
     // rencoie true si l'utilisateur $user a le droit d'éditer le commentaire $id 
     public static function can_edit(int $id, User $user): bool{
-        $comment = Comment::get_by_id($id);
+        $comment = CommentDao::get_by_id($id);
         return !(is_null($comment) || $comment->get_author_id()!==$user->get_id());
     }
 
@@ -97,6 +97,7 @@ class Comment {
         return $show_comment == $this->get_id();
     }
 
+    // TODO déplacer dans ViewUtils ?
     public function get_time_string(): String{
         $created=$this->get_created_intvl();
         $ma=$this->get_modified_intvl();

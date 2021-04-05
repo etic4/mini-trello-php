@@ -62,8 +62,20 @@ abstract class BaseDao extends CachedGet {
         self::execute($sql, $params);
     }
 
+    public static function is_unique($col_name, $value): bool {
+        $sql = new SqlGenerator(static::tableName);
+        list($sql, $params) = $sql->select()->where([$col_name => $value])->count()->get();
+        return self::count($sql, $params) == 0;
+    }
 
-    // En cas d'update, faut récupérer la ligne sans la mettre en cache
+    // --- validation ---
+
+    public static function validate_title($object, $update=false): array {
+        $valid = (new TitleValidation(static::class))->validate($object, $update);
+        return $valid->get_errors();
+    }
+
+    // En cas de validation d'un update, récupérer la ligne en db sans la mettre en cache
     public static function title_has_changed($object): bool {
         $sql = new SqlGenerator(static::tableName);
 
@@ -72,6 +84,13 @@ abstract class BaseDao extends CachedGet {
 
         return $stored->get_title() != $object->get_title();
     }
+
+    public static function is_title_unique(string $title): bool {
+        return self::is_unique("Title", $title);
+    }
+
+
+    // --- /validation ---
 
 
     // Ne cache pas le résultat si $cache == true ou PkName == null
@@ -100,7 +119,6 @@ abstract class BaseDao extends CachedGet {
         return self::get_cached($key);
     }
 
-
     protected static function get_many($sql, $params, callable $constructor=null): array {
         $query = self::execute($sql, $params);
         $datas = $query->fetchAll();
@@ -128,18 +146,6 @@ abstract class BaseDao extends CachedGet {
 
     protected static function count($sql, $params): int {
         return (int) self::execute($sql, $params)->fetch()["total"];
-    }
-
-
-    // -- dates --
-    // TODO: dans "Utils" à nouveau ?
-
-    public static function php_date($sqlDate): ?DateTime {
-        return $sqlDate != null ? new DateTime($sqlDate) : null;
-    }
-
-    public static function sql_date(?DateTime $dateTime): ?string {
-        return $dateTime != null ? $dateTime->format('Y-m-d H:i:s') : null;
     }
 
 }

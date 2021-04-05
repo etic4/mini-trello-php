@@ -13,10 +13,13 @@ class User {
     private ?DateTime $registeredAt;
     private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validation
 
-    private array $own_boards;
 
-    public static function get_random_password() {
+    public static function get_random_password(): string {
         return "Password1,";
+    }
+
+    public static function from_post(): User {
+        return new User(Post::get("email"), Post::get("fullName"), Post::get("role"), Post::get("password"));
     }
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
@@ -73,6 +76,9 @@ class User {
         return $this->passwdHash;
     }
 
+    public function set_password(string $clear_password) {
+        $this->passwdHash = Tools::my_hash($clear_password);
+    }
     public function get_registeredAt(): DateTime {
         return $this->registeredAt;
     }
@@ -115,103 +121,24 @@ class User {
     }
 
 
-    // --- validation ---
+    // --- pas de lazzy loading possible sur ces listes pcq l'instance de User est conservée en session
+    // et que ces listes, dans un environnement multiutilistaeur, ne seraient pas synchronisées
+    // avec les changements effectués par d'autres utilisateurs
+    // Ne serait faisable que si par exemple l'id de User serait conservé en $_SESSION et qu'il sertait
+    // reconstruit à chaque requête
 
-    // TODO: extraire ça de là (classe propre ?)
-    public static function validate_login(string $email, string $password): array {
-        //
-        // TODO: login de "anonyme" exclus : 'mettre ça dans config ou attribut de classe (idéal serait colonne en db)
-        if (!empty($email) && $email != "anonyme@epfc.eu") {
-            $user = UserDao::get_by_email($email);
-            if ($user && $user->check_password($password)) {
-                return array();
-            }
-        }
-        return array("Invalid username or password");
-    }
-
-    public function check_password($clearPasswd): bool {
-        return $this->passwdHash === Tools::my_hash($clearPasswd);
-    }
-
-    public function validate(string $password_confirm=""): array {
-        $errors = array();
-        //email
-        if (!Validation::valid_email($this->email)) {
-            $errors[] = "Invalid email";
-        }
-        if(!Validation::is_unique_email($this->email)){
-            $errors[] = "Invalid email";
-        }
-        //fullName
-        if (!Validation::str_longer_than($this->fullName, 2)) {
-            $errors[] = "Name must be at least 3 characters long";
-        }
-
-        // --- password ---
-
-        if (!Validation::str_longer_than($this->clearPasswd, 7)) {
-            $errors[] = "Password must be at least 8 characters long";
-        }
-
-        if (!Validation::contains_capitals($this->clearPasswd)) {
-            $errors[] = "Password must contain at least 1 uppercase letter";
-        }
-
-        if (!Validation::contains_digits($this->clearPasswd)) {
-            $errors[] = "Password must contain at least 1 number";
-        }
-
-        if (!Validation::contains_non_alpha($this->clearPasswd)) {
-            $errors[] = "Password must contain at least one special character";
-        }
-
-        if (!Validation::is_same_password($this->clearPasswd, $password_confirm)) {
-            $errors[] = "Passwords don't match";
-        }
-
-        return $errors;
-    }
-
-    public static function validate_admin_edit(User $user, string $new_email, string $newFullName) {
-        $errors = array();
-
-        //email
-        if ($new_email != $user->get_email()) {
-            if (!Validation::valid_email($new_email)) {
-                $errors[] = "Invalid email";
-            }
-
-            if(!Validation::is_unique_email($user->email)){
-                $errors[] = "Invalid email";
-            }
-        }
-
-        //fullName
-        if ($newFullName != $user->get_fullName() && !Validation::str_longer_than($user->fullName, 2)) {
-            $errors[] = "Name must be at least 3 characters long";
-        }
-
-        return $errors;
-    }
-
-
-    // pas de lazzy loading possible simplement pcq l'instance de User en conservée en session
     public function get_own_boards(): array {
         return BoardDao::get_users_boards($this);
     }
 
-    // pas de lazzy loading possible simplement pcq l'instance de User en conservée en session
     public function get_admin_visible_boards(): array {
         return BoardDao::get_admin_visible_boards($this);
     }
 
-    // pas de lazzy loading possible simplement pcq l'instance de User est conservée en session
     public function get_collaborating_boards(): array {
         return CollaborationDao::get_collaborating_boards($this);
     }
 
-    // pas de lazzy loading possible simplement pcq l'instance de User est conservée en session
     public function get_participating_cards($board): array {
         return CardDao::get_participating_cards($this, $board);
     }

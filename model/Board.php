@@ -92,25 +92,7 @@ class Board {
         return count($this->get_not_collaborating()) > 0;
     }
 
-
-    //    VALIDATION    //
-
-    public function validate(): array {
-        $errors = [];
-        if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Title must be at least 3 characters long";
-            
-        }
-        if (!Validation::is_unique_title($this->title)) {
-            $errors[] = "A board with the same title already exists";
-        }
-
-        return $errors;
-    }
-
-
     public function __toString(): string {
         return $this->get_title();
     }
-
 }

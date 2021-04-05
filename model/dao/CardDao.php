@@ -68,10 +68,10 @@ class CardDao extends BaseDao {
             $data["Position"],
             UserDao::get_by_id($data["Author"]),
             ColumnDao::get_by_id($data["Column"]),
-            self::php_date($data["DueDate"]),
+            DateUtils::php_date($data["DueDate"]),
             $data["ID"],
-            self::php_date($data["CreatedAt"]),
-            self::php_date($data["ModifiedAt"])
+            DateUtils::php_date($data["CreatedAt"]),
+            DateUtils::php_date($data["ModifiedAt"])
         );
     }
 
@@ -82,8 +82,13 @@ class CardDao extends BaseDao {
             "Position" => $object->get_position(),
             "Author" => $object->get_author()->get_id(),
             "`Column`" => $object->get_column()->get_id(),
-            "DueDate" => self::sql_date($object->get_dueDate()),
-            "ModifiedAt" => self::sql_date($object->get_createdAt()),
+            "DueDate" => DateUtils::sql_date($object->get_dueDate()),
+            "ModifiedAt" => DateUtils::sql_date($object->get_createdAt()),
         );
+    }
+
+    public static function validate(Card $card, $update=false): array {
+        $valid = (new CardValidation(static::class))->validate($card, $update);
+        return $valid->get_errors();
     }
 }

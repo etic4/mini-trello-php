@@ -12,14 +12,6 @@ trait DateTrait {
         return DateUtils::now_if_null($date);
     }
 
-    public static function php_date($sqlDate): ?DateTime {
-        return DateUtils::php_date($sqlDate);
-    }
-
-    public static function sql_date(?DateTime $dateTime): ?string {
-        return DateUtils::sql_date($dateTime);
-    }
-
     public function get_created_intvl() {
         return $this->intvl($this->get_createdAt(), new DateTime());
     }

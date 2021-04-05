@@ -13,7 +13,7 @@ class ControllerBoard extends ExtendedController {
 
         (new View("boardlist"))->show(array(
             "user" => $user,
-            "errors" => ValidationError::get_error_and_reset()
+            "errors" => Session::get_error()
             )
         );
     }
@@ -26,7 +26,7 @@ class ControllerBoard extends ExtendedController {
                 "user" => $user,
                 "board" => $board,
                 "breadcrumb" => new BreadCrumb(array($board)),
-                "errors" => ValidationError::get_error_and_reset()
+                "errors" => Session::get_error()
             )
         );
     }
@@ -39,8 +39,9 @@ class ControllerBoard extends ExtendedController {
             $title = Post::get("title");
             $board = new Board($title, $user, null, new DateTime(), null);
 
-            $error = new ValidationError($board, "add");
-            $error->set_messages_and_add_to_session($board->validate());
+            $error = new DisplayableError($board, "add");
+            $error->set_messages(BoardDao::validate($board));
+            Session::set_error($error);
 
             if($error->is_empty()) {
                 $board = BoardDao::insert($board);
@@ -65,12 +66,14 @@ class ControllerBoard extends ExtendedController {
         $title = Post::get("title");
 
         // TODO: régler la nécessité d'istancier 2x
-        $error = new ValidationError();
+        $error = new DisplayableError();
 
         if ($board->get_title() != $title) {
             $board->set_title($title);
-            $error = new ValidationError($board, "edit");
-            $error->set_messages_and_add_to_session($board->validate());
+
+            $error = new DisplayableError($board, "edit");
+            $error->set_messages(BoardDao::validate($board, $update=true));
+            Session::set_error($error);
         }
 
         if($error->is_empty()) {

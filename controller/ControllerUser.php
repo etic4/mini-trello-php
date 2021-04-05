@@ -20,10 +20,10 @@ class ControllerUser extends ExtendedController {
         $email = Post::get('email');
         $password = Post::get('password');
 
-        $error = new ValidationError();
-
         if (Post::any_non_empty("email", "password")) {
-            $error->set_messages_and_add_to_session(User::validate_login($email, $password));
+            $error = new DisplayableError();
+            $error->set_messages(UserDao::validate_login("email", "password"));
+            Session::set_error($error);
 
             if ($error->is_empty()) {
                 $this->log_user(UserDao::get_by_email($email));
@@ -33,7 +33,7 @@ class ControllerUser extends ExtendedController {
         (new View("login"))->show(array(
             "email" => $email,
             "password" => $password,
-            "errors" => $error)
+            "errors" => Session::get_error())
         );
     }
 
@@ -47,9 +47,13 @@ class ControllerUser extends ExtendedController {
             $this->redirect();
         }
 
-        list($user, $error) = $this->get_user_and_errors();
+        $user= User::from_post();
 
-        if(!is_null($user) && $error->is_empty()) {
+        $error = new DisplayableError($user, "add");
+        $error->set_messages(UserDao::validate_signup($user, Post::get("password"), Post::get("confirm")));
+        Session::set_error($error);
+
+        if($error->is_empty()) {
             $user = UserDao::insert($user);
             $this->log_user($user);
         } else {
@@ -58,29 +62,25 @@ class ControllerUser extends ExtendedController {
                     "password" => Post::get("password"),
                     "fullName" => Post::get("fullname"),
                     "confirm" => Post::get("confirm"),
-                    "role" => Post::get_or_default("role", Role::USER),
-                    "errors" => ValidationError::get_error_and_reset())
+                    "role" => Post::get("role", Role::USER),
+                    "errors" =>Session::get_error())
             );
         }
-    }
-
-    public function manage() {
-        $admin = $this->get_admin_or_redirect();
-
-        (new View("manage_users"))->show(array(
-                "user" => $admin,
-                "users" => UserDao::get_all_users(),
-                "errors" => ValidationError::get_error_and_reset())
-        );
     }
 
     public function add() {
         $this->get_admin_or_redirect();
 
-        list($user, $error) = $this->get_user_and_errors($admin_added=true);
+        $user= User::from_post();
+        $user->set_password(User::get_random_password());
+
+        $error = new DisplayableError($user, "add");
+
+        $error->set_messages(UserDao::validate_add($user));
+        Session::set_error($error);
 
         if($error->is_empty()) {
-            $user = UserDao::insert($user);
+            UserDao::insert($user);
         }
 
         $this->redirect("user","manage");
@@ -90,17 +90,16 @@ class ControllerUser extends ExtendedController {
         $this->get_admin_or_redirect();
         $user = $this->get_object_or_redirect("id", "User");
 
-        $email = Post::get_or_default("email",  $user->get_email());
-        $fullName = Post::get_or_default("name", $user->get_fullname()) ;
-        $role = Post::get_or_default("role", $user->get_role());
+        $user->set_email(Post::get("email", $user->get_email()));
+        $user->set_fullName(Post::get("name", $user->get_fullname()));
+        $user->set_role(Post::get("role", $user->get_role()));
 
-        $error = new ValidationError($user, "edit");
-        $error->set_messages_and_add_to_session(User::validate_admin_edit($user, $email, $fullName));
+
+        $error = new DisplayableError($user, "edit");
+        $error->set_messages(UserDao::validate_edit($user));
+        Session::set_error($error);
 
         if ($error->is_empty()) {
-            $user->set_fullName($fullName);
-            $user->set_email($email);
-            $user->set_role($role);
             UserDao::update($user);
         }
 
@@ -132,29 +131,14 @@ class ControllerUser extends ExtendedController {
         $this->redirect("user","manage");
     }
 
-    // Ajoute un user sur base de $_POST ou retourne une liste d'erreur
-    // utilisé par user/signup et user/manage
-    private function get_user_and_errors($admin_added=false) {
-        $email = Post::get("email");
-        $fullName = Post::get("fullName");
-        $role = Post::get_or_default("role", Role::USER);
-        $password = Post::get("password");
-        $passwordConfirm = Post::get("confirm");
 
-       if ($admin_added) {
-           $password = User::get_random_password();
-           $passwordConfirm = $password;
-       }
+    public function manage() {
+        $admin = $this->get_admin_or_redirect();
 
-       $user = null;
-       $error = new ValidationError($user, "add");
-
-       if (!empty($email)) {
-           $user = new User($email, $fullName, $role, $password);
-           $error = new ValidationError($user, "add");
-           $error->set_messages_and_add_to_session($user->validate($passwordConfirm));
-       }
-
-        return array($user, $error);
+        (new View("manage_users"))->show(array(
+                "user" => $admin,
+                "users" => UserDao::get_all_users(),
+                "errors" => Session::get_error())
+        );
     }
 }

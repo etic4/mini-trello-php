@@ -98,32 +98,6 @@ class Column {
     }
 
 
-    // --- Validation ---
-
-
-    public function is_unique_title_in_board(): bool {
-        $title_filter = fn($col) =>  $col->get_title() == $this->get_title() && $col->get_id() != $this->get_id();
-        $titles = array_filter($this->get_board_columns(), $title_filter);
-
-        return count($titles) == 0;
-    }
-
-    public function validate($update=false): array {
-        $errors = [];
-        if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Title must be at least 3 characters long";
-        }
-
-        if (!$update || ColumnDao::title_has_changed($this)) {
-            if (!$this->is_unique_title_in_board()){
-                $errors[] = "Title already exists in this board";
-            }
-        }
-        return $errors;
-    }
-
-
-
     // --- move ---
 
     public function move_left(): void {

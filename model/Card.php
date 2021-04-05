@@ -215,35 +215,8 @@ class Card {
         return !is_null($this->get_dueDate());
     }
 
-    private function is_title_unique_in_board(): bool {
-        $same_title_filter = fn($card) => $card->get_title() == $this->get_title() && $card->get_id() != $this->get_id();
-        $titles = array_filter($this->get_boards_cards(), $same_title_filter);
-        return count($titles) == 0;
-    }
 
-    //    VALIDATION    //
-
-    public function validate($update=false): array {
-        $errors = [];
-        if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $errors[] = "Title must be at least 3 characters long";
-        }
-
-        if (!$update || CardDao::title_has_changed($this)) {
-            if (!$this->is_title_unique_in_board()){
-                $errors[] = "Title already exists in this board";
-            }
-        }
-
-        if (Validation::due_date_before($this->get_dueDate(), new DateTime())) {
-            $errors[] = "The date can't be in the past";
-        }
-
-        return $errors;
-    }
-
-
-    //    MOVE CARD    //
+    // --- move ---
 
     public function move_up(): void {
         $pos = $this->get_position();
