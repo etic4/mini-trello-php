@@ -22,7 +22,7 @@ class ControllerUser extends ExtendedController {
 
         if (Post::any_non_empty("email", "password")) {
             $error = new DisplayableError();
-            $error->set_messages(UserDao::validate_login("email", "password"));
+            $error->set_messages(UserDao::validate_login($email, $password));
             Session::set_error($error);
 
             if ($error->is_empty()) {
@@ -47,25 +47,35 @@ class ControllerUser extends ExtendedController {
             $this->redirect();
         }
 
-        $user= User::from_post();
+        if (!Post::empty("email")) {
+            $user= User::from_post();
 
-        $error = new DisplayableError($user, "add");
-        $error->set_messages(UserDao::validate_signup($user, Post::get("password"), Post::get("confirm")));
-        Session::set_error($error);
+            $error = new DisplayableError($user, "add");
+            $error->set_messages(UserDao::validate_signup($user, Post::get("password"), Post::get("confirm")));
+            Session::set_error($error);
 
-        if($error->is_empty()) {
-            $user = UserDao::insert($user);
-            $this->log_user($user);
+            if($error->is_empty()) {
+                $user = UserDao::insert($user);
+                $this->log_user($user);
+            } else {
+                (new View("signup"))->show(array(
+                        "email" => $user->get_email(),
+                        "password" => Post::get("password"),
+                        "fullName" => $user->get_fullName(),
+                        "confirm" => Post::get("confirm"),
+                        "errors" =>Session::get_error())
+                );
+            }
         } else {
             (new View("signup"))->show(array(
                     "email" => Post::get("email"),
                     "password" => Post::get("password"),
-                    "fullName" => Post::get("fullname"),
+                    "fullName" => Post::get("fullName"),
                     "confirm" => Post::get("confirm"),
-                    "role" => Post::get("role", Role::USER),
                     "errors" =>Session::get_error())
             );
         }
+
     }
 
     public function add() {

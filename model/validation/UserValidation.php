@@ -13,8 +13,8 @@ class UserValidation extends Validation {
             $this->errors[] = "Invalid email";
         }
 
-        if (!$update || $user->email_has_changed()) {
-            if (!$user->is_email_unique()){
+        if (!$update || $this->dao::email_has_changed($user)) {
+            if (!$this->dao::is_email_unique($user->get_email())){
                 $this->errors[] = "A user with the same email already exists";
             }
         }

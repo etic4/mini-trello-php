@@ -33,12 +33,12 @@ abstract class GetPost {
         return isset(static::$GoP[$key]);
     }
 
-    // retourne true si toutes les clés sont set
+    // retourne true si toutes les clés sont non_empty
     public static function all_sets(string ...$keys): bool {
         static::set_super_global();
 
         foreach ($keys as $key) {
-            if (!static::isset($key)) {
+            if (static::empty($key)) {
                 return false;
             }
         }
