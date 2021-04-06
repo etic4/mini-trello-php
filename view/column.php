@@ -1,5 +1,5 @@
 <div class="card mr-2 p-3 has-background-grey-lighter">
-    <div class="p-2 is-flex is-flex-direction-row">
+    <div class="p-2 is-flex is-flex-direction-row is-align-items-baseline">
         <b><?= ViewUtils::truncate_string($column->get_title(), 28) ?></b>
         <div class="ml-2 is-flex is-flex-direction-row">
             <form class="mr-1" action='column/edit' method='post'>

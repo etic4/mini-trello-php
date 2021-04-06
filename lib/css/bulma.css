@@ -408,7 +408,6 @@ a.box:active {
   .button strong {
     color: inherit; }
   .button .icon, .button .icon.is-small, .button .icon.is-medium, .button .icon.is-large {
-    height: 1.5em;
     width: 1.5em; }
   .button .icon:first-child:not(:last-child) {
     margin-left: calc(-0.5em - 1px);

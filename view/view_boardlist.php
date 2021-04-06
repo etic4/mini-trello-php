@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php include('head.php'); ?>
+<?php $title="Board list"; include('head.php'); ?>
 
 <body class="has-navbar-fixed-top m-4">
         <header>
@@ -11,7 +11,6 @@
             <article class="mt-2 mb-5">
                 <h2  class="title is-4">Your boards</h2>
                 <div class="is-flex is-flex-direction-row is-align-items-center" >
-
                     <?php foreach($user->get_own_boards() as $board): ?>
                         <div class="card has-background-info mr-2">
                             <div class="card-content">
