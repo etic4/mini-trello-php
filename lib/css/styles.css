@@ -42,10 +42,6 @@ button:focus:not(:focus-visible) {
     outline: none;
 }
 
-body {
-    background-image: url(../assets/images/blue2.jpg);
-}
-
 
 /**** =========MENU========= ***/
 

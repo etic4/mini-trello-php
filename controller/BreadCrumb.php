@@ -3,7 +3,6 @@
 require_once "autoload.php";
 
 class BreadCrumb {
-    const SEPARATOR = "<span class='breadcrumb-separator'>&gt;</span>";
     private array $breadcrumb;
     private ?string $last_elem;
 
@@ -19,15 +18,15 @@ class BreadCrumb {
         $last = $this->get_last();
         $middle = $this->get_middle();
 
-        $trace = implode(self::SEPARATOR, array_filter(array($home, $middle, $last)));
+        $trace = implode("", array_filter(array($home, $middle, $last)));
 
-        return "<div class='breadcrumb'>$trace</div>";
+        return "<nav class='breadcrumb' aria-label='breadcrumbs'><ul>$trace</ul></nav>";
     }
 
     private function get_home(): string {
         $home = "";
         if (count($this->breadcrumb) > 0 || !is_null($this->last_elem)) {
-            $home = "<span><a href='board/index'> Boards</a></span>";
+            $home="<li><a href='board/index'>Boards</a></li>";
         }
         return $home;
     }
@@ -43,7 +42,7 @@ class BreadCrumb {
             $name = get_class($elem);
             $last_elem = $name . " \"" . $elem->get_title() . "\"";
         }
-        return $last_elem == null ? "" : "<span class='breadcrumb-current'>$last_elem</span>";
+        return $last_elem == null ? "" : "<li class='is-active'><a href='#' aria-current='page'>$last_elem</a></li>";
     }
 
     private function get_middle(): string {
@@ -60,9 +59,10 @@ class BreadCrumb {
                 $method = "view";
                 $id = $elem->get_id();
 
-                $crumbs[] = "<span><a href='$controller/$method/$id'>$title</a></span>";
+
+                $crumbs[] = "<li><a href='$controller/$method/$id'>$title</a></li>";
             }
-            $trace = implode(self::SEPARATOR,  $crumbs);
+            $trace = implode("",  $crumbs);
         }
         return $trace;
     }

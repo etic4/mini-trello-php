@@ -5,9 +5,13 @@
 
 # Ne pas suivre dev.ini
 database/data
+
 # setup linux
-.htaccess
 config/dev.ini
+
+# bulma sass
+sass
+*.sass
 
 # phpunit
 .cache
