@@ -91,8 +91,8 @@ class NonLoggedUrlsChecksTest extends \PHPUnit\Framework\TestCase {
         return [
             ["board"],
             ["board/index"],
-            ["board/board"],
-            ["board/board/1"],
+            ["board/view"],
+            ["board/view/1"],
             ["board/edit"],
             ["board/edit/1"],
             ["board/delete"],

@@ -3,8 +3,7 @@
 require_once "autoload.php";
 
 class Column {
-    use DateTrait, TitleTrait;
-
+    private string $title;
     private ?string $id;
     private string $position;
     private Board $board;
@@ -28,7 +27,7 @@ class Column {
         $this->title = $title;
         $this->position = $position;
         $this->board = $board;
-        $this->createdAt = self::now_if_null($createdAt);
+        $this->createdAt = DateUtils::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -41,6 +40,14 @@ class Column {
 
     public function set_id(string $id): void {
         $this->id = $id;
+    }
+
+    public function get_title(): string {
+        return $this->title;
+    }
+
+    public function set_title(string $title): void {
+        $this->title = $title;
     }
 
     public function get_position(): string {

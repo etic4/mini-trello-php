@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-abstract class Validation {
+abstract class AbstractValidation {
     protected array $errors = [];
 
     public function get_errors(): array {

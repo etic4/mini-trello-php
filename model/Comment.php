@@ -4,8 +4,6 @@ require_once "autoload.php";
 
 
 class Comment {
-    use DateTrait;
-
     private ?String $id;
     private String $body;
     private User $author;
@@ -20,7 +18,7 @@ class Comment {
         $this->body=$body;
         $this->author=$author;
         $this->card=$card;
-        $this->createdAt = self::now_if_null($createdAt);
+        $this->createdAt = DateUtils::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -86,7 +84,7 @@ class Comment {
 
     // TODO: revoir
 
-    // rencoie true si l'utilisateur $user a le droit d'éditer le commentaire $id 
+    // renvoie true si l'utilisateur $user a le droit d'éditer le commentaire $id
     public static function can_edit(int $id, User $user): bool{
         $comment = CommentDao::get_by_id($id);
         return !(is_null($comment) || $comment->get_author_id()!==$user->get_id());
@@ -96,13 +94,4 @@ class Comment {
     public function can_be_show($show_comment): bool{
         return $show_comment == $this->get_id();
     }
-
-    // TODO déplacer dans ViewUtils ?
-    public function get_time_string(): String{
-        $created=$this->get_created_intvl();
-        $ma=$this->get_modified_intvl();
-        return "Created ".$created.". ".$ma.".";
-    }
-
-
 }

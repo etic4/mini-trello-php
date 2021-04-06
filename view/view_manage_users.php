@@ -56,8 +56,8 @@
                                         <?php if($user != $member): ?>
                                             <td>
                                                 <select name="role">
-                                                    <option value="admin" <?= ViewTools::selected($member, "admin") ?>>Admin</option>
-                                                    <option value="user" <?= ViewTools::selected($member, "user") ?>>User</option>
+                                                    <option value="admin" <?= ViewUtils::selected($member, "admin") ?>>Admin</option>
+                                                    <option value="user" <?= ViewUtils::selected($member, "user") ?>>User</option>
                                                 </select>
                                             </td>
                                         <?php else: ?>

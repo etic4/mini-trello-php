@@ -11,7 +11,7 @@
             <article id="editCard">
                 <header>
                     <h2>Edit a card</h2>
-                    <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_fullName() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
+                    <p class="credit">Created <?= ViewUtils::created_intvl($card) ?> by <strong>'<?= $card->get_author_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($card) ?>.</p>
                 </header>
                 <div class="main_card">
                 <?php if ($errors->has_errors()): ?>
@@ -34,7 +34,7 @@
 
                         <div class="edit-due-date">
                             <label for="due-date">Due Date</label>
-                            <input form="edit-card" type="date" id="start" name="due_date" min="<?=ViewTools::date_picker_min_due_date($card)?>" value="<?=ViewTools::date_picker_due_date($card->get_dueDate())?>">
+                            <input form="edit-card" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($card->get_dueDate())?>">
 
                         </div>
 

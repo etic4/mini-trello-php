@@ -3,8 +3,7 @@
 require_once "autoload.php";
 
 class Board {
-    use DateTrait, TitleTrait;
-
+    private string $title;
     private ?string $id;
     private User $owner;
     private ?DateTime $modifiedAt;
@@ -19,7 +18,7 @@ class Board {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
-        $this->createdAt = self::now_if_null($createdAt);
+        $this->createdAt = DateUtils::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -32,6 +31,14 @@ class Board {
 
     public function set_id(string $id): void {
         $this->id = $id;
+    }
+
+    public function get_title(): string {
+        return $this->title;
+    }
+
+    public function set_title(string $title): void {
+        $this->title = $title;
     }
 
     public function get_owner(): User {

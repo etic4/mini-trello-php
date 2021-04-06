@@ -27,7 +27,7 @@
                             </li>
                         </ul>
                     </div>
-                    <p class="credit">Created <?=$card->get_created_intvl() ?> by <strong>'<?= $card->get_author_fullName()?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
+                    <p class="credit">Created <?=ViewUtils::created_intvl($card) ?> by <strong>'<?= $card->get_author_fullName()?>'</strong>. <?= ViewUtils::modified_intvl($card) ?>.</p>
                     <p>This card is on the board "<strong><?= $card->get_board_title() ?></strong>", column "<strong><?= $card->get_column_title() ?></strong>" at position <?= $card->get_position() ?>.</p>
                 </header>
                 <div class="main_card">
@@ -43,7 +43,7 @@
                         <? if($card->has_dueDate()): ?>
                         <h3>Due date</h3>
                         <div class="simple-text">
-                            <p><?= ViewTools::due_date_string($card->get_dueDate()) ?></p>
+                            <p><?= ViewUtils::due_date_string($card->get_dueDate()) ?></p>
                         </div>
 
                         <?php else: ?>

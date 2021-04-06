@@ -79,7 +79,7 @@ class LoggedUrlsChecksTest extends \PHPUnit\Framework\TestCase {
     public function variousUrlsProvider(): array {
         return [
             ["board/index"],
-            ["board/board"],
+            ["board/view"],
             ["board/edit"],
             ["board/edit/1"],
             ["board/delete"],

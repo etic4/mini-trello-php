@@ -56,7 +56,7 @@ class ControllerCard extends ExtendedController {
                 $card = CardDao::insert($card);
             }
         }
-        $this->redirect("board", "board", $column->get_board_id());
+        $this->redirect("board", "view", $column->get_board_id());
 
     }
 
@@ -118,7 +118,7 @@ class ControllerCard extends ExtendedController {
             CardDao::delete($card);
         }
 
-        $this->redirect("board", "board", $card->get_board_id());
+        $this->redirect("board", "view", $card->get_board_id());
     }
 
 
@@ -171,7 +171,7 @@ class ControllerCard extends ExtendedController {
 
         $card->move_left();
 
-        $this->redirect("board", "board", $card->get_board_id());
+        $this->redirect("board", "view", $card->get_board_id());
     }
 
     public function right() {
@@ -180,7 +180,7 @@ class ControllerCard extends ExtendedController {
 
         $card->move_right();
 
-        $this->redirect("board", "board", $card->get_board_id());
+        $this->redirect("board", "view", $card->get_board_id());
 
     }
 
@@ -190,7 +190,7 @@ class ControllerCard extends ExtendedController {
 
         $card->move_up();
 
-        $this->redirect("board", "board", $card->get_board_id());
+        $this->redirect("board", "view", $card->get_board_id());
     }
 
     public function down() {
@@ -199,7 +199,7 @@ class ControllerCard extends ExtendedController {
 
         $card->move_down();
 
-        $this->redirect("board", "board", $card->get_board_id());
+        $this->redirect("board", "view", $card->get_board_id());
     }
 
 

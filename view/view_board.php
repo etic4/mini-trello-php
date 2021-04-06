@@ -42,7 +42,7 @@
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </div>
-                <p class="credit">Created <?= $board->get_created_intvl() ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl() ?>.</p>
+                <p class="credit">Created <?= ViewUtils::created_intvl($board) ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($board) ?>.</p>
             </header>
             <div class="column_display">  
                 <?php include("view_columns.php"); ?>

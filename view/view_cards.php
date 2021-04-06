@@ -4,7 +4,7 @@
 
         <section class="card<?= $card->is_due() ? ' due-card': '' ?>">
             <header>
-                <h4><?= $card->get_truncated_title(25) ?></h4>
+                <h4><?= ViewUtils::truncate_string($card->get_title(), 35) ?></h4>
             </header>
             <footer>
                 <ul class="icons">

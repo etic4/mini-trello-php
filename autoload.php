@@ -4,10 +4,12 @@ spl_autoload_register(
     function($class) {
         $SEP = DIRECTORY_SEPARATOR;
         $baseDir =  __DIR__;
-        $dirs = array("framework",
+        $dirs = array(
+            "framework",
             "controller",
-            "model", "model".$SEP."dao", "model".$SEP."common", "model".$SEP."validation",
+            "model", "model".$SEP."dao", "model".$SEP."validation",
             "view",
+            "utils",
             "tests");
 
         $found = false;

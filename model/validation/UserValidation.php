@@ -1,7 +1,7 @@
 <?php
 
 
-class UserValidation extends Validation {
+class UserValidation extends AbstractValidation {
     private string $dao;
 
     public function __construct($dao) {
@@ -19,7 +19,7 @@ class UserValidation extends Validation {
             }
         }
 
-        if (Validation::str_lower_than($user->get_fullName(), 3)) {
+        if (AbstractValidation::str_lower_than($user->get_fullName(), 3)) {
             $this->errors[] = "Name must be at least 3 characters long";
         }
 

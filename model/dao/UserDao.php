@@ -63,7 +63,7 @@ class UserDao extends BaseDao {
         );
     }
 
-    // --- Validation ---
+    // --- AbstractValidation ---
 
     public static function validate_signup(User $user, $password, $password_confirm): array {
         $valid = (new UserValidation(static::class))->validate_datas($user);

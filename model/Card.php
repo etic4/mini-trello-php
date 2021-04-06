@@ -4,8 +4,7 @@ require_once "autoload.php";
 
 
 class Card {
-    use DateTrait, TitleTrait;
-
+    private string $title;
     private ?string $id;
     private string $body;
     private string $position;
@@ -37,7 +36,7 @@ class Card {
         $this->author = $author;
         $this->column = $column;
         $this->dueDate = $dueDate;
-        $this->createdAt = self::now_if_null($createdAt);
+        $this->createdAt = DateUtils::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
@@ -50,6 +49,14 @@ class Card {
 
     public function set_id(string $id) {
         $this->id = $id;
+    }
+
+    public function get_title(): string {
+        return $this->title;
+    }
+
+    public function set_title(string $title): void {
+        $this->title = $title;
     }
 
     public function get_body(): string {

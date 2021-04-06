@@ -18,7 +18,7 @@ class ControllerBoard extends ExtendedController {
         );
     }
 
-    public function board() {
+    public function view() {
         $board = $this->get_object_or_redirect("param1", "Board");
         $user = $this->authorize_for_board_or_redirect($board);
 
@@ -45,7 +45,7 @@ class ControllerBoard extends ExtendedController {
 
             if($error->is_empty()) {
                 $board = BoardDao::insert($board);
-                $this->redirect("board", "board", $board->get_id());
+                $this->redirect("board", "view", $board->get_id());
             }
         }
         $this->redirect();
@@ -79,7 +79,7 @@ class ControllerBoard extends ExtendedController {
         if($error->is_empty()) {
             BoardDao::update($board);
         }
-        $this->redirect("board", "board", $board->get_id());
+        $this->redirect("board", "view", $board->get_id());
     }
 
 
@@ -116,7 +116,7 @@ class ControllerBoard extends ExtendedController {
             BoardDao::delete($board);
             $this->redirect();
         }
-        $this->redirect("board", "board", $board->get_id());
+        $this->redirect("board", "view", $board->get_id());
 
     }
 

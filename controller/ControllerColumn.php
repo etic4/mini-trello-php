@@ -13,7 +13,7 @@ class ControllerColumn extends ExtendedController {
         $this->authorize_for_board_or_redirect($column->get_board());
 
         $column->move_right();
-        $this->redirect("board", "board", $column->get_board_id());
+        $this->redirect("board", "view", $column->get_board_id());
 
     }
 
@@ -22,7 +22,7 @@ class ControllerColumn extends ExtendedController {
         $this->authorize_for_board_or_redirect($column->get_board());
 
         $column->move_left();
-        $this->redirect("board", "board", $column->get_board_id());
+        $this->redirect("board", "view", $column->get_board_id());
 
     }
 
@@ -34,7 +34,7 @@ class ControllerColumn extends ExtendedController {
         if (count($cards) == 0) {
             ColumnDao::delete($column);
             ColumnDao::decrement_following_columns_position($column);
-            $this->redirect("board", "board", $column->get_board_id());
+            $this->redirect("board", "view", $column->get_board_id());
         } else {
             $this->redirect("column", "delete_confirm", $column->get_id());
         }
@@ -63,7 +63,7 @@ class ControllerColumn extends ExtendedController {
             ColumnDao::delete($column);
             ColumnDao::decrement_following_columns_position($column);
         }
-        $this->redirect("board", "board", $column->get_board_id());
+        $this->redirect("board", "view", $column->get_board_id());
 
     }
 
@@ -83,7 +83,7 @@ class ControllerColumn extends ExtendedController {
                 $column = ColumnDao::insert($column);
             }
         }
-        $this->redirect("board", "board", $board->get_id());
+        $this->redirect("board", "view", $board->get_id());
     }
 
 
@@ -108,6 +108,6 @@ class ControllerColumn extends ExtendedController {
                 ColumnDao::update($column);
             }
         }
-        $this->redirect("board", "board", $column->get_board_id());
+        $this->redirect("board", "view", $column->get_board_id());
     }
 }
