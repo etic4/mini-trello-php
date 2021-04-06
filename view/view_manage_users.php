@@ -33,7 +33,7 @@
                                     <td>
                                         <form class="link" action="user/delete" method="post">
                                             <input type="text" name="id" value="<?= $member->get_id() ?>" hidden>
-                                            <input type="submit" value="&#xf2ed" class="far fa-trash-alt" style="background:none">
+                                            <input type="submit" value="&#xf2ed" class="fas fa-trash-alt" style="background:none">
                                         </form>
                                     </td>
                                     <?php endif ?>

@@ -47,7 +47,7 @@
                                     <form id="participants-remove" action="participant/remove"  method="post">
                                         <input type='text' name='id' value='<?= $participant->get_id() ?>' hidden>
                                         <input type="text" name="card_id" value="<?=$card->get_id()?>" hidden>
-                                        <input type='submit' value="&#xf2ed" class="far fa-trash" style="background:none; color:black; border:none;">
+                                        <input type='submit' value="&#xf2ed" class="fas fa-trash" style="background:none; color:black; border:none;">
                                     </form>
                                 </li>
                                 <?php endforeach; ?>

@@ -8,7 +8,7 @@
         </header>
         <main class="delete_confirm">
             <form id="main_form" action="<?= strtolower(get_class($instance)) ?>/remove" method="post">
-                <h2><i class="far fa-trash-alt"></i></h2>
+                <h2><i class="fas fa-trash-alt"></i></h2>
                 <p>Are you sure ?</p>
                 <hr>
                 <p>Do you really want to delete this <?= strtolower(get_class($instance)) ?> ?</p>

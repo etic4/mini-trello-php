@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php include('html_head.php'); ?>
+<?php include('head.php'); ?>
 
 <body class="login">
         <header id="main_header">

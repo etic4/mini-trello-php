@@ -11,30 +11,17 @@
             <article class="mt-2 mb-5">
                 <h2  class="title is-4">Your boards</h2>
                 <div class="is-flex is-flex-direction-row is-align-items-center" >
-                    <?php foreach($user->get_own_boards() as $board): ?>
-                            <div class="card has-background-info mr-2">
-                                <div class="card-content">
-                                    <a class="content has-text-white" href="board/view/<?= $board->get_id() ?>" >
-                                        <b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?>
-                                    </a>
-                                </div>
-                            </div>
 
-                    <?php endforeach; ?>
-<!--                    <div class="card">
-                        <form action="board/add" method="post">
-                            <div class="field has-addons">
-                                <div class="control">
-                                    <input class="input" type="text" placeholder="Add a board">
-                                </div>
-                                <div class="control">
-                                    <button type="submit" formmethod="post"  class="button is-info" >
-                                        <i class="fas fa-sign-in-alt"></i>
-                                    </button>
-                                </div>
+                    <?php foreach($user->get_own_boards() as $board): ?>
+                        <div class="card has-background-info mr-2">
+                            <div class="card-content">
+                                <a class="content has-text-white" href="board/view/<?= $board->get_id() ?>" >
+                                    <b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?>
+                                </a>
                             </div>
-                        </form>
-                    </div>-->
+                        </div>
+                    <?php endforeach; ?>
+
                     <form  action="board/add" method="post">
                         <div class="field has-addons">
                             <div class="control">

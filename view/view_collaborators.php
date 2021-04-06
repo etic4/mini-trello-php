@@ -22,7 +22,7 @@
                             <form class='link' action='collaborator/remove' method='post'>
                                 <input type='text' name='collab_id' value='<?= $collaborator->get_id() ?>' hidden>
                                 <input type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
-                                <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
+                                <input type='submit' value="&#xf2ed" class="fas fa-trash-alt" style="background:none">
                             </form>
                         </li>
                     <?php endforeach ?>

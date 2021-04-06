@@ -41,7 +41,7 @@
                                 <?php if(isset($edit)): ?>
                                     <input type='text' name='edit' value='yes' hidden>
                                 <?php endif;?>
-                                <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
+                                <input type='submit' value="&#xf2ed" class="fas fa-trash-alt" style="background:none">
                             </form>
                             </li>
                         <?php endif; ?>
