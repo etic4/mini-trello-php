@@ -19,7 +19,7 @@ class TitleValidation extends AbstractValidation {
         }
 
         if (!$update || $this->dao::title_has_changed($object)) {
-            if (!$this->dao::is_title_unique($object->get_title())){
+            if (!$this->dao::is_title_unique($object)){
                 $obj_class_name = strtolower(get_class($object));
                 $this->errors[] = "A $obj_class_name with the same title already exists";
             }

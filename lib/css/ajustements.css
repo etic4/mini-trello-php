@@ -1,3 +1,27 @@
+html {
+    overflow: scroll;
+}
+
 .button {
     height: 100%;
+}
+
+.trello-column {
+    width: 20rem;
+    min-width: 20rem;
+}
+
+.trello-add-column {
+    width: 17rem;
+    min-width: 17rem;
+}
+
+.trello-comment {
+    cursor: default;
+}
+
+.text-overflow-ellipsis {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

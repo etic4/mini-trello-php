@@ -122,13 +122,6 @@ class ControllerCard extends ExtendedController {
     }
 
 
-    public function edit_link(){
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
-
-        $this->redirect("card", "edit", $card->get_id());
-    }
-
     public function edit(){
         $card = $this->get_object_or_redirect("param1", "Card");
         $user = $this->authorize_for_board_or_redirect($card->get_board());
@@ -162,8 +155,6 @@ class ControllerCard extends ExtendedController {
         }
 
     }
-
-
 
     public function left() {
         $card = $this->get_object_or_redirect("id", "Card");
@@ -201,7 +192,4 @@ class ControllerCard extends ExtendedController {
 
         $this->redirect("board", "view", $card->get_board_id());
     }
-
-
-
 }

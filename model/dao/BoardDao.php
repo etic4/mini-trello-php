@@ -51,6 +51,15 @@ class BoardDao extends BaseDao {
         );
     }
 
+    public static function is_title_unique(Board $board): bool {
+        $sql = new SqlGenerator(self::tableName);
+        list($sql, $params) = $sql->select()
+            ->where(["Title" => $board->get_title()])
+            ->count()->get();
+        return self::count($sql, $params) == 0;
+
+    }
+
     public static function validate(Board $board, $update=false): array {
         return self::validate_title($board, $update);
     }

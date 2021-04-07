@@ -50,6 +50,15 @@ class ColumnDao extends BaseDao {
         );
     }
 
+    public static function is_title_unique(Column $column): bool {
+        $sql = new SqlGenerator(self::tableName);
+        list($sql, $params) = $sql->select()
+            ->where(["Title" => $column->get_title(), "Board" => $column->get_board_id()])
+            ->count()->get();
+        return self::count($sql, $params) == 0;
+
+    }
+
     public static function validate(Column $column, $update=false): array {
         return self::validate_title($column, $update);
     }

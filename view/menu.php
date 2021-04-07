@@ -12,13 +12,20 @@
             <a class="navbar-item" href="board/index">Boards</a>
             <a class="navbar-item" href="user/manage">Admin</a>
             <div class="navbar-item">
-                <span class="icon"><i class="fas fa-user-shield no-pointer"></i></span>
-                <span><?= $user->get_fullName() ?></span>
+                <span class="icon-text">
+                    <span class="icon">
+                        <i class="fas fa-user-shield no-pointer"></i>
+                    </span>
+                    <span><?= $user->get_fullName() ?></span>
+                </span>
+
             </div>
                 <?php else: ?>
             <div class="navbar-item">
-                <span class="icon"><i class="fas fa-user no-pointer"></i></span>
-                <span><?= $user->get_fullName() ?></span>
+                <span class="icon-text">
+                    <span class="icon"><i class="fas fa-user no-pointer"></i></span>
+                    <span><?= $user->get_fullName() ?></span>
+                </span>
             </div>
                 <?php endif; ?>
             <a class="navbar-item" href="user/logout">

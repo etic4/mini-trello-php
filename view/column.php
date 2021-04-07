@@ -1,21 +1,22 @@
-<div class="card mr-2 p-3 has-background-grey-lighter">
+<div class="trello-column card mr-2 p-3 has-background-grey-lighter">
     <div class="p-2 is-flex is-flex-direction-row is-align-items-baseline">
-        <b><?= ViewUtils::truncate_string($column->get_title(), 28) ?></b>
+        <b class="text-overflow-ellipsis"><?= $column->get_title() ?></b>
+
         <div class="ml-2 is-flex is-flex-direction-row">
-            <form class="mr-1" action='column/edit' method='post'>
-                <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
-                <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
-                    <i class="fas fa-edit" aria-hidden="true"></i>
-                </button>
-            </form>
-            <form class="mr-1" action='column/delete' method='post'>
+            <a class="button has-background-grey-lighter p-0 ml-1" href="column/edit/<?= $column->get_id() ?>">
+                <i class="fas fa-edit"></i>
+            </a>
+            <form class="ml-1" action='column/delete' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                 <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </form>
             <?php if(!$column->is_first()): ?>
-            <form class="mr-1" action='column/left' method='post'>
+                <a class="button has-background-grey-lighter p-0 ml-1" href="column/edit/<?= $column->get_id() ?>">
+                    <i class="fas fa-edit"></i>
+                </a>
+            <form class="ml-1" action='column/left' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                 <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fa fa-arrow-circle-left"></i>
@@ -24,7 +25,7 @@
             <?php endif; ?>
             <!-- pas de right pour la dernière colonne -->
             <?php if(!$column->is_last()): ?>
-            <form class="mr-1" action='column/right' method='post'>
+            <form class="ml-1" action='column/right' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                 <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fa fa-arrow-circle-right"></i>

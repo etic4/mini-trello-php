@@ -85,10 +85,6 @@ abstract class BaseDao extends CachedGet {
         return $stored->get_title() != $object->get_title();
     }
 
-    public static function is_title_unique(string $title): bool {
-        return self::is_unique("Title", $title);
-    }
-
 
     // --- /validation ---
 

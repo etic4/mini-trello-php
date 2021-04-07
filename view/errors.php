@@ -1,4 +1,4 @@
-<div class='errors'>
+<div class="has-text-danger">
     <ul>
     <?php foreach ($errors->get_messages() as $message): ?>
         <li><?= $message; ?></li>

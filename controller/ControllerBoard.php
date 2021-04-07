@@ -31,7 +31,6 @@ class ControllerBoard extends ExtendedController {
         );
     }
 
-    // ajout nouveau Board
     public function add() {
         $user = $this->get_user_or_redirect();
 
@@ -51,8 +50,6 @@ class ControllerBoard extends ExtendedController {
         $this->redirect();
     }
 
-
-    //edit titre Board
     public function edit() {
         if (Request::is_get()) {
             $board = $this->get_object_or_redirect("param1", "Board");
@@ -61,38 +58,30 @@ class ControllerBoard extends ExtendedController {
             (new View("board_edit"))->show(array(
                     "user" => $user,
                     "board" => $board,
-                    "breadcrumb" => new BreadCrumb(array($board)),
+                    "breadcrumb" => new BreadCrumb(array($board), "Edit title"),
                     "errors" => Session::get_error()
                 )
             );
-        } else {
+        }
+        else {
             $board = $this->get_object_or_redirect("id", "Board");
             $this->authorize_for_board_or_redirect($board);
 
-            if (Post::empty("title")) {
-                $this->redirect();
+            if (Post::empty("title") || Post::get("title") == $board->get_title()) {
+                $this->redirect("board", "view", $board->get_id());
             }
 
-            // à ce stade on a un tout ce qu'il faut pour exécuter l'action
+            $board->set_title(Post::get("title"));
 
-            $title = Post::get("title");
-
-            $error = new DisplayableError();
-
-            if ($board->get_title() != $title) {
-                $board->set_title($title);
-
-                $error = new DisplayableError($board, "edit");
-                $error->set_messages(BoardDao::validate($board, $update=true));
-                Session::set_error($error);
-            }
+            $error = new DisplayableError($board, "edit");
+            $error->set_messages(BoardDao::validate($board, $update=true));
+            Session::set_error($error);
 
             if($error->is_empty()) {
                 BoardDao::update($board);
                 $this->redirect("board", "view", $board->get_id());
-            } else {
-                $this->redirect("board", "edit", $board->get_id());
             }
+            $this->redirect("board", "edit", $board->get_id());
         }
     }
 

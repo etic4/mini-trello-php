@@ -8,38 +8,7 @@ class ControllerColumn extends ExtendedController {
         $this->redirect();
     }
 
-    public function right() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
 
-        $column->move_right();
-        $this->redirect("board", "view", $column->get_board_id());
-
-    }
-
-    public function left() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
-
-        $column->move_left();
-        $this->redirect("board", "view", $column->get_board_id());
-
-    }
-
-    public function delete() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
-
-        $cards = $column->get_cards();
-        if (count($cards) == 0) {
-            ColumnDao::delete($column);
-            ColumnDao::decrement_following_columns_position($column);
-            $this->redirect("board", "view", $column->get_board_id());
-        } else {
-            $this->redirect("column", "delete_confirm", $column->get_id());
-        }
-
-    }
 
     public function delete_confirm() {
         $column = $this->get_object_or_redirect("param1", "Column");
@@ -89,25 +58,70 @@ class ControllerColumn extends ExtendedController {
 
     // edit titre Column
     public function edit() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
+        if (Request::is_get()) {
+            $column = $this->get_object_or_redirect("param1", "Column");
+            $user = $this->authorize_for_board_or_redirect($column->get_board());
 
-        if (!Post::empty("title")) {
-            $title = Post::get("title");
-            $error = new DisplayableError();
+            (new View("column_edit"))->show(array(
+                    "user" => $user,
+                    "column" => $column,
+                    "breadcrumb" => new BreadCrumb(array($column->get_board()), "Edit column title"),
+                    "errors" => Session::get_error()
+                )
+            );
+        }
+        else {
+            $column = $this->get_object_or_redirect("id", "Column");
+            $this->authorize_for_board_or_redirect($column->get_board());
 
-            if ($column->get_title() !== $title) {
-                $column->set_title($title);
-
-                $error = new DisplayableError($column, "edit");
-                $error->set_messages(ColumnDao::validate($column));
-                Session::set_error($error);
+            if (Post::empty("title") || Post::get("title") == $column->get_title()) {
+                $this->redirect("board", "view", $column->get_board_id());
             }
+
+            $column->set_title(Post::get("title"));
+
+            $error = new DisplayableError();
+            $error->set_messages(ColumnDao::validate($column));
+            Session::set_error($error);
 
             if ($error->is_empty()) {
                 ColumnDao::update($column);
+                $this->redirect("board", "view", $column->get_board_id());
             }
+            $this->redirect("board", "view", $column->get_board_id());
         }
+    }
+
+    public function right() {
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
+
+        $column->move_right();
         $this->redirect("board", "view", $column->get_board_id());
+
+    }
+
+    public function left() {
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
+
+        $column->move_left();
+        $this->redirect("board", "view", $column->get_board_id());
+
+    }
+
+    public function delete() {
+        $column = $this->get_object_or_redirect("id", "Column");
+        $this->authorize_for_board_or_redirect($column->get_board());
+
+        $cards = $column->get_cards();
+        if (count($cards) == 0) {
+            ColumnDao::delete($column);
+            ColumnDao::decrement_following_columns_position($column);
+            $this->redirect("board", "view", $column->get_board_id());
+        } else {
+            $this->redirect("column", "delete_confirm", $column->get_id());
+        }
+
     }
 }

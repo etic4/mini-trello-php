@@ -10,15 +10,13 @@
         <main class="">
             <article class="mt-2 mb-5">
                 <h2  class="title is-4">Your boards</h2>
-                <div class="is-flex is-flex-direction-row is-align-items-center" >
+                <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_own_boards() as $board): ?>
-                        <div class="card has-background-info mr-2">
-                            <div class="card-content">
-                                <a class="content has-text-white" href="board/view/<?= $board->get_id() ?>" >
-                                    <b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?>
-                                </a>
-                            </div>
+                    <a href="board/view/<?= $board->get_id() ?>">
+                        <div class="card has-background-info has-text-white mr-2 p-4">
+                            <b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?>
                         </div>
+                    </a>
                     <?php endforeach; ?>
 
                     <form  action="board/add" method="post">
@@ -40,14 +38,13 @@
             <?php if ($user->has_collaborating_boards()): ?>
             <article class="mb-5">
                 <h2 class="title is-4">Boards Shared with you</h2>
-                <div class="is-flex is-flex-direction-row" >
+                <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_collaborating_boards() as $board): ?>
-                    <div class="card has-background-success mr-2">
-                        <div class="card-content">
-                            <a class="content has-text-white" href="board/view/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a>
-                            </a>
-                        </div>
-                    </div>
+                        <a href="board/view/<?= $board->get_id() ?>">
+                            <div class="card has-background-success has-text-white mr-2 p-4">
+                                <b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?>
+                            </div>
+                        </a>
                     <?php endforeach; ?>
                 </div>
             </article>
@@ -56,14 +53,13 @@
             <?php if ($user->is_admin()):; ?>
             <article>
                 <h2  class="title is-4">Other's boards</h2>
-                    <div class="is-flex is-flex-direction-row" >
+                    <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_admin_visible_boards() as $board): ?>
-                        <div class="card has-background-grey mr-2">
-                            <div class="card-content">
-                                <a class="content has-text-white" href="board/view/<?= $board->get_id() ?>"><b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?></a>
-                                </a>
+                        <a href="board/view/<?= $board->get_id() ?>">
+                            <div class="card has-background-grey has-text-white mr-2 p-4">
+                                <b><?= $board->get_title() ?></b> <?= ViewUtils::get_columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?>
                             </div>
-                        </div>
+                        </a>
                     <?php endforeach; ?>
                     </div>
             </article>

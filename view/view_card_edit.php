@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php include('html_head.php'); ?>
+<?php include('head.php'); ?>
 
-<body class="edit">
+<body class="has-navbar-fixed-top m-4"">
         <header id="main_header">
             <?php include('menu.php') ?>
         </header>

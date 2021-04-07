@@ -12,22 +12,16 @@
             <header>
                 <div class="is-flex is-flex-direction-row is-align-items-baseline">
                     <h2 class="title"><?= $board->get_title()?></h2>
-
                     <?php if ($user->is_owner($board) || $user->is_admin()): ?>
-                    <form action='board/edit/<?= $board->get_id() ?>' method='get'>
-                        <button class="button is-white p-0 ml-2" type="submit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </form>
+                    <a class="button is-medium is-white p-0 ml-4" href="board/edit/<?= $board->get_id() ?>">
+                        <i class="fas fa-edit"></i>
+                    </a>
 
-                    <form action='board/collaborators/<?= $board->get_id() ?>' method='post'>
-                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <button class="button is-white p-0 ml-2" type="submit">
-                            <i class="fas fa-users"></i>
-                        </button>
-                    </form>
+                    <a class="button is-medium is-white p-0 ml-2" href="board/collaborators/<?= $board->get_id() ?>">
+                        <i class="fas fa-users"></i>
+                    </a>
 
-                    <form action='board/delete' method='post'>
+                    <form class="icon is-medium" action='board/delete' method='post'>
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
                         <button class="button is-white p-0 ml-2" type="submit">
                             <i class="fas fa-trash-alt"></i>
@@ -40,7 +34,7 @@
                     <?php endif; ?>
                 </div>
 
-                <div class="block mb-5">
+                <div class="block has-text-grey mb-5">
                     Created <?= ViewUtils::created_intvl($board) ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($board) ?>.
                 </div>
             </header>
@@ -48,20 +42,24 @@
                 <?php foreach($board->get_columns() as $column): ?>
                     <?php include("column.php"); ?>
                 <?php endforeach; ?>
-                <form  action="column/add" method="post">
-                    <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                    <div class="field has-addons">
-                        <div class="control">
-                            <input class="input" type="text" name="title" placeholder="Add a column">
+                <aside class="trello-add-column">
+                    <form  action="column/add" method="post">
+                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                        <div class="field has-addons">
+                            <div class="control">
+                                <input class="input" type="text" name="title" placeholder="Add a column">
+                            </div>
+                            <div class="control">
+                                <button type="submit" class="button is-info"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
-                        <div class="control">
-                            <button type="submit" class="button is-info"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </form>
-                <?php if ($errors->has_errors()): ?>
-                    <?php include('errors.php'); ?>
-                <?php endif; ?>
+                    </form>
+                    <?php if ($errors->has_errors("column", "add")): ?>
+                        <?php include('errors.php'); ?>
+                    <?php endif; ?>
+                </aside>
+
+
             </div>
         </article>
     </main>

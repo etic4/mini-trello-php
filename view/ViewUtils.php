@@ -43,4 +43,18 @@ class ViewUtils {
         return trim(substr($title, 0, $length)) . "...";
     }
 
+    public static function due_date_styling(Card $card) {
+        $card_background = "";
+        $button_background = "is-white";
+        $text_color = "has-text-info-dark";
+
+        if ($card->is_due()) {
+            $card_background = "has-background-danger";
+            $button_background = "is-danger";
+            $text_color = "has-text-white";
+        }
+
+        return ["card_background" => $card_background, "button_background" => $button_background, "text_color" => $text_color];
+    }
+
 }
