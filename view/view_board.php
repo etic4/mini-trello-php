@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title="Test"; include('head.php'); ?>
+<?php $title="Board"; include('head.php'); ?>
 
 <body class="has-navbar-fixed-top m-4">
 	<header>

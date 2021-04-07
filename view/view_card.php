@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <?php $title = "Card"; include('head.php'); ?>
-
     <body class="has-navbar-fixed-top m-4">
         <header>
             <?php include('menu.php'); ?>
@@ -30,11 +29,11 @@
                     </div>
                 </header>
                     <section class="">
-                        <p class="title is-4">Body</p>
+                        <p class="title is-4 mb-2">Body</p>
                         <textarea class="textarea has-fixed-size has-text-black mb-4" disabled><?= $card->get_body() ?></textarea>
 
                         <? if($card->has_dueDate()): ?>
-                        <p class="title is-4">Due date</p>
+                        <p class="title is-4 mb-2">Due date</p>
                         <div class="mb-4">
                             <?= ViewUtils::due_date_string($card->get_dueDate()) ?><
                         </div>
@@ -46,46 +45,22 @@
                         <?php endif;?>
 
                         <?php if ($card->has_participants()): ?>
-                            <p class="title is-4">Current Participant(s)</p>
-                        <ul>
+                        <p class="title is-4 mb-2">Current Participant(s)</p>
+                        <ul class="mb-4">
                             <?php foreach ($card->get_participants() as $participant): ?>
                                 <li><?=$participant->get_fullName() ." (".$participant->get_email().")" ?></li>
                             <?php endforeach; ?>
                         </ul>
 
                         <?php else: ?>
-                        <div class="mb-4"
+                        <div class="mb-2">
                             <p>This card has no participants yet</p>
                         </div>
                         <?php endif;?>
-
                     </section>
 
-                    <?php if($card->has_comments()): ?>
-                    <section>
-                        <p class="title is-4">Comments</p>
-                        <ul class="mb-5">
-                            <?php foreach($card->get_comments() as $comment):?>
-                                <?php include('comment.php'); ?>
-                            <?php endforeach ?>
-                        </ul>
-                        <div class="columns">
-                            <div class="column is-half">
-                                <form class="" action="comment/add" method="post">
-                                    <input type='text' name='card_id' value='<?= $card->get_id() ?>' hidden>
-                                    <div class="field has-addons">
-                                        <div class="control is-expanded">
-                                            <input class="input" type="text" name="body" placeholder="Add a comment">
-                                        </div>
-                                        <div class="control">
-                                            <button type="submit" class="button is-info">Add a comment</i></button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </section>
-                    <?php endif;?>
+                <?php include("comments_section.php") ?>
+
             </article>
         </main>
     </body>
