@@ -94,9 +94,12 @@ class ControllerCard extends ExtendedController {
         $card = $this->get_object_or_redirect("id", "Card");
         $this->authorize_for_board_or_redirect($card->get_board());
 
-        if($card!=null){
-            $this->redirect("card","delete_confirm",$card->get_id());
+        if(Post::isset("confirm")) {
+            CardDao::decrement_following_cards_position($card);
+            CardDao::delete($card);
+            $this->redirect("board", "view", $card->get_board_id());
         }
+        $this->redirect("card","delete_confirm",$card->get_id());
     }
 
     public function delete_confirm(){
@@ -104,23 +107,11 @@ class ControllerCard extends ExtendedController {
         $user = $this->authorize_for_board_or_redirect($card->get_board());
 
         (new View("delete_confirm"))->show(array(
-            "user"=>$user,
-            "instance"=>$card
+            "user" =>$user,
+            "cancel_url" => "board/view/".$card->get_board_id(),
+            "instance" => $card
         ));
     }
-
-    public function remove() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
-
-        if(Post::isset("delete")) {
-            CardDao::decrement_following_cards_position($card);
-            CardDao::delete($card);
-        }
-
-        $this->redirect("board", "view", $card->get_board_id());
-    }
-
 
     public function edit(){
         $card = $this->get_object_or_redirect("param1", "Card");

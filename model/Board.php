@@ -68,6 +68,9 @@ class Board {
         return $this->modifiedAt;
     }
 
+    public function get_board() {
+        return $this;
+    }
 
     public function get_cards(): array {
         if (!isset($this->cards)) {

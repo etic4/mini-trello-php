@@ -13,7 +13,7 @@
                         <h2 class="title">Card "<?= $card->get_title() ?>"</h2>
 
                         <!--bouton edit-->
-                        <a class="button  is-white is-medium p-0 ml-4" href="card/edit/<?= $card->get_id() ?>">
+                        <a class="button is-white is-medium p-0 ml-4" href="card/edit/<?= $card->get_id() ?>">
                             <i class="fas fa-edit"></i>
                         </a>
 

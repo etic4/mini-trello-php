@@ -26,6 +26,8 @@ class ControllerCollaborator extends ExtendedController {
 
         $collaborator = $this->get_object_or_redirect("collab_id", "User");
 
+
+        //TODO: permissions ?
         CollaborationDao::remove($board, $collaborator);
 
         $this->redirect("board", "collaborators", $board->get_id());

@@ -57,7 +57,9 @@ class ControllerUser extends ExtendedController {
             if($error->is_empty()) {
                 $user = UserDao::insert($user);
                 $this->log_user($user);
-            } else {
+                die;
+            }
+            /*else {
                 (new View("signup"))->show(array(
                         "email" => $user->get_email(),
                         "password" => Post::get("password"),
@@ -65,8 +67,8 @@ class ControllerUser extends ExtendedController {
                         "confirm" => Post::get("confirm"),
                         "errors" =>Session::get_error())
                 );
-            }
-        } else {
+            }*/
+        }
             (new View("signup"))->show(array(
                     "email" => Post::get("email"),
                     "password" => Post::get("password"),
@@ -74,8 +76,6 @@ class ControllerUser extends ExtendedController {
                     "confirm" => Post::get("confirm"),
                     "errors" =>Session::get_error())
             );
-        }
-
     }
 
     public function add() {
@@ -120,6 +120,10 @@ class ControllerUser extends ExtendedController {
         $this->get_admin_or_redirect();
         $user = $this->get_object_or_redirect("id", "User");
 
+        if (Post::isset("confirm")) {
+            UserDao::delete($user);
+        }
+
         $this->redirect("user", "delete_confirm", $user->get_id());
     }
 
@@ -129,16 +133,9 @@ class ControllerUser extends ExtendedController {
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,
+            "cancel_url" => "user/manage",
             "instance"=>$user
         ));
-    }
-
-    public function remove() {
-        $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect("id", "User");
-
-        UserDao::delete($user);
-        $this->redirect("user","manage");
     }
 
 

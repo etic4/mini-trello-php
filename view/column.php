@@ -12,18 +12,16 @@
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </form>
+
             <?php if(!$column->is_first()): ?>
-                <a class="button has-background-grey-lighter p-0 ml-1" href="column/edit/<?= $column->get_id() ?>">
-                    <i class="fas fa-edit"></i>
-                </a>
             <form class="ml-1" action='column/left' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                 <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fa fa-arrow-circle-left"></i>
                 </button>
-                </form>
+            </form>
             <?php endif; ?>
-            <!-- pas de right pour la dernière colonne -->
+
             <?php if(!$column->is_last()): ?>
             <form class="ml-1" action='column/right' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
@@ -32,6 +30,7 @@
                 </button>
             </form>
             <?php endif; ?>
+
             <?php if ($errors->has_errors("column", "edit", $column->get_id())): ?>
                 <?php include('errors.php'); ?>
             <?php endif; ?>

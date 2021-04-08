@@ -8,8 +8,6 @@ class ControllerColumn extends ExtendedController {
         $this->redirect();
     }
 
-
-
     public function delete_confirm() {
         $column = $this->get_object_or_redirect("param1", "Column");
         $user = $this->authorize_for_board_or_redirect($column->get_board());
@@ -17,23 +15,24 @@ class ControllerColumn extends ExtendedController {
         $cards = $column->get_cards();
         if (count($cards)) {
             (new View("delete_confirm"))->show(array(
-                "user"=>$user,
-                "instance"=>$column
+                "user" => $user,
+                "cancel_url" => "board/view/".$column->get_board_id(),
+                "instance" => $column
             ));
         }
     }
 
-    //exécution du delete ou cancel de delete_confirm
-    public function remove() {
+    public function delete() {
         $column = $this->get_object_or_redirect("id", "Column");
         $this->authorize_for_board_or_redirect($column->get_board());
 
-        if(Post::isset("delete")) {
+        if (Post::get("confirm") == "true" || count($column->get_cards()) == 0) {
             ColumnDao::delete($column);
             ColumnDao::decrement_following_columns_position($column);
+            $this->redirect("board", "view", $column->get_board_id());
+        } else {
+            $this->redirect("column", "delete_confirm", $column->get_id());
         }
-        $this->redirect("board", "view", $column->get_board_id());
-
     }
 
     public function add() {
@@ -110,18 +109,4 @@ class ControllerColumn extends ExtendedController {
 
     }
 
-    public function delete() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
-
-        $cards = $column->get_cards();
-        if (count($cards) == 0) {
-            ColumnDao::delete($column);
-            ColumnDao::decrement_following_columns_position($column);
-            $this->redirect("board", "view", $column->get_board_id());
-        } else {
-            $this->redirect("column", "delete_confirm", $column->get_id());
-        }
-
-    }
 }

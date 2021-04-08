@@ -19,7 +19,7 @@ class User {
     }
 
     public static function from_post(): User {
-        return new User(Post::get("email"), Post::get("fullName"), Post::get("role"), Post::get("password"));
+        return new User(Post::get("email"), Post::get("fullName"), Post::get("role", "user"), Post::get("password"));
     }
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,

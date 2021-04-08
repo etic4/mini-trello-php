@@ -21,7 +21,11 @@ html {
 }
 
 .text-overflow-ellipsis {
-    max-width: 10rem;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.icon.is-very-large {
+    height: 5rem;
+    width: 5rem;
 }

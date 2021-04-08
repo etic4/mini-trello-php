@@ -85,15 +85,12 @@ class ControllerBoard extends ExtendedController {
         }
     }
 
-
-    // si pas de colonne -> delete -> redirect index
-    // sinon -> delete_confirm
     public function delete() {
         $board = $this->get_object_or_redirect("id", "Board");
         $this->authorize_for_board_or_redirect($board, false);
 
         $columns = $board->get_columns();
-        if (count($columns) == 0) {
+        if (Post::isset("confirm") || count($columns) == 0) {
             BoardDao::delete($board);
             $this->redirect();
         } else {
@@ -106,25 +103,14 @@ class ControllerBoard extends ExtendedController {
         $board = $this->get_object_or_redirect("param1", "Board");
         $user = $this->authorize_for_board_or_redirect($board, false);
 
-        (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
-
-    }
-
-    //exécution du delete ou cancel de delete_confirm
-    public function remove() {
-        $board = $this->get_object_or_redirect("id", "Board");
-        $this->authorize_for_board_or_redirect($board, false);
-
-        if(Post::isset("delete")) {
-            BoardDao::delete($board);
-            $this->redirect();
-        }
-        $this->redirect("board", "view", $board->get_id());
+        (new View("delete_confirm"))->show(array(
+            "user" => $user,
+            "cancel_url" => "board/view/".$board->get_id(),
+            "instance" => $board));
 
     }
 
     // Colaborateurs
-
     public function collaborators() {
         $board = $this->get_object_or_redirect("param1", "Board");
         $user = $this->authorize_for_board_or_redirect($board, false);

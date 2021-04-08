@@ -24,23 +24,17 @@ class ViewUtils {
 
     public static function date_picker_min_due_date(Card $card): string {
         $due_date = $card->get_createdAt()->add(new DateInterval("P1D"));
-
         return $due_date->format('Y-m-d');
     }
 
     // nbr de colonnes
-    public static function get_columns_string(array $columns): string {
+    public static function columns_string(array $columns): string {
         $cnt = count($columns);
         return "($cnt column" . ($cnt > 1 ? "s" : "") . ")";
     }
 
     public static function selected(User $user, string $role): string {
         return $user->get_role() == $role ? "selected" : "";
-    }
-
-    public static function truncate_string($title, $length): string {
-        if(mb_strlen($title, "utf-8") <= $length) return $title;
-        return trim(substr($title, 0, $length)) . "...";
     }
 
     public static function due_date_styling(Card $card) {
@@ -57,4 +51,11 @@ class ViewUtils {
         return ["card_background" => $card_background, "button_background" => $button_background, "text_color" => $text_color];
     }
 
+    public static function class_name(object $obj, $lower=true): string {
+        $class_name = get_class($obj);
+        if ($lower) {
+            $class_name = strtolower($class_name);
+        }
+        return $class_name;
+    }
 }
