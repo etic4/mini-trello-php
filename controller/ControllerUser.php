@@ -50,7 +50,7 @@ class ControllerUser extends ExtendedController {
         if (!Post::empty("email")) {
             $user= User::from_post();
 
-            $error = new DisplayableError($user, "add");
+            $error = new DisplayableError();
             $error->set_messages(UserDao::validate_signup($user, Post::get("password"), Post::get("confirm")));
             Session::set_error($error);
 
@@ -59,15 +59,6 @@ class ControllerUser extends ExtendedController {
                 $this->log_user($user);
                 die;
             }
-            /*else {
-                (new View("signup"))->show(array(
-                        "email" => $user->get_email(),
-                        "password" => Post::get("password"),
-                        "fullName" => $user->get_fullName(),
-                        "confirm" => Post::get("confirm"),
-                        "errors" =>Session::get_error())
-                );
-            }*/
         }
             (new View("signup"))->show(array(
                     "email" => Post::get("email"),

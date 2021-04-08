@@ -7,13 +7,13 @@
         <?php include('menu.php'); ?>
         </header>
         <?php if($user): ?>
-        <main class="">
+        <main>
             <article class="mt-2 mb-5">
-                <h2  class="title is-4">Your boards</h2>
+                <h2  class="title">Your boards</h2>
                 <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_own_boards() as $board): ?>
                     <a href="board/view/<?= $board->get_id() ?>">
-                        <div class="card has-background-info has-text-white mr-2 p-4">
+                        <div class="card has-background-info has-text-white is-size-5 mr-2 p-4">
                             <b><?= $board->get_title() ?></b> <?= ViewUtils::columns_string($board->get_columns()) ?>
                         </div>
                     </a>
@@ -41,7 +41,7 @@
                 <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_collaborating_boards() as $board): ?>
                         <a href="board/view/<?= $board->get_id() ?>">
-                            <div class="card has-background-success has-text-white mr-2 p-4">
+                            <div class="card has-background-success has-text-white is-size-5 mr-2 p-4">
                                 <b><?= $board->get_title() ?></b> <?= ViewUtils::columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?>
                             </div>
                         </a>
@@ -56,7 +56,7 @@
                     <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_admin_visible_boards() as $board): ?>
                         <a href="board/view/<?= $board->get_id() ?>">
-                            <div class="card has-background-grey has-text-white mr-2 p-4">
+                            <div class="card has-background-grey has-text-white is-size-5 mr-2 p-4">
                                 <b><?= $board->get_title() ?></b> <?= ViewUtils::columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?>
                             </div>
                         </a>

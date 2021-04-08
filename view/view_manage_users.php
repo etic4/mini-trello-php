@@ -2,7 +2,7 @@
 <html lang="fr">
 <?php include('html_head.php'); ?>
 
-<body class="manage">
+<body  class="has-navbar-fixed-top m-4">
         <header id="main_header">
             <?php include('menu.php') ?>
         </header>

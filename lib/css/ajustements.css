@@ -1,5 +1,5 @@
 html {
-    overflow: scroll;
+    overflow:auto;
 }
 
 .button {
@@ -28,4 +28,16 @@ html {
 .icon.is-very-large {
     height: 5rem;
     width: 5rem;
+}
+
+.mw-400 {
+    max-width: 400px !important;
+}
+
+.expand-button {
+    width: 100%;
+}
+
+.border {
+    border: 1px solid #c1c1c1;
 }
