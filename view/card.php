@@ -13,7 +13,7 @@
         <?php if($card->has_comments()): ?>
             <div class="trello-comment button <?= $button_background ?> p-0">
                 <?= $card->get_comments_count() ?>
-                <i class="fas fa-comment ml-1"></i>
+                <i class="far fa-comment ml-1"></i>
             </div>
         <?php endif; ?>
 

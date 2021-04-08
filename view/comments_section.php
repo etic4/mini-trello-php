@@ -1,7 +1,7 @@
 <?php if($card->has_comments()): ?>
     <section>
         <p class="title is-4 mb-2">Comments</p>
-        <ul class="mb-5">
+        <ul class="ml-2 mb-4">
             <?php foreach($card->get_comments() as $comment):?>
                 <?php include('comment.php'); ?>
             <?php endforeach ?>
@@ -20,6 +20,12 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </section>
+<?php else: ?>
+    <section>
+        <div class="mb-2">
+            <p>This card has no comments yet</p>
         </div>
     </section>
 <?php endif; ?>
