@@ -53,4 +53,8 @@ abstract class ExtendedController extends Controller {
         }
         return $obj;
     }
+
+    public function explode_params(string $url) {
+        return explode("/", Post::get("redirect_url"));
+    }
 }

@@ -46,7 +46,7 @@ class ColumnDao extends BaseDao {
             "Title" => $object->get_title(),
             "Position" => $object->get_position(),
             "Board" => $object->get_board_id(),
-            "ModifiedAt" => DateUtils::sql_date($object->get_createdAt()),
+            "ModifiedAt" => DateUtils::sql_date($object->get_modifiedAt()),
         );
     }
 

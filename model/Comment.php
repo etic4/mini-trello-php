@@ -79,4 +79,9 @@ class Comment {
     public function get_modifiedAt(): ?DateTime {
         return $this->modifiedAt;
     }
+
+    public function set_modifiedAt(DateTime $dateTime) {
+        $this->modifiedAt = $dateTime;
+    }
+
 }

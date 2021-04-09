@@ -68,6 +68,10 @@ class Board {
         return $this->modifiedAt;
     }
 
+    public function set_modifiedAt(DateTime $dateTime) {
+        $this->modifiedAt = $dateTime;
+    }
+
     public function get_board() {
         return $this;
     }
@@ -82,7 +86,6 @@ class Board {
         return $this->cards;
     }
 
-    // retourne la liste des collaborateurs de ce tableau
     public function get_collaborators(): array {
         if (!isset($this->collaborators)) {
             $this->collaborators = CollaborationDao::get_collaborating_users($this);
@@ -96,6 +99,10 @@ class Board {
 
     public function get_not_collaborating(): array {
         return array_diff($this->get_non_owner(), $this->get_collaborators());
+    }
+
+    public function has_collaborators(): bool {
+        return count($this->get_collaborators())  > 0;
     }
 
     public function has_user_not_collaborating():bool {

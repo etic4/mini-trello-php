@@ -83,7 +83,7 @@ class CardDao extends BaseDao {
             "Author" => $object->get_author()->get_id(),
             "`Column`" => $object->get_column()->get_id(),
             "DueDate" => DateUtils::sql_date($object->get_dueDate()),
-            "ModifiedAt" => DateUtils::sql_date($object->get_createdAt()),
+            "ModifiedAt" => DateUtils::sql_date($object->get_modifiedAt()),
         );
     }
 

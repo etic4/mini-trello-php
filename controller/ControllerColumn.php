@@ -8,33 +8,6 @@ class ControllerColumn extends ExtendedController {
         $this->redirect();
     }
 
-    public function delete_confirm() {
-        $column = $this->get_object_or_redirect("param1", "Column");
-        $user = $this->authorize_for_board_or_redirect($column->get_board());
-
-        $cards = $column->get_cards();
-        if (count($cards)) {
-            (new View("delete_confirm"))->show(array(
-                "user" => $user,
-                "cancel_url" => "board/view/".$column->get_board_id(),
-                "instance" => $column
-            ));
-        }
-    }
-
-    public function delete() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
-
-        if (Post::get("confirm") == "true" || count($column->get_cards()) == 0) {
-            ColumnDao::delete($column);
-            ColumnDao::decrement_following_columns_position($column);
-            $this->redirect("board", "view", $column->get_board_id());
-        } else {
-            $this->redirect("column", "delete_confirm", $column->get_id());
-        }
-    }
-
     public function add() {
         $board = $this->get_object_or_redirect("id", "Board");
         $this->authorize_for_board_or_redirect($board);
@@ -48,7 +21,7 @@ class ControllerColumn extends ExtendedController {
             Session::set_error($error);
 
             if($error->is_empty()) {
-                $column = ColumnDao::insert($column);
+                ColumnDao::insert($column);
             }
         }
         $this->redirect("board", "view", $board->get_id());
@@ -57,22 +30,16 @@ class ControllerColumn extends ExtendedController {
 
     // edit titre Column
     public function edit() {
-        if (Request::is_get()) {
-            $column = $this->get_object_or_redirect("param1", "Column");
-            $user = $this->authorize_for_board_or_redirect($column->get_board());
+        $params_name = "id";
 
-            (new View("column_edit"))->show(array(
-                    "user" => $user,
-                    "column" => $column,
-                    "breadcrumb" => new BreadCrumb(array($column->get_board()), "Edit column title"),
-                    "errors" => Session::get_error()
-                )
-            );
+        if(Request::is_get()) {
+            $params_name = "param1";
         }
-        else {
-            $column = $this->get_object_or_redirect("id", "Column");
-            $this->authorize_for_board_or_redirect($column->get_board());
 
+        $column = $this->get_object_or_redirect($params_name, "Column");
+        $user = $this->authorize_for_board_or_redirect($column->get_board());
+
+        if (Post::isset("confirm")) {
             if (Post::empty("title") || Post::get("title") == $column->get_title()) {
                 $this->redirect("board", "view", $column->get_board_id());
             }
@@ -84,12 +51,41 @@ class ControllerColumn extends ExtendedController {
             Session::set_error($error);
 
             if ($error->is_empty()) {
+                $column->set_modifiedAt(new DateTime());
                 ColumnDao::update($column);
                 $this->redirect("board", "view", $column->get_board_id());
             }
+            $this->redirect("column", "edit", $column->get_id());
+        }
+
+        (new View("column_edit"))->show(array(
+                "user" => $user,
+                "column" => $column,
+                "breadcrumb" => new BreadCrumb(array($column->get_board()), "Edit column title"),
+                "errors" => Session::get_error()
+            )
+        );
+    }
+
+    public function delete() {
+        $column = $this->get_object_or_redirect("id", "Column");
+        $user = $this->authorize_for_board_or_redirect($column->get_board());
+
+        if (Post::isset("confirm") || count($column->get_cards()) == 0) {
+            ColumnDao::delete($column);
+            ColumnDao::decrement_following_columns_position($column);
             $this->redirect("board", "view", $column->get_board_id());
         }
+
+        (new View("delete_confirm"))->show(array(
+            "user" => $user,
+            "cancel_url" => "board/view/".$column->get_board_id(),
+            "instance" => $column
+        ));
     }
+
+
+    /* --- Moves --- */
 
     public function right() {
         $column = $this->get_object_or_redirect("id", "Column");

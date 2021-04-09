@@ -103,6 +103,10 @@ class Card {
         return $this->modifiedAt;
     }
 
+    public function set_modifiedAt(DateTime $dateTime) {
+        $this->modifiedAt = $dateTime;
+    }
+
     public function get_dueDate(): ?DateTime {
         return $this->dueDate;
     }
@@ -205,7 +209,8 @@ class Card {
 
     public function is_due(): bool {
         if ($this->get_dueDate() != null) {
-            return $this->get_dueDate()->diff(new Datetime())->s > 0;
+            $interval = $this->get_dueDate()->diff(new Datetime());
+            return $interval->invert == 0 && $interval->d > 0;
         }
         return false;
     }

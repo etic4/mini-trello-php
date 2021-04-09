@@ -54,7 +54,7 @@ class CommentDao extends BaseDao {
             "Body" => $object->get_body(),
             "Author" => $object->get_author()->get_id(),
             "Card" => $object->get_card()->get_id(),
-            "ModifiedAt" => DateUtils::sql_date($object->get_createdAt()),
+            "ModifiedAt" => DateUtils::sql_date($object->get_modifiedAt()),
         );
     }
 

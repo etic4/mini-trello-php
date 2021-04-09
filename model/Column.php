@@ -70,6 +70,10 @@ class Column {
         return $this->modifiedAt;
     }
 
+    public function set_modifiedAt(DateTime $dateTime) {
+        $this->modifiedAt = $dateTime;
+    }
+
     public function get_board_id(): string {
         return $this->board->get_id();
     }

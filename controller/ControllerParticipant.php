@@ -14,13 +14,25 @@ class ControllerParticipant extends ExtendedController {
         $card = $this->get_object_or_redirect("card_id", "Card");
         $this->authorize_for_board_or_redirect($card->get_board());
 
-        $participant = $this->get_object_or_redirect("id", "User");
-
+        $participant = $this->get_object_or_redirect("participant_id", "User");
         $participation = new Participation($card, $participant);
 
         ParticipationDao::insert($participation);
 
-        $this->redirect("card", "edit", $card->get_id());
+        $params = $this->explode_params(Post::get("redirect_url"));
+        $this->redirect(...$params);
 
+    }
+
+    public function remove() {
+        $card = $this->get_object_or_redirect("card_id", "Card");
+        $this->authorize_for_board_or_redirect($card->get_board());
+
+        $participant = $this->get_object_or_redirect("participant_id", "User");
+
+        ParticipationDao::remove($card, $participant);
+
+        $params = $this->explode_params(Post::get("redirect_url"));
+        $this->redirect(...$params);
     }
 }

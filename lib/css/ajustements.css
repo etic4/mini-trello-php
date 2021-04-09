@@ -6,6 +6,10 @@ html {
     height: 100%;
 }
 
+.button.align-baseline {
+    vertical-align: baseline;
+}
+
 .trello-column {
     width: 20rem;
     min-width: 20rem;

@@ -8,36 +8,6 @@ class ControllerCard extends ExtendedController {
         $this->redirect();
     }
 
-    public function view(){
-        $card = $this->get_object_or_redirect("param1", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
-
-        $comments = $card->get_comments();
-
-        if(isset($_GET['param2'])){
-            (new View("card"))->show(array(
-                    "user" => $user,
-                    "card" => $card,
-                    "comment" => $comments,
-                    "show_comment" => $_GET['param2'],
-                    "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                    "errors" => Session::get_error()
-                )
-            );
-            die;
-        } else {
-            (new View("card"))->show(array(
-                    "user" => $user,
-                    "card" => $card,
-                    "comment" => $comments,
-                    "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                    "errors" => Session::get_error()
-                )
-            );
-            die;
-        }
-    }
-
     public function add() {
         $column = $this->get_object_or_redirect("column_id", "Column");
         $user = $this->authorize_for_board_or_redirect($column->get_board());
@@ -53,18 +23,41 @@ class ControllerCard extends ExtendedController {
             Session::set_error($error);
 
             if($error->is_empty()){
-                $card = CardDao::insert($card);
+                CardDao::insert($card);
             }
         }
         $this->redirect("board", "view", $column->get_board_id());
 
     }
 
-    public function update(){
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+    public function view(){
+        $card = $this->get_object_or_redirect("param1", "Card");
+        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
-        if (Post::get("edit") != "Cancel") {
+        $comments = $card->get_comments();
+
+        (new View("card"))->show(array(
+                "user" => $user,
+                "card" => $card,
+                "comment" => $comments,
+                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
+                "errors" => Session::get_error()
+            )
+        );
+    }
+
+    public function edit(){
+        $param_name = "id";
+
+        // Redirect (get, donc) en cas d'ajout de commentaires ou de participants pendant card/edit ou card/view
+        if (Request::is_get()) {
+            $param_name = "param1";
+        }
+
+        $card = $this->get_object_or_redirect($param_name, "Card");
+        $user = $this->authorize_for_board_or_redirect($card->get_board());
+
+        if (Post::isset("confirm")) {
             if (Post::isset("body")) {
                 $card->set_body(Post::get("body"));
             }
@@ -77,34 +70,38 @@ class ControllerCard extends ExtendedController {
                 $card->set_dueDate(new Datetime(Post::get("due_date")));
             }
 
-            $error = new DisplayableError($card, "update");
+            $error = new DisplayableError();
             $error->set_messages(CardDao::validate($card, $update=true));
             Session::set_error($error);
 
             if($error->is_empty()){
+                $card->set_modifiedAt(new DateTime());
                 CardDao::update($card);
-                $this->redirect("card", "view", $card->get_id());
+
+                $params = $this->explode_params(Post::get("redirect_url"));
+                $this->redirect(...$params);
             }
         }
-        $this->redirect("card", "edit", $card->get_id());
-    }
 
+        (new View("card_edit"))->show(array(
+                "user" => $user,
+                "card" => $card,
+                "redirect_url" => Post::get("redirect_url", "board"),
+                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
+                "errors" => Session::get_error()
+            )
+        );
+    }
 
     public function delete() {
         $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
         if(Post::isset("confirm")) {
             CardDao::decrement_following_cards_position($card);
             CardDao::delete($card);
             $this->redirect("board", "view", $card->get_board_id());
         }
-        $this->redirect("card","delete_confirm",$card->get_id());
-    }
-
-    public function delete_confirm(){
-        $card = $this->get_object_or_redirect("param1", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
         (new View("delete_confirm"))->show(array(
             "user" =>$user,
@@ -113,39 +110,8 @@ class ControllerCard extends ExtendedController {
         ));
     }
 
-    public function edit(){
-        $card = $this->get_object_or_redirect("param1", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
-        $comments = $card->get_comments();
-        $edit="yes";
-
-        if(isset($_GET['param2'])){
-            (new View("card_edit"))->show(array(
-                "user" => $user,
-                "card" => $card,
-                "comment" => $comments,
-                "show_comment" => $_GET['param2'],
-                "edit" => $edit,
-                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                "errors" => Session::get_error()
-                )
-            );
-            die;
-        } else {
-            (new View("card_edit"))->show(array(
-                "user" => $user,
-                "card" => $card,
-                "comment" => $comments,
-                "edit" => $edit,
-                "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
-                "errors" => Session::get_error()
-                )
-            );
-            die;
-        }
-
-    }
+    /* --- Moves --- */
 
     public function left() {
         $card = $this->get_object_or_redirect("id", "Card");
