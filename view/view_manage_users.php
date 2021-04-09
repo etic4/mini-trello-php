@@ -46,7 +46,7 @@
                         <div class="user_edit">
                             <table>
                                 <tr>
-                                    <form action="user/edit/<?= $member->get_id() ?>" method="post">
+                                    <form action="user/edit" method="post">
                                         <td>
                                             <input type="text" name="name" value="<?= $member->get_fullName() ?>" required>
                                         </td>

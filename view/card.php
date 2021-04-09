@@ -6,7 +6,7 @@
     </div>
 
     <footer class="is-flex is-flex-direction-row is-align-items-end">
-        <a class="button <?= $button_background ?> p-1" href="card/view/<?= $card->get_id() ?>">
+        <a class="button align-baseline <?= $button_background ?> p-1" href="card/view/<?= $card->get_id() ?>">
             <i class="fas fa-eye"></i>
         </a>
 
@@ -17,21 +17,25 @@
             </div>
         <?php endif; ?>
 
-        <a class="button <?= $button_background ?> p-1 pl-0" href="card/edit/<?= $card->get_id() ?>">
-            <i class="fas fa-edit"></i>
-        </a>
-
-        <form class="icon" action='card/delete' method='post'>
+        <form action="card/edit" method="post">
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-            <button class="button <?= $button_background ?> p-0" type="submit">
+            <input type="text" name="redirect_url" value="board/view/<?= $board->get_id() ?>" hidden>
+            <button class="button align-baseline <?= $button_background ?> p-0 ml-1" type="submit">
+                <i class="fas fa-edit"></i>
+            </button>
+        </form>
+
+        <form action='card/delete' method='post'>
+            <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
+            <button class="button align-baseline <?= $button_background ?> p-0 ml-1" type="submit">
                 <i class="fas fa-trash-alt"></i>
             </button>
         </form>
 
         <?php if(!$card->is_last()): ?>
-        <form class="icon" action='card/down' method='post'>
+        <form action='card/down' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-            <button class="button <?= $button_background ?> p-0" type="submit">
+            <button class="button align-baseline <?= $button_background ?> p-0 ml-1" type="submit">
                 <i class="fas fa-arrow-circle-down"></i>
             </button>
         </form>
@@ -39,9 +43,9 @@
 
         <!-- pas de up pour la première carte de la colonne -->
         <?php if(!$card->is_first()): ?>
-        <form class="icon" action='card/up' method='post'>
+        <form action='card/up' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-            <button class="button <?= $button_background ?> p-0" type="submit">
+            <button class="button align-baseline <?= $button_background ?> p-0 ml-1" type="submit">
                 <i class="fas fa-arrow-circle-up"></i>
             </button>
         </form>
@@ -49,9 +53,9 @@
 
         <!-- pas de left pour les cartes de la première colonne -->
         <?php if(!$column->is_first()): ?>
-        <form class='icon' action='card/left' method='post'>
+        <form action='card/left' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-            <button class="button <?= $button_background ?> p-0" type="submit">
+            <button class="button align-baseline <?= $button_background ?> p-0 ml-1" type="submit">
                 <i class="fas fa-arrow-circle-left"></i>
             </button>
         </form>
@@ -59,9 +63,9 @@
 
         <!-- pas de right pour les cartes de la dernière colonne -->
         <?php if(!$column->is_last()): ?>
-        <form class='icon' action='card/right' method='post'>
+        <form action='card/right' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-            <button class="button <?= $button_background ?> p-0" type="submit">
+            <button class="button align-baseline <?= $button_background ?> p-0 ml-1" type="submit">
                 <i class="fas fa-arrow-circle-right"></i>
             </button>
         </form>

@@ -12,10 +12,14 @@
             <header>
                 <div class="is-flex is-flex-direction-row is-align-items-baseline">
                     <h2 class="title"><?= $board->get_title()?></h2>
+
                     <?php if ($user->is_owner($board) || $user->is_admin()): ?>
-                    <a class="button is-medium is-white p-0 ml-4" href="board/edit/<?= $board->get_id() ?>">
-                        <i class="fas fa-edit"></i>
-                    </a>
+                    <form action="board/edit" method="post">
+                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                        <button class="button align-baseline is-white p-0 ml-4" type="submit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </form>
 
                     <a class="button is-medium is-white p-0 ml-2" href="board/collaborators/<?= $board->get_id() ?>">
                         <i class="fas fa-users"></i>
@@ -23,7 +27,7 @@
 
                     <form class="icon is-medium" action='board/delete' method='post'>
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <button class="button is-white p-0 ml-2" type="submit">
+                        <button class="button align-baseline is-white p-0 ml-2" type="submit">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </form>
@@ -43,14 +47,14 @@
                     <?php include("column.php"); ?>
                 <?php endforeach; ?>
                 <aside class="trello-add-column">
-                    <form  action="column/add" method="post">
+                    <form action="column/add" method="post">
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
                         <div class="field has-addons">
                             <div class="control">
                                 <input class="input" type="text" name="title" placeholder="Add a column">
                             </div>
                             <div class="control">
-                                <button type="submit" class="button is-info"><i class="fas fa-plus"></i></button>
+                                <button type="submit" class="button align-baseline is-info"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
                     </form>

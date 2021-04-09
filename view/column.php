@@ -1,14 +1,18 @@
 <div class="trello-column card mr-2 p-3 has-background-grey-lighter">
-    <div class="p-2 is-flex is-flex-direction-row is-align-items-baseline">
+    <div class="is-flex is-flex-direction-row is-align-items-baseline p-2 mb-2 title is-5">
         <b class="text-overflow-ellipsis"><?= $column->get_title() ?></b>
 
         <div class="ml-2 is-flex is-flex-direction-row">
-            <a class="button has-background-grey-lighter p-0 ml-1" href="column/edit/<?= $column->get_id() ?>">
-                <i class="fas fa-edit"></i>
-            </a>
+            <form action="column/edit" method="post">
+                <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
+                <button class="button align-baseline has-background-grey-lighter p-0 ml-1" type="submit">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </form>
+
             <form class="ml-1" action='column/delete' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
-                <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
+                <button class="button align-baseline has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </form>
@@ -16,7 +20,7 @@
             <?php if(!$column->is_first()): ?>
             <form class="ml-1" action='column/left' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
-                <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
+                <button class="button align-baseline has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fa fa-arrow-circle-left"></i>
                 </button>
             </form>
@@ -25,7 +29,7 @@
             <?php if(!$column->is_last()): ?>
             <form class="ml-1" action='column/right' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
-                <button class="button has-background-grey-lighter is-align-items-start p-0" type="submit">
+                <button class="button align-baseline has-background-grey-lighter is-align-items-start p-0" type="submit">
                     <i class="fa fa-arrow-circle-right"></i>
                 </button>
             </form>
@@ -35,7 +39,6 @@
                 <?php include('errors.php'); ?>
             <?php endif; ?>
         </div>
-
     </div>
     <div>
         <?php foreach($column->get_cards() as $card): ?>
@@ -51,7 +54,9 @@
                     <input class="input" type="text" name="title" placeholder="Add a card">
                 </div>
                 <div class="control">
-                    <button type="submit" class="button is-info"><i class="fas fas fa-plus"></i></button>
+                    <button type="submit" class="button align-baseline is-info">
+                        <i class="fas fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
         </form>

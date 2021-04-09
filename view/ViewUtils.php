@@ -47,7 +47,6 @@ class ViewUtils {
             $button_background = "is-danger";
             $text_color = "has-text-white";
         }
-
         return ["card_background" => $card_background, "button_background" => $button_background, "text_color" => $text_color];
     }
 

@@ -57,16 +57,26 @@ class ControllerUser extends ExtendedController {
             if($error->is_empty()) {
                 $user = UserDao::insert($user);
                 $this->log_user($user);
-                die;
             }
         }
-            (new View("signup"))->show(array(
-                    "email" => Post::get("email"),
-                    "password" => Post::get("password"),
-                    "fullName" => Post::get("fullName"),
-                    "confirm" => Post::get("confirm"),
-                    "errors" =>Session::get_error())
-            );
+        (new View("signup"))->show(array(
+                "email" => Post::get("email"),
+                "password" => Post::get("password"),
+                "fullName" => Post::get("fullName"),
+                "confirm" => Post::get("confirm"),
+                "errors" =>Session::get_error())
+        );
+    }
+
+
+    public function manage() {
+        $admin = $this->get_admin_or_redirect();
+
+        (new View("manage_users"))->show(array(
+                "user" => $admin,
+                "users" => UserDao::get_all_users(),
+                "errors" => Session::get_error())
+        );
     }
 
     public function add() {
@@ -108,19 +118,13 @@ class ControllerUser extends ExtendedController {
     }
 
     public function delete() {
-        $this->get_admin_or_redirect();
+        $admin = $this->get_admin_or_redirect();
         $user = $this->get_object_or_redirect("id", "User");
 
         if (Post::isset("confirm")) {
             UserDao::delete($user);
+            $this->redirect("user", "manage");
         }
-
-        $this->redirect("user", "delete_confirm", $user->get_id());
-    }
-
-    public function delete_confirm() {
-        $admin = $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect("param1", "User");
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,
@@ -129,14 +133,4 @@ class ControllerUser extends ExtendedController {
         ));
     }
 
-
-    public function manage() {
-        $admin = $this->get_admin_or_redirect();
-
-        (new View("manage_users"))->show(array(
-                "user" => $admin,
-                "users" => UserDao::get_all_users(),
-                "errors" => Session::get_error())
-        );
-    }
 }

@@ -6,15 +6,15 @@
             <?php include('menu.php'); ?>
         </header>
         <?= $breadcrumb->get_trace(); ?>
-
         <main>
             <article>
                 <header>
                     <h2 class="title">Edit title of board: "<?= $board->get_title() ?>"</h2>
                     <div class="columns">
                         <div class="column is-one-third">
-                            <form action='board/edit/<?= $board->get_id() ?>' method='post'>
+                            <form action='board/edit' method='post'>
                                 <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                                <input type="text" name="confirm" hidden>
 
                                     <div class="field has-addons">
                                         <div class="control is-expanded">
