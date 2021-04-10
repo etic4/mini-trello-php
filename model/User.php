@@ -137,10 +137,6 @@ class User {
         return CollaborationDao::get_collaborating_boards($this);
     }
 
-    public function get_participating_cards($board): array {
-        return CardDao::get_participating_cards($this, $board);
-    }
-
     public function __toString(): string {
         return $this->get_fullName() . " (" . $this->get_email() . ")";
     }
