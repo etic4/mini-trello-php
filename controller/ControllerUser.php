@@ -68,7 +68,6 @@ class ControllerUser extends ExtendedController {
         );
     }
 
-
     public function manage() {
         $admin = $this->get_admin_or_redirect();
 
@@ -79,14 +78,16 @@ class ControllerUser extends ExtendedController {
         );
     }
 
+
+    /*   --- Admin seul ---   */
+
     public function add() {
         $this->get_admin_or_redirect();
 
         $user= User::from_post();
         $user->set_password(User::get_random_password());
 
-        $error = new DisplayableError($user, "add");
-
+        $error = new DisplayableError();
         $error->set_messages(UserDao::validate_add($user));
         Session::set_error($error);
 
