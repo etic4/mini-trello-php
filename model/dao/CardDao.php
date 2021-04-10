@@ -9,7 +9,7 @@ class CardDao extends BaseDao {
     //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
     public static function get_cards(Column $column): array {
         $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) = $sql->select()->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->get();
+        list($sql, $params) = $sql->select()->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->sql();
         return self::get_many($sql, $params);
     }
 
@@ -24,25 +24,13 @@ class CardDao extends BaseDao {
     }
 
 
-    public static function get_participating_cards(User $user, Board $board): array {
-        $sql = new SqlGenerator();
-
-        list($sql, $params) =
-            $sql->select(["ca.*"])->join(["participate pa", "user us", "card ca, `column` co", "board bo"])
-            ->on(["pa.Participant" => "us.ID", "pa.Card" => "ca.ID", "ca.Column" => "co.ID", "co.Board" => "bo.ID" ])
-            ->where(["pa.Participant" => $user->get_id(), "bo.ID" => $board->get_id()])->get();
-
-        return self::get_many($sql, $params);
-    }
-
-
     // attribue les cartes de cet utilisateur à utilisateur 'Anonyme' dont l'ID est '6'
     // utilisé lors de la suppression d'un utilisateur
     public static function to_anonymous(User $user, string $anonID="6") {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) =
             $sql->update()->set(["NewAuthor" => $anonID], ["Author" => "NewAuthor"])
-                ->where(["Author" => $user->get_id()])->get();
+                ->where(["Author" => $user->get_id()])->sql();
         self::execute($sql, $params);
     }
 
@@ -93,7 +81,7 @@ class CardDao extends BaseDao {
             ->join(["card ca", "`column` co"])
             ->on(["ca.Column" => "co.ID"])
             ->where(["ca.Title" => $card->get_title(), "co.Board" => $card->get_board_id()])
-            ->count()->get();
+            ->count()->sql();
         return self::count($sql, $params) == 0;
 
     }

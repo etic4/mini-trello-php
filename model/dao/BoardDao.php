@@ -28,7 +28,7 @@ class BoardDao extends BaseDao {
         $sql = new SqlGenerator();
         list($sql, $params) =
             $sql->select(["b.*"], $distinct=true)->join(["board b", "collaborate c"])
-                ->where(["c.Collaborator" => $user->get_id(), "b.Owner" => $user->get_id()], ["!=", "!="])->get();
+                ->where(["c.Collaborator" => $user->get_id(), "b.Owner" => $user->get_id()], ["!=", "!="])->sql();
 
         return self::get_many($sql, $params);
     }
@@ -55,7 +55,7 @@ class BoardDao extends BaseDao {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) = $sql->select()
             ->where(["Title" => $board->get_title()])
-            ->count()->get();
+            ->count()->sql();
         return self::count($sql, $params) == 0;
 
     }

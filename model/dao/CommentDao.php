@@ -14,7 +14,7 @@ class CommentDao extends BaseDao {
         $sql = new SqlGenerator(self::tableName);
 
         list($sql, $params) = $sql->select()->where(["Card" => $card->get_id()])
-            ->order_by(["ModifiedAt" => "DESC", "CreatedAt" => "DESC"])->get();
+            ->order_by(["ModifiedAt" => "DESC", "CreatedAt" => "DESC"])->sql();
 
         return self::get_many($sql, $params);
     }
@@ -22,7 +22,7 @@ class CommentDao extends BaseDao {
     public static function comments_count($card): int {
         $sql = new SqlGenerator(self::tableName);
 
-        list($sql, $params) = $sql->select()->where(["Card"  => $card->get_id()])->count()->get();
+        list($sql, $params) = $sql->select()->where(["Card"  => $card->get_id()])->count()->sql();
 
         return self::count($sql, $params);
     }
@@ -33,7 +33,7 @@ class CommentDao extends BaseDao {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) =
             $sql->update()->set(["NewAuthor" => $anonID], ["Author" => "NewAuthor"])
-                ->where(["Author" => $user->get_id()])->get();
+                ->where(["Author" => $user->get_id()])->sql();
         self::execute($sql, $params);
     }
 

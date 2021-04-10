@@ -32,7 +32,7 @@ class UserDao extends BaseDao {
     public static function email_has_changed(User $user): bool {
         $sql = new SqlGenerator(static::tableName);
 
-        list($sql, $params) = $sql->select() ->where([self::PkName => $user->get_id()])->get();
+        list($sql, $params) = $sql->select() ->where([self::PkName => $user->get_id()])->sql();
         $stored = self::get_one($sql, $params, $cache=false);
 
         return $stored->get_email() != $user->get_email();
@@ -63,7 +63,7 @@ class UserDao extends BaseDao {
         );
     }
 
-    // --- AbstractValidation ---
+    // --- Validation ---
 
     public static function validate_signup(User $user, $password, $password_confirm): array {
         $valid = (new UserValidation(static::class))->validate_datas($user);

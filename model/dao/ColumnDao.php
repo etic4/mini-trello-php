@@ -7,7 +7,7 @@ class ColumnDao extends BaseDao {
 
     public static function get_columns(Board $board): array {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->select()->where(["Board" => $board->get_id()])->order_by(["Position" => "ASC"])->get();
+        list($sql, $params) = $sql->select()->where(["Board" => $board->get_id()])->order_by(["Position" => "ASC"])->sql();
 
         return self::get_many($sql, $params);
     }
@@ -54,7 +54,7 @@ class ColumnDao extends BaseDao {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) = $sql->select()
             ->where(["Title" => $column->get_title(), "Board" => $column->get_board_id()])
-            ->count()->get();
+            ->count()->sql();
         return self::count($sql, $params) == 0;
 
     }
