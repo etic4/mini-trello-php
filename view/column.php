@@ -3,12 +3,11 @@
         <b class="text-overflow-ellipsis"><?= $column->get_title() ?></b>
 
         <div class="ml-2 is-flex is-flex-direction-row">
-            <form action="column/edit" method="post">
-                <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
-                <button class="button align-baseline has-background-grey-lighter p-0 ml-1" type="submit">
+            <a class="icon ml-1" href="column/edit/<?= $column->get_id() ?>">
+                <button class="button align-baseline has-background-grey-lighter p-1" type="submit">
                     <i class="fas fa-edit"></i>
                 </button>
-            </form>
+            </a>
 
             <form class="ml-1" action='column/delete' method='post'>
                 <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>

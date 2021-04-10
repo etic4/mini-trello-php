@@ -12,13 +12,11 @@
                     <div class="is-flex is-flex-direction-row is-align-items-baseline">
                         <h2 class="title">Card "<?= $card->get_title() ?>"</h2>
 
-                        <form action="card/edit" method="post">
-                            <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-                            <input type="text" name="redirect_url" value="card/view/<?= $card->get_id() ?>" hidden>
-                            <button class="button is-medium align-baseline is-white p-0 ml-4" type="submit">
+                        <a class="icon ml-1" href="card/edit/<?= $card->get_id() ?>">
+                            <button class="button is-medium align-baseline is-white p-1" type="submit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                        </form>
+                        </a>
 
                         <form action='card/delete' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
