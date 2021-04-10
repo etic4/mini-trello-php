@@ -10,7 +10,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "INSERT INTO user(Mail, FullName, Password) VALUES (:Mail, :FullName, :Password)";
         $expected_params = ["Mail" => "email@machin", "FullName" => "FullName", "Password" => "pass" ];
 
-        list($sql, $params) = (new SqlGenerator("user"))->insert($expected_params)->get();
+        list($sql, $params) = (new SqlGenerator("user"))->insert($expected_params)->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -23,7 +23,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $params_where =  ["ID" => "22"];
         $expected_params = array_merge($params_cols, $params_where);
 
-        list($sql, $params) = (new \SqlGenerator("user"))->update($params_cols)->where($params_where)->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->update($params_cols)->where($params_where)->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -35,7 +35,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $params_where =  ["ID" => "2"];
         $expected_params = array_merge($params_cols, $params_where);
 
-        list($sql, $params) = (new \SqlGenerator("user"))->update()->set(["NewId" => "6"], ["ID" => "NewId"])->where($params_where)->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->update()->set(["NewId" => "6"], ["ID" => "NewId"])->where($params_where)->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -45,7 +45,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "DELETE FROM user WHERE Mail=:Mail";
         $params_where =  ["Mail" => "email@machin"];
 
-        list($sql, $params) = (new \SqlGenerator("user"))->delete()->where($params_where)->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->delete()->where($params_where)->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($params_where, $params);
@@ -53,14 +53,14 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
 
     public function testSelectOnly() {
         $expected_sql = "SELECT * FROM user";
-        list($sql, $params) = (new \SqlGenerator("user"))->select()->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->select()->sql();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals([], $params);
     }
 
     public function testSelectWithColumns() {
         $expected_sql = "SELECT ID, FullName FROM user";
-        list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->sql();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals([], $params);
     }
@@ -69,7 +69,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "SELECT ID, FullName FROM user WHERE ID=:ID";
         $expected_params = ["ID" => "1"];
 
-        list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->where(["ID" => "1"])->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->where(["ID" => "1"])->sql();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
     }
@@ -78,7 +78,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "SELECT * FROM card WHERE `Column`=:Column";
         $expected_params = ["Column" => "1"];
 
-        list($sql, $params) = (new \SqlGenerator("card"))->select()->where(["`Column`" => "1"])->get();
+        list($sql, $params) = (new \SqlGenerator("card"))->select()->where(["`Column`" => "1"])->sql();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
     }
@@ -87,7 +87,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "SELECT ID, FullName FROM user ORDER BY FullName ASC";
         $expected_params = [];
 
-        list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->Order_by(["FullName" => "ASC"])->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])->Order_by(["FullName" => "ASC"])->sql();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
     }
@@ -97,7 +97,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_params = ["board_Title" => "the title"];
 
         list($sql, $params) = (new \SqlGenerator("user"))->select(["user.ID", "user.FullName", "board.Title"])
-            ->join(["user", "board"])->on(["user.ID" => "board.Owner"])->where(["board.Title" => "the title"])->get();
+            ->join(["user", "board"])->on(["user.ID" => "board.Owner"])->where(["board.Title" => "the title"])->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -108,7 +108,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_params = [];
 
         list($sql, $params) = (new \SqlGenerator("user"))->select(["user.ID", "user.FullName", "board.Title"])
-            ->join(["user", "board"])->on(["user.ID" => "board.Owner"])->get();
+            ->join(["user", "board"])->on(["user.ID" => "board.Owner"])->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -120,7 +120,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
 
         list($sql, $params) = (new \SqlGenerator("user"))->select(["user.ID", "user.FullName", "board.Title"])
             ->join(["user", "board"])->on(["user.ID" => "board.Owner"])->where(["board.Title" => "the title"])
-            ->order_by(["board.Title" => "ASC"])->get();
+            ->order_by(["board.Title" => "ASC"])->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -131,7 +131,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_params = ["ID" => "1", "FullName" => "trois"];
 
         list($sql, $params) = (new \SqlGenerator("user"))->select(["ID", "FullName"])
-            ->where(["ID" => "1", "FullName" => "trois"], ["!=", ">"])->get();
+            ->where(["ID" => "1", "FullName" => "trois"], ["!=", ">"])->sql();
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
     }
@@ -140,7 +140,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "SELECT DISTINCT * FROM user";
         $expected_params = [];
 
-        list($sql, $params) = (new \SqlGenerator("user"))->select($columns=null, $distinct=true)->get();
+        list($sql, $params) = (new \SqlGenerator("user"))->select($columns=null, $distinct=true)->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);
@@ -150,7 +150,7 @@ class SqlGeneratorTest extends  \PHPUnit\Framework\TestCase{
         $expected_sql = "WHERE a>:a AND b<:b";
         $expected_params = ["a" => "1", "b" => "1"];
 
-        list($sql, $params) = (new \SqlGenerator())->where(["a" => "1", "b" => "1"], [">", "<"])->get();
+        list($sql, $params) = (new \SqlGenerator())->where(["a" => "1", "b" => "1"], [">", "<"])->sql();
 
         $this->assertEquals($expected_sql, $sql);
         $this->assertEquals($expected_params, $params);

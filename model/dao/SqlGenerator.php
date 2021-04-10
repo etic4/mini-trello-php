@@ -116,8 +116,12 @@ class SqlGenerator {
         );
     }
 
-    public function delete(): object {
+    public function delete(string $if_join=""): object {
         $this->delete_string = "DELETE FROM " . $this->tableName;
+        if (!empty($if_join)) {
+            $this->delete_string = "DELETE $if_join";
+        }
+
 
         return SqlGenerator::new($this);
     }
@@ -131,7 +135,7 @@ class SqlGenerator {
 
     public function on(array $joins_list): SqlGenerator {
         $to_join = array_map(fn($col1, $col2) => "$col1=$col2", array_keys($joins_list), $joins_list);
-        $this->join_string = join(", ", $to_join);
+        $this->join_string = join(" AND ", $to_join);
         return SqlGenerator::new($this);
     }
 
@@ -192,7 +196,7 @@ class SqlGenerator {
         return $this->params;
     }
 
-    public function get(): array {
+    public function sql(): array {
         return array($this->get_sql(), $this->params);
     }
 

@@ -7,7 +7,7 @@ abstract class BaseDao extends CachedGet {
 
     public static function get_by(array $params) {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->select()->where($params)->get();
+        list($sql, $params) = $sql->select()->where($params)->sql();
 
         return self::get_one($sql, $params);
     }
@@ -23,7 +23,7 @@ abstract class BaseDao extends CachedGet {
         if (!is_null($params)) {
             $sql = $sql->where($params);
         }
-        list($sql, $params) = $sql->get();
+        list($sql, $params) = $sql->sql();
 
         return self::get_many($sql, $params);
     }
@@ -31,7 +31,7 @@ abstract class BaseDao extends CachedGet {
     public static function insert($object) {
         $map = static::get_object_map($object);
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->insert($map)->get();
+        list($sql, $params) = $sql->insert($map)->sql();
         self::execute($sql, $params);
 
         if (static::PkName != null) {
@@ -44,27 +44,27 @@ abstract class BaseDao extends CachedGet {
         $map = static::get_object_map($object);
         $sql = new SqlGenerator(static::tableName);
 
-        list($sql, $params) = $sql->update($map)->where([static::PkName => $object->get_id()])->get();
+        list($sql, $params) = $sql->update($map)->where([static::PkName => $object->get_id()])->sql();
 
         self::execute($sql, $params);
     }
 
     protected static function delete_one($object) {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->delete()->where([static::PkName => $object->get_id()])->get();
+        list($sql, $params) = $sql->delete()->where([static::PkName => $object->get_id()])->sql();
         self::execute($sql, $params);
 
     }
 
     public static function delete_all(array $params) {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->delete()->where($params)->get();
+        list($sql, $params) = $sql->delete()->where($params)->sql();
         self::execute($sql, $params);
     }
 
     public static function is_unique($col_name, $value): bool {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->select()->where([$col_name => $value])->count()->get();
+        list($sql, $params) = $sql->select()->where([$col_name => $value])->count()->sql();
         return self::count($sql, $params) == 0;
     }
 
@@ -79,7 +79,7 @@ abstract class BaseDao extends CachedGet {
     public static function title_has_changed($object): bool {
         $sql = new SqlGenerator(static::tableName);
 
-        list($sql, $params) = $sql->select()->where(["ID" => $object->get_id()])->get();
+        list($sql, $params) = $sql->select()->where(["ID" => $object->get_id()])->sql();
         $stored = self::get_one($sql, $params, $cache=false);
 
         return $stored->get_title() != $object->get_title();

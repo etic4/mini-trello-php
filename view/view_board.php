@@ -14,12 +14,11 @@
                     <h2 class="title"><?= $board->get_title()?></h2>
 
                     <?php if ($user->is_owner($board) || $user->is_admin()): ?>
-                    <form action="board/edit" method="post">
-                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <button class="button align-baseline is-white p-0 ml-4" type="submit">
+                    <a class="icon ml-5" href="board/edit/<?= $board->get_id() ?>">
+                        <button class="button is-medium align-baseline is-white p-0" type="submit">
                             <i class="fas fa-edit"></i>
                         </button>
-                    </form>
+                    </a>
 
                     <a class="button is-medium is-white p-0 ml-2" href="board/collaborators/<?= $board->get_id() ?>">
                         <i class="fas fa-users"></i>
