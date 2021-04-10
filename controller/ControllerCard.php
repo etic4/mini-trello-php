@@ -48,8 +48,6 @@ class ControllerCard extends ExtendedController {
 
     public function edit(){
         $param_name = "id";
-
-        // Redirect (get, donc) en cas d'ajout de commentaires ou de participants pendant card/edit ou card/view
         if (Request::is_get()) {
             $param_name = "param1";
         }
@@ -95,13 +93,20 @@ class ControllerCard extends ExtendedController {
 
     public function delete() {
         $card = $this->get_object_or_redirect("id", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
+        $this->authorize_for_board_or_redirect($card->get_board());
 
         if(Post::isset("confirm")) {
             CardDao::decrement_following_cards_position($card);
             CardDao::delete($card);
             $this->redirect("board", "view", $card->get_board_id());
         }
+        $this->redirect("card", "delete_confirm", $card->get_id());
+
+    }
+
+    public function delete_confirm() {
+        $card = $this->get_object_or_redirect("param1", "Card");
+        $user = $this->authorize_for_board_or_redirect($card->get_board());
 
         (new View("delete_confirm"))->show(array(
             "user" =>$user,

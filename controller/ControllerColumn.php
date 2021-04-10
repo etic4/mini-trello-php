@@ -31,7 +31,6 @@ class ControllerColumn extends ExtendedController {
     // edit titre Column
     public function edit() {
         $params_name = "id";
-
         if(Request::is_get()) {
             $params_name = "param1";
         }
@@ -69,13 +68,19 @@ class ControllerColumn extends ExtendedController {
 
     public function delete() {
         $column = $this->get_object_or_redirect("id", "Column");
-        $user = $this->authorize_for_board_or_redirect($column->get_board());
+        $this->authorize_for_board_or_redirect($column->get_board());
 
         if (Post::isset("confirm") || count($column->get_cards()) == 0) {
             ColumnDao::delete($column);
             ColumnDao::decrement_following_columns_position($column);
             $this->redirect("board", "view", $column->get_board_id());
         }
+        $this->redirect("column", "delete_confirm", $column->get_id());
+    }
+
+    public function delete_confirm() {
+        $column = $this->get_object_or_redirect("param1", "Column");
+        $user = $this->authorize_for_board_or_redirect($column->get_board());
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,

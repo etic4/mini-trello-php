@@ -1,116 +1,82 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php include('head.php'); ?>
-
-<body  class="has-navbar-fixed-top m-4">
-        <header id="main_header">
+<?php $title = "Manage users"; include('head.php'); ?>
+    <body  class="has-navbar-fixed-top m-4">
+        <header>
             <?php include('menu.php') ?>
         </header>
         <main>
             <article>
-                <section>
-                    <h2>Manage Users</h2>
-                    <table class="table_header">
+                <section class="ml-2 mb-6">
+                    <h2 class="title mb-6">Manage Users</h2>
+                    <form id="add_user" action='user/add' method='post'></form>
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th><i class="fas fa-user"></td>
-                                <th><i class="fas fa-at"></i></td>
-                                <th><i class="fas fa-user-shield"></td>
-                            </tr>           
-                        </thead>
-                        </table>
-                    <?php foreach($users as $member): ?>
-                    <div class="table">
-                        <input class="checkbox_info" type="checkbox" name="edit_user_<?= $member->get_id() ?>" id="edit_user_<?= $member->get_id() ?>" hidden>
-                        <div class="user_info">
-                            <table>
-                                <tr>
-                                    <td><?= $member->get_fullName() ?></td>
-                                    <td><?= $member->get_email() ?></td>
-                                    <td><?= ucfirst($member->get_role()) ?></td>
-                                    <td><label for="edit_user_<?= $member->get_id() ?>"><i class="fas fa-edit"></i></label></td>
-                                    <?php if($user != $member): ?>
-                                    <td>
-                                        <form class="link" action="user/delete" method="post">
-                                            <input type="text" name="id" value="<?= $member->get_id() ?>" hidden>
-                                            <input type="submit" value="&#xf2ed" class="fas fa-trash-alt" style="background:none">
-                                        </form>
-                                    </td>
-                                    <?php endif ?>
-                                </tr>
-                            </table>
-                        </div>
-                        <?php if ($errors->has_errors("user", "edit", $member->get_id())): ?>
-                            <?php include('errors.php'); ?>
-                        <?php endif; ?>
-                        <div class="user_edit">
-                            <table>
-                                <tr>
-                                    <form action="user/edit" method="post">
-                                        <td>
-                                            <input type="text" name="name" value="<?= $member->get_fullName() ?>" required>
-                                        </td>
-                                        <td>
-                                            <input type="email" name="email" value="<?= $member->get_email() ?>"required>
-                                        </td>
-                                        <?php if($user != $member): ?>
-                                            <td>
-                                                <select name="role">
-                                                    <option value="admin" <?= ViewUtils::selected($member, "admin") ?>>Admin</option>
-                                                    <option value="user" <?= ViewUtils::selected($member, "user") ?>>User</option>
-                                                </select>
-                                            </td>
-                                        <?php else: ?>
-                                            <td>
-                                                <input type="text" name="role" value="<?= ucfirst($member->get_role()) ?>" disabled>
-                                            </td>
-                                        <?php endif ?>
-                                        <td>
-                                            <label for="edit_user_<?= $member->get_id() ?>"><i class="fas fa-arrow-left"></i></label>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="id" value="<?= $member->get_id() ?>" hidden>
-                                            <input type="submit" class="fas fa-check" value="&#xf00c">
-                                        </td>
-                                    </form>
-                                </tr>
-                                
-                            </table>
-                        </div>
-                    </div>
+                                <th>
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        <span>Full name</span>
+                                    </span>
+                                </th>
+                                <th>
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-at"></i>
+                                        </span>
+                                        <span>Email</span>
+                                    </span>
+                                </th>
+                                <th>
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-user-shield"></i>
+                                        </span>
+                                        <span>Role</span>
+                                    </span>
 
-                <?php endforeach ?>
+                                </th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach($users as $member): ?>
+                            <tr>
+                                <td><?= $member->get_fullName() ?></td>
+                                <td><?= $member->get_email() ?></td>
+                                <td><?= lcfirst($member->get_role()) ?></td>
+                                <td class="has-text-centered">
+                                    <a class="icon" href="user/edit/<?= $member->get_id() ?>">
+                                        <button class="button align-baseline p-1" type="submit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </a>
+                                </td>
+                                <?php if($user != $member): ?>
+                                <td class="has-text-centered">
+                                    <form action='user/delete' method='post'>
+                                        <input type='text' name='id' value='<?= $member->get_id() ?>' hidden>
+                                        <button class="button align-baseline is-align-items-start p-1" type="submit">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <?php else: ?>
+                                <td class="has-text-centered">
+                                    <button class="button align-baseline p-0"disabled>
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                                <?php endif ?>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </section>
-                <section class="login">
-                    <h2>Add a user</h2>
-                    <form id="add_user" action="user/add" method="post">
-                        <ul class="wrapper">
-                            <li class="form-row">
-                                <label for="email"><i class="fas fa-at"></i></label>
-                                <input type="email" name="email" placeholder="Email" required>
-                            </li>
-                            <li class="form-row">
-                                <label for="fullname"><i class="fas fa-user"></i></label>
-                                <input type="text" name="fullName" placeholder="Full Name" required>
-                            </li>
-                            <li class="form-row">
-                                <label for="role"><i class="fas fa-user-shield"></i></label>
-                                <select name="role" required>
-                                    <option selected="user">User</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="user">User</option>
-                                </select>
-                            </li>
-                            <li class="form-row">
-                                <input type="hidden" name="admin_created" value="true">
-                                <input type="submit" value="Add">
-                            </li>
-                        </ul>
-                    </form>
-                </section>
-                <?php if ($errors->has_errors("user", "add")): ?>
-                    <?php include('errors.php'); ?>
-                <?php endif; ?>
+                <a class="button is-info" href="user/add">Add a user</a>
             </article>
         </main>
     </body>

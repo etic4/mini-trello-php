@@ -8,13 +8,11 @@
 
     <!-- si l'utilisateur est admin ou l'auteur du message -->
     <?php if( $user->is_admin() || $user->is_author($comment)): ?>
-    <form action='comment/edit' method='post'>
-        <input type='text' name='id' value='<?= $comment->get_id() ?>' hidden>
-        <input type="test" name="redirect_url" value="<?= $redirect_url ?>" hidden>
-        <button class="button align-baseline is-white p-0 ml-4" type="submit">
+    <a class="icon  ml-4" href="comment/edit/<?= $comment->get_id() ?>">
+        <button class="button align-baseline is-white p-0" type="submit">
             <i class="fas fa-edit"></i>
         </button>
-    </form>
+    </a>
     <?php endif; ?>
 
     <!-- si l'utilisateur est proprio du tableau ou si l'utilisateur est l'auteur du message -->

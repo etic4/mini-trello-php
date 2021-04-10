@@ -4,8 +4,10 @@
             <i class="fas fa-trash-alt fa-4x"></i>
         </div>
         <hr>
+
         <p class="mb-2">Do you really want to delete this <?= ViewUtils::class_name($instance) ?> ?</p>
         <p class="mb-4">This process cannot be undone.</p>
+
         <div class="is-flex is-justify-content-center">
             <a class="button is-light" href="<?= $cancel_url ?> ">Cancel</a>
             <form action="<?= ViewUtils::class_name($instance) ?>/delete" method="post">

@@ -19,7 +19,7 @@ class UserValidation extends AbstractValidation {
             }
         }
 
-        if (AbstractValidation::str_lower_than($user->get_fullName(), 3)) {
+        if (self::str_lower_than($user->get_fullName(), 3)) {
             $this->errors[] = "Name must be at least 3 characters long";
         }
 

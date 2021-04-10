@@ -52,7 +52,6 @@ class ControllerBoard extends ExtendedController {
 
     public function edit() {
         $param_name = "id";
-
         if(Request::is_get()) {
             $param_name = "param1";
         }
@@ -90,13 +89,20 @@ class ControllerBoard extends ExtendedController {
 
     public function delete() {
         $board = $this->get_object_or_redirect("id", "Board");
-        $user = $this->authorize_for_board_or_redirect($board, false);
+        $this->authorize_for_board_or_redirect($board, false);
 
         $columns = $board->get_columns();
         if (Post::isset("confirm") || count($columns) == 0) {
             BoardDao::delete($board);
             $this->redirect();
         }
+
+        $this->redirect("board", "delete_confirm", $board->get_id());
+    }
+
+    public function delete_confirm() {
+        $board = $this->get_object_or_redirect("param1", "Board");
+        $user = $this->authorize_for_board_or_redirect($board, false);
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,

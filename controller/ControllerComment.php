@@ -25,7 +25,11 @@ class ControllerComment extends ExtendedController {
     }
 
     public function edit() {
-        $comment = $this->get_object_or_redirect("id", "Comment");
+        $param_name = "id";
+        if(Request::is_get()) {
+            $param_name = "param1";
+        }
+        $comment = $this->get_object_or_redirect($param_name, "Comment");
         $user = $this->authorize_for_board_or_redirect($comment->get_board());
 
         if (Post::isset("confirm")) {

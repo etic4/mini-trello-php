@@ -82,50 +82,83 @@ class ControllerUser extends ExtendedController {
     /*   --- Admin seul ---   */
 
     public function add() {
-        $this->get_admin_or_redirect();
+        $admin = $this->get_admin_or_redirect();
 
-        $user= User::from_post();
-        $user->set_password(User::get_random_password());
+        if (Post::isset("confirm")) {
+            $user= User::from_post();
+            $user->set_password(User::get_random_password());
 
-        $error = new DisplayableError();
-        $error->set_messages(UserDao::validate_add($user));
-        Session::set_error($error);
+            $error = new DisplayableError();
+            $error->set_messages(UserDao::validate_add($user));
+            Session::set_error($error);
 
-        if($error->is_empty()) {
-            UserDao::insert($user);
+            if($error->is_empty()) {
+                UserDao::insert($user);
+                $this->redirect("user", "manage");
+            }
         }
 
-        $this->redirect("user","manage");
+        (new View("add_user"))->show(array(
+                "user" => $admin,
+                "fullName" => Post::get("fullName"),
+                "email" => Post::get("email"),
+                "role" => Post::get("role"),
+                "errors" => Session::get_error())
+        );
     }
 
     public function edit() {
-        $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect("id", "User");
+        $admin = $this->get_admin_or_redirect();
 
-        $user->set_email(Post::get("email", $user->get_email()));
-        $user->set_fullName(Post::get("name", $user->get_fullname()));
-        $user->set_role(Post::get("role", $user->get_role()));
-
-
-        $error = new DisplayableError($user, "edit");
-        $error->set_messages(UserDao::validate_edit($user));
-        Session::set_error($error);
-
-        if ($error->is_empty()) {
-            UserDao::update($user);
+        $param_name = "id";
+        if (Request::is_get()) {
+            $param_name = "param1";
         }
 
-        $this->redirect("user","manage");
+        $user = $this->get_object_or_redirect($param_name, "User");
+
+        if (Post::isset("confirm")) {
+            $user->set_email(Post::get("email", $user->get_email()));
+            $user->set_fullName(Post::get("name", $user->get_fullname()));
+            $user->set_role(Post::get("role", $user->get_role()));
+
+            if (Post::get("new_password") == "on") {
+                $user->set_password(User::get_random_password());
+            }
+
+
+            $error = new DisplayableError($user, "edit");
+            $error->set_messages(UserDao::validate_edit($user));
+            Session::set_error($error);
+
+            if ($error->is_empty()) {
+                UserDao::update($user);
+                $this->redirect("user", "manage");
+            }
+        }
+
+        (new View("edit_user"))->show(array(
+                "user" => $admin,
+                "member" => $user,
+                "breadcrumb" => new BreadCrumb([], $user->get_fullName()),
+                "errors" =>Session::get_error())
+        );
     }
 
     public function delete() {
-        $admin = $this->get_admin_or_redirect();
+        $this->get_admin_or_redirect();
         $user = $this->get_object_or_redirect("id", "User");
 
         if (Post::isset("confirm")) {
             UserDao::delete($user);
             $this->redirect("user", "manage");
         }
+        $this->redirect("user", "delete_confirm", $user->get_id());
+    }
+
+    public function delete_confirm() {
+        $admin = $this->get_admin_or_redirect();
+        $user = $this->get_object_or_redirect("param1", "User");
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,
@@ -133,5 +166,4 @@ class ControllerUser extends ExtendedController {
             "instance"=>$user
         ));
     }
-
 }

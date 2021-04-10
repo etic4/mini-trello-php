@@ -33,8 +33,8 @@ class ViewUtils {
         return "($cnt column" . ($cnt > 1 ? "s" : "") . ")";
     }
 
-    public static function selected(User $user, string $role): string {
-        return $user->get_role() == $role ? "selected" : "";
+    public static function selected_state(string $posted, string $role): string {
+        return $posted == $role ? "selected" : "";
     }
 
     public static function due_date_styling(Card $card) {
