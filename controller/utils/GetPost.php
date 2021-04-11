@@ -5,7 +5,7 @@
 */
 abstract class GetPost {
 
-    protected static ?array $GoP = null;
+    protected static ?array $GoP;
 
     // Set $GoP avec $_POST ou $_GET par les  classes filles
     abstract protected static function set_super_global();
