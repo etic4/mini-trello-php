@@ -16,6 +16,12 @@ class DateUtils {
         return $dateTime != null ? $dateTime->format('Y-m-d H:i:s') : null;
     }
 
+    public static function most_recent_timestamp(DateTime $dateTimeCreated, ?DateTime $dateTimeModified): int {
+        $tstmpCreated = $dateTimeCreated->getTimestamp();
+        $tstmpModified = $dateTimeModified != null ? $dateTimeModified->getTimestamp() : 0;
+        return max($tstmpCreated, $tstmpModified);
+    }
+
     public static function intvl($firstDate, $secondDate): string {
         $intvl = $secondDate->diff($firstDate);
         $laps = "1 second ago";

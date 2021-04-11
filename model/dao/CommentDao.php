@@ -9,26 +9,20 @@ class CommentDao extends BaseDao {
         self::delete_one($comment);
     }
 
-    // renvoie un tableau de comment associé à la carte $card
     public static function get_comments(Card $card): array {
         $sql = new SqlGenerator(self::tableName);
-
-        list($sql, $params) = $sql->select()->where(["Card" => $card->get_id()])
-            ->order_by(["ModifiedAt" => "DESC", "CreatedAt" => "DESC"])->sql();
-
+        list($sql, $params) = $sql->select()->where(["Card" => $card->get_id()])->sql();
         return self::get_many($sql, $params);
     }
 
     public static function comments_count($card): int {
         $sql = new SqlGenerator(self::tableName);
-
         list($sql, $params) = $sql->select()->where(["Card"  => $card->get_id()])->count()->sql();
-
         return self::count($sql, $params);
     }
 
-    // attribue les commentaires de cet utilisateur à utilisateur 'Anonyme' dont l'ID est '6'
-    // utilisé lors de la suppression d'un utilisateur
+    // Attribue les commentaires de cet utilisateur à utilisateur 'Anonyme' (dont l'ID est '6')
+    // Utilisé lors de la suppression d'un utilisateur
     public static function to_anonymous(User $user, string $anonID="6") {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) =
@@ -36,7 +30,6 @@ class CommentDao extends BaseDao {
                 ->where(["Author" => $user->get_id()])->sql();
         self::execute($sql, $params);
     }
-
 
     public static function from_query($data): Comment {
         return new Comment(
@@ -57,5 +50,4 @@ class CommentDao extends BaseDao {
             "ModifiedAt" => DateUtils::sql_date($object->get_modifiedAt()),
         );
     }
-
 }

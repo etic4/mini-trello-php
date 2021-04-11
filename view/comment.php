@@ -4,7 +4,7 @@
     </span>
     <span class="mr-1"><?= $comment->get_body() ?></span>
     <span class="mr-1">by <strong class="has-text-info"><?= $comment->get_author_fullName() ?></strong> </span>
-    <span><?= ViewUtils::created_intvl($comment) ?>.</span>
+    <span><?= ViewUtils::most_recent_interval($comment) ?>.</span>
 
     <!-- si l'utilisateur est admin ou l'auteur du message -->
     <?php if( $user->is_admin() || $user->is_author($comment)): ?>

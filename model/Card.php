@@ -167,8 +167,19 @@ class Card {
     public function get_comments(): array {
         if (!isset($this->comments)) {
             $this->comments = CommentDao::get_comments($this);
+            $this->sort_comments();
         }
         return $this->comments;
+    }
+
+    // sort les commentaires par date de modification / création
+    private function sort_comments() {
+        $comp = function(Comment $com1, Comment $com2) {
+            $com1_stamp = DateUtils::most_recent_timestamp($com1->get_createdAt(), $com1->get_modifiedAt());
+            $com2_stamp = DateUtils::most_recent_timestamp($com2->get_createdAt(), $com2->get_modifiedAt());
+            return  $com2_stamp - $com1_stamp;
+        };
+        usort( $this->comments, $comp);
     }
 
     public function get_boards_cards(): array {

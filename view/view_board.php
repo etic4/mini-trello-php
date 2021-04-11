@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="block has-text-grey mb-5">
-                    Created <?= ViewUtils::created_intvl($board) ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($board) ?>.
+                    Created <?= ViewUtils::created_intvl($board) ?> by <strong class="has-text-info">'<?= $board->get_owner_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($board) ?>.
                 </div>
             </header>
             <div class="is-flex is-flex-direction-row is-align-items-start">

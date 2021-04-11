@@ -14,6 +14,11 @@ class ViewUtils {
         return "Never modified";
     }
 
+    public static function most_recent_interval($object) {
+        $the_date = $object->get_modifiedAt() != null ? max($object->get_createdAt(), $object->get_modifiedAt()) : $object->get_createdAt();
+        return DateUtils::intvl($the_date, new DateTime());
+    }
+
     public static function due_date_string(DateTime $date): string {
         return $date != null ? $date->format('d/m/Y') : "";
     }
