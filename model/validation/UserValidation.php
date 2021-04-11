@@ -1,7 +1,7 @@
 <?php
 
 
-class UserValidation extends AbstractValidation {
+class UserValidation extends Validation {
     private string $dao;
 
     public function __construct($dao) {

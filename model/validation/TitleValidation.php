@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class TitleValidation extends AbstractValidation {
+class TitleValidation extends Validation {
     private string $dao;
 
     public function __construct(string $dao) {

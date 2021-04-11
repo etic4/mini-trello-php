@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-abstract class AbstractValidation {
+class Validation {
     protected array $errors = [];
 
     public function get_errors(): array {
@@ -37,7 +37,7 @@ abstract class AbstractValidation {
         return $str1 != $str2;
     }
 
-    // vrai si date 1 jour avant aujourd'hui
+    // vrai si date avant aujourd'hui
     public static function date_before(?Datetime $date, DateTime $dateNow) {
         return !is_null($date) && $dateNow->diff($date)->format("%r%a") < 0;
     }
