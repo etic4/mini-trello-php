@@ -19,9 +19,7 @@ class ControllerParticipant extends ExtendedController {
 
         ParticipationDao::insert($participation);
 
-        $params = $this->explode_params(Post::get("redirect_url"));
-        $this->redirect(...$params);
-
+        $this->redirect("card", "edit", $card->get_id()."#participants");
     }
 
     public function remove() {

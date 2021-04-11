@@ -12,7 +12,7 @@
                     <div class="is-flex is-flex-direction-row is-align-items-baseline">
                         <h2 class="title">Card "<?= $card->get_title() ?>"</h2>
 
-                        <a class="icon ml-1" href="card/edit/<?= $card->get_id() ?>">
+                        <a class="icon ml-1" href="card/edit/<?= $card->get_id() ?>/card_view_<?= $card->get_id() ?>">
                             <button class="button is-medium align-baseline is-white p-1" type="submit">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -46,13 +46,13 @@
 
                     <?php else: ?>
                     <div class="mb-4">
-                        This card has no due date yet.
+                        <strong>This card has no due date yet.</strong>
                     </div>
                     <?php endif;?>
                 </section>
 
                 <?php include("participants_section.php");
-                    $redirect_url = "card/view/".$card->get_id(); include("comments_section.php") ?>
+                    $redirect_url = "card/view/".$card->get_id()."#comments"; include("comments_section.php") ?>
 
             </article>
         </main>

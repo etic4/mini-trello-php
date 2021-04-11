@@ -84,7 +84,7 @@ class ControllerCard extends ExtendedController {
         (new View("card_edit"))->show(array(
                 "user" => $user,
                 "card" => $card,
-                "redirect_url" => Post::get("redirect_url", "board"),
+                "redirect_url" => str_replace("_", "/", Get::get("param2", "board/view/". $card->get_board_id())) ,
                 "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
                 "errors" => Session::get_error()
             )

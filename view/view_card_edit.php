@@ -64,9 +64,8 @@
                         </div>
                     </form>
                 </section>
-                <?php $base_url = "card/edit/". $card->get_id();
-                    $redirect_url = $base_url . "#participants" ; include("participants_section.php");
-                    $redirect_url = $base_url . "#comments"; include('comments_section.php') ?>
+                <?php include("participants_section.php");
+                      $redirect_url = "card/edit/". $card->get_id() . "#comments"; include('comments_section.php') ?>
             </article>
         </main>
     </body>

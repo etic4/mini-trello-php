@@ -45,10 +45,11 @@ class ControllerComment extends ExtendedController {
             $this->redirect(...$params);
         }
 
+        $redirect_url = str_replace("_", "/", Get::get("param2")) . "#comments";
         (new View("comment_edit"))->show(array(
                 "user" => $user,
                 "comment" => $comment,
-                "redirect_url" => Post::get("redirect_url"),
+                "redirect_url" => $redirect_url,
                 "breadcrumb" => new BreadCrumb(array($comment->get_board(), $comment->get_card()), "Edit comment"),
                 "errors" => Session::get_error()
             )

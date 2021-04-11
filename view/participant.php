@@ -11,7 +11,6 @@
     <form action='participant/remove' method='post'>
         <input type='text' name='participant_id' value='<?= $participant->get_id() ?>' hidden>
         <input type='text' name='card_id' value='<?= $card->get_id() ?>' hidden>
-        <input type="test" name="redirect_url" value="<?= $redirect_url ?>" hidden>
         <button class="button align-baseline is-white p-0 ml-4" type="submit">
             <i class="fas fa-trash-alt"></i>
         </button>

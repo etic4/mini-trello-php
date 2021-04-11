@@ -43,7 +43,7 @@
                         </div>
                     </form>
                 </section>
-                <?php if ($errors->has_errors("user", "add")): ?>
+                <?php if ($errors->has_errors()): ?>
                     <?php include('errors.php'); ?>
                 <?php endif; ?>
             </article>

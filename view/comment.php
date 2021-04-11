@@ -8,7 +8,7 @@
 
     <!-- si l'utilisateur est admin ou l'auteur du message -->
     <?php if( $user->is_admin() || $user->is_author($comment)): ?>
-    <a class="icon  ml-4" href="comment/edit/<?= $comment->get_id() ?>">
+    <a class="icon  ml-4" href="comment/edit/<?= $comment->get_id() ?>/<?= str_replace("/", "_", $redirect_url) ?>">
         <button class="button align-baseline is-white p-0" type="submit">
             <i class="fas fa-edit"></i>
         </button>
