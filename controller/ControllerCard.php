@@ -9,14 +9,17 @@ class ControllerCard extends ExtendedController {
     }
 
     public function add() {
-        $column = $this->get_object_or_redirect("column_id", "Column");
-        $user = $this->authorize_for_board_or_redirect($column->get_board());
+        $user = $this->get_user_or_redirect();
+        $column = $this->get_or_redirect($post="column_id", $class="Column");
+        $this->authorize_or_redirect(Permissions::view($column->get_board()));
 
         if (!Post::empty("title")) {
             $column_id = Post::get("column_id");
             $title = Post::get("title");
 
             $card = Card::new($title, $user, $column_id);
+
+            $this->authorize_or_redirect(Permissions::add($card));
 
             $error = new DisplayableError($card, "add", $column_id);
             $error->set_messages(CardDao::validate($card));
@@ -31,8 +34,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function view(){
-        $card = $this->get_object_or_redirect("param1", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($card));
 
         $comments = $card->get_comments();
 
@@ -47,13 +51,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function edit(){
-        $param_name = "id";
-        if (Request::is_get()) {
-            $param_name = "param1";
-        }
-
-        $card = $this->get_object_or_redirect($param_name, "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::edit($card));
 
         if (Post::isset("confirm")) {
             if (Post::isset("body")) {
@@ -76,7 +76,7 @@ class ControllerCard extends ExtendedController {
                 $card->set_modifiedAt(new DateTime());
                 CardDao::update($card);
 
-                $params = $this->explode_params(Post::get("redirect_url"));
+                $params = explode("/", Post::get("redirect_url"));
                 $this->redirect(...$params);
             }
         }
@@ -92,8 +92,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function delete() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($card));
 
         if(Post::isset("confirm")) {
             CardDao::decrement_following_cards_position($card);
@@ -105,8 +106,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function delete_confirm() {
-        $card = $this->get_object_or_redirect("param1", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($card));
 
         (new View("delete_confirm"))->show(array(
             "user" =>$user,
@@ -119,8 +121,9 @@ class ControllerCard extends ExtendedController {
     /* --- Moves --- */
 
     public function left() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($card->get_board()));
 
         $card->move_left();
 
@@ -128,8 +131,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function right() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($card->get_board()));
 
         $card->move_right();
 
@@ -138,8 +142,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function up() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($card->get_board()));
 
         $card->move_up();
 
@@ -147,8 +152,9 @@ class ControllerCard extends ExtendedController {
     }
 
     public function down() {
-        $card = $this->get_object_or_redirect("id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($card->get_board()));
 
         $card->move_down();
 

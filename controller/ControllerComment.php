@@ -10,8 +10,9 @@ class ControllerComment extends ExtendedController {
     }
 
     public function add(){
-        $card = $this->get_object_or_redirect("card_id", "Card");
-        $user = $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_or_redirect($post="card_id", $class="Card");
+        $this->authorize_or_redirect(Permissions::view($card));
 
         // si 'body' est vide, ne fait rien, pas besoin de message
         // TODO: quand-même vérifier que pas que espaces
@@ -20,17 +21,14 @@ class ControllerComment extends ExtendedController {
             CommentDao::insert($comment);
         }
 
-        $params = $this->explode_params(Post::get("redirect_url"));
+        $params = explode("/", Post::get("redirect_url"));
         $this->redirect(...$params);
     }
 
     public function edit() {
-        $param_name = "id";
-        if(Request::is_get()) {
-            $param_name = "param1";
-        }
-        $comment = $this->get_object_or_redirect($param_name, "Comment");
-        $user = $this->authorize_for_board_or_redirect($comment->get_board());
+        $user = $this->get_user_or_redirect();
+        $comment = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::edit($comment));
 
         if (Post::isset("confirm")) {
             $body = Post::get("body");
@@ -41,7 +39,7 @@ class ControllerComment extends ExtendedController {
                 $comment->set_modifiedAt(new DateTime());
                 CommentDao::update($comment);
             }
-            $params = $this->explode_params(Post::get("redirect_url"));
+            $params = explode("/", Post::get("redirect_url"));
             $this->redirect(...$params);
         }
 
@@ -57,14 +55,15 @@ class ControllerComment extends ExtendedController {
     }
 
     public function delete() {
-        $comment = $this->get_object_or_redirect("id", "Comment");
-        $user = $this->authorize_for_board_or_redirect($comment->get_board());
+        $user = $this->get_user_or_redirect();
+        $comment = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($comment));
 
         if ($user->can_delete_comment($comment)) {
             CommentDao::delete($comment);
         }
 
-        $params = $this->explode_params(Post::get("redirect_url"));
+        $params = explode("/", Post::get("redirect_url"));
         $this->redirect(...$params);
     }
 

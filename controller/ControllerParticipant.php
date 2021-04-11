@@ -11,26 +11,26 @@ class ControllerParticipant extends ExtendedController {
     }
 
     public function add() {
-        $card = $this->get_object_or_redirect("card_id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_or_redirect($post="card_id", $class="Card");
+        $this->authorize_or_redirect(Permissions::view($card));
 
-        $participant = $this->get_object_or_redirect("participant_id", "User");
+        $participant = $this->get_or_redirect($post="participant_id", $class="User");
+
         $participation = new Participation($card, $participant);
-
         ParticipationDao::insert($participation);
 
         $this->redirect("card", "edit", $card->get_id()."#participants");
     }
 
     public function remove() {
-        $card = $this->get_object_or_redirect("card_id", "Card");
-        $this->authorize_for_board_or_redirect($card->get_board());
+        $user = $this->get_user_or_redirect();
+        $card = $this->get_or_redirect("card_id", $class="Card");
+        $this->authorize_or_redirect(Permissions::view($card));
 
-        $participant = $this->get_object_or_redirect("participant_id", "User");
-
+        $participant = $this->get_or_redirect($post="participant_id", $class="User");
         ParticipationDao::remove($card, $participant);
 
-        $params = $this->explode_params(Post::get("redirect_url"));
-        $this->redirect(...$params);
+        $this->redirect("card", "edit", $card->get_id() . "#participants");
     }
 }

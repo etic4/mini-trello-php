@@ -20,6 +20,7 @@ class ControllerBoard extends ExtendedController {
 
     public function add() {
         $user = $this->get_user_or_redirect();
+        $this->authorize_or_redirect(Permissions::add("Board"));
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
@@ -38,8 +39,9 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function view() {
-        $board = $this->get_object_or_redirect("param1", "Board");
-        $user = $this->authorize_for_board_or_redirect($board);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($board));
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -51,13 +53,9 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function edit() {
-        $param_name = "id";
-        if(Request::is_get()) {
-            $param_name = "param1";
-        }
-
-        $board = $this->get_object_or_redirect($param_name, "Board");
-        $user = $this->authorize_for_board_or_redirect($board);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::edit($board));
 
         if (Post::isset("confirm")) {
             if (Post::empty("title") || Post::get("title") == $board->get_title()) {
@@ -88,8 +86,9 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function delete() {
-        $board = $this->get_object_or_redirect("id", "Board");
-        $this->authorize_for_board_or_redirect($board, false);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($board));
 
         $columns = $board->get_columns();
         if (Post::isset("confirm") || count($columns) == 0) {
@@ -101,8 +100,9 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function delete_confirm() {
-        $board = $this->get_object_or_redirect("param1", "Board");
-        $user = $this->authorize_for_board_or_redirect($board, false);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($board));
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,
@@ -114,8 +114,10 @@ class ControllerBoard extends ExtendedController {
     /*   --- Collaborators ---   */
 
     public function collaborators() {
-        $board = $this->get_object_or_redirect("param1", "Board");
-        $user = $this->authorize_for_board_or_redirect($board, false);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_object_or_redirect();
+        // admin ou owner
+        $this->authorize_or_redirect(Permissions::delete($board));
 
         (new View("collaborators"))->show(
             array(

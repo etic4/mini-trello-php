@@ -9,24 +9,26 @@ class ControllerCollaborator extends ExtendedController {
     }
 
     public function add() {
-        $board = $this->get_object_or_redirect("board_id", "Board");
-        $this->authorize_for_board_or_redirect($board, false);
-
-        $collaborator = $this->get_object_or_redirect("collab_id", "User");
-
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_or_redirect($post="board_id", $class="Board");
+        $collaborator = $this->get_or_redirect($post="collab_id", $class="User");
         $collaboration = new Collaboration($board, $collaborator);
+
+        $this->authorize_or_redirect(Permissions::add($collaboration));
+
         CollaborationDao::insert($collaboration);
 
         $this->redirect("board", "collaborators", $board->get_id());
     }
 
     public function remove() {
-        $board = $this->get_object_or_redirect("board_id", "Board");
-        $user = $this->authorize_for_board_or_redirect($board, false);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_or_redirect($post="board_id", $class="Board");
+        $collaborator = $this->get_or_redirect($post="collab_id", $class="User");
 
-        $collaborator = $this->get_object_or_redirect("collab_id", "User");
+        $collaboration = CollaborationDao::get_collaboration($board, $user);
 
-        //TODO: permissions !
+        $this->authorize_or_redirect(Permissions::delete($collaboration));
 
         $part_count = ParticipationDao::get_participations_count_in_board($collaborator, $board);
 

@@ -18,7 +18,6 @@ class CollaborationDao extends BaseDao {
 
     public static function get_collaborating_users(Board $board): array {
         $sql = new SqlGenerator(static::tableName);
-
         list($sql, $params) = $sql->select(["u.*"])
             ->join([static::tableName . " c", "user u"])->on(["c.Collaborator" => "u.ID"])
             ->where(["Board" => $board->get_id()])->sql();
@@ -26,13 +25,20 @@ class CollaborationDao extends BaseDao {
         return self::get_many($sql, $params, fn($data) => UserDao::from_query($data));
     }
 
+    public static function get_collaboration(Board $board, User $collaborator) {
+        $sql = new SqlGenerator(static::tableName);
+        list($sql, $params) = $sql->select()
+            ->where(["Board" => $board->get_id(), "Collaborator" => $collaborator->get_id()])->sql();
+
+        return self::get_one($sql, $params);
+    }
 
     public static function remove(Board $board, User $collaborator) {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) = $sql->delete()
             ->where(["Board" => $board->get_id(), "Collaborator" => $collaborator->get_id()])->sql();
-        self::execute($sql, $params);
 
+        self::execute($sql, $params);
     }
 
     public static function from_query($data, $class=null): Collaboration {
@@ -46,8 +52,8 @@ class CollaborationDao extends BaseDao {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) = $sql->select()->where(["Collaborator" => $user->get_id()])->count()->sql();
         return self::count($sql, $params) > 0;
-
     }
+
 
     protected static function get_object_map($object): array {
         return array(

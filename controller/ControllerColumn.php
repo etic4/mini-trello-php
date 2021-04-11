@@ -9,8 +9,9 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function add() {
-        $board = $this->get_object_or_redirect("id", "Board");
-        $this->authorize_for_board_or_redirect($board);
+        $user = $this->get_user_or_redirect();
+        $board = $this->get_or_redirect($class="Board");
+        $this->authorize_or_redirect(Permissions::view($board));
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
@@ -30,13 +31,9 @@ class ControllerColumn extends ExtendedController {
 
     // edit titre Column
     public function edit() {
-        $params_name = "id";
-        if(Request::is_get()) {
-            $params_name = "param1";
-        }
-
-        $column = $this->get_object_or_redirect($params_name, "Column");
-        $user = $this->authorize_for_board_or_redirect($column->get_board());
+        $user = $this->get_user_or_redirect();
+        $column = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::edit($column));
 
         if (Post::isset("confirm")) {
             if (Post::empty("title") || Post::get("title") == $column->get_title()) {
@@ -67,8 +64,9 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function delete() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
+        $user = $this->get_user_or_redirect();
+        $column = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($column));
 
         if (Post::isset("confirm") || count($column->get_cards()) == 0) {
             ColumnDao::delete($column);
@@ -79,8 +77,9 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function delete_confirm() {
-        $column = $this->get_object_or_redirect("param1", "Column");
-        $user = $this->authorize_for_board_or_redirect($column->get_board());
+        $user = $this->get_user_or_redirect();
+        $column = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::delete($column));
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,
@@ -93,8 +92,9 @@ class ControllerColumn extends ExtendedController {
     /* --- Moves --- */
 
     public function right() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
+        $user = $this->get_user_or_redirect();
+        $column = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($column->get_board()));
 
         $column->move_right();
         $this->redirect("board", "view", $column->get_board_id());
@@ -102,8 +102,9 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function left() {
-        $column = $this->get_object_or_redirect("id", "Column");
-        $this->authorize_for_board_or_redirect($column->get_board());
+        $user = $this->get_user_or_redirect();
+        $column = $this->get_object_or_redirect();
+        $this->authorize_or_redirect(Permissions::view($column->get_board()));
 
         $column->move_left();
         $this->redirect("board", "view", $column->get_board_id());

@@ -109,13 +109,7 @@ class ControllerUser extends ExtendedController {
 
     public function edit() {
         $admin = $this->get_admin_or_redirect();
-
-        $param_name = "id";
-        if (Request::is_get()) {
-            $param_name = "param1";
-        }
-
-        $user = $this->get_object_or_redirect($param_name, "User");
+        $user = $this->get_object_or_redirect();
 
         if (Post::isset("confirm")) {
             $user->set_email(Post::get("email", $user->get_email()));
@@ -147,7 +141,7 @@ class ControllerUser extends ExtendedController {
 
     public function delete() {
         $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect("id", "User");
+        $user = $this->get_object_or_redirect();
 
         if (Post::isset("confirm")) {
             UserDao::delete($user);
@@ -158,7 +152,7 @@ class ControllerUser extends ExtendedController {
 
     public function delete_confirm() {
         $admin = $this->get_admin_or_redirect();
-        $user = $this->get_object_or_redirect("param1", "User");
+        $user = $this->get_object_or_redirect();
 
         (new View("delete_confirm"))->show(array(
             "user"=>$admin,

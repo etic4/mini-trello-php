@@ -2,6 +2,12 @@
 
 /* Ajouts à la classe Controller du framework */
 abstract class ExtendedController extends Controller {
+    private Permissions $perm;
+
+    protected function __construct() {
+        parent::__construct();
+        $this->perm = new Permissions();
+    }
 
     // Autorise ou redirige l'utilisateur pour le board concerné par la requête
     // retourne une instance de User
@@ -21,6 +27,13 @@ abstract class ExtendedController extends Controller {
         $this->redirect();
     }
 
+    protected function authorize_or_redirect(bool $authorized, string $redirect_url="") {
+        if (!$authorized) {
+            $params = !empty($redirect_url) ? explode("/", $redirect_url) : [];
+            $this->redirect(...$params);
+        }
+    }
+
     // retourne le User s'il a le role admin, sinon redirige
     protected function get_admin_or_redirect() {
         $user = $this->get_user_or_redirect();
@@ -31,28 +44,37 @@ abstract class ExtendedController extends Controller {
         return $user;
     }
 
-    // Retourne l'objet de type $className dont l'id est contenue dans $param_name
-    protected function get_object_or_redirect(string $param_name, string $className) {
-        $GoT = $_POST;
+    protected function get_or_redirect(string $post="id", string $get="param1", string $class="", string $redirect_url="") {
+        if (empty($class)) {
+            $class = str_replace("Controller", "", static::class);
+        }
 
+        $GoT = $_POST;
+        $param_name = $post;
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $GoT = $_GET;
+            $param_name = $get;
         }
 
         $obj = null;
 
         if (isset($GoT[$param_name])) {
-            $dao = $className."Dao";
+            $dao = $class."Dao";
             $obj = $dao::get_by_id($GoT[$param_name]);
         }
 
         if (is_null($obj)) {
-            $this->redirect();
+            $params = !empty($redirect_url) ? explode("/", $redirect_url) : [];
+            $this->redirect(...$params);
         }
         return $obj;
     }
 
-    public function explode_params(string $url) {
-        return explode("/", Post::get("redirect_url"));
+    protected function get_object_or_redirect() {
+        $post = "id";
+        $get = "params1";
+        $class = str_replace("Controller", "", static::class);
+
+        return $this->get_or_redirect($post, $get, $class);
     }
 }
