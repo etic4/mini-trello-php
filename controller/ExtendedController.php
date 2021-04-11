@@ -9,25 +9,7 @@ abstract class ExtendedController extends Controller {
         $this->perm = new Permissions();
     }
 
-    // Autorise ou redirige l'utilisateur pour le board concerné par la requête
-    // retourne une instance de User
-    protected function authorize_for_board_or_redirect(Board $board, bool $authorize_collaborators=true) {
-        $user = $this->get_user_or_redirect();
-
-        // Permet de n'authoriser que admin et le owner.
-        // Notamment pour les board que seuls les owner admin peuvent deleter
-        if ($user->is_admin() || $user->is_owner($board)) {
-            return $user;
-        }
-
-        if ($authorize_collaborators && $user->is_collaborator($board)) {
-            return $user;
-        }
-
-        $this->redirect();
-    }
-
-    protected function authorize_or_redirect(bool $authorized, string $redirect_url="") {
+    protected function authorized_or_redirect(bool $authorized, string $redirect_url="") {
         if (!$authorized) {
             $params = !empty($redirect_url) ? explode("/", $redirect_url) : [];
             $this->redirect(...$params);

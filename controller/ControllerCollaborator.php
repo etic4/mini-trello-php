@@ -11,11 +11,11 @@ class ControllerCollaborator extends ExtendedController {
     public function add() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_or_redirect($post="board_id", $class="Board");
+        $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
+
         $collaborator = $this->get_or_redirect($post="collab_id", $class="User");
+
         $collaboration = new Collaboration($board, $collaborator);
-
-        $this->authorize_or_redirect(Permissions::add($collaboration));
-
         CollaborationDao::insert($collaboration);
 
         $this->redirect("board", "collaborators", $board->get_id());
@@ -24,11 +24,9 @@ class ControllerCollaborator extends ExtendedController {
     public function remove() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_or_redirect($post="board_id", $class="Board");
+        $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
+
         $collaborator = $this->get_or_redirect($post="collab_id", $class="User");
-
-        $collaboration = CollaborationDao::get_collaboration($board, $user);
-
-        $this->authorize_or_redirect(Permissions::delete($collaboration));
 
         $part_count = ParticipationDao::get_participations_count_in_board($collaborator, $board);
 

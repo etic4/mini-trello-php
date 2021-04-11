@@ -20,7 +20,7 @@ class ControllerBoard extends ExtendedController {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $this->authorize_or_redirect(Permissions::add("Board"));
+        $this->authorized_or_redirect(Permissions::add("Board"));
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
@@ -41,7 +41,7 @@ class ControllerBoard extends ExtendedController {
     public function view() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_object_or_redirect();
-        $this->authorize_or_redirect(Permissions::view($board));
+        $this->authorized_or_redirect(Permissions::view($board));
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -55,7 +55,7 @@ class ControllerBoard extends ExtendedController {
     public function edit() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_object_or_redirect();
-        $this->authorize_or_redirect(Permissions::edit($board));
+        $this->authorized_or_redirect(Permissions::edit($board));
 
         if (Post::isset("confirm")) {
             if (Post::empty("title") || Post::get("title") == $board->get_title()) {
@@ -88,7 +88,7 @@ class ControllerBoard extends ExtendedController {
     public function delete() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_object_or_redirect();
-        $this->authorize_or_redirect(Permissions::delete($board));
+        $this->authorized_or_redirect(Permissions::delete($board));
 
         $columns = $board->get_columns();
         if (Post::isset("confirm") || count($columns) == 0) {
@@ -102,7 +102,7 @@ class ControllerBoard extends ExtendedController {
     public function delete_confirm() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_object_or_redirect();
-        $this->authorize_or_redirect(Permissions::delete($board));
+        $this->authorized_or_redirect(Permissions::delete($board));
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,
@@ -116,8 +116,7 @@ class ControllerBoard extends ExtendedController {
     public function collaborators() {
         $user = $this->get_user_or_redirect();
         $board = $this->get_object_or_redirect();
-        // admin ou owner
-        $this->authorize_or_redirect(Permissions::delete($board));
+        $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
 
         (new View("collaborators"))->show(
             array(

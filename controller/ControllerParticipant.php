@@ -13,7 +13,7 @@ class ControllerParticipant extends ExtendedController {
     public function add() {
         $user = $this->get_user_or_redirect();
         $card = $this->get_or_redirect($post="card_id", $class="Card");
-        $this->authorize_or_redirect(Permissions::view($card));
+        $this->authorized_or_redirect(Permissions::view($card));
 
         $participant = $this->get_or_redirect($post="participant_id", $class="User");
 
@@ -26,7 +26,7 @@ class ControllerParticipant extends ExtendedController {
     public function remove() {
         $user = $this->get_user_or_redirect();
         $card = $this->get_or_redirect("card_id", $class="Card");
-        $this->authorize_or_redirect(Permissions::view($card));
+        $this->authorized_or_redirect(Permissions::view($card));
 
         $participant = $this->get_or_redirect($post="participant_id", $class="User");
         ParticipationDao::remove($card, $participant);
