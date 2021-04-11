@@ -10,7 +10,7 @@ class ControllerCard extends ExtendedController {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $column = $this->get_or_redirect($post="column_id", $class="Column");
+        $column = $this->get_or_redirect("Column", "column_id");
         $this->authorized_or_redirect(Permissions::view($column->get_board()));
 
         if (!Post::empty("title")) {

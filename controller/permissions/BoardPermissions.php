@@ -3,9 +3,9 @@
 require_once "autoload.php";
 
 class BoardPermissions implements IPermissions {
-    private Board $board;
+    private ?Board $board;
 
-    public function __construct(Board $board) {
+    public function __construct(Board $board=null) {
         $this->board = $board;
     }
 

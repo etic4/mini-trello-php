@@ -10,7 +10,7 @@ class ControllerColumn extends ExtendedController {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_or_redirect($class="Board");
+        $board = $this->get_or_redirect("Board");
         $this->authorized_or_redirect(Permissions::view($board));
 
         if (!Post::empty("title")) {

@@ -2,7 +2,6 @@
 
 require_once "autoload.php";
 
-
 class ControllerParticipant extends ExtendedController {
 
     public function index() {
@@ -11,11 +10,11 @@ class ControllerParticipant extends ExtendedController {
     }
 
     public function add() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_or_redirect($post="card_id", $class="Card");
+        $this->get_user_or_redirect();
+        $card = $this->get_or_redirect("Card", "card_id");
         $this->authorized_or_redirect(Permissions::view($card));
 
-        $participant = $this->get_or_redirect($post="participant_id", $class="User");
+        $participant = $this->get_or_redirect("User", "participant_id");
 
         $participation = new Participation($card, $participant);
         ParticipationDao::insert($participation);
@@ -24,11 +23,11 @@ class ControllerParticipant extends ExtendedController {
     }
 
     public function remove() {
-        $user = $this->get_user_or_redirect();
-        $card = $this->get_or_redirect("card_id", $class="Card");
+        $this->get_user_or_redirect();
+        $card = $this->get_or_redirect("Card", "card_id");
         $this->authorized_or_redirect(Permissions::view($card));
 
-        $participant = $this->get_or_redirect($post="participant_id", $class="User");
+        $participant = $this->get_or_redirect("User", "participant_id");
         ParticipationDao::remove($card, $participant);
 
         $this->redirect("card", "edit", $card->get_id() . "#participants");

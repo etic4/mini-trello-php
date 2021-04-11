@@ -27,7 +27,7 @@
             <section>
                 <p class="title is-4">Add a new collaborator</p>
 
-                <form class="add" action="collaborator/add" method="post">
+                <form class="add" action="collaboration/add" method="post">
                     <input type="text" name="board_id" value="<?= $board->get_id() ?>" hidden>
 
                     <div class="field has-addons">

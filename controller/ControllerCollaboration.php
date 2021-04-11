@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class ControllerCollaborator extends ExtendedController {
+class ControllerCollaboration extends ExtendedController {
 
     public function index() {
         $this->redirect();
@@ -10,10 +10,10 @@ class ControllerCollaborator extends ExtendedController {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_or_redirect($post="board_id", $class="Board");
+        $board = $this->get_or_redirect("Board", "board_id");
         $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
 
-        $collaborator = $this->get_or_redirect($post="collab_id", $class="User");
+        $collaborator = $this->get_or_redirect("User", "collab_id");
 
         $collaboration = new Collaboration($board, $collaborator);
         CollaborationDao::insert($collaboration);
@@ -23,10 +23,10 @@ class ControllerCollaborator extends ExtendedController {
 
     public function remove() {
         $user = $this->get_user_or_redirect();
-        $board = $this->get_or_redirect($post="board_id", $class="Board");
+        $board = $this->get_or_redirect("Board", "board_id");
         $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
 
-        $collaborator = $this->get_or_redirect($post="collab_id", $class="User");
+        $collaborator = $this->get_or_redirect("User", "collab_id");
 
         $part_count = ParticipationDao::get_participations_count_in_board($collaborator, $board);
 

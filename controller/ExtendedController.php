@@ -1,10 +1,12 @@
 <?php
 
+require_once "autoload.php";
+
 /* Ajouts à la classe Controller du framework */
 abstract class ExtendedController extends Controller {
     private Permissions $perm;
 
-    protected function __construct() {
+    public function __construct() {
         parent::__construct();
         $this->perm = new Permissions();
     }
@@ -26,11 +28,7 @@ abstract class ExtendedController extends Controller {
         return $user;
     }
 
-    protected function get_or_redirect(string $post="id", string $get="param1", string $class="", string $redirect_url="") {
-        if (empty($class)) {
-            $class = str_replace("Controller", "", static::class);
-        }
-
+    protected function get_or_redirect(string $class, string $post="id", string $get="param1", string $redirect_url="") {
         $GoT = $_POST;
         $param_name = $post;
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -52,11 +50,11 @@ abstract class ExtendedController extends Controller {
         return $obj;
     }
 
-    protected function get_object_or_redirect() {
+    protected function get_object_or_redirect(string $redirect_url="") {
         $post = "id";
-        $get = "params1";
+        $get = "param1";
         $class = str_replace("Controller", "", static::class);
 
-        return $this->get_or_redirect($post, $get, $class);
+        return $this->get_or_redirect($class, $post, $get, $redirect_url);
     }
 }

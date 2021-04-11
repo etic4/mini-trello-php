@@ -5,7 +5,7 @@
     <span class="has-text-info">
         <strong class="has-text-info"><?=$collaborator->get_fullName() ?></strong><?= " (".$collaborator->get_email().")" ?>
     </span>
-    <form action='collaborator/remove' method='post'>
+    <form action='collaboration/remove' method='post'>
         <input type='text' name='collab_id' value='<?= $collaborator->get_id() ?>' hidden>
         <input type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
         <button class="button align-baseline is-white p-0 ml-4" type="submit">

@@ -11,7 +11,7 @@ class ControllerComment extends ExtendedController {
 
     public function add(){
         $user = $this->get_user_or_redirect();
-        $card = $this->get_or_redirect($post="card_id", $class="Card");
+        $card = $this->get_or_redirect("Card", "card_id");
         $this->authorized_or_redirect(Permissions::view($card));
 
         // si 'body' est vide, ne fait rien, pas besoin de message

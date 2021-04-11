@@ -6,7 +6,7 @@ spl_autoload_register(
         $baseDir =  __DIR__;
         $dirs = array(
             "framework",
-            "controller", "controller".$SEP."utils",
+            "controller", "controller".$SEP."utils", "controller".$SEP."permissions",
             "model", "model".$SEP."dao", "model".$SEP."validation",
             "view",
             "utils",

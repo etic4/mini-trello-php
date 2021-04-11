@@ -11,7 +11,7 @@
 
         <div class="is-flex is-justify-content-center">
             <a class="button is-light" href="<?= $cancel_url ?>">Cancel</a>
-            <form action="collaborator/remove" method="post">
+            <form action="collaboration/remove" method="post">
                 <input type="text" name="collab_id" value=<?= $collab_id ?> hidden>
                 <input type="text" name="board_id" value=<?= $board_id ?> hidden>
                 <input type="text" name="confirm" hidden>
