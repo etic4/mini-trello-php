@@ -22,7 +22,6 @@ class DisplayableError {
         $this->id = $id;
     }
     
-    /* set la liste des messages et ajoute l'erreur à la session */
     public function set_messages($messages_list) {
         $this->messages = $messages_list;
     }

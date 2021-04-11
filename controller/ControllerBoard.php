@@ -25,7 +25,7 @@ class ControllerBoard extends ExtendedController {
             $title = Post::get("title");
             $board = new Board($title, $user, null, new DateTime(), null);
 
-            $error = new DisplayableError($board, "add");
+            $error = new DisplayableError();
             $error->set_messages(BoardDao::validate($board));
             Session::set_error($error);
 

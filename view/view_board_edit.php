@@ -25,7 +25,7 @@
                                         </div>
                                     </div>
                             </form>
-                            <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
+                            <?php if ($errors->has_errors()): ?>
                                 <?php include('errors.php'); ?>
                             <?php endif; ?>
                         </div>

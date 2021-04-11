@@ -14,8 +14,6 @@ abstract class ExtendedController extends Controller {
             return $user;
         }
 
-        $test = $user->is_collaborator($board);
-
         if ($authorize_collaborators && $user->is_collaborator($board)) {
             return $user;
         }
@@ -33,7 +31,7 @@ abstract class ExtendedController extends Controller {
         return $user;
     }
 
-    //Retourne l'objet de type $className dont l'id est contenue dans $param_name
+    // Retourne l'objet de type $className dont l'id est contenue dans $param_name
     protected function get_object_or_redirect(string $param_name, string $className) {
         $GoT = $_POST;
 
