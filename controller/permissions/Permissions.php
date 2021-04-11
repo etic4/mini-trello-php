@@ -3,7 +3,6 @@
 require_once "autoload.php";
 
 class Permissions {
-
     public static function add($object): bool {
         $class = self::get_class_name($object);
         return (new $class($object))->add(self::get_user());

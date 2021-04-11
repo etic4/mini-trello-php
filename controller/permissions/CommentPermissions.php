@@ -20,7 +20,7 @@ class CommentPermissions implements IPermissions {
     }
 
     function edit(User $user): bool {
-        return $this->board_perm->edit($user) || $user->is_author($this->comment);
+        return $user->is_admin() || $user->is_author($this->comment);
     }
 
     function delete(User $user): bool {

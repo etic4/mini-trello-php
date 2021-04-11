@@ -20,7 +20,7 @@ class ControllerBoard extends ExtendedController {
 
     public function add() {
         $user = $this->get_user_or_redirect();
-        $this->authorized_or_redirect(Permissions::add(null));
+        $this->authorized_or_redirect(Permissions::add("Board"));
 
         if (!Post::empty("title")) {
             $title = Post::get("title");

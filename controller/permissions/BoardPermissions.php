@@ -5,8 +5,10 @@ require_once "autoload.php";
 class BoardPermissions implements IPermissions {
     private ?Board $board;
 
-    public function __construct(Board $board=null) {
-        $this->board = $board;
+    // Faut assouplir le type sur l'argument BoardPermission parce que "add" est sans condition
+    // sinon le fait d'être loggué.
+    public function __construct($board) {
+        $this->board = is_string($board) ? null : $board;
     }
 
     public function add(User $user): bool {
