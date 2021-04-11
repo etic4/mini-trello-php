@@ -23,15 +23,20 @@ class PermissionsList {
 
     protected function column(): array {
         return [
-            "add" => $this->board()["view"],
-            "view" => $this->board()["view"],
-            "edit" => $this->board()["view"],
-            "delete" => $this->board()["view"]
+            "add" => fn(User $user, Column $column) => $this->board()["view"]($user, $column->get_board()),
+            "view" => $this->column()["add"],
+            "edit" =>$this->column()["add"],
+            "delete" => $this->column()["add"]
         ];
     }
 
     protected function card(): array {
-        return $this->column();
+        return [
+            "add" => fn(User $user, Column $card) => $this->board()["view"]($user, $card->get_board()),
+            "view" => $this->card()["add"],
+            "edit" =>$this->card()["add"],
+            "delete" => $this->card()["add"]
+        ];
     }
 
     protected function comment(): array {
@@ -44,8 +49,8 @@ class PermissionsList {
         };
 
         return [
-            "add" => $this->board()["view"],
-            "view" => $this->board()["view"],
+            "add" => fn(User $user, Comment $comment) => $this->board()["view"]($user, $comment->get_card()),
+            "view" => $this->comment()["add"],
             "edit" => $edit,
             "delete" => $delete
         ];
