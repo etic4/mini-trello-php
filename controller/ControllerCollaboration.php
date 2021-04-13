@@ -9,9 +9,8 @@ class ControllerCollaboration extends ExtendedController {
     }
 
     public function add() {
-        $user = $this->get_user_or_redirect();
         $board = $this->get_or_redirect("Board", "board_id");
-        $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
+        $this->authorized_or_redirect(Permissions::is_owner($board));
 
         $collaborator = $this->get_or_redirect("User", "collab_id");
 
@@ -22,9 +21,8 @@ class ControllerCollaboration extends ExtendedController {
     }
 
     public function remove() {
-        $user = $this->get_user_or_redirect();
         $board = $this->get_or_redirect("Board", "board_id");
-        $this->authorized_or_redirect($user->is_admin() || $user->is_owner($board));
+        $user = $this->authorized_or_redirect(Permissions::is_owner($board));
 
         $collaborator = $this->get_or_redirect("User", "collab_id");
 

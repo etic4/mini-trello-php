@@ -2,26 +2,21 @@
 
 require_once "autoload.php";
 
-class CardPermissions implements IPermissions {
-    private BoardPermissions $board_perm;
+class CardPermissions {
 
-    public function __construct(Card $card) {
-        $this->board_perm = new BoardPermissions($card->get_board());
+    function add(User $user, $card): bool {
+        return $this->view($user, $card);
     }
 
-    function add(User $user): bool {
-        return $this->board_perm->view($user);
+    function view(User $user, $card): bool {
+        return (new BoardPermissions())->view($user, $card->get_board());
     }
 
-    function view(User $user): bool {
-        return $this->add($user);
+    function edit(User $user, $card): bool {
+        return $this->add($user, $card);
     }
 
-    function edit(User $user): bool {
-        return $this->add($user);
-    }
-
-    function delete(User $user): bool {
-        return $this->add($user);
+    function delete(User $user, $card): bool {
+        return $this->add($user, $card);
     }
 }

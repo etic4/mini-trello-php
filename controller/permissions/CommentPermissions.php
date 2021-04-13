@@ -2,28 +2,21 @@
 
 require_once "autoload.php";
 
-class CommentPermissions implements IPermissions {
-    private Comment $comment;
-    private BoardPermissions $board_perm;
+class CommentPermissions {
 
-    public function __construct(Comment $comment) {
-        $this->comment = $comment;
-        $this->board_perm = new BoardPermissions($this->comment->get_board());
+    function add(User $user, $comment): bool {
+        return $this->view($user, $comment);
     }
 
-    function add(User $user): bool {
-        return $this->view($user);
+    function view(User $user, $comment): bool {
+        return (new BoardPermissions())->view($user, $comment->get_board());
     }
 
-    function view(User $user): bool {
-        return $this->board_perm->view($user);
+    function edit(User $user, $comment): bool {
+        return $user->is_admin() || $user->is_author($comment);
     }
 
-    function edit(User $user): bool {
-        return $user->is_admin() || $user->is_author($this->comment);
-    }
-
-    function delete(User $user): bool {
-        return $this->board_perm->delete($user) || $user->is_author($this->comment);
+    function delete(User $user, $comment): bool {
+        return(new BoardPermissions())->delete($user, $comment->get_board()) || $user->is_author($comment);
     }
 }

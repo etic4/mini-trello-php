@@ -10,7 +10,6 @@ class ControllerParticipant extends ExtendedController {
     }
 
     public function add() {
-        $this->get_user_or_redirect();
         $card = $this->get_or_redirect("Card", "card_id");
         $this->authorized_or_redirect(Permissions::view($card));
 
@@ -23,7 +22,6 @@ class ControllerParticipant extends ExtendedController {
     }
 
     public function remove() {
-        $this->get_user_or_redirect();
         $card = $this->get_or_redirect("Card", "card_id");
         $this->authorized_or_redirect(Permissions::view($card));
 

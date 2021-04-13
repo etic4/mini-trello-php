@@ -2,7 +2,7 @@
 
 require_once "autoload.php";
 
-class UserPermissions implements IPermissions {
+class UserPermissions {
     function add(User $user): bool {
         return $user->is_admin();
     }

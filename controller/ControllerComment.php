@@ -10,9 +10,8 @@ class ControllerComment extends ExtendedController {
     }
 
     public function add(){
-        $user = $this->get_user_or_redirect();
         $card = $this->get_or_redirect("Card", "card_id");
-        $this->authorized_or_redirect(Permissions::view($card));
+        $user = $this->authorized_or_redirect(Permissions::view($card));
 
         // si 'body' est vide, ne fait rien, pas besoin de message
         // TODO: quand-même vérifier que pas que espaces
@@ -26,9 +25,8 @@ class ControllerComment extends ExtendedController {
     }
 
     public function edit() {
-        $user = $this->get_user_or_redirect();
         $comment = $this->get_object_or_redirect();
-        $this->authorized_or_redirect(Permissions::edit($comment));
+        $user = $this->authorized_or_redirect(Permissions::edit($comment));
 
         if (Post::isset("confirm")) {
             $body = Post::get("body");
@@ -55,9 +53,8 @@ class ControllerComment extends ExtendedController {
     }
 
     public function delete() {
-        $user = $this->get_user_or_redirect();
         $comment = $this->get_object_or_redirect();
-        $this->authorized_or_redirect(Permissions::delete($comment));
+        $user = $this->authorized_or_redirect(Permissions::delete($comment));
 
         if ($user->can_delete_comment($comment)) {
             CommentDao::delete($comment);

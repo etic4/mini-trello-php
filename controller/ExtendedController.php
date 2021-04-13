@@ -3,19 +3,17 @@
 require_once "autoload.php";
 
 /* Ajouts à la classe Controller du framework */
+// TODO: fonction get_redirect_params
+
 abstract class ExtendedController extends Controller {
-    private Permissions $perm;
 
-    public function __construct() {
-        parent::__construct();
-        $this->perm = new Permissions();
-    }
-
+    // Le paramètre authorized représente le résultat de l'appel à Permission::
+    // lors duquel le fait que le user soit loggé est notamment vérifié
     protected function authorized_or_redirect(bool $authorized, string $redirect_url="") {
         if (!$authorized) {
-            $params = !empty($redirect_url) ? explode("/", $redirect_url) : [];
-            $this->redirect(...$params);
+            $this->redirect(...self::redirect_params($redirect_url));
         }
+        return $this->get_user_or_false(); // normalement ça ne peut jamais être false
     }
 
     // retourne le User s'il a le role admin, sinon redirige
@@ -31,6 +29,7 @@ abstract class ExtendedController extends Controller {
     protected function get_or_redirect(string $class, string $post="id", string $get="param1", string $redirect_url="") {
         $GoT = $_POST;
         $param_name = $post;
+
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $GoT = $_GET;
             $param_name = $get;
@@ -44,9 +43,9 @@ abstract class ExtendedController extends Controller {
         }
 
         if (is_null($obj)) {
-            $params = !empty($redirect_url) ? explode("/", $redirect_url) : [];
-            $this->redirect(...$params);
+            $this->redirect(...self::redirect_params($redirect_url));
         }
+
         return $obj;
     }
 
@@ -56,5 +55,9 @@ abstract class ExtendedController extends Controller {
         $class = str_replace("Controller", "", static::class);
 
         return $this->get_or_redirect($class, $post, $get, $redirect_url);
+    }
+
+    private function redirect_params(string $url) {
+        return !empty($redirect_url) ? explode("/", $redirect_url) : [];
     }
 }

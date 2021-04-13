@@ -9,7 +9,6 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function add() {
-        $user = $this->get_user_or_redirect();
         $board = $this->get_or_redirect("Board");
         $this->authorized_or_redirect(Permissions::view($board));
 
@@ -31,9 +30,8 @@ class ControllerColumn extends ExtendedController {
 
     // edit titre Column
     public function edit() {
-        $user = $this->get_user_or_redirect();
         $column = $this->get_object_or_redirect();
-        $this->authorized_or_redirect(Permissions::edit($column));
+        $user = $this->authorized_or_redirect(Permissions::edit($column));
 
         if (Post::isset("confirm")) {
             if (Post::empty("title") || Post::get("title") == $column->get_title()) {
@@ -64,7 +62,6 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function delete() {
-        $user = $this->get_user_or_redirect();
         $column = $this->get_object_or_redirect();
         $this->authorized_or_redirect(Permissions::delete($column));
 
@@ -77,9 +74,8 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function delete_confirm() {
-        $user = $this->get_user_or_redirect();
         $column = $this->get_object_or_redirect();
-        $this->authorized_or_redirect(Permissions::delete($column));
+        $user = $this->authorized_or_redirect(Permissions::delete($column));
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,
@@ -92,9 +88,8 @@ class ControllerColumn extends ExtendedController {
     /* --- Moves --- */
 
     public function right() {
-        $user = $this->get_user_or_redirect();
         $column = $this->get_object_or_redirect();
-        $this->authorized_or_redirect(Permissions::view($column->get_board()));
+        $this->authorized_or_redirect(Permissions::view($column));
 
         $column->move_right();
         $this->redirect("board", "view", $column->get_board_id());
@@ -102,9 +97,8 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function left() {
-        $user = $this->get_user_or_redirect();
         $column = $this->get_object_or_redirect();
-        $this->authorized_or_redirect(Permissions::view($column->get_board()));
+        $this->authorized_or_redirect(Permissions::view($column));
 
         $column->move_left();
         $this->redirect("board", "view", $column->get_board_id());
