@@ -7,16 +7,19 @@ require_once "autoload.php";
 
 abstract class ExtendedController extends Controller {
 
-    // Le paramètre authorized représente le résultat de l'appel à Permission::
-    // lors duquel le fait que le user soit loggé est notamment vérifié
+    // Le paramètre authorized représente le résultat de l'appel à Permission::{add|view|edit|delete}
+    // lors duquel le fait que le user soit loggé est vérifié
+    // ainsi que son droit à effectuer l'action
+
     protected function authorized_or_redirect(bool $authorized, string $redirect_url="") {
         if (!$authorized) {
             $this->redirect(...self::redirect_params($redirect_url));
         }
-        return $this->get_user_or_false(); // normalement ça ne peut jamais être false
+        return $this->get_user_or_false(); // retourne toujours $user
     }
 
     // retourne le User s'il a le role admin, sinon redirige
+
     protected function get_admin_or_redirect() {
         $user = $this->get_user_or_redirect();
 
