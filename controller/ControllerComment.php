@@ -10,7 +10,7 @@ class ControllerComment extends ExtendedController {
     }
 
     public function add(){
-        $card = $this->get_or_redirect("Card", "card_id");
+        $card = $this->get_or_redirect_post("Card", "card_id");
         $user = $this->authorized_or_redirect(Permissions::view($card));
 
         // si 'body' est vide, ne fait rien, pas besoin de message
@@ -25,7 +25,7 @@ class ControllerComment extends ExtendedController {
     }
 
     public function edit() {
-        $comment = $this->get_object_or_redirect();
+        $comment = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($comment));
 
         if (Post::isset("confirm")) {
@@ -53,7 +53,7 @@ class ControllerComment extends ExtendedController {
     }
 
     public function delete() {
-        $comment = $this->get_object_or_redirect();
+        $comment = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::delete($comment));
 
         if ($user->can_delete_comment($comment)) {

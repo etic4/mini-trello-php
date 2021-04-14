@@ -9,7 +9,7 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function add() {
-        $board = $this->get_or_redirect("Board");
+        $board = $this->get_or_redirect_post("Board", "id");
         $this->authorized_or_redirect(Permissions::view($board));
 
         if (!Post::empty("title")) {
@@ -30,7 +30,7 @@ class ControllerColumn extends ExtendedController {
 
     // edit titre Column
     public function edit() {
-        $column = $this->get_object_or_redirect();
+        $column = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($column));
 
         if (Post::isset("confirm")) {
@@ -62,7 +62,7 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function delete() {
-        $column = $this->get_object_or_redirect();
+        $column = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::delete($column));
 
         if (Post::isset("confirm") || count($column->get_cards()) == 0) {
@@ -74,7 +74,7 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function delete_confirm() {
-        $column = $this->get_object_or_redirect();
+        $column = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::delete($column));
 
         (new View("delete_confirm"))->show(array(
@@ -88,7 +88,7 @@ class ControllerColumn extends ExtendedController {
     /* --- Moves --- */
 
     public function right() {
-        $column = $this->get_object_or_redirect();
+        $column = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::view($column));
 
         $column->move_right();
@@ -97,7 +97,7 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function left() {
-        $column = $this->get_object_or_redirect();
+        $column = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::view($column));
 
         $column->move_left();

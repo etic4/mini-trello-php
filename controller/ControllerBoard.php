@@ -38,7 +38,7 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function view() {
-        $board = $this->get_object_or_redirect();
+        $board = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::view($board));
 
         (new View("board"))->show(array(
@@ -51,7 +51,7 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function edit() {
-        $board = $this->get_object_or_redirect();
+        $board = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($board));
 
         if (Post::isset("confirm")) {
@@ -83,7 +83,7 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function delete() {
-        $board = $this->get_object_or_redirect();
+        $board = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::delete($board));
 
         $columns = $board->get_columns();
@@ -96,7 +96,7 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function delete_confirm() {
-        $board = $this->get_object_or_redirect();
+        $board = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::delete($board));
 
         (new View("delete_confirm"))->show(array(
@@ -109,7 +109,7 @@ class ControllerBoard extends ExtendedController {
     /*   --- Collaborators ---   */
 
     public function collaborators() {
-        $board = $this->get_object_or_redirect();
+        $board = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::is_owner($board));
 
         (new View("collaborators"))->show(

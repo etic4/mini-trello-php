@@ -17,4 +17,9 @@ class Session {
 
         return $error;
     }
+
+    public static function get_user() {
+        return $_SESSION["user"] ?? false;
+    }
+
 }
