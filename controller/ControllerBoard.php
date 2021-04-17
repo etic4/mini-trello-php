@@ -54,8 +54,7 @@ class ControllerBoard extends ExtendedController {
         $board = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($board));
 
-        $board_title = Get::get("param2", $board->get_title());
-        $board_title = Post::get("board_title", $board_title);
+        $board_title = Post::get("board_title", $board->get_title());
 
         if (Post::isset("confirm")) {
             if (empty($board_title) || $board_title == $board->get_title()) {
@@ -72,7 +71,7 @@ class ControllerBoard extends ExtendedController {
                 BoardDao::update($board);
                 $this->redirect("board", "view", $board->get_id());
             }
-            $this->redirect("board", "edit", $board->get_id(), $board_title);
+            $this->redirect("board", "edit", $board->get_id());
         }
 
         (new View("board_edit"))->show(array(

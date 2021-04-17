@@ -53,7 +53,6 @@ class ControllerUser extends ExtendedController {
         $role = Post::get("role", "user");
         $password_confirm = Post::get("confirm");
 
-
         if (!Post::empty("email")) {
             $error = new DisplayableError();
             $error->set_messages(UserValidation::get_inst()->validate_signup($email, $fullName, $password, $password_confirm));
@@ -95,7 +94,7 @@ class ControllerUser extends ExtendedController {
 
         if (Post::isset("confirm")) {
             $error = new DisplayableError();
-            $error->set_messages(UserValidation::get_inst()->validate_add($email, $fullName));
+            $error->set_messages(UserValidation::get_inst()->validate_add($fullName, $email));
             Session::set_error($error);
 
             if($error->is_empty()) {
@@ -124,7 +123,7 @@ class ControllerUser extends ExtendedController {
 
         if (Post::isset("confirm")) {
             $error = new DisplayableError();
-            $error->set_messages(UserValidation::get_inst()->validate_edit($fullName, $email, $user));
+            $error->set_messages(UserValidation::get_inst()->validate_edit($fullName, $email, $role, $user, $admin));
             Session::set_error($error);
 
             if ($error->is_empty()) {

@@ -19,7 +19,7 @@ class UserDao extends BaseDao {
         ParticipationDao::delete_all(["Participant" => $user->get_id()]);
 
         foreach ($user->get_own_boards() as $board) {
-            ColumnDao::delete($board);
+            BoardDao::delete($board);
         }
 
         // attribue toutes les cartes créées par user à "Anonyme"

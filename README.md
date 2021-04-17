@@ -18,6 +18,10 @@ cache des requêtes étendu et exécuté au moment de l'exécution de la requêt
 
 problèmes:
 A rectifier: lors des edit les champs ne sont restitués dans l'état de la carte en DB
+cela dit, je ne vois pas comment passer le contenu de plus de deux champs quand on n'a que deux paramètres à notre disposition
+et que l'expressions régulière de .htaccess explose la requête en mots ('w')
+à moins d'utiliser $_SESSION, et tu as incité à ne pas en abuser lors de la dernière éval.
+
 ## Notes de livraison itération 3
 
 ## Utilisateurs

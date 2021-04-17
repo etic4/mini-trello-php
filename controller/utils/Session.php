@@ -22,4 +22,27 @@ class Session {
         return $_SESSION["user"] ?? false;
     }
 
+    public static function resubmit(array $submit) {
+        $_SESSION["resubmit"] = [];
+
+        foreach ($submit as $key => $arg) {
+            $_SESSION["resubmit"][$key] = $arg;
+        }
+    }
+
+    public static function has_resubmit() {
+        return !empty($_SESSION["resubmit"]);
+    }
+
+    public static function get_resubmit(string $key) {
+        if (isset($_SESSION["resubmit"][$key])) {
+            return $_SESSION["resubmit"][$key];
+        }
+        return "";
+    }
+
+    public static function empty_resubmit() {
+        $_SESSION["resubmit"] = [];
+    }
+
 }

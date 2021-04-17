@@ -20,8 +20,13 @@ class UserValidation extends Validation {
         return $this->get_errors();
     }
 
-    public function validate_edit(string $fullName, string $email, $user): array {
+    public function validate_edit(string $fullName, string $email, $role, $user, $admin): array {
         $this->validate_datas($fullName, $email, $user);
+
+        if ($user == $admin && $role != Role::ADMIN ) {
+            $this->errors[] = "Un admin loggué ne peut pas changer son rôle";
+        }
+
         return $this->get_errors();
     }
 
