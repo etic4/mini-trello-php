@@ -78,10 +78,6 @@ abstract class BaseDao extends CachedGet {
         return $stored->get_title() != $object->get_title();
     }
 
-
-    // --- /validation ---
-
-
     // Ne cache pas le résultat si $cache == true ou PkName == null
     protected static function get_one($sql, $params, $cache=true) {
         $key = self::get_key_for($params);

@@ -13,15 +13,15 @@ class BoardDao extends BaseDao {
             ColumnDao::delete($col);
         }
 
-        ColumnDao::delete_one($board);
+        BoardDao::delete_one($board);
     }
 
     public static function get_by_title(string $title): ?Board {
-        return ColumnDao::get_by(["Title" => $title]);
+        return BoardDao::get_by(["Title" => $title]);
     }
 
     public static function get_users_boards(User $user): array {
-        return ColumnDao::get_all(["Owner" => $user->get_id()]);
+        return BoardDao::get_all(["Owner" => $user->get_id()]);
     }
 
     public static function get_admin_visible_boards(User $user): array {

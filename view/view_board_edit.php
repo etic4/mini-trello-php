@@ -9,16 +9,16 @@
         <main>
             <article>
                 <header>
-                    <h2 class="title">Edit title of board: "<?= $board->get_title() ?>"</h2>
+                    <h2 class="title">Edit title of board: "<?= $board_title ?>"</h2>
                     <div class="columns">
                         <div class="column is-one-third">
                             <form action='board/edit' method='post'>
-                                <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                                <input type='text' name='id' value='<?= $id ?>' hidden>
                                 <input type="text" name="confirm" hidden>
 
                                     <div class="field has-addons">
                                         <div class="control is-expanded">
-                                            <input class="input" type="text" name="title" value="<?= $board->get_title() ?>">
+                                            <input class="input" type="text" name="board_title" value="<?= $board_title ?>">
                                         </div>
                                         <div class="control">
                                             <button type="submit" class="button is-success"><i class="fas fa-check"></i></button>

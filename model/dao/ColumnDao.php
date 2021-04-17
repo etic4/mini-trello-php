@@ -32,7 +32,7 @@ class ColumnDao extends BaseDao {
         return new Column(
             $data["Title"],
             $data["Position"],
-            ColumnDao::get_by_id($data["Board"]),
+            BoardDao::get_by_id($data["Board"]),
             $data["ID"],
             DateUtils::php_date($data["CreatedAt"]),
             DateUtils::php_date($data["ModifiedAt"])

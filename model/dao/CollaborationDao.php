@@ -4,7 +4,6 @@
 class CollaborationDao extends BaseDao {
     protected const PkName = null;
     protected const tableName = "`collaborate`";
-    protected const FkName = "`ID`";
 
 
     public static function get_collaborating_boards(User $user): array {
@@ -13,7 +12,7 @@ class CollaborationDao extends BaseDao {
                                 ->join([static::tableName . " c", "board b"])->on(["c.Board" => "b.ID"])
                                 ->where(["Collaborator" => $user->get_id()])->sql();
 
-        return self::get_many($sql, $params, fn($data) => ColumnDao::from_query($data));
+        return self::get_many($sql, $params, fn($data) => BoardDao::from_query($data));
     }
 
     public static function get_collaborating_users(Board $board): array {

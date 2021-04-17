@@ -111,7 +111,7 @@ class Card {
         return $this->dueDate;
     }
 
-    public function set_dueDate(DateTime  $dueDate) {
+    public function set_dueDate(?DateTime  $dueDate) {
         $this->dueDate = $dueDate;
     }
 

@@ -22,7 +22,7 @@
                         <div class="field">
                             <label class="label">Title</label>
                             <div class="control">
-                                <input class="input" type="text" name="title" value='<?= $title ?>' placeholder='<?= $title ?>'>
+                                <input class="input" type="text" name="card_title" value='<?= $card_title ?>' placeholder='<?= $card_title ?>'>
                             </div>
                         </div>
 

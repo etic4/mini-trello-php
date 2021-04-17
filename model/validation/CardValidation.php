@@ -16,14 +16,12 @@ class CardValidation extends Validation {
         return $this->get_errors();
     }
 
-    public function validate_edit(string $title, DateTime $due_date, Card $card): array {
+    public function validate_edit(string $title, ?DateTime $due_date, Card $card): array {
         $this->base_validate_title($title);
 
         if ($card->get_title() != $title) {
             $this->validate_title_unicity($title, $card->get_board());
         }
-
-        $this->validate_title_unicity($title, $card->get_board());
 
         if (self::date_before($due_date, new DateTime())) {
             $this->errors[] = "The date can't be in the past";

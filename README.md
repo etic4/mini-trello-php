@@ -16,6 +16,8 @@ Nous avons considéré qu'ajouter un tableau/colonne/carte/commentaire vide n'é
 simplification de la gestion des dates
 cache des requêtes étendu et exécuté au moment de l'exécution de la requête;
 
+problèmes:
+A rectifier: lors des edit les champs ne sont restitués dans l'état de la carte en DB
 ## Notes de livraison itération 3
 
 ## Utilisateurs

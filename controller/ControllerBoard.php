@@ -29,6 +29,7 @@ class ControllerBoard extends ExtendedController {
             Session::set_error($error);
 
             if($error->is_empty()) {
+                $board = new Board($title, $user);
                 $board = BoardDao::insert($board);
                 $this->redirect("board", "view", $board->get_id());
             }
@@ -53,29 +54,31 @@ class ControllerBoard extends ExtendedController {
         $board = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($board));
 
+        $board_title = Get::get("param2", $board->get_title());
+        $board_title = Post::get("board_title", $board_title);
+
         if (Post::isset("confirm")) {
-            if (Post::empty("title") || Post::get("title") == $board->get_title()) {
+            if (empty($board_title) || $board_title == $board->get_title()) {
                 $this->redirect("board", "view", $board->get_id());
             }
 
-            $title = Post::get("title");
-
             $error = new DisplayableError();
-            $error->set_messages(BoardValidation::get_inst()->validate_edit($title, $board));
+            $error->set_messages(BoardValidation::get_inst()->validate_edit($board_title, $board));
             Session::set_error($error);
 
             if($error->is_empty()) {
-                $board->set_title($title);
+                $board->set_title($board_title);
                 $board->set_modifiedAt(new DateTime());
                 BoardDao::update($board);
                 $this->redirect("board", "view", $board->get_id());
             }
-            $this->redirect("board", "edit", $board->get_id());
+            $this->redirect("board", "edit", $board->get_id(), $board_title);
         }
 
         (new View("board_edit"))->show(array(
                 "user" => $user,
-                "board" => $board,
+                "id" => $board->get_id(),
+                "board_title" => $board_title,
                 "breadcrumb" => new BreadCrumb(array($board), "Edit title"),
                 "errors" => Session::get_error()
             )

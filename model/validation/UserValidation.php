@@ -59,6 +59,7 @@ class UserValidation extends Validation {
             $this->errors[] = "Passwords don't match";
         }
 
+        return $this->get_errors();
     }
 
     private function wrong_password(User $user, string $clearPasswd): bool {

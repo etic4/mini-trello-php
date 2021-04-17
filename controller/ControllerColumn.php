@@ -16,7 +16,7 @@ class ControllerColumn extends ExtendedController {
             $title = Post::get("title");
 
             $error = new DisplayableError();
-            $error->set_messages(ColumnDao::validate($title));
+            $error->set_messages(ColumnValidation::get_inst()->validate_add($title, $board));
             Session::set_error($error);
 
             if($error->is_empty()) {
@@ -37,7 +37,7 @@ class ControllerColumn extends ExtendedController {
 
         if (Post::isset("confirm")) {
             $error = new DisplayableError();
-            $error->set_messages(ColumnValidation::get_inst()->validate_add($title, $column));
+            $error->set_messages(ColumnValidation::get_inst()->validate_edit($title, $column));
             Session::set_error($error);
 
             if ($error->is_empty()) {
@@ -53,6 +53,7 @@ class ControllerColumn extends ExtendedController {
                 "user" => $user,
                 "id" => $column->get_id(),
                 "title" => $title,
+                "column" => $column,
                 "breadcrumb" => new BreadCrumb(array($column->get_board()), "Edit column title"),
                 "errors" => Session::get_error()
             )
