@@ -36,15 +36,13 @@ class CardDao extends BaseDao {
 
     // Mets a jour la position des autres cartes de la colonne après suppression ou déplacement
     public static function decrement_following_cards_position($card){
+        $sql = new SqlGenerator(self::tableName);
+        list($sql, $params) =
+            $sql->update()->set([], ["Position" => "Position -1"])
+                ->where(["`Column`" => $card->get_column_id(), "Position" => $card->get_position()])->sql();
+        self::execute($sql, $params);
 
-        $sql = "UPDATE card 
-                SET Position = Position - 1
-                WHERE `Column`=:column 
-                AND Position>:pos";
-        $params = array( "column" => $card->get_column_id(), "pos" => $card->get_position());
-        self::execute($sql,$params);
     }
-
 
     public static function from_query($data): Card {
         return new Card(
