@@ -4,10 +4,6 @@
 class BoardValidation extends Validation {
     const BoardDao = "BoardDao";
 
-    public static function get_inst() {
-        return new BoardValidation();
-    }
-
     public function validate_add(string $title): array {
         $this->base_validate_title($title);
         $this->validate_title_unicity($title);
@@ -30,6 +26,4 @@ class BoardValidation extends Validation {
             $this->errors[] = "A board with the same title already exists";
         }
     }
-
-
 }

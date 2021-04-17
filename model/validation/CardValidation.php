@@ -5,10 +5,6 @@ require_once 'autoload.php';
 class CardValidation extends Validation {
     const CardDao = "CardDao";
 
-    public static function get_inst() {
-        return new CardValidation();
-    }
-
     public function validate_add(string $title, Board $board): array {
         $this->base_validate_title($title);
         $this->validate_title_unicity($title, $board);

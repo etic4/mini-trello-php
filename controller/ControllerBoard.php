@@ -25,7 +25,8 @@ class ControllerBoard extends ExtendedController {
             $title = Post::get("title");
 
             $error = new DisplayableError();
-            $error->set_messages(BoardValidation::get_inst()->validate_add($title));
+
+            $error->set_messages((new BoardValidation())->validate_add($title));
             Session::set_error($error);
 
             if($error->is_empty()) {
@@ -62,7 +63,7 @@ class ControllerBoard extends ExtendedController {
             }
 
             $error = new DisplayableError();
-            $error->set_messages(BoardValidation::get_inst()->validate_edit($board_title, $board));
+            $error->set_messages((new BoardValidation())->validate_edit($board_title, $board));
             Session::set_error($error);
 
             if($error->is_empty()) {

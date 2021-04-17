@@ -31,6 +31,7 @@ abstract class BaseDao extends CachedGet {
     public static function insert($object) {
         $map = static::get_object_map($object);
         $sql = new SqlGenerator(static::tableName);
+
         list($sql, $params) = $sql->insert($map)->sql();
         self::execute($sql, $params);
 
@@ -53,7 +54,6 @@ abstract class BaseDao extends CachedGet {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) = $sql->delete()->where([static::PkName => $object->get_id()])->sql();
         self::execute($sql, $params);
-
     }
 
     public static function delete_all(array $params) {
@@ -66,16 +66,6 @@ abstract class BaseDao extends CachedGet {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) = $sql->select()->where([$col_name => $value])->count()->sql();
         return self::count($sql, $params) == 0;
-    }
-
-    // En cas de validation d'un update, récupérer la ligne en db sans la mettre en cache
-    public static function title_has_changed($object): bool {
-        $sql = new SqlGenerator(static::tableName);
-
-        list($sql, $params) = $sql->select()->where(["ID" => $object->get_id()])->sql();
-        $stored = self::get_one($sql, $params, $cache=false);
-
-        return $stored->get_title() != $object->get_title();
     }
 
     // Ne cache pas le résultat si $cache == true ou PkName == null
@@ -132,5 +122,4 @@ abstract class BaseDao extends CachedGet {
     protected static function count($sql, $params): int {
         return (int) self::execute($sql, $params)->fetch()["total"];
     }
-
 }

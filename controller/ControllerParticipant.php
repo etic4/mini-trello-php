@@ -5,7 +5,6 @@ require_once "autoload.php";
 class ControllerParticipant extends ExtendedController {
 
     public function index() {
-        // TODO: Implement index() method.
         $this->redirect();
     }
 

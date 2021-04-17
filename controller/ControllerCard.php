@@ -20,7 +20,7 @@ class ControllerCard extends ExtendedController {
             $this->authorized_or_redirect(Permissions::add($card));
 
             $error = new DisplayableError($card, "add", $column_id);
-            $error->set_messages(CardValidation::get_inst()->validate_add($title, $column->get_board()));
+            $error->set_messages((new CardValidation())->validate_add($title, $column->get_board()));
             Session::set_error($error);
 
             if($error->is_empty()){
@@ -57,7 +57,7 @@ class ControllerCard extends ExtendedController {
 
         if (Post::isset("confirm")) {
             $error = new DisplayableError();
-            $error->set_messages(CardValidation::get_inst()->validate_edit($card_title, $due_date, $card));
+            $error->set_messages((new CardValidation())->validate_edit($card_title, $due_date, $card));
             Session::set_error($error);
 
             if($error->is_empty()){

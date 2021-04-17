@@ -115,10 +115,6 @@ class User {
 
 
     // --- pas de lazzy loading possible sur ces listes pcq l'instance de User est conservée en session
-    // et que ces listes, dans un environnement multiutilistaeur, ne seraient pas synchronisées
-    // avec les changements effectués par d'autres utilisateurs
-    // Ne serait faisable que si par exemple l'id de User serait conservé en $_SESSION et qu'une instance serait
-    // reconstruite à chaque requête
 
     public function get_own_boards(): array {
         return BoardDao::get_users_boards($this);

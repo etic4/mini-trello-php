@@ -4,16 +4,11 @@
 class UserValidation extends Validation {
     const UserDao = "UserDao";
 
-    public static function get_inst() {
-        return new UserValidation();
-    }
-
     public function validate_signup($email, $fullName, $password, $password_confirm): array {
         $this->validate_datas($fullName, $email);
         $this->validate_password($password, $password_confirm);
         return $this->get_errors();
     }
-
 
     public function validate_add(string $fullName, string $email): array {
         $this->validate_datas($fullName, $email);

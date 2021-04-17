@@ -10,7 +10,6 @@ abstract class GetPost {
     // Set $GoP avec $_POST ou $_GET par les  classes filles
     abstract protected static function set_super_global();
 
-
     public static function get(string $key, string $default="") {
         static::set_super_global();
 

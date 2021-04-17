@@ -16,10 +16,6 @@ class BoardDao extends BaseDao {
         BoardDao::delete_one($board);
     }
 
-    public static function get_by_title(string $title): ?Board {
-        return BoardDao::get_by(["Title" => $title]);
-    }
-
     public static function get_users_boards(User $user): array {
         return BoardDao::get_all(["Owner" => $user->get_id()]);
     }
@@ -56,7 +52,7 @@ class BoardDao extends BaseDao {
         list($sql, $params) = $sql->select()
             ->where(["Title" => $title])
             ->count()->sql();
-        return self::count($sql, $params) == 0;
 
+        return self::count($sql, $params) == 0;
     }
 }

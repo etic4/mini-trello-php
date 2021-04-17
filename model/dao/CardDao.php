@@ -34,10 +34,7 @@ class CardDao extends BaseDao {
         self::execute($sql, $params);
     }
 
-
-//        Mets a jour la position des autres cartes de la colonne.
-//        on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par
-//        l'utilisateur, mais juste une conséquence d'une autre action
+    // Mets a jour la position des autres cartes de la colonne après suppression ou déplacement
     public static function decrement_following_cards_position($card){
 
         $sql = "UPDATE card 
@@ -82,7 +79,7 @@ class CardDao extends BaseDao {
             ->on(["ca.Column" => "co.ID"])
             ->where(["ca.Title" => $title, "co.Board" => $board->get_id()])
             ->count()->sql();
-        return self::count($sql, $params) == 0;
 
+        return self::count($sql, $params) == 0;
     }
 }

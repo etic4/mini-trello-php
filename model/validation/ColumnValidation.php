@@ -4,10 +4,6 @@
 class ColumnValidation extends Validation {
     const ColumnDao = "ColumnDao";
 
-    public static function get_inst() {
-        return new ColumnValidation();
-    }
-
     public function validate_add(string $title, Board $board): array {
         $this->base_validate_title($title);
         $this->validate_title_unicity($title, $board);
@@ -30,5 +26,4 @@ class ColumnValidation extends Validation {
             $this->errors[] = "A column with the same title already exists in this board";
         }
     }
-
 }
