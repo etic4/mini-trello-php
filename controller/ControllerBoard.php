@@ -23,10 +23,9 @@ class ControllerBoard extends ExtendedController {
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
-            $board = new Board($title, $user, null, new DateTime(), null);
 
             $error = new DisplayableError();
-            $error->set_messages(BoardDao::validate($board));
+            $error->set_messages(BoardValidation::get_inst()->validate_add($title));
             Session::set_error($error);
 
             if($error->is_empty()) {
@@ -59,13 +58,14 @@ class ControllerBoard extends ExtendedController {
                 $this->redirect("board", "view", $board->get_id());
             }
 
-            $board->set_title(Post::get("title"));
+            $title = Post::get("title");
 
-            $error = new DisplayableError($board, "edit");
-            $error->set_messages(BoardDao::validate($board, $update=true));
+            $error = new DisplayableError();
+            $error->set_messages(BoardValidation::get_inst()->validate_edit($title, $board));
             Session::set_error($error);
 
             if($error->is_empty()) {
+                $board->set_title($title);
                 $board->set_modifiedAt(new DateTime());
                 BoardDao::update($board);
                 $this->redirect("board", "view", $board->get_id());

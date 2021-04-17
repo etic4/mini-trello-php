@@ -2,9 +2,9 @@
 
 require_once "tests/tools/DB.php";
 use \Board;
-use BoardDao;
-use \Column;
 use ColumnDao;
+use \Column;
+use BoardDao;
 use \Datetime;
 use \TypeError;
 use \tools\DB;
@@ -30,7 +30,7 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
 
     public function testCreateColumnInstance(): Column {
         $title = "Titre de la colonne";
-        $board = BoardDao::get_by_id(1);
+        $board = ColumnDao::get_by_id(1);
         $position = count($board->get_columns());
 
         $column = new Column($title, $position, $board);

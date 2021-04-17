@@ -68,13 +68,6 @@ abstract class BaseDao extends CachedGet {
         return self::count($sql, $params) == 0;
     }
 
-    // --- validation ---
-
-    public static function validate_title($object, $update=false): array {
-        $valid = (new TitleValidation(static::class))->validate($object, $update);
-        return $valid->get_errors();
-    }
-
     // En cas de validation d'un update, récupérer la ligne en db sans la mettre en cache
     public static function title_has_changed($object): bool {
         $sql = new SqlGenerator(static::tableName);

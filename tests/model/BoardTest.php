@@ -2,7 +2,7 @@
 
 require_once "tests/tools/DB.php";
 use \Board;
-use \BoardDao;
+use \ColumnDao;
 use \Datetime;
 use \TypeError;
 use \tools\DB;
@@ -21,7 +21,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testGetBoardInstanceFromDB() {
-        $board = BoardDao::get_by_id(1);
+        $board = ColumnDao::get_by_id(1);
         $this->assertInstanceOf(Board::class, $board);
         $this->assertEquals(1, $board->get_id());
     }
@@ -53,7 +53,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
         $count = $data["total"];
 
-        $board = BoardDao::insert($board);
+        $board = ColumnDao::insert($board);
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
 
         $this->assertEquals($count + 1, $data["total"]);
@@ -73,7 +73,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
      */
     public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Board $board) {
         sleep(1);
-        BoardDao::update($board);
+        ColumnDao::update($board);
         $this->assertNotEquals($board->get_createdAt(), $board->get_modifiedAt());
     }
 

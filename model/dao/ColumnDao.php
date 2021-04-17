@@ -21,8 +21,6 @@ class ColumnDao extends BaseDao {
         self::execute($sql,$params);
     }
 
-
-
     public static function delete(Column $column) {
         foreach ($column->get_cards() as $card) {
             CardDao::delete($card);
@@ -34,7 +32,7 @@ class ColumnDao extends BaseDao {
         return new Column(
             $data["Title"],
             $data["Position"],
-            BoardDao::get_by_id($data["Board"]),
+            ColumnDao::get_by_id($data["Board"]),
             $data["ID"],
             DateUtils::php_date($data["CreatedAt"]),
             DateUtils::php_date($data["ModifiedAt"])
@@ -50,16 +48,11 @@ class ColumnDao extends BaseDao {
         );
     }
 
-    public static function is_title_unique(Column $column): bool {
+    public static function is_title_unique(string $title, Board $board): bool {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) = $sql->select()
-            ->where(["Title" => $column->get_title(), "Board" => $column->get_board_id()])
+            ->where(["Title" => $title, "Board" => $board->get_id()])
             ->count()->sql();
         return self::count($sql, $params) == 0;
-
-    }
-
-    public static function validate(Column $column, $update=false): array {
-        return self::validate_title($column, $update);
     }
 }

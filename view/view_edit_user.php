@@ -11,19 +11,19 @@
                 <section >
                     <h2 class="title">Edit a user</h2>
                     <form action="user/edit" method="post">
-                        <input type="text" name="id" value="<?= $member->get_id() ?>" hidden>
+                        <input type="text" name="id" value="<?= $id ?>" hidden>
                         <input type="text" name="confirm" hidden>
                         <div class="field">
                             <label class="label">Full Name</label>
                             <div class="control">
-                                <input class="input" type="text" name="fullName" value="<?= $member->get_fullName() ?>">
+                                <input class="input" type="text" name="fullName" value="<?= $fullName ?>">
                             </div>
                         </div>
 
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control">
-                                <input class="input" type="text" name="email" value="<?= $member->get_email() ?>">
+                                <input class="input" type="text" name="email" value="<?= $email ?>">
                             </div>
                         </div>
 
@@ -31,8 +31,8 @@
                             <label class="label">Role</label>
                             <div class="select" >
                                 <select name="role">
-                                    <option value="user" <?= ViewUtils::selected_state($member, "user") ?>>User</option>
-                                    <option value="admin" <?= ViewUtils::selected_state($member, "admin") ?>>Admin</option>
+                                    <option value="user" <?= ViewUtils::selected_state($role, "user") ?>>User</option>
+                                    <option value="admin" <?= ViewUtils::selected_state($role, "admin") ?>>Admin</option>
                                 </select>
                             </div>
                         </div>

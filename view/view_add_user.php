@@ -32,7 +32,7 @@
                             <div class="select" >
                                 <select name="role">
                                     <option value="user" <?= ViewUtils::selected_state($role, "user")?>>User</option>
-                                    <option value="admin" <?= ViewUtils::selected_state($role, "user")?>>Admin</option>
+                                    <option value="admin" <?= ViewUtils::selected_state($role, "admin")?>>Admin</option>
                                 </select>
                             </div>
                         </div>

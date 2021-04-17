@@ -22,14 +22,14 @@
                         <div class="field">
                             <label class="label">Title</label>
                             <div class="control">
-                                <input class="input" type="text" name="title" value='<?= $card->get_title() ?>' placeholder='<?= $card->get_title() ?>'>
+                                <input class="input" type="text" name="title" value='<?= $title ?>' placeholder='<?= $title ?>'>
                             </div>
                         </div>
 
                         <div class="field">
                             <label class="label">Body</label>
                             <div class="control">
-                                <textarea class="textarea" name="body" rows="3"><?= $card->get_body() ?></textarea>
+                                <textarea class="textarea" name="body" rows="3"><?= $body ?></textarea>
                             </div>
                         </div>
 
@@ -49,7 +49,7 @@
                         <div class="field">
                             <label class="label">Due Date</label>
                             <div class="control">
-                                <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($card->get_dueDate())?>">
+                                <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
                             </div>
                         </div>
 

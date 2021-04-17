@@ -32,9 +32,6 @@
                     </form>
                     <?php endif; ?>
 
-                    <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
-                        <?php include('errors.php'); ?>
-                    <?php endif; ?>
                 </div>
 
                 <div class="block has-text-grey mb-5">
@@ -57,7 +54,7 @@
                             </div>
                         </div>
                     </form>
-                    <?php if ($errors->has_errors("column", "add")): ?>
+                    <?php if ($errors->has_errors()): ?>
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </aside>

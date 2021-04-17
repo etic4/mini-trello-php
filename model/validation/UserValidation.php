@@ -2,31 +2,43 @@
 
 
 class UserValidation extends Validation {
-    private string $dao;
+    const UserDao = "UserDao";
 
-    public function __construct($dao) {
-        $this->dao = $dao;
+    public static function get_inst() {
+        return new UserValidation();
     }
 
-    public function validate_datas(User $user, $update=false): UserValidation {
-        if (!self::valid_email($user->get_email())) {
-            $this->errors[] = "Invalid email";
-        }
+    public function validate_signup($email, $fullName, $password, $password_confirm): array {
+        $this->validate_datas($fullName, $email);
+        $this->validate_password($password, $password_confirm);
+        return $this->get_errors();
+    }
 
-        if (!$update || $this->dao::email_has_changed($user)) {
-            if (!$this->dao::is_email_unique($user->get_email())){
-                $this->errors[] = "A user with the same email already exists";
+
+    public function validate_add(string $fullName, string $email): array {
+        $this->validate_datas($fullName, $email);
+        return $this->get_errors();
+    }
+
+    public function validate_edit(string $fullName, string $email, $user): array {
+        $this->validate_datas($fullName, $email, $user);
+        return $this->get_errors();
+    }
+
+    public function validate_login(string $email, string $password): array {
+        if (empty($email) || $email == Configuration::get("anonyme")) {
+            $this->errors[] = "Invalid username or password";
+        } else {
+            $user = UserDao::get_by_email($email);
+            if ($user == null || $this->wrong_password( $user, $password)) {
+                $this->errors[] = "Invalid username or password";
             }
         }
 
-        if (self::str_lower_than($user->get_fullName(), 3)) {
-            $this->errors[] = "Name must be at least 3 characters long";
-        }
-
-        return $this;
+        return $this->get_errors();
     }
 
-    public function validate_password(string $password, string $password_confirm): UserValidation {
+    public function validate_password(string $password, string $password_confirm): array {
         if (self::str_lower_than($password, 8)) {
             $this->errors[] = "Password must be at least 8 characters long";
         }
@@ -47,24 +59,25 @@ class UserValidation extends Validation {
             $this->errors[] = "Passwords don't match";
         }
 
-        return $this;
-    }
-
-
-    public function validate_login(string $email, string $password): UserValidation {
-        if (empty($email) || $email == Configuration::get("anonyme")) {
-            $this->errors[] = "Invalid username or password";
-        } else {
-            $user = UserDao::get_by_email($email);
-            if ($user == null || $this->wrong_password( $user, $password)) {
-                $this->errors[] = "Invalid username or password";
-            }
-        }
-
-        return $this;
     }
 
     private function wrong_password(User $user, string $clearPasswd): bool {
         return $user->get_passwdHash() != Tools::my_hash($clearPasswd);
+    }
+
+    private function validate_datas(string $fullName, string $email, $user=null) {
+        if (!self::valid_email($email)) {
+            $this->errors[] = "Invalid email";
+        }
+
+        if (is_null($user) || $user->get_email() != $email) {
+            if (!UserDao::is_email_unique($email)){
+                $this->errors[] = "A user with the same email already exists";
+            }
+        }
+
+        if (self::str_lower_than($fullName, 3)) {
+            $this->errors[] = "Name must be at least 3 characters long";
+        }
     }
 }

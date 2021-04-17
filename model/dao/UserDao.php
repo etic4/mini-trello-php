@@ -19,7 +19,7 @@ class UserDao extends BaseDao {
         ParticipationDao::delete_all(["Participant" => $user->get_id()]);
 
         foreach ($user->get_own_boards() as $board) {
-            BoardDao::delete($board);
+            ColumnDao::delete($board);
         }
 
         // attribue toutes les cartes créées par user à "Anonyme"
@@ -65,25 +65,4 @@ class UserDao extends BaseDao {
 
     // --- Validation ---
 
-    public static function validate_signup(User $user, $password, $password_confirm): array {
-        $valid = (new UserValidation(static::class))->validate_datas($user);
-        $valid->validate_password($password, $password_confirm);
-        return $valid->get_errors();
-    }
-
-    public static function validate_add(User $user): array {
-        $valid = (new UserValidation(static::class))->validate_datas($user);
-        return $valid->get_errors();
-    }
-
-    public static function validate_edit(User $user): array {
-        $valid = (new UserValidation(static::class))->validate_datas($user, $update=true);
-        return $valid->get_errors();
-    }
-
-    public static function validate_login(string $email, string $password): array {
-        $valid = (new UserValidation(static::class))->validate_login($email, $password);
-        return $valid->get_errors();
-    }
-    
 }

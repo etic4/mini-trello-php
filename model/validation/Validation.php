@@ -8,7 +8,20 @@ class Validation {
     public function get_errors(): array {
         return $this->errors;
     }
-    
+
+    protected function base_validate_title($title) {
+        if (self::str_lower_than($title, 3)) {
+            $this->errors[] = "Title must be at least 3 characters long";
+        }
+
+        if (self::str_contains_only_spaces($title)) {
+            $this->errors[] = "Title can't contains only spaces";
+        }
+    }
+
+
+    // -- Fonctions génériques ---
+
     public static function str_lower_than(string $str, int $len): bool {
         return mb_strlen($str, "utf-8") < $len;
     }
@@ -41,4 +54,5 @@ class Validation {
     public static function date_before(?Datetime $date, DateTime $dateNow) {
         return !is_null($date) && $dateNow->diff($date)->format("%r%a") < 0;
     }
+
 }

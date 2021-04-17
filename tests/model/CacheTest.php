@@ -2,9 +2,9 @@
 
 require_once "tests/tools/DB.php";
 
-use \BoardDao;
-use \CardDao;
 use \ColumnDao;
+use \CardDao;
+use \BoardDao;
 use \CommentDao;
 use \User;
 use \Board;
@@ -29,7 +29,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
 
     public function testGetByIdOnDifferentClassesReturnsInstancesOfRightClass() {
         $user = UserDao::get_by_id(1);
-        $board = BoardDao::get_by_id(1);
+        $board = ColumnDao::get_by_id(1);
         $column = ColumnDao::get_by_id(1);
         $card = CardDao::get_by_id(1);
         $comment = CommentDao::get_by_id(1);
@@ -43,30 +43,30 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testMultipleBoardGetByIDReturnsSameInstance() {
-        $board = BoardDao::get_by_id(1);
+        $board = ColumnDao::get_by_id(1);
 
         $this->assertNotEquals("!", $board->get_title());
         $board->set_title("!");  //n'est pas update en DB
 
-        $board2 = BoardDao::get_by_id(1);  // sans cache retournerait une nouvelle instance depuis la DB avec le titre original
+        $board2 = ColumnDao::get_by_id(1);  // sans cache retournerait une nouvelle instance depuis la DB avec le titre original
         $this->assertSame($board, $board2);
 
         $this->assertEquals($board->get_title(), $board2->get_title());
     }
 
     public function testGetByIdInexistentIdReturnsNull() {
-        $board = BoardDao::get_by_id(42);
+        $board = ColumnDao::get_by_id(42);
         $this->assertNull($board);
     }
 
     public function testMultipleGetByIdInexistentIDReturnsNull() {
-        $board = BoardDao::get_by_id(42);
-        $board = BoardDao::get_by_id(42);
+        $board = ColumnDao::get_by_id(42);
+        $board = ColumnDao::get_by_id(42);
         $this->assertNull($board);
     }
 
     public function testGetColumnsGetCardsGetCommentsReturnsCached() {
-        $columns = BoardDao::get_by_id(1)->get_columns();
+        $columns = ColumnDao::get_by_id(1)->get_columns();
         $cards = ColumnDao::get_by_id(1)->get_cards();
         $comments = CardDao::get_by_id(6)->get_comments();
 
@@ -80,7 +80,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
         $cards[0]->set_title("?");
         $comments[0]->set_body("!");
 
-        $columns = BoardDao::get_by_id(1)->get_columns();
+        $columns = ColumnDao::get_by_id(1)->get_columns();
         $cards = ColumnDao::get_by_id(1)->get_cards();
         $comments = CardDao::get_by_id(6)->get_comments();
 

@@ -13,15 +13,15 @@ class BoardDao extends BaseDao {
             ColumnDao::delete($col);
         }
 
-        BoardDao::delete_one($board);
+        ColumnDao::delete_one($board);
     }
 
     public static function get_by_title(string $title): ?Board {
-        return BoardDao::get_by(["Title" => $title]);
+        return ColumnDao::get_by(["Title" => $title]);
     }
 
     public static function get_users_boards(User $user): array {
-        return BoardDao::get_all(["Owner" => $user->get_id()]);
+        return ColumnDao::get_all(["Owner" => $user->get_id()]);
     }
 
     public static function get_admin_visible_boards(User $user): array {
@@ -51,16 +51,12 @@ class BoardDao extends BaseDao {
         );
     }
 
-    public static function is_title_unique(Board $board): bool {
+    public static function is_title_unique(string $title): bool {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) = $sql->select()
-            ->where(["Title" => $board->get_title()])
+            ->where(["Title" => $title])
             ->count()->sql();
         return self::count($sql, $params) == 0;
 
-    }
-
-    public static function validate(Board $board, $update=false): array {
-        return self::validate_title($board, $update);
     }
 }

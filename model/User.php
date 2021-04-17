@@ -11,15 +11,10 @@ class User {
     private string $role;
     private ?string $passwdHash;
     private ?DateTime $registeredAt;
-    private ?string $clearPasswd; //Utilisé uniquement au moment du signup pour faciliter validation
 
 
     public static function get_random_password(): string {
         return "Password1,";
-    }
-
-    public static function from_post(): User {
-        return new User(Post::get("email"), Post::get("fullName"), Post::get("role", "user"), Post::get("password"));
     }
 
     public function __construct(string $email, string $fullName, ?string $role=null, ?string $clearPasswd=null,
@@ -33,7 +28,6 @@ class User {
         $this->fullName = $fullName;
         $this->set_role($role);
         $this->passwdHash = $passwdHash;
-        $this->clearPasswd = $clearPasswd;
         $this->registeredAt = DateUtils::now_if_null($registeredAt);
     }
 
@@ -72,13 +66,14 @@ class User {
         $this->role = is_null($role) ? Role::USER : $role;
     }
 
+    public function set_password(string $password) {
+        $this->passwdHash = Tools::my_hash($password);
+    }
+
     public function get_passwdHash(): string {
         return $this->passwdHash;
     }
 
-    public function set_password(string $clear_password) {
-        $this->passwdHash = Tools::my_hash($clear_password);
-    }
     public function get_registeredAt(): DateTime {
         return $this->registeredAt;
     }

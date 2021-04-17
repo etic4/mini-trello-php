@@ -75,19 +75,14 @@ class CardDao extends BaseDao {
         );
     }
 
-    public static function is_title_unique(Card $card): bool {
+    public static function is_title_unique(string $title, Board $board): bool {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) = $sql->select()
             ->join(["card ca", "`column` co"])
             ->on(["ca.Column" => "co.ID"])
-            ->where(["ca.Title" => $card->get_title(), "co.Board" => $card->get_board_id()])
+            ->where(["ca.Title" => $title, "co.Board" => $board->get_id()])
             ->count()->sql();
         return self::count($sql, $params) == 0;
 
-    }
-
-    public static function validate(Card $card, $update=false): array {
-        $valid = (new CardValidation(static::class))->validate($card, $update);
-        return $valid->get_errors();
     }
 }

@@ -14,13 +14,13 @@ class ControllerColumn extends ExtendedController {
 
         if (!Post::empty("title")) {
             $title = Post::get("title");
-            $column = Column::new($title, $board);
 
-            $error = new DisplayableError($column, "add");
-            $error->set_messages(ColumnDao::validate($column));
+            $error = new DisplayableError();
+            $error->set_messages(ColumnDao::validate($title));
             Session::set_error($error);
 
             if($error->is_empty()) {
+                $column = Column::new($title, $board);
                 ColumnDao::insert($column);
             }
         }
@@ -33,18 +33,15 @@ class ControllerColumn extends ExtendedController {
         $column = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($column));
 
+        $title = Post::get("title", $column->get_title());
+
         if (Post::isset("confirm")) {
-            if (Post::empty("title") || Post::get("title") == $column->get_title()) {
-                $this->redirect("board", "view", $column->get_board_id());
-            }
-
-            $column->set_title(Post::get("title"));
-
             $error = new DisplayableError();
-            $error->set_messages(ColumnDao::validate($column));
+            $error->set_messages(ColumnValidation::get_inst()->validate_add($title, $column));
             Session::set_error($error);
 
             if ($error->is_empty()) {
+                $column->set_title($title);
                 $column->set_modifiedAt(new DateTime());
                 ColumnDao::update($column);
                 $this->redirect("board", "view", $column->get_board_id());
@@ -54,7 +51,8 @@ class ControllerColumn extends ExtendedController {
 
         (new View("column_edit"))->show(array(
                 "user" => $user,
-                "column" => $column,
+                "id" => $column->get_id(),
+                "title" => $title,
                 "breadcrumb" => new BreadCrumb(array($column->get_board()), "Edit column title"),
                 "errors" => Session::get_error()
             )

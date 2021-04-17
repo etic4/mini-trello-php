@@ -15,13 +15,12 @@ class ControllerCard extends ExtendedController {
         if (!Post::empty("title")) {
             $column_id = Post::get("column_id");
             $title = Post::get("title");
-
             $card = Card::new($title, $user, $column_id);
 
             $this->authorized_or_redirect(Permissions::add($card));
 
             $error = new DisplayableError($card, "add", $column_id);
-            $error->set_messages(CardDao::validate($card));
+            $error->set_messages(CardValidation::get_inst()->validate_add($title, $column->get_board()));
             Session::set_error($error);
 
             if($error->is_empty()){
@@ -29,7 +28,6 @@ class ControllerCard extends ExtendedController {
             }
         }
         $this->redirect("board", "view", $column->get_board_id());
-
     }
 
     public function view(){
@@ -52,24 +50,19 @@ class ControllerCard extends ExtendedController {
         $card = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($card));
 
+        $title = Post::get("title", $card->get_title());
+        $body = Post::get("body", $card->get_body());
+        $due_date = Post::empty("due_date") ? $card->get_dueDate() : new Datetime(Post::get("due_date"));
+
         if (Post::isset("confirm")) {
-            if (Post::isset("body")) {
-                $card->set_body(Post::get("body"));
-            }
-
-            if (Post::isset("title")) {
-                $card->set_title(Post::get("title"));
-            }
-
-            if(!Post::empty("due_date")) {
-                $card->set_dueDate(new Datetime(Post::get("due_date")));
-            }
-
             $error = new DisplayableError();
-            $error->set_messages(CardDao::validate($card, $update=true));
+            $error->set_messages(CardValidation::get_inst()->validate_edit($title, $due_date, $card));
             Session::set_error($error);
 
             if($error->is_empty()){
+                $card->set_title($title);
+                $card->set_body($body);
+                $card->set_dueDate($due_date);
                 $card->set_modifiedAt(new DateTime());
                 CardDao::update($card);
 
@@ -81,6 +74,9 @@ class ControllerCard extends ExtendedController {
         (new View("card_edit"))->show(array(
                 "user" => $user,
                 "card" => $card,
+                "title" => $title,
+                "body" => $body,
+                "dueDate" => $due_date,
                 "redirect_url" => str_replace("_", "/", Get::get("param2", "board/view/". $card->get_board_id())) ,
                 "breadcrumb" => new BreadCrumb(array($card->get_board(), $card)),
                 "errors" => Session::get_error()
