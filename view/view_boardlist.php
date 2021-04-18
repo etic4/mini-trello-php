@@ -25,7 +25,7 @@
                                 <input class="input" type="text" name="title" placeholder="Add a board">
                             </div>
                             <div class="control">
-                                <button type="submit" class="button is-info"><i class="fas fa-sign-in-alt"></i></button>
+                                <button type="submit" class="button is-info"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
                         <?php if ($errors->has_errors()): ?>
