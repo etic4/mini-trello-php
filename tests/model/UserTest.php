@@ -1,5 +1,6 @@
 <?php namespace model;
 
+use Role;
 use \Tools;
 require_once "tests/tools/DB.php";
 use \User;
@@ -7,6 +8,7 @@ use \Datetime;
 use \TypeError;
 use \PHPUnit\Framework\TestCase;
 use \tools\DB;
+use UserDao;
 
 class UserTest extends TestCase {
     public static DB $db;
@@ -21,7 +23,7 @@ class UserTest extends TestCase {
     }
 
     public function testGetUserInstanceFromDB() {
-        $user = User::get_by_id(1);
+        $user = UserDao::get_by_id(1);
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals(1, $user->get_id());
     }
@@ -29,8 +31,8 @@ class UserTest extends TestCase {
     public function testCreateUserInstance(): User {
         $email = "test@rmail.com";
         $fullName = "Prénom Nom";
-        $password = "Pass1!";
-        $user = new User($email, $fullName, $password, null, null, null);
+        $password = "Password1,";
+        $user = new User($email, $fullName, Role::USER, $password, null, null, null);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($user->get_email(), $email);
@@ -51,20 +53,11 @@ class UserTest extends TestCase {
     /**
      * @depends testCreateUserInstance
      */
-    public function testGetRegisteredAtProducesErrorOnNotSavedInstance(User $user) {
-        $this->expectException(TypeError::class);
-        $user->get_registeredAt();
-        return $user;
-    }
-
-    /**
-     * @depends testCreateUserInstance
-     */
     public function testCountPlus1AfterInsert(User $user) {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
         $count = $data["total"];
 
-        $user->insert();
+        $user = UserDao::insert($user);
         $data = self::$db->execute("SELECT COUNT(*) as total FROM user")->fetch();
 
         $this->assertEquals($count + 1, $data["total"]);

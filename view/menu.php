@@ -1,15 +1,46 @@
-<div class="menu">
-    <div class="left">
-        <h1>Trello!</h1>
+<nav class="navbar is-fixed-top is-info" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item is-size-3" href="#">
+            Trello
+        </a>
     </div>
-    <div class="right">
-        <?php if (isset($user) && $user instanceof User): ?>
-            <?= CtrlTools::breadcrumb(); ?>
-            <p id="logged-user"><i class="fas fa-user"></i><?= $user->get_fullName() ?></p>
-            <p><a href="user/logout"><i class="fas fa-sign-out-alt"></i></a></p>
-        <?php else: ?>
-            <p><a class="loginLink" href="user/login"><i class="fas fa-sign-in-alt"></i></a></p>
-            <p><a class="signupLink" href="user/signup"><i class="fas fa-user-plus"></i></a></p>
-        <?php endif;?>
+
+    <div id="navbar" class="navbar-menu">
+        <div class="navbar-end">
+            <?php if (isset($user) && $user != null): ?>
+                <?php if($user->is_admin()): ?>
+            <a class="navbar-item" href="board/index">Boards</a>
+            <a class="navbar-item" href="user/manage">Admin</a>
+            <div class="navbar-item">
+                <span class="icon-text">
+                    <span class="icon">
+                        <i class="fas fa-user-shield no-pointer"></i>
+                    </span>
+                    <span><?= $user->get_fullName() ?></span>
+                </span>
+
+            </div>
+                <?php else: ?>
+            <a class="navbar-item" href="board/index">Boards</a>
+            <div class="navbar-item">
+                <span class="icon-text">
+                    <span class="icon"><i class="fas fa-user no-pointer"></i></span>
+                    <span><?= $user->get_fullName() ?></span>
+                </span>
+            </div>
+                <?php endif; ?>
+            <a class="navbar-item" href="user/logout">
+                <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+            </a>
+
+            <?php else: ?>
+                <a class="navbar-item" href="user/login">
+                    <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
+                </a>
+                <a class="navbar-item" href="user/signup">
+                    <span class="icon"><i class="fas fa-user-plus"></i></span>
+                </a>
+            <?php endif;?>
+        </div>
     </div>
-</div>
+</nav>

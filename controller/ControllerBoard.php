@@ -1,157 +1,126 @@
 <?php
-/**/
-require_once "framework/Controller.php";
-require_once "model/User.php";
-require_once "model/Board.php";
-require_once "CtrlTools.php";
-require_once "ValidationError.php";
+
+require_once "autoload.php";
 
 
-class ControllerBoard extends Controller {
-
+class ControllerBoard extends ExtendedController {
     public function index() {
-        if(isset($_GET["param1"])) {
+        if(Get::isset("param1")) {
             $this->redirect();
         }
 
         $user = $this->get_user_or_false();
-        $owners = [];
-        $others = [];
-
-        if($user) {
-            $owners = $user->get_own_boards();
-            $others = $user->get_others_boards();
-        }
 
         (new View("boardlist"))->show(array(
-            "user"=>$user, 
-            "owners" => $owners,
-            "others" => $others,
-            "errors" => ValidationError::get_error_and_reset()
+            "user" => $user,
+            "errors" => Session::get_error()
             )
         );
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public function board() {
-        $user = $this->get_user_or_redirect();
-
-        if(isset($_GET["param1"])) {
-            $board = Board::get_by_id($_GET["param1"]);
-
-            if(!is_null($board)) {
-                $columns = $board->get_columns();
-                (new View("board"))->show(array(
-                        "user"=>$user,
-                        "board" => $board,
-                        "columns" => $columns,
-                        "errors" => ValidationError::get_error_and_reset()
-                    )
-                );
-                die;
-            }
-        }
-        $this->redirect();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // ajout nouveau Board
     public function add() {
-        $user = $this->get_user_or_redirect();
+        $user = $this->authorized_or_redirect(Permissions::add("Board"));
 
-        if (!empty($_POST["title"])) {
-            $title = $_POST["title"];
-            $board = new Board($title, $user, null, new DateTime(), null);
+        if (!Post::empty("title")) {
+            $title = Post::get("title");
 
-            $error = new ValidationError($board, "add");
-            $error->set_messages_and_add_to_session($board->validate());
+            $error = new DisplayableError();
+
+            $error->set_messages((new BoardValidation())->validate_add($title));
+            Session::set_error($error);
 
             if($error->is_empty()) {
-                $board->insert();
-                $this->redirect("board", "board", $board->get_id());
+                $board = new Board($title, $user);
+                $board = BoardDao::insert($board);
+                $this->redirect("board", "view", $board->get_id());
             }
         }
         $this->redirect();
     }
 
+    public function view() {
+        $board = $this->get_or_redirect_default();
+        $user = $this->authorized_or_redirect(Permissions::view($board));
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        (new View("board"))->show(array(
+                "user" => $user,
+                "board" => $board,
+                "breadcrumb" => new BreadCrumb(array($board)),
+                "errors" => Session::get_error()
+            )
+        );
+    }
 
-    //edit titre Board
     public function edit() {
-        $this->get_user_or_redirect();
-        $error = new ValidationError();
+        $board = $this->get_or_redirect_default();
+        $user = $this->authorized_or_redirect(Permissions::edit($board));
 
-        if (isset($_POST["id"]) && !empty($_POST["title"])) {
-            $board_id = $_POST["id"];
-            $title = $_POST["title"];
-            $board = Board::get_by_id($board_id);
+        $board_title = Post::get("board_title", $board->get_title());
 
-            if ($board->get_title() != $title) {
-                $board->set_title($title);
-                $error = new ValidationError($board, "edit");
-                $error->set_messages_and_add_to_session($board->validate());
+        if (Post::isset("confirm")) {
+            if (empty($board_title) || $board_title == $board->get_title()) {
+                $this->redirect("board", "view", $board->get_id());
             }
+
+            $error = new DisplayableError();
+            $error->set_messages((new BoardValidation())->validate_edit($board_title, $board));
+            Session::set_error($error);
 
             if($error->is_empty()) {
-                $board->update();
+                $board->set_title($board_title);
+                $board->set_modifiedAt(new DateTime());
+                BoardDao::update($board);
+                $this->redirect("board", "view", $board->get_id());
             }
-            $this->redirect("board", "board", $board_id);
+            $this->redirect("board", "edit", $board->get_id());
         }
-        $this->redirect();
+
+        (new View("board_edit"))->show(array(
+                "user" => $user,
+                "id" => $board->get_id(),
+                "board_title" => $board_title,
+                "breadcrumb" => new BreadCrumb(array($board), "Edit title"),
+                "errors" => Session::get_error()
+            )
+        );
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // si pas de colonne -> delete -> redirect index
-    // sinon -> delete_confirm
     public function delete() {
-        $this->get_user_or_redirect();
-        if(isset($_POST['id'])) {
-            $board_id = $_POST['id'];
-            $board = Board::get_by_id($board_id);
-            $columns = $board->get_columns();
+        $board = $this->get_or_redirect_default();
+        $this->authorized_or_redirect(Permissions::delete($board));
 
-            if (count($columns) == 0) { 
-                $board->delete();
-                $this->redirect();
-            } else {
-                $this->redirect("board", "delete_confirm", $board_id);
-            }
-        } else {
+        $columns = $board->get_columns();
+        if (Post::isset("confirm") || count($columns) == 0) {
+            BoardDao::delete($board);
             $this->redirect();
         }
+
+        $this->redirect("board", "delete_confirm", $board->get_id());
     }
 
-    //mise en place de view_delete_confirm
     public function delete_confirm() {
-        $user = $this->get_user_or_redirect();
-        if(!empty($_GET["param1"])) {
-            $board_id = $_GET["param1"];
-            $board = Board::get_by_id($board_id);
-            if(!is_null($board) && $board->get_owner() == $user) {
-                (new View("delete_confirm"))->show(array("user" => $user, "instance" => $board));
-                die;
-            }
-            $this->redirect("board", "board", $board_id);
-        }
-        $this->redirect();
+        $board = $this->get_or_redirect_default();
+        $user = $this->authorized_or_redirect(Permissions::delete($board));
+
+        (new View("delete_confirm"))->show(array(
+            "user" => $user,
+            "cancel_url" => "board/view/".$board->get_id(),
+            "instance" => $board));
     }
 
-    //exécution du delete ou cancel de delete_confirm
-    public function remove() {
-        if(isset($_POST["id"])) {
-            $board = Board::get_by_id($_POST["id"]);
-            if(isset($_POST["delete"])) {
-                $board->delete();
-                $this->redirect();
-            }
-            $this->redirect("board", "board", $board->get_id());
-        }
-        $this->redirect();
+
+    /*   --- Collaborators ---   */
+
+    public function collaborators() {
+        $board = $this->get_or_redirect_default();
+        $user = $this->authorized_or_redirect(Permissions::is_owner($board));
+
+        (new View("collaborators"))->show(
+            array(
+                "user" => $user,
+                "breadcrumb" => new BreadCrumb(array($board), "Collaborators"),
+                "board" => $board)
+        );
     }
 }
 

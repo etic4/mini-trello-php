@@ -1,40 +1,33 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "Comment.php";
-require_once "TitleTrait.php";
+require_once "autoload.php";
 
 
-class Card extends CachedGet {
-    use DateTrait, TitleTrait;
-
+class Card {
+    private string $title;
     private ?string $id;
     private string $body;
     private string $position;
     private User $author;
     private Column $column;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
-    private ?array $comments = null;
+    // !! les dates de création et de modification sont dans le trait !!
+    private ?DateTime $dueDate;
 
-    public static function create_new(string $title, User $author, string $column_id): Card {
-        $column = Column::get_by_id($column_id);
-        return new Card(
-            $title,
-            "",
-            self::get_cards_count($column),
-            $author,
-            $column
-        );
+    private array $comments;
+    private array $participants;
+    private array $collaborators;
+
+
+    public static function new(string $title, User $author, string $column_id, ?DateTime $dueDate=null ): Card {
+        $column = ColumnDao::get_by_id($column_id);
+        return new Card( $title,  "", count($column->get_cards()), $author, $column, $dueDate);
     }
 
-    public function __construct(string $title, 
-                                string $body, 
-                                int $position,
-                                User $author, 
-                                Column $column,
-                                ?string $id = null,
-                                ?DateTime $createdAt=null,
-                                ?DateTime $modifiedAt=null) {
+    public function __construct(string $title, string $body, int $position, User $author, Column $column, ?Datetime $dueDate=null,
+                                ?string $id = null, ?DateTime $createdAt=null, ?DateTime $modifiedAt=null) {
 
         $this->id = $id;
         $this->title = $title;
@@ -42,31 +35,51 @@ class Card extends CachedGet {
         $this->position = $position;
         $this->author = $author;
         $this->column = $column;
-        $this->createdAt = $createdAt;
+        $this->dueDate = $dueDate;
+        $this->createdAt = DateUtils::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
 
-    //    GETTERS    //
+    // --- getters & setters ---
 
     public function get_id(): ?string {
         return $this->id;
+    }
+
+    public function set_id(string $id) {
+        $this->id = $id;
+    }
+
+    public function get_title(): string {
+        return $this->title;
+    }
+
+    public function set_title(string $title): void {
+        $this->title = $title;
     }
 
     public function get_body(): string {
         return $this->body;
     }
 
-    public function get_position(): string {
+    public function set_body(string $body) {
+        $this->body = $body;
+    }
 
+    public function get_position(): string {
         return $this->position;
+    }
+
+    public function set_position(string $position) {
+        $this->position = $position;
     }
 
     public function get_author(): User {
         return $this->author;
     }
 
-    public function get_author_name(): string {
+    public function get_author_fullName(): string {
         return $this->author->get_fullName();
     }
 
@@ -77,6 +90,33 @@ class Card extends CachedGet {
     public function get_column(): Column {
         return $this->column;
     }
+
+    public function set_column(Column $column) {
+        $this->column = $column;
+    }
+
+    public function get_createdAt(): DateTime {
+        return $this->createdAt;
+    }
+
+    public function get_modifiedAt(): ?DateTime {
+        return $this->modifiedAt;
+    }
+
+    public function set_modifiedAt(DateTime $dateTime) {
+        $this->modifiedAt = $dateTime;
+    }
+
+    public function get_dueDate(): ?DateTime {
+        return $this->dueDate;
+    }
+
+    public function set_dueDate(?DateTime  $dueDate) {
+        $this->dueDate = $dueDate;
+    }
+
+
+    // --- demeter ---
 
     public function get_column_title(): string {
         return $this->column->get_title();
@@ -114,69 +154,66 @@ class Card extends CachedGet {
         return $this->column->get_board_owner();
     }
 
+
+    public function get_comments_count(): int {
+        if (!isset($this->comments)) {
+            return CommentDao::comments_count($this);
+        }
+        return count($this->get_comments());
+    }
+
+    // --- lazy get lists ---
+
     public function get_comments(): array {
-        if (is_null($this->comments)) {
-            $this->comments = Comment::get_comments_for_card($this);
+        if (!isset($this->comments)) {
+            $this->comments = CommentDao::get_comments($this);
+            $this->sort_comments();
         }
         return $this->comments;
     }
 
-    
-    //    SETTERS    //
-
-    public function set_id(string $id) {
-        $this->id = $id;
+    // sort les commentaires par date de modification / création
+    private function sort_comments() {
+        $comp = function(Comment $com1, Comment $com2) {
+            $com1_stamp = DateUtils::most_recent_timestamp($com1->get_createdAt(), $com1->get_modifiedAt());
+            $com2_stamp = DateUtils::most_recent_timestamp($com2->get_createdAt(), $com2->get_modifiedAt());
+            return  $com2_stamp - $com1_stamp;
+        };
+        usort( $this->comments, $comp);
     }
 
-    public function set_body(string $body) {
-        $this->body = $body;
+    public function get_boards_cards(): array {
+        return $this->get_board()->get_cards();
     }
 
-    public function set_column(Column $column) {
-        $this->column = $column;
-    }
-
-    public function set_position(string $position) {
-        $this->position = $position;
-    }
-
-
-    //    VALIDATION    //
-
-    // fonction de validation en cas d'ajout de nouvelle carte
-    public function validate(): array {
-        $errors = [];
-        if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $errors[] = "Title must be at least 3 characters long";
+    public function get_collaborators(): array {
+        if (!isset($this->collaborators)) {
+            $this->collaborators = $this->get_board()->get_collaborators();
         }
-        if(!$this->title_is_unique()){
-            $errors[] = "Title already exists in this board";
-        }
-        return $errors;
+        return $this->collaborators;
     }
-    // fonction de validation en cas d'update d'une carte deja existante
-    public function validate_update(): array{
-        $errors = [];
-        if (!Validation::str_longer_than($this->get_title(), 2)) {
-            $errors[] = "Title must be at least 3 characters long";
+
+    public function get_collaborators_not_participating(): array {
+        $collabs_and_owner = $this->get_collaborators();
+        $collabs_and_owner[] = $this->get_board_owner();
+
+        return array_diff($collabs_and_owner, $this->get_participants());
+    }
+
+    public function get_participants(): array {
+        if (!isset($this->participants)) {
+            $this->participants = ParticipationDao::get_participating_users($this);
         }
-        if(!$this->title_is_unique_update()){
-            $errors[] = "Title already exists in this board";
-        }
-        return $errors;
+        return $this->participants;
     }
 
 
-    //    TOOLS    //
+    // --- booleans ---
 
     public function has_comments(): bool {
         return count($this->get_comments()) > 0;
     }
 
-    public function get_comments_count(): int {
-        return count($this->get_comments());
-    }
- 
     public function is_first(): bool {
         return $this->get_position() == 0;
     }
@@ -185,138 +222,28 @@ class Card extends CachedGet {
         return $this->get_position() == count($this->get_column_cards()) - 1;
     }
 
-
-
-    //    QUERIES    //
-    
-    // renvoie true si le titre de la carte est unique pour le tableau contenant la carte
-    public function title_is_unique() {
-        $sql = 
-            "SELECT * 
-            FROM card ca, `column` co
-            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id";
-        $params = array(
-            "title"=>$this->get_title(), 
-            "board_id"=>$this->get_board_id(),
-            );
-        $query = self::execute($sql, $params);
-        $data=$query->fetch();
-        return $query->rowCount()==0 ;
-    }
-
-    //renvoie true si le titre de la carte est unique pour le tableau contenant la carte
-    // version a utiliser en cas d'update
-    public function title_is_unique_update(){
-        $sql = 
-            "SELECT * 
-            FROM card ca, `column` co
-            WHERE ca.Title=:title AND ca.Column=co.ID AND co.Board=:board_id AND ca.ID<>:card_id";
-         $params = array(
-             "title"=>$this->get_title(), 
-             "board_id"=>$this->get_board_id(),
-             "card_id"=>$this->get_id()
-            );
-         $query = self::execute($sql, $params);
-         $data=$query->fetch();
-         return $query->rowCount()==0 ;
-    }
-
-    //renvoie un objet Card dont les attributs ont pour valeur les données $data
-    protected static function get_instance($data) :Card {
-        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
-        return new Card(
-            $data["Title"],
-            $data["Body"],
-            $data["Position"],
-            User::get_by_id($data["Author"]),
-            Column::get_by_id($data["Column"]),
-            $data["ID"],
-            $createdAt,
-            $modifiedAt
-        );
-    }
-
-    //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
-    public static function get_cards_for_column(Column $column): array {
-        $sql = 
-            "SELECT * 
-             FROM card 
-             WHERE `Column`=:column 
-             ORDER BY Position";
-        $params = array("column"=>$column->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $cards = [];
-        foreach ($data as $rec) {
-            $card = self::get_instance($rec);
-            self::add_instance_to_cache($card);
-            array_push($cards, $card);
+    public function is_due(): bool {
+        if ($this->get_dueDate() != null) {
+            $interval = $this->get_dueDate()->diff(new Datetime());
+            return $interval->invert == 0 && $interval->d > 0;
         }
-        return $cards;
+        return false;
     }
 
-    //nombre de cartes dans la colonne
-    public static function get_cards_count(Column $column) {
-        $sql =
-            "SELECT COUNT(Position)  as nbr
-             FROM card 
-             WHERE `Column`=:id";
-        $params = array("id"=>$column->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-        return $data["nbr"];
+    public function has_participants(): bool {
+        return count($this->get_participants()) > 0;
     }
 
-    //insère la carte dans la db, la carte reçoit un nouvel id.
-    public function insert() {
-        $sql = 
-            "INSERT INTO card(Title, Body, Position, Author, `Column`) 
-             VALUES(:title, :body, :position, :author, :column)";
-        $params = array(
-            "title" => $this->get_title(),
-            "body" => $this->get_body(),
-            "position" => $this->get_position(),
-            "author" => $this->get_author_id(),
-            "column" => $this->get_column_id()
-        );
-
-        $this->execute($sql, $params);
-        $id = $this->lastInsertId();
-        $this->set_id($id);
-        $this->set_dates_from_db();
+    public function has_collabs_no_participating(): bool {
+        return count($this->get_collaborators_not_participating()) > 0;
     }
 
-    //met à jour la db avec les valeurs des attributs actuels de l'objet Card
-    public function update() {
-        $sql = "UPDATE card SET Title=:title, Body=:body, Position=:position, ModifiedAt=NOW(), Author=:author, 
-                `Column`=:column WHERE ID=:id";
-        $params = array(
-            "id" => $this->get_id(), 
-            "title" => $this->get_title(),
-            "body" => $this->get_body(), 
-            "position" => $this->get_position(),
-            "author" => $this->get_author_id(),
-            "column" => $this->get_column_id()
-        );
-
-        $this->execute($sql, $params);
-        $this->set_dates_from_db();
-    }
-
-    //supprime la carte de la db, ainsi que tous les commentaires liés a cette carte
-    public function delete() {
-        foreach ($this->get_comments() as $comment) {
-            $comment->delete();
-        }
-        $sql = "DELETE FROM card 
-                WHERE ID = :id";
-        $param = array('id' => $this->get_id());
-        self::execute($sql, $param);
+    public function has_dueDate(): bool {
+        return !is_null($this->get_dueDate());
     }
 
 
-    //    MOVE CARD    //
+    // --- move ---
 
     public function move_up(): void {
         $pos = $this->get_position();
@@ -326,8 +253,8 @@ class Card extends CachedGet {
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
-            $this->update();
-            $target->update();
+            CardDao::update($this);
+            CardDao::update($target);
         }
     }
 
@@ -340,8 +267,8 @@ class Card extends CachedGet {
             $this->set_position($target->get_position());
             $target->set_position($pos);
 
-            $this->update();
-            $target->update();;
+            CardDao::update($this);
+            CardDao::update($target);
         }
     }
 
@@ -352,11 +279,11 @@ class Card extends CachedGet {
             $target = $this->get_all_columns()[$pos-1];
 
             /*Faut décrémenter les suivantes avant de changer de colonne*/
-            Card::decrement_following_cards_position($this);
+            CardDao::decrement_following_cards_position($this);
 
             $this->set_column($target);
-            $this->set_position(Card::get_cards_count($target));
-            $this->update();
+            $this->set_position(count($target->get_cards()));
+            CardDao::update($this);
         }
     }
 
@@ -368,29 +295,17 @@ class Card extends CachedGet {
             $target = $colList[$pos+1];
 
             /*Faut décrémenter les suivantes avant de changer de colonne*/
-            Card::decrement_following_cards_position($this);
+            CardDao::decrement_following_cards_position($this);
 
             $this->set_column($target);
-            $this->set_position(Card::get_cards_count($target));
-            $this->update();
+            $this->set_position(count($target->get_cards()));
+            CardDao::update($this);
 
         }
     }
 
-    /*
-        fonction utilisée lors de la suppression d'une carte. mets a jour la position des autres cartes de la colonne.
-        on n'utilise pas update pour ne pas mettre a jour 'modified at', vu qu'il ne s'agit pas d'une modif de la carte voulue par 
-        l'utilisateur, mais juste une conséquence d'une autre action
-    */
-    public static function decrement_following_cards_position($card){
-        $sql = "UPDATE card 
-                SET Position = Position - 1
-                WHERE `Column`=:column 
-                AND Position>:pos";
-        $params = array(
-            "column" => $card->get_column_id(),
-            "pos" => $card->get_position()
-        );
-        self::execute($sql,$params);
+
+    public function __toString(): string {
+        return $this->get_title();
     }
 }

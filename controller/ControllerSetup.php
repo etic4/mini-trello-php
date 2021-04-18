@@ -1,9 +1,8 @@
 <?php
-require_once "framework/Controller.php";
-require_once "framework/Configuration.php";
-require_once "framework/Tools.php";
 
-class ControllerSetup extends Controller
+require_once "autoload.php";
+
+class ControllerSetup extends ExtendedController
 {
     public function index() {
         $this->install();

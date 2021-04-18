@@ -1,33 +1,44 @@
 <?php
 
-require_once "CachedGet.php";
-require_once "User.php";
-require_once "Column.php";
-require_once "TitleTrait.php";
+require_once "autoload.php";
 
-
-class Board extends CachedGet {
-    use DateTrait, TitleTrait;
-
+class Board {
+    private string $title;
     private ?string $id;
     private User $owner;
-    private ?array $columns = null;
+    private ?DateTime $modifiedAt;
+    private ?Datetime $createdAt;
 
+    private array $columns;
+    private array $cards;
+    private array $collaborators;
 
     public function __construct(string $title, User $owner, ?string $id=null, ?DateTime $createdAt=null,
                                 ?DateTime $modifiedAt=null) {
         $this->id = $id;
         $this->title = $title;
         $this->owner = $owner;
-        $this->createdAt = $createdAt;
+        $this->createdAt = DateUtils::now_if_null($createdAt);
         $this->modifiedAt = $modifiedAt;
     }
 
 
-    //    GETTERS    //
+    // --- getters & setters ---
 
     public function get_id(): ?string {
         return $this->id;
+    }
+
+    public function set_id(string $id): void {
+        $this->id = $id;
+    }
+
+    public function get_title(): string {
+        return $this->title;
+    }
+
+    public function set_title(string $title): void {
+        $this->title = $title;
     }
 
     public function get_owner(): User {
@@ -43,137 +54,62 @@ class Board extends CachedGet {
     }
 
     public function get_columns(): array {
-        if (is_null($this->columns)) {
-            $this->columns = Column::get_columns_for_board($this);
+        if (!isset($this->columns)) {
+            $this->columns = ColumnDao::get_columns($this);
         }
         return $this->columns;
     }
 
-
-    //    SETTERS    //
-
-    public function set_id(string $id): void {
-        $this->id = $id;
+    public function get_createdAt(): DateTime {
+        return $this->createdAt;
     }
 
+    public function get_modifiedAt(): ?DateTime {
+        return $this->modifiedAt;
+    }
 
-    //    VALIDATION    //
+    public function set_modifiedAt(DateTime $dateTime) {
+        $this->modifiedAt = $dateTime;
+    }
 
-    public function validate(): array {
-        $errors = [];
-        if (!Validation::str_longer_than($this->title, 2)) {
-            $errors[] = "Title must be at least 3 characters long";
-            
+    public function get_board() {
+        return $this;
+    }
+
+    public function get_cards(): array {
+        if (!isset($this->cards)) {
+            $this->cards = [];
+            foreach ($this->get_columns() as $col){
+                $this->cards = array_merge($this->cards, $col->get_cards());
+            }
         }
-        if (!Validation::is_unique_title($this->title)) {
-            $errors[] = "A board with the same title already exists";
+        return $this->cards;
+    }
+
+    public function get_collaborators(): array {
+        if (!isset($this->collaborators)) {
+            $this->collaborators = CollaborationDao::get_collaborating_users($this);
         }
-
-        return $errors;
+        return $this->collaborators;
     }
 
-
-    //    QUERIES    //
-
-    protected static function get_instance($data): Board {
-        list($createdAt, $modifiedAt) = self::get_dates_from_sql($data["CreatedAt"], $data["ModifiedAt"]);
-        return new Board(
-            $data["Title"],
-            User::get_by_id($data["Owner"]),
-            $data["ID"],
-            $createdAt,
-            $modifiedAt
-        );
+    public function get_non_owner(): array {
+        return array_diff(UserDao::get_all_users(), [$this->get_owner()]);
     }
 
-    public static function get_by_title(string $title): ?Board {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE Title = :title";
-        $params = array("title" => $title);
-        $query = self::execute($sql, $params);
-        $data = $query->fetch();
-
-        if ($query->rowCount() == 0) {
-            return null;
-        } else {
-            $board = self::get_instance($data);
-            return $board;
-        }
+    public function get_not_collaborating(): array {
+        return array_diff($this->get_non_owner(), $this->get_collaborators());
     }
 
-    public static function get_users_boards(User $user): array {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE Owner=:id";
-        $params = array("id"=>$user->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $boards = array();
-        foreach ($data as $rec) {
-            array_push($boards, self::get_instance($rec));
-        }
-
-        return $boards;
-    }
-    
-    public static function get_others_boards(User $user): array {
-        $sql = 
-            "SELECT * 
-             FROM board 
-             WHERE Owner!=:id";
-        $params = array("id" => $user->get_id());
-        $query = self::execute($sql, $params);
-        $data = $query->fetchAll();
-
-        $boards = array();
-        foreach ($data as $rec) {
-            array_push($boards, self::get_instance($rec));
-        }
-
-        return $boards;
-    }
-    
-    public function insert() {
-        $sql = 
-            "INSERT INTO board(Title, Owner) 
-             VALUES(:title, :owner)";
-        $params = array(
-            "title" => $this->get_title(),
-            "owner" => $this->get_owner_id(),
-            );
-        $this->execute($sql, $params);
-        $id = $this->lastInsertId();
-        $this->set_id($id);
-        $this->set_dates_from_db();
+    public function has_collaborators(): bool {
+        return count($this->get_collaborators())  > 0;
     }
 
-    public function update(): void {
-        $sql = 
-            "UPDATE board 
-             SET Title=:title, Owner=:owner, ModifiedAt=NOW() 
-             WHERE ID=:id";
-        $params = array(
-            "id" => $this->get_id(), 
-            "title" => $this->get_title(), 
-            "owner" => $this->get_owner_id(),
-        );
-        
-        $this->execute($sql, $params);
-        $this->set_dates_from_db();
-    }
-    
-    public function delete(): void {
-        foreach ($this->get_columns() as $col) {
-            $col->delete();
-        }
-        $sql = "DELETE FROM board 
-                WHERE ID = :id";
-        $params = array("id"=>$this->get_id());
-        $this->execute($sql, $params);
+    public function has_user_not_collaborating():bool {
+        return count($this->get_not_collaborating()) > 0;
     }
 
+    public function __toString(): string {
+        return $this->get_title();
+    }
 }

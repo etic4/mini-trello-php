@@ -1,54 +1,83 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
-        <title>Edit a card</title>
-        <base href="<?= $web_root ?>"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
-        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-    </head>
-    <body class="edit">
+<?php $title="Card edit"; include('head.php'); ?>
+
+<body class="has-navbar-fixed-top m-4"">
         <header id="main_header">
             <?php include('menu.php') ?>
         </header>
+        <?= $breadcrumb->get_trace(); ?>
         <main>
-            <article id="editCard">
-                <header>
-                    <h2>Edit a card</h2>
-                    <p class="credit">Created <?= $card->get_created_intvl() ?> by <strong>'<?= $card->get_author_name() ?>'</strong>. <?= $card->get_modified_intvl() ?>.</p>
+            <article>
+                <header class="mb-5">
+                    <h2 class="title">Edit a card</h2>
+                    <p class="credit has-text-grey">Created <?= ViewUtils::created_intvl($card) ?> by <strong class="has-text-info">'<?= $card->get_author_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($card) ?>.</p>
                 </header>
-                <div class="main_card">
+                <section>
                 <?php if ($errors->has_errors()): ?>
                     <?php include('errors.php'); ?>
                 <?php endif; ?>
-                    <form id="edit_card" action="card/update" method="post">
-                        <div>
-                            <label for="title" >Title</label>
-                            <!-- value renvoie la valeur de départ si user ne modifie pas le titre -->
-                            <input type="text" name="title" id="title" maxlength="128" value='<?= $card->get_title() ?>' placeholder='<?= $card->get_title() ?>'>
+
+                    <form action="card/edit" method="post">
+                        <div class="field">
+                            <label class="label">Title</label>
+                            <div class="control">
+                                <input class="input" type="text" name="card_title" value='<?= $card_title ?>' placeholder='<?= $card_title ?>'>
+                            </div>
                         </div>
-                        <div>
-                            <label for="body">Body</label>
-                            <textarea name="body" id="body" rows="10"><?= $card->get_body() ?></textarea>
+
+                        <div class="field">
+                            <label class="label">Body</label>
+                            <div class="control">
+                                <textarea class="textarea" name="body" rows="3"><?= $body ?></textarea>
+                            </div>
                         </div>
-                        <div>
-                            <label for="board">Board</label>
-                            <input type ="text" name="title_board" id="title_board" value='<?= $card->get_board_title() ?>' disabled>
+
+                        <div class="field">
+                            <label class="label">Board</label>
+                            <div class="control">
+                                <input class="input" type ="text" name="title_board" value='<?= $card->get_board_title() ?>' disabled>
+                            </div>
                         </div>
-                        <div>
-                            <label for="title_column">Column</label>
-                            <input type ="text" name="title_column" id="title_column" value='<?= $card->get_column_title() ?>' disabled>
+
+                        <div class="field">
+                            <label class="label">Column</label>
+                            <div class="control">
+                                <input class="input" type ="text" name="title_column" value='<?= $card->get_column_title() ?>' disabled>
+                            </div>
                         </div>
-                        <div>
-                            <input type="text" name="id" value='<?= $card->get_id() ?>' hidden>
-                            <input type="submit" value="Cancel" form="edit_card" name="edit">
-                            <input type="submit" value="Edit this card" form="edit_card" name="edit">
+                        <div class="columns">
+                            <div class="column is-one-fifth">
+                                <div class="field">
+                                    <label class="label">Due Date</label>
+                                    <div class="control">
+                                        <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
+                                    </div>
+                                </div>
+                                <div class="field mt-4">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="reset_date">
+                                        Reset due date
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="is-flex is-flex-direction-row mt-5 mb-5">
+                            <a class="button is-light" href="card/view/<?= $card->get_id() ?>">Cancel</a>
+                            <form action="card/edit" method="post">
+                                <input type="text" name="id" value=<?= $card->get_id()?> hidden>
+                                <input type="text" name="confirm" hidden>
+                                <input type="text" name="redirect_url" value="<?= $redirect_url ?>" hidden>
+                                <input class="button is-success ml-3" type='submit' value='Edit this card'>
+                            </form>
                         </div>
                     </form>
-                </div>
-                <?php include('view_comments.php') ?>
+                </section>
+                <?php include("participants_section.php");
+                      $redirect_url = "card/edit/". $card->get_id() . "#comments"; include('comments_section.php') ?>
             </article>
         </main>
     </body>

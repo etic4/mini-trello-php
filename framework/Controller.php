@@ -55,6 +55,7 @@ abstract class Controller
         die();
     }
 
+
     //indique si un l'utilisateur est connecté
     public function user_logged()
     {

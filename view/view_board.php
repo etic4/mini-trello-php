@@ -1,62 +1,65 @@
 <!DOCTYPE html>
-<html lang="fr"><!---->
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
-    <title>Boards "<?= $board->get_title() ?>"</title>
-    <base href="<?= $web_root ?>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
-    <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-</head>
-<body class="boardMain">
-	<header id="main_header">
+<html lang="fr">
+<?php $title="Board"; include('head.php'); ?>
+
+<body class="has-navbar-fixed-top m-4">
+	<header>
      <?php include('menu.php'); ?>
 	</header>
-	<main class="board">
-        <article id="main_article">
+    <?= $breadcrumb->get_trace(); ?>
+	<main>
+        <article>
             <header>
-                <div class="title">
-                    <?php if ($user->is_owner($board)): ?>
-                    <ul class="icons">
-                        <li>
-                            <form class='editTitle' action='board/edit/<?= $board->get_id() ?>' method='post'>
-                                <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                                <input type='text' name='instance' value='board' hidden>
-                                <input type ="checkbox" id="toggle">
-                                <label for="toggle"><i class="fas fa-edit"></i></label>
-                                <input class="control" type="text" name="title" value="<?= $board->get_title() ?>">
-                                <input class="fas fa-paper-plane" type="submit" value="&#xf1d8">
-                                <button class="control"><i class="fas fa-arrow-left"></i></button>
-                                <h2>Board "<?= $board->get_title() ?>"</h2>
-                            </form>
-                        </li>
-                        <li>
-                            <form class='link' action='board/delete' method='post'>
-                                <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                                <input type='submit' value="&#xf2ed" class="far fa-trash-alt" style="background:none">
-                            </form>
-                        </li>
-                    </ul>
-                    <?php endif; ?>
-                    <?php if ($errors->has_errors("board", "edit", $board->get_id())): ?>
-                        <?php include('errors.php'); ?>
-                    <?php endif; ?>
-                </div>
-                <p class="credit">Created <?= $board->get_created_intvl() ?> by <strong>'<?= $board->get_owner_fullName() ?>'</strong>. <?= $board->get_modified_intvl() ?>.</p>
-            </header>
-            <div class="column_display">  
-                <?php include("view_columns.php"); ?>
-                <aside class="column_form">
-                    <form class="add" action="column/add" method="post">
+                <div class="is-flex is-flex-direction-row is-align-items-baseline">
+                    <h2 class="title"><?= $board->get_title()?></h2>
+
+                    <?php if ($user->is_owner($board) || $user->is_admin()): ?>
+                    <a class="icon ml-5" href="board/edit/<?= $board->get_id() ?>">
+                        <button class="button is-medium align-baseline is-white p-0" type="submit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </a>
+
+                    <a class="button is-medium is-white p-0 ml-2" href="board/collaborators/<?= $board->get_id() ?>">
+                        <i class="fas fa-users"></i>
+                    </a>
+
+                    <form class="icon is-medium" action='board/delete' method='post'>
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <input type="text" name="title" placeholder="Add a column">
-                        <input type="submit" value="&#xf067" class="fas fa-plus">
+                        <button class="button align-baseline is-white p-0 ml-2" type="submit">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </form>
-                    <?php if ($errors->has_errors("column", "add")): ?>
+                    <?php endif; ?>
+
+                </div>
+
+                <div class="block has-text-grey mb-5">
+                    Created <?= ViewUtils::created_intvl($board) ?> by <strong class="has-text-info">'<?= $board->get_owner_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($board) ?>.
+                </div>
+            </header>
+            <div class="is-flex is-flex-direction-row is-align-items-start">
+                <?php foreach($board->get_columns() as $column): ?>
+                    <?php include("column.php"); ?>
+                <?php endforeach; ?>
+                <aside class="trello-add-column">
+                    <form action="column/add" method="post">
+                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                        <div class="field has-addons">
+                            <div class="control">
+                                <input class="input" type="text" name="title" placeholder="Add a column">
+                            </div>
+                            <div class="control">
+                                <button type="submit" class="button align-baseline is-info"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <?php if ($errors->has_errors()): ?>
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
-                </aside>     
+                </aside>
+
+
             </div>
         </article>
     </main>

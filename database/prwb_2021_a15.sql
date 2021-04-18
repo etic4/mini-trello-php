@@ -8,6 +8,7 @@ CREATE TABLE `user` (
   `FullName` varchar(128) NOT NULL,
   `Password` varchar(256) NOT NULL,
   `RegisteredAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `Role` ENUM('user', 'admin') DEFAULT 'user',
   PRIMARY KEY(`ID`),
   UNIQUE(`Mail`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
@@ -20,7 +21,7 @@ CREATE TABLE `board` (
   `CreatedAt` datetime NOT NULL DEFAULT current_timestamp(),
   `ModifiedAt` datetime NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Owner`) REFERENCES `User`(`ID`),
+  FOREIGN KEY(`Owner`) REFERENCES `user`(`ID`),
   UNIQUE(`Title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
@@ -32,7 +33,7 @@ CREATE TABLE `column` (
   `ModifiedAt` datetime NULL,
   `Board` int(11) NOT NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Board`) REFERENCES `Board`(`ID`)
+  FOREIGN KEY(`Board`) REFERENCES `board`(`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `card` (
@@ -44,9 +45,10 @@ CREATE TABLE `card` (
   `ModifiedAt` datetime NULL,
   `Author` int(11) NOT NULL,
   `Column` int(11) NOT NULL,
+  `DueDate` DATE NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Author`) REFERENCES `User`(`ID`),
-  FOREIGN KEY(`Column`) REFERENCES `Column`(`ID`)
+  FOREIGN KEY(`Author`) REFERENCES `user`(`ID`),
+  FOREIGN KEY(`Column`) REFERENCES `column`(`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
   
 CREATE TABLE `comment` (
@@ -57,6 +59,23 @@ CREATE TABLE `comment` (
   `Author` int(11) NOT NULL,
   `Card` int(11) NOT NULL,
   PRIMARY KEY(`ID`),
-  FOREIGN KEY(`Author`) REFERENCES `User`(`ID`),
-  FOREIGN KEY(`Card`) REFERENCES `Card`(`ID`)
+  FOREIGN KEY(`Author`) REFERENCES `user`(`ID`),
+  FOREIGN KEY(`Card`) REFERENCES `card`(`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE collaborate(
+    Board INT(11) NOT NULL,
+    Collaborator INT(11) NOT NULL,
+    PRIMARY KEY (Board, Collaborator),
+    FOREIGN KEY(Collaborator) REFERENCES user(ID),
+    FOREIGN KEY(Board) REFERENCES board(ID)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE participate(
+    Participant INT(11) NOT NULL,
+    Card INT(11) NOT NULL,
+    PRIMARY KEY(Participant, Card),
+    FOREIGN KEY(Card) REFERENCES card(ID),
+    FOREIGN KEY(Participant) REFERENCES user(ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

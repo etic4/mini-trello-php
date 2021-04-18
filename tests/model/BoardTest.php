@@ -2,10 +2,11 @@
 
 require_once "tests/tools/DB.php";
 use \Board;
-use \User;
+use \ColumnDao;
 use \Datetime;
 use \TypeError;
 use \tools\DB;
+use \UserDao;
 
 class BoardTest extends \PHPUnit\Framework\TestCase {
     public static DB $db;
@@ -20,14 +21,14 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testGetBoardInstanceFromDB() {
-        $board = Board::get_by_id(1);
+        $board = \BoardDao::get_by_id(1);
         $this->assertInstanceOf(Board::class, $board);
         $this->assertEquals(1, $board->get_id());
     }
 
     public function testCreateBoardInstance(): Board {
         $title = "Titre du board";
-        $user = User::get_by_id(1);
+        $user = UserDao::get_by_id(1);
         $board = new Board($title, $user);
 
         $this->assertInstanceOf(Board::class, $board);
@@ -44,21 +45,6 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(null, $board->get_id());
     }
 
-    /**
-     * @depends testCreateBoardInstance
-     */
-    public function testGetCreatedAtProducesErrorOnNotSavedInstance(Board $board) {
-        $this->expectException(TypeError::class);
-        $board->get_createdAt();
-    }
-
-    /**
-     * @depends testCreateBoardInstance
-     */
-    public function testGetModifiedAtProducesErrorOnNotSavedInstance(Board $board) {
-        $this->expectException(TypeError::class);
-        $board->get_modifiedAt();
-    }
 
     /**
      * @depends testCreateBoardInstance
@@ -67,7 +53,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
         $count = $data["total"];
 
-        $board->insert();
+        $board = \BoardDao::insert($board);
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
 
         $this->assertEquals($count + 1, $data["total"]);
@@ -85,31 +71,10 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     /**
      * @depends testCountPlus1AfterInsert
      */
-    public function testCreatedAtSetAfterInsert(Board $board) {
-        $this->assertInstanceOf(DateTime::class, $board->get_createdAt());
-    }
-
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testModifiedAtSetAfterInsert(Board $board) {
-        $this->assertInstanceOf(DateTime::class, $board->get_modifiedAt());
-    }
-
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testModifiedAtEqualsCreatedAtAfterInsert(Board $inst) {
-        $this->assertEquals($inst->get_createdAt(), $inst->get_modifiedAt());
-    }
-
-    /**
-     * @depends testCountPlus1AfterInsert
-     */
-    public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Board $inst) {
+    public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Board $board) {
         sleep(1);
-        $inst->update();
-        $this->assertNotEquals($inst->get_createdAt(), $inst->get_modifiedAt());
+        \BoardDao::update($board);
+        $this->assertNotEquals($board->get_createdAt(), $board->get_modifiedAt());
     }
 
 }

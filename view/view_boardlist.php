@@ -1,49 +1,72 @@
-<!---->
 <!DOCTYPE html>
-<html lang="fr"><!---->
-    <head>
-        <meta charset="UTF-8">
-        <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
-        <title>Boards</title>
-        <base href="<?= $web_root ?>"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://kit.fontawesome.com/b5a4564c07.js" crossorigin="anonymous"></script>
-        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-    </head>
-    <body class="home">
-        <header id="main_header">
+<html lang="fr">
+<?php $title="Board list"; include('head.php'); ?>
+
+<body class="has-navbar-fixed-top m-4">
+        <header>
         <?php include('menu.php'); ?>
         </header>
         <?php if($user): ?>
-        <main class="list">
-            <article class="up" id="main_article">
-                <h2>Your boards</h2>
-                <div class="displayBoards">
-                    <ul class="yourBoards">
-                    <?php foreach($owners as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?></a></li>
+        <main>
+            <article class="mt-2 mb-5">
+                <h2  class="title">Your boards</h2>
+                <div class="is-flex is-flex-direction-row is-align-items-start" >
+                    <?php foreach($user->get_own_boards() as $board): ?>
+                    <a href="board/view/<?= $board->get_id() ?>">
+                        <div class="card has-background-info has-text-white is-size-5 mr-2 p-4">
+                            <b><?= $board->get_title() ?></b> <?= ViewUtils::columns_string($board->get_columns()) ?>
+                        </div>
+                    </a>
                     <?php endforeach; ?>
-                    </ul>
-                    <form class="add" action="board/add" method="post">
-                        <input type="text" name="title" placeholder="Add a board">
-                        <input type="submit" value="&#xf067" class="fas fa-plus">
+
+                    <form  action="board/add" method="post">
+                        <div class="field has-addons">
+                            <div class="control">
+                                <input class="input" type="text" name="title" placeholder="Add a board">
+                            </div>
+                            <div class="control">
+                                <button type="submit" class="button is-info"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                         <?php if ($errors->has_errors()): ?>
                             <?php include('errors.php'); ?>
                         <?php endif; ?>
                     </form>
                 </div>
             </article>
-            <article class="down">
-                <h2>Others' boards</h2>
-                    <ul class="otherBoards">
-                    <?php foreach($others as $board): ?>
-                        <li><a href="board/board/<?= $board['id'] ?>"><b><?= $board['title'] ?></b> <?= $board['columns'] ?> <br/>by <?= $board['fullName'] ?></a></li>
+
+            <?php if ($user->has_collaborating_boards()): ?>
+            <article class="mb-5">
+                <h2 class="title is-4">Boards Shared with you</h2>
+                <div class="is-flex is-flex-direction-row is-align-items-start" >
+                    <?php foreach($user->get_collaborating_boards() as $board): ?>
+                        <a href="board/view/<?= $board->get_id() ?>">
+                            <div class="card has-background-success has-text-white is-size-5 mr-2 p-4">
+                                <b><?= $board->get_title() ?></b> <?= ViewUtils::columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?>
+                            </div>
+                        </a>
                     <?php endforeach; ?>
-                    </ul>
+                </div>
             </article>
+            <?php endif ?>
+
+            <?php if ($user->is_admin()):; ?>
+            <article>
+                <h2  class="title is-4">Other's boards</h2>
+                    <div class="is-flex is-flex-direction-row is-align-items-start" >
+                    <?php foreach($user->get_admin_visible_boards() as $board): ?>
+                        <a href="board/view/<?= $board->get_id() ?>">
+                            <div class="card has-background-grey has-text-white is-size-5 mr-2 p-4">
+                                <b><?= $board->get_title() ?></b> <?= ViewUtils::columns_string($board->get_columns()) ?><br/>by <?= $board->get_owner_fullName() ?>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                    </div>
+            </article>
+            <?php endif; ?>
         </main>
         <?php else:?>
-        <main class="welcome">
+        <main>
             <p>Hello guest ! Please <a href="user/login">login</a> or <a href="user/signup">signup</a>.</p>
         </main>
         <?php endif;?>
