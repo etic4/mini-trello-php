@@ -21,6 +21,7 @@
 
             </div>
                 <?php else: ?>
+            <a class="navbar-item" href="board/index">Boards</a>
             <div class="navbar-item">
                 <span class="icon-text">
                     <span class="icon"><i class="fas fa-user no-pointer"></i></span>

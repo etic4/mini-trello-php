@@ -2,13 +2,11 @@
 
 require_once "autoload.php";
 
-//TODO: ajouter fonction get_user_or_redirect dans utils (ControllerUtils ?)
-// l'utiliser ici et la supprimer de partout ailleurs
 class Permissions {
     public static function add($object): bool {
         $user = Session::get_user();
         if ($user ) {
-            $perm_class = self::perm_name($object);
+            $perm_class = self::permission_name($object);
             return (new $perm_class())->add($user, $object);
         }
         return false;
@@ -17,7 +15,7 @@ class Permissions {
     public static function view($object): bool {
         $user = Session::get_user();
         if ($user ) {
-            $perm_class = self::perm_name($object);
+            $perm_class = self::permission_name($object);
             return (new $perm_class())->view($user, $object);
         }
         return false;
@@ -26,7 +24,7 @@ class Permissions {
     public static function edit($object): bool {
         $user = Session::get_user();
         if ($user ) {
-            $perm_class = self::perm_name($object);
+            $perm_class = self::permission_name($object);
             return (new $perm_class())->edit($user, $object);
         }
         return false;
@@ -35,7 +33,7 @@ class Permissions {
     public static function delete($object): bool {
         $user = Session::get_user();
         if ($user ) {
-            $perm_class = self::perm_name($object);
+            $perm_class = self::permission_name($object);
             return (new $perm_class())->delete($user, $object);
         }
         return false;
@@ -49,7 +47,7 @@ class Permissions {
         return false;
     }
 
-    private static function perm_name($object): string {
+    private static function permission_name($object): string {
         if (is_string($object)) {
             $perm_class_name = $object;
         } else {

@@ -22,6 +22,10 @@ cela dit, je ne vois pas comment passer le contenu de plus de deux champs quand 
 et que l'expressions régulière de .htaccess explose la requête en mots ('w')
 à moins d'utiliser $_SESSION, et tu as incité à ne pas en abuser lors de la dernière éval.
 
+je n'avais pas vu la FAQ du 9/2. Pour la suppression d'un utilisateur, j'ai choisi de supprimmer ses propres tableaux et tout
+ce qu'ils contiennent ainsi que ses participations et collaborations, mais pour le reste (dans d'autres tableaux) d'attribuer les cartes qu'il a créé
+ainsi que ses commentaires à un utilisateur spécial "Anonyme".
+
 ## Notes de livraison itération 3
 
 ## Utilisateurs

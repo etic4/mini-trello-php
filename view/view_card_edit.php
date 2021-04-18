@@ -46,12 +46,17 @@
                                 <input class="input" type ="text" name="title_column" value='<?= $card->get_column_title() ?>' disabled>
                             </div>
                         </div>
-                        <div class="field">
-                            <label class="label">Due Date</label>
-                            <div class="control">
-                                <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
+                        <div class="columns">
+                            <div class="column is-one-fifth">
+                                <div class="field">
+                                    <label class="label">Due Date</label>
+                                    <div class="control">
+                                        <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
 
                         <div class="is-flex is-flex-direction-row mt-5 mb-5">
                             <a class="button is-light" href="card/view/<?= $card->get_id() ?>">Cancel</a>
