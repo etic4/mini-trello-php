@@ -7,18 +7,20 @@ class ColumnDao extends BaseDao {
 
     public static function get_columns(Board $board): array {
         $sql = new SqlGenerator(static::tableName);
-        list($sql, $params) = $sql->select()->where(["Board" => $board->get_id()])->order_by(["Position" => "ASC"])->sql();
+        list($sql, $params) =
+            $sql->select()
+                ->where(["Board" => $board->get_id()])->order_by(["Position" => "ASC"])->sql();
 
         return self::get_many($sql, $params);
     }
 
     public static function decrement_following_columns_position(Column $column): void {
-        $sql = "UPDATE `column` 
-                SET Position = Position - 1
-                WHERE Board=:board 
-                AND Position >:pos";
-        $params = array( "board" => $column->get_board_id(), "pos" => $column->get_position());
-        self::execute($sql,$params);
+        $sql = new SqlGenerator(self::tableName);
+        list($sql, $params) =
+            $sql->update()
+                ->set([], ["Position" => "Position -1"])
+                ->where(["`Board`" => $column->get_board_id(), "Position" => $column->get_position()])->sql();
+        self::execute($sql, $params);
     }
 
     public static function delete(Column $column) {

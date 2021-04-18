@@ -9,7 +9,9 @@ class CardDao extends BaseDao {
     //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
     public static function get_cards(Column $column): array {
         $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) = $sql->select()->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->sql();
+        list($sql, $params) =
+            $sql->select()
+            ->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->sql();
         return self::get_many($sql, $params);
     }
 
@@ -29,8 +31,9 @@ class CardDao extends BaseDao {
     public static function to_anonymous(User $user, string $anonID="6") {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) =
-            $sql->update()->set(["NewAuthor" => $anonID], ["Author" => "NewAuthor"])
-                ->where(["Author" => $user->get_id()])->sql();
+            $sql->update()
+            ->set(["NewAuthor" => $anonID], ["Author" => "NewAuthor"])
+            ->where(["Author" => $user->get_id()])->sql();
         self::execute($sql, $params);
     }
 
@@ -38,10 +41,10 @@ class CardDao extends BaseDao {
     public static function decrement_following_cards_position($card){
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) =
-            $sql->update()->set([], ["Position" => "Position -1"])
-                ->where(["`Column`" => $card->get_column_id(), "Position" => $card->get_position()])->sql();
+            $sql->update()
+            ->set([], ["Position" => "Position -1"])
+            ->where(["`Column`" => $card->get_column_id(), "Position" => $card->get_position()])->sql();
         self::execute($sql, $params);
-
     }
 
     public static function from_query($data): Card {

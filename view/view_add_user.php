@@ -3,7 +3,7 @@
 <?php $title="Add a user"; include('head.php'); ?>
 
 <body  class="has-navbar-fixed-top m-4">
-        <header id="main_header">
+        <header>
             <?php include('menu.php') ?>
         </header>
         <main>

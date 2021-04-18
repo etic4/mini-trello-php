@@ -7,7 +7,7 @@
 
     <div id="navbar" class="navbar-menu">
         <div class="navbar-end">
-            <?php if (isset($user) && $user instanceof User): ?>
+            <?php if (isset($user) && $user != null): ?>
                 <?php if($user->is_admin()): ?>
             <a class="navbar-item" href="board/index">Boards</a>
             <a class="navbar-item" href="user/manage">Admin</a>
