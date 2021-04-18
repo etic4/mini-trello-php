@@ -54,6 +54,13 @@
                                         <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
                                     </div>
                                 </div>
+                                <div class="field mt-4">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="reset_date">
+                                        Reset due date
+                                    </label>
+                                </div>
+
                             </div>
                         </div>
 

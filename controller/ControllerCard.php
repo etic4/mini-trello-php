@@ -52,7 +52,12 @@ class ControllerCard extends ExtendedController {
 
         $card_title = Post::get("card_title",$card->get_title());
         $body = Post::get("body", $card->get_body());
-        $due_date = Post::empty("due_date") ? $card->get_dueDate() : new Datetime(Post::get("due_date"));
+
+        if (Post::get("reset_date") == "on") {
+            $due_date = null;
+        } else {
+            $due_date = Post::empty("due_date") ? $card->get_dueDate() : new Datetime(Post::get("due_date"));
+        }
 
         if (Post::isset("confirm")) {
             $error = new DisplayableError();
@@ -64,6 +69,7 @@ class ControllerCard extends ExtendedController {
                 $card->set_body($body);
                 $card->set_dueDate($due_date);
                 $card->set_modifiedAt(new DateTime());
+
                 CardDao::update($card);
 
                 $params = explode("/", Post::get("redirect_url"));
