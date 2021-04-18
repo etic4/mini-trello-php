@@ -26,7 +26,7 @@
                 <div class="control">
                     <div class="select" >
                         <select name="participant_id" id="others">
-                            <?php foreach ($card->get_collaborators($participating=false) as $participant): ?>
+                            <?php foreach ($card->get_collaborators_not_participating() as $participant): ?>
                                 <option value="<?=$participant->get_id()?>"><?=$participant?></option>
                             <?php endforeach; ?>
                         </select>

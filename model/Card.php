@@ -186,14 +186,21 @@ class Card {
         return $this->get_board()->get_cards();
     }
 
-    public function get_collaborators($participating=true): array {
+    public function get_collaborators(): array {
         if (!isset($this->collaborators)) {
             $this->collaborators = $this->get_board()->get_collaborators();
         }
-        if (!$participating) {
-            return array_diff($this->collaborators, $this->get_participants());
-        }
         return $this->collaborators;
+    }
+
+    public function get_collaborators_not_participating() {
+        $collabs_and_owner = $this->get_collaborators();
+        $collabs_and_owner[] = $this->get_board_owner();
+
+        $collab_not_participating = array_diff($collabs_and_owner, $this->get_participants());
+        return $collab_not_participating;
+
+
     }
 
     public function get_participants(): array {
@@ -231,7 +238,7 @@ class Card {
     }
 
     public function has_collabs_no_participating(): bool {
-        return count($this->get_collaborators($participating=false)) > 0;
+        return count($this->get_collaborators_not_participating()) > 0;
     }
 
     public function has_dueDate(): bool {
