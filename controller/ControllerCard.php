@@ -50,8 +50,7 @@ class ControllerCard extends ExtendedController {
         $card = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($card));
 
-        $card_title = Post::get("title",$card->get_title());
-
+        $card_title = Post::get("card_title",$card->get_title());
         $body = Post::get("body", $card->get_body());
         $due_date = Post::empty("due_date") ? $card->get_dueDate() : new Datetime(Post::get("due_date"));
 
