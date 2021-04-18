@@ -5,16 +5,6 @@ require_once "autoload.php";
 class CardDao extends BaseDao {
     protected const tableName = "`card`";
 
-
-    //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
-    public static function get_cards(Column $column): array {
-        $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) =
-            $sql->select()
-            ->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->sql();
-        return self::get_many($sql, $params);
-    }
-
     public static function delete(Card $card) {
         ParticipationDao::delete_all(["Card" => $card->get_id()]);
 
@@ -25,8 +15,16 @@ class CardDao extends BaseDao {
         CardDao::delete_one($card);
     }
 
+    //renvoie un tableau de cartes triées par leur position dans la colonne dont la colonne est $column;
+    public static function get_cards(Column $column): array {
+        $sql = new SqlGenerator(self::tableName);
+        list($sql, $params) =
+            $sql->select()
+            ->where(["`Column`" => $column->get_id()])->order_by(["Position" => "ASC"])->sql();
+        return self::get_many($sql, $params);
+    }
 
-    // attribue les cartes de cet utilisateur à utilisateur 'Anonyme' dont l'ID est '6'
+    // attribue les cartes de cet utilisateur à utilisateur 'Anonyme', dont l'ID est '6'
     // utilisé lors de la suppression d'un utilisateur
     public static function to_anonymous(User $user, string $anonID="6") {
         $sql = new SqlGenerator(self::tableName);

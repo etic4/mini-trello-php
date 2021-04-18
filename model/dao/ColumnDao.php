@@ -5,11 +5,18 @@ require_once "autoload.php";
 class ColumnDao extends BaseDao {
     protected const tableName = "`column`";
 
+    public static function delete(Column $column) {
+        foreach ($column->get_cards() as $card) {
+            CardDao::delete($card);
+        }
+        ColumnDao::delete_one($column);
+    }
+
     public static function get_columns(Board $board): array {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) =
             $sql->select()
-                ->where(["Board" => $board->get_id()])->order_by(["Position" => "ASC"])->sql();
+            ->where(["Board" => $board->get_id()])->order_by(["Position" => "ASC"])->sql();
 
         return self::get_many($sql, $params);
     }
@@ -18,16 +25,9 @@ class ColumnDao extends BaseDao {
         $sql = new SqlGenerator(self::tableName);
         list($sql, $params) =
             $sql->update()
-                ->set([], ["Position" => "Position -1"])
-                ->where(["`Board`" => $column->get_board_id(), "Position" => $column->get_position()])->sql();
+            ->set([], ["Position" => "Position -1"])
+            ->where(["`Board`" => $column->get_board_id(), "Position" => $column->get_position()])->sql();
         self::execute($sql, $params);
-    }
-
-    public static function delete(Column $column) {
-        foreach ($column->get_cards() as $card) {
-            CardDao::delete($card);
-        }
-        ColumnDao::delete_one($column);
     }
 
     public static function from_query($data) :Column {
@@ -52,7 +52,8 @@ class ColumnDao extends BaseDao {
 
     public static function is_title_unique(string $title, Board $board): bool {
         $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) = $sql->select()
+        list($sql, $params) =
+            $sql->select()
             ->where(["Title" => $title, "Board" => $board->get_id()])
             ->count()->sql();
         return self::count($sql, $params) == 0;

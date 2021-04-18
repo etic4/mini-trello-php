@@ -36,12 +36,6 @@ class SqlGenerator {
         $this->params = $params;
     }
 
-    // update me pose de petits problèmes, pas le temps de repenser les bazard, donc méthode had hoc
-    public function set_set_string(string $set_string) {
-        $this->set_string = $set_string;
-    }
-
-
     public function select(array $columns=null, $distinct=false): SqlGenerator {
         $cols = empty($columns) ? "*" : join(", ", array_values($columns));
         $distinct = $distinct ? " DISTINCT " : " ";
@@ -122,7 +116,6 @@ class SqlGenerator {
             $this->delete_string = "DELETE $if_join";
         }
 
-
         return SqlGenerator::new($this);
     }
 
@@ -130,12 +123,14 @@ class SqlGenerator {
         if (!empty($tablesNames)) {
             $this->from_string = "FROM " . join(", ", $tablesNames);
         }
+
         return SqlGenerator::new($this);
     }
 
     public function on(array $joins_list): SqlGenerator {
         $to_join = array_map(fn($col1, $col2) => "$col1=$col2", array_keys($joins_list), $joins_list);
         $this->join_string = join(" AND ", $to_join);
+
         return SqlGenerator::new($this);
     }
 
@@ -171,6 +166,7 @@ class SqlGenerator {
 
     public function count(): SqlGenerator {
         $this->select_string = "SELECT COUNT(*) as total";
+
         return SqlGenerator::new($this);
     }
 

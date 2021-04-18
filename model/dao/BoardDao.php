@@ -12,7 +12,6 @@ class BoardDao extends BaseDao {
         foreach ($board->get_columns() as $col) {
             ColumnDao::delete($col);
         }
-
         BoardDao::delete_one($board);
     }
 
@@ -24,7 +23,7 @@ class BoardDao extends BaseDao {
         $sql = new SqlGenerator();
         list($sql, $params) =
             $sql->select(["b.*"], $distinct=true)->join(["board b", "collaborate c"])
-                ->where(["c.Collaborator" => $user->get_id(), "b.Owner" => $user->get_id()], ["!=", "!="])->sql();
+            ->where(["c.Collaborator" => $user->get_id(), "b.Owner" => $user->get_id()], ["!=", "!="])->sql();
 
         return self::get_many($sql, $params);
     }
@@ -49,7 +48,8 @@ class BoardDao extends BaseDao {
 
     public static function is_title_unique(string $title): bool {
         $sql = new SqlGenerator(self::tableName);
-        list($sql, $params) = $sql->select()
+        list($sql, $params) =
+            $sql->select()
             ->where(["Title" => $title])
             ->count()->sql();
 

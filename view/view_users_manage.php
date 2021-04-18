@@ -36,7 +36,6 @@
                                         </span>
                                         <span>Role</span>
                                     </span>
-
                                 </th>
                                 <th>Edit</th>
                                 <th>Delete</th>

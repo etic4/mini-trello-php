@@ -76,7 +76,7 @@ class ControllerUser extends ExtendedController {
     public function manage() {
         $admin = $this->get_admin_or_redirect();
 
-        (new View("manage_users"))->show(array(
+        (new View("users_manage"))->show(array(
                 "user" => $admin,
                 "users" => UserDao::get_all_users(),
                 "errors" => Session::get_error())
@@ -104,7 +104,7 @@ class ControllerUser extends ExtendedController {
             }
         }
 
-        (new View("add_user"))->show(array(
+        (new View("user_add"))->show(array(
                 "user" => $admin,
                 "email" => $email,
                 "fullName" => $fullName,
@@ -143,7 +143,7 @@ class ControllerUser extends ExtendedController {
             }
         }
 
-        (new View("edit_user"))->show(array(
+        (new View("user_edit"))->show(array(
                 "user" => $admin,
                 "id" => $user->get_id(),
                 "email" => $email,
