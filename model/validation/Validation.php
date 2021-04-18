@@ -26,7 +26,7 @@ class Validation {
         return mb_strlen($str, "utf-8") < $len;
     }
 
-    protected static function str_contains_only_spaces($str): bool {
+    public static function str_contains_only_spaces($str): bool {
         return self::str_lower_than(str_replace(" ", "", $str), 1) ;
     }
 

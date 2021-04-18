@@ -30,7 +30,7 @@ class ColumnTest extends \PHPUnit\Framework\TestCase {
 
     public function testCreateColumnInstance(): Column {
         $title = "Titre de la colonne";
-        $board = ColumnDao::get_by_id(1);
+        $board = BoardDao::get_by_id(1);
         $position = count($board->get_columns());
 
         $column = new Column($title, $position, $board);

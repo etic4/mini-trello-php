@@ -21,7 +21,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testGetBoardInstanceFromDB() {
-        $board = ColumnDao::get_by_id(1);
+        $board = \BoardDao::get_by_id(1);
         $this->assertInstanceOf(Board::class, $board);
         $this->assertEquals(1, $board->get_id());
     }
@@ -53,7 +53,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
         $count = $data["total"];
 
-        $board = ColumnDao::insert($board);
+        $board = \BoardDao::insert($board);
         $data = self::$db->execute("SELECT COUNT(*) as total FROM board")->fetch();
 
         $this->assertEquals($count + 1, $data["total"]);
@@ -73,7 +73,7 @@ class BoardTest extends \PHPUnit\Framework\TestCase {
      */
     public function testcreatedAtDoesntEqualToModifiedAtAfterUpdate(Board $board) {
         sleep(1);
-        ColumnDao::update($board);
+        \BoardDao::update($board);
         $this->assertNotEquals($board->get_createdAt(), $board->get_modifiedAt());
     }
 

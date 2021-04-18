@@ -13,9 +13,8 @@ class ControllerComment extends ExtendedController {
         $card = $this->get_or_redirect_post("Card", "card_id");
         $user = $this->authorized_or_redirect(Permissions::view($card));
 
-        // si 'body' est vide, ne fait rien, pas besoin de message
-        // TODO: quand-même vérifier que pas que espaces
-        if(!Post::empty("body")) {
+        // si 'body' est vide, ne fait rien
+        if(!Post::empty("body") && !Validation::str_contains_only_spaces(Post::get("body"))) {
             $comment = new Comment(Post::get("body"), $user, $card);
             CommentDao::insert($comment);
         }
@@ -31,8 +30,7 @@ class ControllerComment extends ExtendedController {
         if (Post::isset("confirm")) {
             $body = Post::get("body");
 
-            /* TODO: validation comments: ne doit pas accepter comments vides ou composés d'espaces*/
-            if (!empty($body) && $body != $comment->get_body()) {
+            if (!empty($body) && $body != $comment->get_body()  && !Validation::str_contains_only_spaces(Post::get("body"))) {
                 $comment->set_body($body);
                 $comment->set_modifiedAt(new DateTime());
                 CommentDao::update($comment);

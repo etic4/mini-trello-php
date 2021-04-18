@@ -29,7 +29,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
 
     public function testGetByIdOnDifferentClassesReturnsInstancesOfRightClass() {
         $user = UserDao::get_by_id(1);
-        $board = ColumnDao::get_by_id(1);
+        $board = BoardDao::get_by_id(1);
         $column = ColumnDao::get_by_id(1);
         $card = CardDao::get_by_id(1);
         $comment = CommentDao::get_by_id(1);
@@ -66,7 +66,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testGetColumnsGetCardsGetCommentsReturnsCached() {
-        $columns = ColumnDao::get_by_id(1)->get_columns();
+        $columns = BoardDao::get_by_id(1)->get_columns();
         $cards = ColumnDao::get_by_id(1)->get_cards();
         $comments = CardDao::get_by_id(6)->get_comments();
 
@@ -80,7 +80,7 @@ class CacheTest extends \PHPUnit\Framework\TestCase {
         $cards[0]->set_title("?");
         $comments[0]->set_body("!");
 
-        $columns = ColumnDao::get_by_id(1)->get_columns();
+        $columns = BoardDao::get_by_id(1)->get_columns();
         $cards = ColumnDao::get_by_id(1)->get_cards();
         $comments = CardDao::get_by_id(6)->get_comments();
 
