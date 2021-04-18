@@ -17,9 +17,8 @@ Nous avons considéré qu'ajouter un tableau/colonne/carte/commentaire vide n'é
 Toutes les fonctionnalités ont été implémentées, y compris celles pour les groupes de 3 dans la mesure où elles étaient déjà en chantier.
 
 En ce qui concerne les permissions (rôles, permissions des collaborateurs, management des users), elle ont été implémentées à l'aide de classes
-`Permissions` (`BoardPermissions`, etc...) dont les méthodes (add, view, update, delete) associées aux fonctions publiques correspondantes de chaque contrôleur retournent un bool
-qui permet de déterminer
-si l'utilisateur à le droit de les exécuter. Dans le cas contraire, il est redirigé. On trouve ces classes dans le dossier _controller/permissions_
+`Permissions` (`BoardPermissions`, etc...) dont les méthodes (add, view, update, delete) sont associées aux fonctions publiques correspondantes de chaque contrôleur. `Permission::action($object)` retourne un booléen
+qui permet de déterminer si l'utilisateur a le droit de les exécuter. Dans le cas contraire, il est redirigé. On trouve ces classes dans le dossier _controller/permissions_
 
 La classe controller du framework a été étendue (classe `ExtendedController` dans le dossier _controller_) pour inclure deux types de méthodes 
 * deux méthodes qui retournent une instance d'un objet dont l'ID est passé dans la requête, qu'elle soit POST ou GET, et qui redirige si l'objet n'est pas trouvé. 
@@ -36,7 +35,8 @@ de factoriser ce qui peut l'être en restant facilement lisible et maintenable q
 * implémentation du pattern DAO (cf. classes `BoardDao` etc. dans le dossier _model/dao_). La classe BaseDao rassemble les méthodes 
   génériques d'accès à la DB. Les autres en hérite et implémentent les comportements spécifiques
   
-* Implémentation d'une classe SqlGenerator, qui génère et retourne une requête sql et les paramètres associé par des appels successifs de méthode.
+* Implémentation d'une classe `SqlGenerator` (dossier _model/dao)_, qui génère et retourne une requête sql et les paramètres associé par des appels
+  successifs de méthode.
 Cette dernière est l'aboutissement d'un travail de factorisation du sql qui s'est avéré très utile dans certains cas mais au final moins que prévu
   et, dans beaucoup de cas,  d'un usage équivalent à du pure SQL. Cela dit, en ce qui me concerne, je trouve que le sql gagne a être repoussé$
   à la périphérie du reste du code.
@@ -54,9 +54,10 @@ Une classe `ViewUtils` a été ajouté (dossier _view_) qui rassemble les métho
 que dans le cadre des vues.
 
 ### Divers
-* clarification de la gestion des erreurs. Une instance de la classe `DisplayableErrors` (dans le dossier _model/validation_) se contente de gérer la liste des erreurs
-  reçues par les classes de validation, cette instance est ensuite set sur $_SESSION, qui est elle reset lorsque les 
-  erreurs ont été passsés à la vue.
+* clarification de la gestion des erreurs. Une instance de la classe `DisplayableErrors` (dans le dossier _model/validation_) 
+  se contente de gérer la liste des erreurs
+  reçues par les classes de validation, cette instance est ensuite set sur $_SESSION, qui est reset lorsque les 
+  erreurs sont passsés à la vue.
 * Simplification de la gestion des dates et relocalisation dans une classe `DateUtils` dans le dossier _utils_
 * Suppression des traits dès lors inutiles et qui, je trouve, diminuaient la lisibilité
 * simplification et clarification du rôle de la classe `CachedGet` (dans _model/dao_), qui se contente maintenant de mettre en cache et
@@ -64,7 +65,8 @@ que dans le cadre des vues.
 * la mise en cache du résultat des requêtes est maintenant faite au moment de l'exécution
   de la requête dans `BaseDao`. Elle a été étendue à quelques cas spéciaux.
 * La classe `BreadCrumb` (dossier _controller_) a été améliorée pour plus de généralité, mais reste perfectible et un peu obscure à l'usage 
-* création de wrapper pour $_POST, $_GET et $_SESSION avec des méthodes utiles comme (cf le dossier)
+* création de wrapper pour $_POST, $_GET et $_SESSION avec diverses méthodes utiles comme (cf le dossier _controller/utils_). Seuls ces
+wrapper sont utilisés
 ### Remarques
 #### PRG
 Je suis un peu troublé par la question du PRG. Je crois en comprendre le principe et l'avoir correctement implémenté 
@@ -86,8 +88,9 @@ J'ai choisi de laisser signup en l'état et de me contenter de simples redirects
 
 #### Suppressions
 Pour la suppression d'un utilisateur, 
-j'ai choisi de supprimmer ses propres tableaux et tout ce qu'ils contiennent ainsi que ses participations et collaborations, 
-mais pour le reste (ce qui existe dans d'autres tableaux) d'attribuer les cartes qu'il a créé ainsi que ses commentaires 
+j'ai choisi de supprimer ses propres tableaux et tout ce qu'ils contiennent ainsi que ses participations et collaborations, 
+mais pour le reste (ce dont l'utilisateur supprimé est l'auteur dans des tableaux dont il n'est pas auteur) j'ai choisi d'attribuer
+les cartes qu'il a créé ainsi que ses commentaires 
 à un utilisateur spécial "Anonyme" qui se trouve en base de donnée et ne peut pas se logger. Ce comportement me paraît réaliste.
 
 ## Notes de livraison itération 3
