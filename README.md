@@ -44,7 +44,7 @@ Cette dernière est l'aboutissement d'un travail de factorisation du sql qui s'e
 * réimplémentation de la logique de validation (cf les classes pour chaque objet dans le dossier _model/validation_) pour la clarifier et la sortir
 des classes du modèle
 
-####Concernant la vue
+#### Concernant la vue
 
 Utilisation du framework css _Bulma_ et donc portage et réorganisation importante du html.
 
