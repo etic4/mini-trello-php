@@ -193,14 +193,11 @@ class Card {
         return $this->collaborators;
     }
 
-    public function get_collaborators_not_participating() {
+    public function get_collaborators_not_participating(): array {
         $collabs_and_owner = $this->get_collaborators();
         $collabs_and_owner[] = $this->get_board_owner();
 
-        $collab_not_participating = array_diff($collabs_and_owner, $this->get_participants());
-        return $collab_not_participating;
-
-
+        return array_diff($collabs_and_owner, $this->get_participants());
     }
 
     public function get_participants(): array {
