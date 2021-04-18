@@ -136,6 +136,9 @@ class ControllerUser extends ExtendedController {
                 }
 
                 UserDao::update($user);
+                //patch de dernière minute: si admin s'édite, comme il est stocké dans $_SESSION["user"]
+                // il faut mettre à jour $_SESSION["user"] sinon les changements ne sont pas reflétés
+                $_SESSION["user"] = UserDao::get_by_id($user->get_id());
                 $this->redirect("user", "manage");
             }
         }
