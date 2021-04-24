@@ -18,7 +18,8 @@ class SqlGenerator {
 
     private static function new(SqlGenerator $query): SqlGenerator {
         return new SqlGenerator($query->tableName, $query->select_string, $query->from_string, $query->where_string,
-            $query->order_string, $query->join_string, $query->insert_string, $query->update_string, $query->set_string, $query->delete_string, $query->params);
+            $query->order_string, $query->join_string, $query->insert_string, $query->update_string, $query->set_string,
+            $query->delete_string, $query->params);
     }
 
     public function __construct(string $tableName="", string $select="", string $from="", string $where="", string $order="",

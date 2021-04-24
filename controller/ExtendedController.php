@@ -8,7 +8,7 @@ abstract class ExtendedController extends Controller {
 
     // Le paramètre 'authorized' représente le résultat de l'appel à Permission::{add|view|edit|delete}
     // lors duquel le fait que le user soit loggé est vérifié
-    // ainsi que son droit à appeler {add|view|edit|delete} sur le contrôle
+    // ainsi que son droit à appeler {add|view|edit|delete} sur le contrôler
 
     protected function authorized_or_redirect(bool $authorized, string $redirect_url="") {
         if (!$authorized) {

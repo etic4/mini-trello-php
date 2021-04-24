@@ -72,7 +72,7 @@ class Board {
         $this->modifiedAt = $dateTime;
     }
 
-    public function get_board() {
+    public function get_board(): Board {
         return $this;
     }
 
