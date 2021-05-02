@@ -3,7 +3,9 @@
 
 <?php $title="Signup"; include('head.php'); ?>
 
-<body class="has-navbar-fixed-top m-4">
+    <body class="has-navbar-fixed-top m-4">
+        <script src="lib/js/signup-validation.js" type="text/javascript"></script>
+
         <header>
             <?php include('menu.php'); ?>
         </header>
@@ -17,10 +19,10 @@
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
 
-                    <form class="mt-5" action="user/signup" method="post">
+                    <form id="signup" class="mt-5" action="user/signup" method="post">
                         <div class="field">
                             <div class="control has-icons-left">
-                                <input class="input" type="email" name="email" placeholder="Email" value="<?= $email ?>">
+                                <input id="email" class="input" type="email" name="email" placeholder="Email" value="<?= $email ?>">
                                 <span class="icon is-small is-left">
                                   <i class="fas fa-at"></i>
                                 </span>
@@ -38,7 +40,7 @@
 
                         <div class="field">
                             <div class="control has-icons-left">
-                                <input class="input" type="password" name="password" placeholder="Password" value="<?= $password ?>">
+                                <input id="password" class="input" type="password" name="password" placeholder="Password" value="<?= $password ?>">
                                 <span class="icon is-small is-left">
                                   <i class="fas fa-lock"></i>
                                 </span>

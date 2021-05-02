@@ -177,4 +177,18 @@ class ControllerUser extends ExtendedController {
             "instance"=>$user
         ));
     }
+
+    // --- Services ---
+
+    public function email_is_unique_service() {
+        $res = "true";
+
+        if(!Post::empty("email")){
+            $user = UserDao::get_by_email(Post::get("email"));
+            if($user){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
 }
