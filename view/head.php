@@ -7,4 +7,10 @@
     <link href="lib/css/all.css" rel="stylesheet"/>
     <link href="lib/css/bulma.css" rel="stylesheet" type="text/css"/>
     <link href="lib/css/ajustements.css" rel="stylesheet" type="text/css"/>
+    <link href="lib/vendor/jquery-ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+    <link href="lib/vendor/jquery-ui-lightness/jquery-ui.theme.min.css" rel="stylesheet" type="text/css"/>
+    <link href="lib/vendor/jquery-ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
+    <script src="lib/vendor/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="lib/vendor/jquery-ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="lib/vendor/jquery-validation-1.19.3/jquery.validate.min.js" type="text/javascript"></script>
 </head>
