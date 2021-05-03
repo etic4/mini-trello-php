@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title="Board list"; include('head.php'); ?>
+    <?php $title="Board list"; include('head.php'); ?>
 
-<body class="has-navbar-fixed-top m-4">
+    <body class="has-navbar-fixed-top m-4">
+        <script src="lib/js/board-validation.js" type="text/javascript"></script>
+
         <header>
         <?php include('menu.php'); ?>
         </header>
@@ -19,10 +21,10 @@
                     </a>
                     <?php endforeach; ?>
 
-                    <form  action="board/add" method="post">
+                    <form id="board-add"  action="board/add" method="post">
                         <div class="field has-addons">
                             <div class="control">
-                                <input class="input" type="text" name="title" placeholder="Add a board">
+                                <input id="board-title" class="input" type="text" name="board_title" placeholder="Add a board">
                             </div>
                             <div class="control">
                                 <button type="submit" class="button is-info"><i class="fas fa-plus"></i></button>

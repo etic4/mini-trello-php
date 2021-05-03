@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="control mt-5">
-                            <input class="button is-link expand-button" type="submit" value="Sign up">
+                            <input class="button is-link expand-button" type="submit" value="Login">
                         </div>
                     </form>
                 </div>

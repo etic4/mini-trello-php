@@ -37,6 +37,17 @@ abstract class GetPost {
         return false;
     }
 
+    public static function all_non_empty(string ...$keys) {
+        static::set_super_global();
+
+        foreach ($keys as $key) {
+            if (empty(static::get($key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // retourne true si la clé est empty
     public static function empty(string $key): bool {
         return empty(static::get($key));

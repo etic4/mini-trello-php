@@ -21,8 +21,8 @@ class ControllerBoard extends ExtendedController {
     public function add() {
         $user = $this->authorized_or_redirect(Permissions::add("Board"));
 
-        if (!Post::empty("title")) {
-            $title = Post::get("title");
+        if (!Post::empty("board_title")) {
+            $title = Post::get("board_title");
 
             $error = new DisplayableError();
 
@@ -121,6 +121,28 @@ class ControllerBoard extends ExtendedController {
                 "breadcrumb" => new BreadCrumb(array($board), "Collaborators"),
                 "board" => $board)
         );
+    }
+
+    /* --- Services --- */
+
+    public function board_title_is_unique_service() {
+        $res = "true";
+
+        if (!Post::empty("board_title")) {
+            $board_title = Post::get("board_title");
+            $id = Post::get("board_id");
+            $board = null;
+
+            if (!empty($id)) {
+                $board = BoardDao::get_by_id($id);
+            }
+
+            if ($board == null || $board->get_title() != $board_title) {
+                $res = BoardDao::is_title_unique($board_title) ? "true" : "false";
+            }
+        }
+
+        echo $res;
     }
 }
 

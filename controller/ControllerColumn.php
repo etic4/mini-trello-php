@@ -9,18 +9,18 @@ class ControllerColumn extends ExtendedController {
     }
 
     public function add() {
-        $board = $this->get_or_redirect_post("Board", "id");
+        $board = $this->get_or_redirect_post("Board", "board_id");
         $this->authorized_or_redirect(Permissions::view($board));
 
-        if (!Post::empty("title")) {
-            $title = Post::get("title");
+        if (!Post::empty("column_title")) {
+            $column_title = Post::get("column_title");
 
             $error = new DisplayableError();
-            $error->set_messages((new ColumnValidation())->validate_add($title, $board));
+            $error->set_messages((new ColumnValidation())->validate_add($column_title, $board));
             Session::set_error($error);
 
             if($error->is_empty()) {
-                $column = Column::new($title, $board);
+                $column = Column::new($column_title, $board);
                 ColumnDao::insert($column);
             }
         }
@@ -33,15 +33,15 @@ class ControllerColumn extends ExtendedController {
         $column = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($column));
 
-        $title = Post::get("title", $column->get_title());
+        $column_title = Post::get("column_title", $column->get_title());
 
         if (Post::isset("confirm")) {
             $error = new DisplayableError();
-            $error->set_messages((new ColumnValidation())->validate_edit($title, $column));
+            $error->set_messages((new ColumnValidation())->validate_edit($column_title, $column));
             Session::set_error($error);
 
             if ($error->is_empty()) {
-                $column->set_title($title);
+                $column->set_title($column_title);
                 $column->set_modifiedAt(new DateTime());
                 ColumnDao::update($column);
                 $this->redirect("board", "view", $column->get_board_id());
@@ -51,9 +51,9 @@ class ControllerColumn extends ExtendedController {
 
         (new View("column_edit"))->show(array(
                 "user" => $user,
-                "id" => $column->get_id(),
-                "title" => $title,
-                "column" => $column,
+                "column_id" => $column->get_id(),
+                "column_title" => $column_title,
+                "board_id" => $column->get_board_id(),
                 "breadcrumb" => new BreadCrumb(array($column->get_board()), "Edit column title"),
                 "errors" => Session::get_error()
             )
@@ -104,4 +104,27 @@ class ControllerColumn extends ExtendedController {
 
     }
 
+    /* --- Services ---*/
+
+    public function column_title_is_unique_service() {
+        $res = "true";
+
+        if (Post::all_non_empty("column_title", "board_id")) {
+            $column_title = Post::get("column_title");
+            $board = BoardDao::get_by_id(Post::get("board_id"));
+            $column = null;
+
+            if (!Post::empty("column_id")) {
+                $column = ColumnDao::get_by_id(Post::get("column_id"));
+            }
+
+            // si $column est null, c'est un add, sinon c'est un edit
+            // si c'est un edit, checker unicité seulement si le titre de la colonne est différent du titre actuel
+            if ($column == null || $column->get_title() != $column_title) {
+                $res = ColumnDao::is_title_unique($column_title, $board) ? "true" : "false";
+            }
+        }
+
+        echo $res;
+    }
 }

@@ -189,6 +189,7 @@ class ControllerUser extends ExtendedController {
                 $res = "false";
             }
         }
+
         echo $res;
     }
 }

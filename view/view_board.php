@@ -3,6 +3,7 @@
 <?php $title="Board"; include('head.php'); ?>
 
 <body class="has-navbar-fixed-top m-4">
+    <script src="lib/js/column-validation.js" type="application/javascript"></script>
 	<header>
      <?php include('menu.php'); ?>
 	</header>
@@ -43,11 +44,11 @@
                     <?php include("column.php"); ?>
                 <?php endforeach; ?>
                 <aside class="trello-add-column">
-                    <form action="column/add" method="post">
-                        <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
+                    <form id="column-add" action="column/add" method="post">
+                        <input id="board-id" type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
                         <div class="field has-addons">
                             <div class="control">
-                                <input class="input" type="text" name="title" placeholder="Add a column">
+                                <input id="column-title" class="input" type="text" name="column_title" placeholder="Add a column">
                             </div>
                             <div class="control">
                                 <button type="submit" class="button align-baseline is-info"><i class="fas fa-plus"></i></button>
@@ -58,7 +59,6 @@
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </aside>
-
 
             </div>
         </article>
