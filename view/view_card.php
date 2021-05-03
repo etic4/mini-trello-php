@@ -5,7 +5,7 @@
         <header>
             <?php include('menu.php'); ?>
         </header>
-        <?= $breadcrumb->get_trace(); ?>
+        <?= $breadcrumb->get_trace() ?>
         <main >
             <article>
                 <header class="mb-5">
@@ -26,11 +26,11 @@
                         </form>
                     </div>
                     <div class="has-text-grey mb-1">
-                        Created <?=ViewUtils::created_intvl($card) ?> by <strong class="has-text-info">'<?= $card->get_author_fullName()?>'</strong>. <?= ViewUtils::modified_intvl($card) ?>
+                        Created <?= ViewUtils::created_intvl($card) ?> by <strong class="has-text-info">'<?= $card->get_author_fullName() ?>'</strong>. <?= ViewUtils::modified_intvl($card) ?>
                     </div>
                     <div class="has-text-grey ">
                         This card is on the board
-                        <a href="board/view/<?= $card->get_board_id()?>">"<strong class="has-text-info"><?= $card->get_board_title() ?></strong>"</a>,
+                        <a href="board/view/<?= $card->get_board_id() ?>">"<strong class="has-text-info"><?= $card->get_board_title() ?></strong>"</a>,
                         column "<strong class="has-text-info"><?= $card->get_column_title() ?></strong>" at position <?= $card->get_position() ?>
                     </div>
                 </header>
@@ -48,7 +48,7 @@
                     <div class="mb-4">
                         <strong>This card has no due date yet.</strong>
                     </div>
-                    <?php endif;?>
+                    <?php endif; ?>
                 </section>
 
                 <?php include("participants_section.php");

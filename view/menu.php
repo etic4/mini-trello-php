@@ -40,7 +40,7 @@
                 <a class="navbar-item" href="user/signup">
                     <span class="icon"><i class="fas fa-user-plus"></i></span>
                 </a>
-            <?php endif;?>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
