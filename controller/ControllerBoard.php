@@ -126,23 +126,25 @@ class ControllerBoard extends ExtendedController {
     /* --- Services --- */
 
     public function board_title_is_unique_service() {
-        $res = "true";
-
-        if (!Post::empty("board_title")) {
-            $board_title = Post::get("board_title");
-            $id = Post::get("board_id");
-            $board = null;
-
-            if (!empty($id)) {
-                $board = BoardDao::get_by_id($id);
-            }
-
-            if ($board == null || $board->get_title() != $board_title) {
-                $res = BoardDao::is_title_unique($board_title) ? "true" : "false";
-            }
+        if (Post::empty("board_title")) {
+            echo "false";
+            die;
         }
 
-        echo $res;
+        $board_title = Post::get("board_title");
+
+        if (!Post::empty("board_id")) {
+            $board = $this->get_or_redirect_post("Board", "board_id");
+            $this->authorized_or_redirect(Permissions::edit($board));
+
+            $errors = (new BoardValidation())->validate_edit($board_title, $board);
+        } else {
+            $this->authorized_or_redirect(Permissions::add("Board"));
+
+            $errors = (new BoardValidation())->validate_add($board_title);
+        }
+
+        echo count($errors) == 0 ? "true" : "false";
     }
 }
 

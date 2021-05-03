@@ -12,9 +12,9 @@ class ControllerCard extends ExtendedController {
         $column = $this->get_or_redirect_post("Column", "column_id");
         $user = $this->authorized_or_redirect(Permissions::view($column));
 
-        if (!Post::empty("title")) {
+        if (!Post::empty("card_title")) {
             $column_id = Post::get("column_id");
-            $title = Post::get("title");
+            $title = Post::get("card_title");
             $card = Card::new($title, $user, $column_id);
 
             $this->authorized_or_redirect(Permissions::add($card));
@@ -47,7 +47,7 @@ class ControllerCard extends ExtendedController {
     }
 
     public function edit(){
-        $card = $this->get_or_redirect_default();
+        $card = $this->get_or_redirect_post("Card", "card_id");
         $user = $this->authorized_or_redirect(Permissions::edit($card));
 
         $card_title = Post::get("card_title",$card->get_title());
@@ -153,5 +153,28 @@ class ControllerCard extends ExtendedController {
         $card->move_down();
 
         $this->redirect("board", "view", $card->get_board_id());
+    }
+
+    public function card_title_is_unique_service() {
+        if (!Post::all_non_empty("card_title", "column_id")) {
+            echo "false";
+            die;
+        }
+
+        $card_title = Post::get("card_title");
+
+        if (!Post::empty("card_id")) {
+            $column = $this->get_or_redirect_post("Card", "card_id");
+            $this->authorized_or_redirect(Permissions::edit($column));
+
+            $errors = (new ColumnValidation())->validate_edit($card_title, $column);
+        } else {
+            $board = $this->get_or_redirect_post("Board", "board_id");
+            $this->authorized_or_redirect(Permissions::view($board));
+
+            $errors = (new ColumnValidation())->validate_add($card_title, $board);
+        }
+
+        echo count($errors) == 0 ? "true" : "false";
     }
 }

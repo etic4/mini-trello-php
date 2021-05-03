@@ -18,11 +18,15 @@
                     <?php include('errors.php'); ?>
                 <?php endif; ?>
 
-                    <form action="card/edit" method="post">
+                    <form id="card-edit" action="card/edit" method="post">
+                        <input id="card-id" type="text" name="card_id" value=<?= $card->get_id()?> hidden>
+                        <input type="text" name="confirm" hidden>
+                        <input type="text" name="redirect_url" value="<?= $redirect_url ?>" hidden>
+
                         <div class="field">
                             <label class="label">Title</label>
                             <div class="control">
-                                <input class="input" type="text" name="card_title" value='<?= $card_title ?>' placeholder='<?= $card_title ?>'>
+                                <input id="card-title" class="input" type="text" name="card_title" value='<?= $card_title ?>' placeholder='<?= $card_title ?>'>
                             </div>
                         </div>
 
@@ -36,14 +40,14 @@
                         <div class="field">
                             <label class="label">Board</label>
                             <div class="control">
-                                <input class="input" type ="text" name="title_board" value='<?= $card->get_board_title() ?>' disabled>
+                                <input class="input" type ="text" name="board_title" value='<?= $card->get_board_title() ?>' disabled>
                             </div>
                         </div>
 
                         <div class="field">
                             <label class="label">Column</label>
                             <div class="control">
-                                <input class="input" type ="text" name="title_column" value='<?= $card->get_column_title() ?>' disabled>
+                                <input class="input" type ="text" name="column_title" value='<?= $card->get_column_title() ?>' disabled>
                             </div>
                         </div>
                         <div class="columns">
@@ -51,7 +55,7 @@
                                 <div class="field">
                                     <label class="label">Due Date</label>
                                     <div class="control">
-                                        <input class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
+                                        <input id="card-due-date" class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
                                     </div>
                                 </div>
                                 <div class="field mt-4">
@@ -63,16 +67,9 @@
 
                             </div>
                         </div>
-
-
                         <div class="is-flex is-flex-direction-row mt-5 mb-5">
                             <a class="button is-light" href="card/view/<?= $card->get_id() ?>">Cancel</a>
-                            <form action="card/edit" method="post">
-                                <input type="text" name="id" value=<?= $card->get_id()?> hidden>
-                                <input type="text" name="confirm" hidden>
-                                <input type="text" name="redirect_url" value="<?= $redirect_url ?>" hidden>
-                                <input class="button is-success ml-3" type='submit' value='Edit this card'>
-                            </form>
+                            <input class="button is-success ml-3" type='submit' value='Edit this card'>
                         </div>
                     </form>
                 </section>

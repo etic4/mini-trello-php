@@ -45,12 +45,12 @@
         <?php endforeach; ?>
     </div>
     <div class="is-flex is-flex-direction-column">
-        <form class="add" action="card/add" method="post">
-            <input type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
-            <input type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
+        <form id="card-add" class="add" action="card/add" method="post">
+            <input id="board-id" type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
+            <input id="column-id" type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
             <div class="field has-addons">
                 <div class="control">
-                    <input class="input" type="text" name="title" placeholder="Add a card">
+                    <input id="card-title" class="input" type="text" name="card_title" placeholder="Add a card">
                 </div>
                 <div class="control">
                     <button type="submit" class="button align-baseline is-info">

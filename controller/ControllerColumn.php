@@ -107,24 +107,25 @@ class ControllerColumn extends ExtendedController {
     /* --- Services ---*/
 
     public function column_title_is_unique_service() {
-        $res = "true";
-
-        if (Post::all_non_empty("column_title", "board_id")) {
-            $column_title = Post::get("column_title");
-            $board = BoardDao::get_by_id(Post::get("board_id"));
-            $column = null;
-
-            if (!Post::empty("column_id")) {
-                $column = ColumnDao::get_by_id(Post::get("column_id"));
-            }
-
-            // si $column est null, c'est un add, sinon c'est un edit
-            // si c'est un edit, checker unicité seulement si le titre de la colonne est différent du titre actuel
-            if ($column == null || $column->get_title() != $column_title) {
-                $res = ColumnDao::is_title_unique($column_title, $board) ? "true" : "false";
-            }
+        if (!Post::all_non_empty("column_title", "board_id")) {
+            echo "false";
+            die;
         }
 
-        echo $res;
+        $column_title = Post::get("column_title");
+
+        if (!Post::empty("column_id")) {
+            $column = $this->get_or_redirect_post("Column", "column_id");
+            $this->authorized_or_redirect(Permissions::edit($column));
+
+            $errors = (new ColumnValidation())->validate_edit($column_title, $column);
+        } else {
+            $board = $this->get_or_redirect_post("Board", "board_id");
+            $this->authorized_or_redirect(Permissions::view($board));
+
+            $errors = (new ColumnValidation())->validate_add($column_title, $board);
+        }
+
+        echo count($errors) == 0 ? "true" : "false";
     }
 }
