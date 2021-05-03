@@ -6,7 +6,7 @@
         <header id="main_header">
             <?php include('menu.php') ?>
         </header>
-        <?= $breadcrumb->get_trace(); ?>
+        <?= $breadcrumb->get_trace() ?>
         <main>
             <article>
                 <header class="mb-5">
