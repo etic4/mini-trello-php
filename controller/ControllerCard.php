@@ -47,7 +47,7 @@ class ControllerCard extends ExtendedController {
     }
 
     public function edit(){
-        $card = $this->get_or_redirect_post("Card", "card_id");
+        $card = $this->get_or_redirect("Card", "card_id", "param1");
         $user = $this->authorized_or_redirect(Permissions::edit($card));
 
         $card_title = Post::get("card_title",$card->get_title());
@@ -181,6 +181,7 @@ class ControllerCard extends ExtendedController {
         echo count($errors) == 0 ? "true" : "false";
     }
 
+    // TODO: faire ça en js
     public function validate_due_date_service() {
         if (!Post::all_non_empty("due_date", "card_id")) {
             echo "false";
