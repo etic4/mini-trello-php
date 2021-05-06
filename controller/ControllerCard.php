@@ -155,8 +155,11 @@ class ControllerCard extends ExtendedController {
         $this->redirect("board", "view", $card->get_board_id());
     }
 
+
+    /* --- Services --- */
+
     public function card_title_is_unique_service() {
-        if (!Post::all_non_empty("card_title", "column_id")) {
+        if (!Post::all_non_empty("card_title", "board_id")) {
             echo "false";
             die;
         }
@@ -164,16 +167,32 @@ class ControllerCard extends ExtendedController {
         $card_title = Post::get("card_title");
 
         if (!Post::empty("card_id")) {
-            $column = $this->get_or_redirect_post("Card", "card_id");
-            $this->authorized_or_redirect(Permissions::edit($column));
+            $card = $this->get_or_redirect_post("Card", "card_id");
+            $this->authorized_or_redirect(Permissions::edit($card));
 
-            $errors = (new ColumnValidation())->validate_edit($card_title, $column);
+            $errors = (new CardValidation())->validate_title_unicity($card_title, $card->get_board(), $card);
         } else {
             $board = $this->get_or_redirect_post("Board", "board_id");
             $this->authorized_or_redirect(Permissions::view($board));
 
-            $errors = (new ColumnValidation())->validate_add($card_title, $board);
+            $errors = (new CardValidation())->validate_title_unicity($card_title, $board);
         }
+
+        echo count($errors) == 0 ? "true" : "false";
+    }
+
+    public function validate_due_date_service() {
+        if (!Post::all_non_empty("due_date", "card_id")) {
+            echo "false";
+            die;
+        }
+
+        $card = $this->get_or_redirect_post("Card", "card_id");
+        $this->authorized_or_redirect(Permissions::edit($card));
+
+        $due_date = DateUtils::php_date(Post::get("due_date"));
+
+        $errors = (new CardValidation())->validate_due_date($due_date, $card);
 
         echo count($errors) == 0 ? "true" : "false";
     }

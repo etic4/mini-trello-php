@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php include('head.php'); ?>
+<head>
+    <?php include('head.php'); ?>
+</head>
 
 <body>
         <h1>Error</h1>

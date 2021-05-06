@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title="Card edit"; include('head.php'); ?>
+<head>
+    <?php $title="Card edit"; include('head.php'); ?>
+<!--    <script src = "lib/js/validation.js" type="text/javascript"></script>-->
+<!--    <script>-->
+<!--        $(document).ready(function() {-->
+<!--            edit_card_validation();-->
+<!--        })-->
+<!--    </script>-->
+</head>
 
 <body class="has-navbar-fixed-top m-4"">
         <header id="main_header">
@@ -55,7 +63,8 @@
                                 <div class="field">
                                     <label class="label">Due Date</label>
                                     <div class="control">
-                                        <input id="card-due-date" class="input" type="date" id="start" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
+                                        <input id="due-date" class="input" type="date" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
+<!--                                        <input id="date-picker">-->
                                     </div>
                                 </div>
                                 <div class="field mt-4">

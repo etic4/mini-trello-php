@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title = "Delete Confirm"; include('head.php'); ?>
+<head>
+    <?php $title = "Delete Confirm"; include('head.php'); ?>
+</head>
 
     <body class="has-navbar-fixed-top m-4">
             <header>

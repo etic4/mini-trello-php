@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title="Board"; include('head.php'); ?>
-
+<head>
+    <?php $title="Board"; include('head.php'); ?>
+    <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            add_column_validation();
+            add_card_validation()
+        })
+    </script>
+</head>
 <body class="has-navbar-fixed-top m-4">
-    <script src="lib/js/column-validation.js" type="application/javascript"></script>
+<!--    <script src="lib/js/column-validation.js" type="application/javascript"></script>-->
 	<header>
      <?php include('menu.php'); ?>
 	</header>

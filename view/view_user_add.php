@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title="Add a user"; include('head.php'); ?>
-
+<head>
+    <?php $title="Add a user"; include('head.php'); ?>
+</head>
 <body  class="has-navbar-fixed-top m-4">
         <header>
             <?php include('menu.php') ?>

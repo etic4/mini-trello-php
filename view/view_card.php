@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title = "Card"; include('head.php'); ?>
+<head>
+    <?php $title = "Card"; include('head.php'); ?>
+</head>
     <body class="has-navbar-fixed-top m-4">
         <header>
             <?php include('menu.php'); ?>
@@ -38,7 +40,7 @@
                     <p class="title is-4 mb-2">Body</p>
                     <textarea class="textarea has-fixed-size has-text-black mb-4" disabled><?= $card->get_body() ?></textarea>
 
-                    <? if($card->has_dueDate()): ?>
+                    <?php if($card->has_dueDate()): ?>
                     <p class="title is-4 mb-2">Due date</p>
                     <div class="mb-4">
                         <?= ViewUtils::due_date_string($card->get_dueDate()) ?>

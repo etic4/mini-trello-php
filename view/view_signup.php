@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<?php $title="Signup"; include('head.php'); ?>
+<head>
+    <?php $title="Signup"; include('head.php'); ?>
+    <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            setup_signup_validation();
+        })
+    </script>
+</head>
 
     <body class="has-navbar-fixed-top m-4">
-        <script src="lib/js/signup-validation.js" type="text/javascript"></script>
+<!--        <script src="lib/js/signup-validation.js" type="text/javascript"></script>-->
 
         <header>
             <?php include('menu.php'); ?>

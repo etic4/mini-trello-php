@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
+<head>
     <?php $title="Board list"; include('head.php'); ?>
-
+    <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            add_board_validation();
+        })
+    </script>
+</head>
     <body class="has-navbar-fixed-top m-4">
-        <script src="lib/js/board-validation.js" type="text/javascript"></script>
+<!--        <script src="lib/js/board-validation.js" type="text/javascript"></script>-->
 
         <header>
         <?php include('menu.php'); ?>

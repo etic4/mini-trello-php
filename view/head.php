@@ -1,4 +1,3 @@
-<head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="lib/assets/images/logo.png" />
     <title><?= $title ?></title>
@@ -13,4 +12,4 @@
     <script src="lib/vendor/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script src="lib/vendor/jquery-ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
     <script src="lib/vendor/jquery-validation-1.19.3/jquery.validate.min.js" type="text/javascript"></script>
-</head>
+

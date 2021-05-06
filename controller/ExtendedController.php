@@ -55,7 +55,7 @@ abstract class ExtendedController extends Controller {
     //
     // Redirige le cas échéant vers $redirect_url si est non vide, sinon vers la page page par défaut
     //
-    private function get_or_redirect(string $class_name, string $post_key, string $get_key, string $redirect_url="") {
+    protected function get_or_redirect(string $class_name, string $post_key, string $get_key, string $redirect_url="") {
         $GoT = $_POST;
         $param_name = $post_key;
 

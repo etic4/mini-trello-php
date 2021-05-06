@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<?php $title = "Login"; include('head.php'); ?>
+<head>
+    <?php $title = "Login"; include('head.php'); ?>
+</head>
 
 <body  class="has-navbar-fixed-top m-4">
         <header id="main_header">

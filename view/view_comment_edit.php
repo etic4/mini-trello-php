@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
+<head>
     <?php $title="Edit a comment"; include('head.php'); ?>
+</head>
     <body class="has-navbar-fixed-top m-4">
         <header>
             <?php include('menu.php'); ?>
