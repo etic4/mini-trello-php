@@ -2,6 +2,12 @@
 <html lang="fr">
 <head>
     <?php $title = "Card"; include('head.php'); ?>
+    <script>
+        $(document).ready(function() {
+            setup_card_delete_confirm();
+        });
+    </script>
+
 </head>
     <body class="has-navbar-fixed-top m-4">
         <header>
@@ -20,9 +26,10 @@
                             </button>
                         </a>
 
-                        <form action='card/delete' method='post'>
+                        <form id="card-delete-form" action='card/delete' method='post'>
                             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-                            <button class="button is-medium align-baseline is-white p-0 ml-2" type="submit">
+                            <input type='text' name='confirm' hidden>
+                            <button i="card-delete" class="button is-medium align-baseline is-white p-0 ml-2" type="submit">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>

@@ -92,7 +92,7 @@ class ControllerUser extends ExtendedController {
         $email = Post::get("email");
         $fullName = Post::get("fullName");
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             $error = new DisplayableError();
             $error->set_messages((new UserValidation())->validate_add($fullName, $email));
             Session::set_error($error);
@@ -121,7 +121,7 @@ class ControllerUser extends ExtendedController {
         $fullName = Post::get("fullName", $user->get_fullName());
         $role = Post::get("role", $user->get_role());
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             $error = new DisplayableError();
             $error->set_messages((new UserValidation())->validate_edit($fullName, $email, $role, $user, $admin));
             Session::set_error($error);
@@ -160,7 +160,7 @@ class ControllerUser extends ExtendedController {
         $this->get_admin_or_redirect();
         $user = $this->get_or_redirect_default();
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             UserDao::delete($user);
             $this->redirect("user", "manage");
         }

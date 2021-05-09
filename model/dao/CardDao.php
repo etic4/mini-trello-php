@@ -45,6 +45,23 @@ class CardDao extends BaseDao {
         self::execute($sql, $params);
     }
 
+    // TODO: implémenter batch update
+    public static function update_cards_position(array $cards_positions) {
+        foreach ($cards_positions as $data) {
+            $sql = new SqlGenerator(self::tableName);
+            list($sql, $params) =
+                $sql->update()
+                    ->set(["Position" => $data["card_position"], "`Column`" => $data["column_id"]])
+                    ->where(["ID" => $data["card_id"]])->sql();
+            try {
+                self::execute($sql, $params);
+            } catch (Exception $e) {
+                echo "foiré";
+            }
+
+        }
+    }
+
     public static function from_query($data): Card {
         return new Card(
             $data["Title"],

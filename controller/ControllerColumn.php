@@ -35,7 +35,7 @@ class ControllerColumn extends ExtendedController {
 
         $column_title = Post::get("column_title", $column->get_title());
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             $error = new DisplayableError();
             $error->set_messages((new ColumnValidation())->validate_edit($column_title, $column));
             Session::set_error($error);
@@ -64,7 +64,7 @@ class ControllerColumn extends ExtendedController {
         $column = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::delete($column));
 
-        if (Post::isset("confirm") || count($column->get_cards()) == 0) {
+        if (Post::get("confirm") == "true" || count($column->get_cards()) == 0) {
             ColumnDao::delete($column);
             ColumnDao::decrement_following_columns_position($column);
             $this->redirect("board", "view", $column->get_board_id());
@@ -127,5 +127,25 @@ class ControllerColumn extends ExtendedController {
         }
 
         echo count($errors) == 0 ? "true" : "false";
+    }
+
+    public function needs_delete_confirm_service() {
+        $column = $this->get_or_redirect_default();
+        $this->authorized_or_redirect(Permissions::delete($column));
+
+        echo  $this->can_delete($column) ? "false" : "true";
+    }
+
+    public function update_columns_positions_service() {
+        $board = $this->get_or_redirect("Board", "board_id", "");
+        $this->authorized_or_redirect(Permissions::view($board));
+
+        if (!Post::empty("columns_list")) {
+            ColumnDao::update_columns_position(Post::get("columns_list"));
+        }
+    }
+
+    private function can_delete(Column $column): bool {
+        return count($column->get_cards()) == 0;
     }
 }

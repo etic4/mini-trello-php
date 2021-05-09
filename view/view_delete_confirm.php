@@ -9,7 +9,7 @@
                 <?php include('menu.php'); ?>
             </header>
             <main>
-                <?php include("delete_confirm_modal.php"); ?>
+                <?php include("delete_confirm.php"); ?>
             </main>
     </body>
 </html>

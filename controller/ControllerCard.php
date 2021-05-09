@@ -59,7 +59,7 @@ class ControllerCard extends ExtendedController {
             $due_date = Post::empty("due_date") ? $card->get_dueDate() : new Datetime(Post::get("due_date"));
         }
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             $error = new DisplayableError();
             $error->set_messages((new CardValidation())->validate_edit($card_title, $due_date, $card));
             Session::set_error($error);
@@ -95,7 +95,7 @@ class ControllerCard extends ExtendedController {
         $card = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::delete($card));
 
-        if(Post::isset("confirm")) {
+        if(Post::get("confirm") == "true") {
             CardDao::decrement_following_cards_position($card);
             CardDao::delete($card);
             $this->redirect("board", "view", $card->get_board_id());
@@ -181,20 +181,19 @@ class ControllerCard extends ExtendedController {
         echo count($errors) == 0 ? "true" : "false";
     }
 
-    // TODO: faire ça en js
-    public function validate_due_date_service() {
-        if (!Post::all_non_empty("due_date", "card_id")) {
-            echo "false";
-            die;
+    public function update_cards_positions_service() {
+        $board = $this->get_or_redirect("Board", "board_id", "");
+        $this->authorized_or_redirect(Permissions::view($board));
+
+        if (!Post::empty("cards_list")) {
+            CardDao::update_cards_position(Post::get("cards_list"));
         }
+    }
 
-        $card = $this->get_or_redirect_post("Card", "card_id");
-        $this->authorized_or_redirect(Permissions::edit($card));
+    public function needs_delete_confirm_service() {
+        $card = $this->get_or_redirect_default();
+        $this->authorized_or_redirect(Permissions::delete($card));
 
-        $due_date = DateUtils::php_date(Post::get("due_date"));
-
-        $errors = (new CardValidation())->validate_due_date($due_date, $card);
-
-        echo count($errors) == 0 ? "true" : "false";
+        echo  "true";
     }
 }

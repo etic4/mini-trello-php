@@ -1,6 +1,7 @@
 {
     "require": {
         "guzzlehttp/guzzle": "^7.0",
-        "imangazaliev/didom": "^1.16"
+        "imangazaliev/didom": "^1.16",
+        "ext-json": "*"
     }
 }

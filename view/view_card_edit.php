@@ -2,12 +2,12 @@
 <html lang="fr">
 <head>
     <?php $title="Card edit"; include('head.php'); ?>
-<!--    <script src = "lib/js/validation.js" type="text/javascript"></script>-->
-<!--    <script>-->
-<!--        $(document).ready(function() {-->
-<!--            edit_card_validation();-->
-<!--        })-->
-<!--    </script>-->
+    <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            setup_edit_card_validation();
+        })
+    </script>
 </head>
 
 <body class="has-navbar-fixed-top m-4"">
@@ -28,6 +28,7 @@
 
                     <form id="card-edit" action="card/edit" method="post">
                         <input id="card-id" type="text" name="card_id" value=<?= $card->get_id() ?> hidden>
+                        <input id="board-id" type="text" name="board_id" value='<?= $card->get_board_id() ?>' hidden>
                         <input type="text" name="confirm" hidden>
                         <input type="text" name="redirect_url" value="<?= $redirect_url ?>" hidden>
 
@@ -64,7 +65,6 @@
                                     <label class="label">Due Date</label>
                                     <div class="control">
                                         <input id="due-date" class="input" type="date" name="due_date" min="<?=ViewUtils::date_picker_min_due_date($card)?>" value="<?=ViewUtils::date_picker_due_date($due_date)?>">
-<!--                                        <input id="date-picker">-->
                                     </div>
                                 </div>
                                 <div class="field mt-4">
@@ -84,6 +84,7 @@
                 </section>
                 <?php include("participants_section.php");
                       $redirect_url = "card/edit/". $card->get_id() . "#comments"; include('comments_section.php') ?>
+
             </article>
         </main>
     </body>

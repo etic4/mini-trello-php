@@ -27,7 +27,7 @@ class ControllerComment extends ExtendedController {
         $comment = $this->get_or_redirect_default();
         $user = $this->authorized_or_redirect(Permissions::edit($comment));
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             $body = Post::get("body");
 
             if (!empty($body) && $body != $comment->get_body()  && !Validation::str_contains_only_spaces(Post::get("body"))) {

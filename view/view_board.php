@@ -3,15 +3,19 @@
 <head>
     <?php $title="Board"; include('head.php'); ?>
     <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script src = "lib/js/delete-confirm.js" type="text/javascript"></script>
+    <script src = "lib/js/drag-and-drop.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
-            add_column_validation();
-            add_card_validation()
-        })
+            setup_add_column_validation();
+            setup_add_card_validation();
+            setup_delete_confirm();
+            setup_drag_and_drop();
+        });
     </script>
 </head>
+
 <body class="has-navbar-fixed-top m-4">
-<!--    <script src="lib/js/column-validation.js" type="application/javascript"></script>-->
 	<header>
      <?php include('menu.php'); ?>
 	</header>
@@ -33,14 +37,15 @@
                         <i class="fas fa-users"></i>
                     </a>
 
-                    <form class="icon is-medium" action='board/delete' method='post'>
+                    <form id="board-delete-form" class="icon is-medium" action='board/delete' method='post'>
                         <input type='text' name='id' value='<?= $board->get_id() ?>' hidden>
-                        <button class="button align-baseline is-white p-0 ml-2" type="submit">
+                        <input type='text' name='confirm' hidden>
+                        <button  id="board-delete" class="button align-baseline is-white p-0 ml-2" type="submit">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </form>
-                    <?php endif; ?>
 
+                    <?php endif; ?>
                 </div>
 
                 <div class="block has-text-grey mb-5">
@@ -48,9 +53,11 @@
                 </div>
             </header>
             <div class="is-flex is-flex-direction-row is-align-items-start">
-                <?php foreach($board->get_columns() as $column): ?>
-                    <?php include("column.php"); ?>
-                <?php endforeach; ?>
+                <div id="board-droppable" class="is-flex is-flex-direction-row is-align-items-start pr-3">
+                    <?php foreach($board->get_columns() as $column): ?>
+                        <?php include("column.php"); ?>
+                    <?php endforeach; ?>
+                </div>
                 <aside class="trello-add-column">
                     <form id="column-add" action="column/add" method="post">
                         <input id="board-id" type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
@@ -67,9 +74,10 @@
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </aside>
-
             </div>
         </article>
     </main>
+    <!--delete-confirm-->
+    <?php include("delete_confirm_modal.php");?>
 </body>
 </html>

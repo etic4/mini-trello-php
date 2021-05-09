@@ -1,6 +1,6 @@
 <?php extract(ViewUtils::due_date_styling($card)); ?>
 
-<div class="card mb-2 p-2 pl-4 <?= $card_background ?>">
+<div id="card-<?= $card->get_id() ?>" class="trello-card card mb-2 p-2 pl-4 <?= $card_background ?>" data-card-id="<?= $card->get_id() ?>" >
     <div class="pt-3 pb-3">
         <p class="<?= $text_color ?> is-6 text-overflow-ellipsis"><b><?= $card->get_title() ?></b></p>
     </div>
@@ -23,9 +23,10 @@
             </button>
         </a>
 
-        <form class="ml-1" action='card/delete' method='post'>
+        <form id="card-delete-form" class="ml-1" action='card/delete' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
-            <button class="button align-baseline <?= $button_background ?> p-0" type="submit">
+            <input type='text' name='confirm' hidden>
+            <button id="card-delete" class="button align-baseline <?= $button_background ?> p-0" type="submit">
                 <i class="fas fa-trash-alt"></i>
             </button>
         </form>

@@ -46,4 +46,8 @@ html {
     border: 1px solid #c1c1c1;
 }
 
-/* --- jquery-ui ---*/
+.display-none {
+    display: none;
+}
+
+

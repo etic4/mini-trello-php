@@ -57,7 +57,7 @@ class ControllerBoard extends ExtendedController {
 
         $board_title = Post::get("board_title", $board->get_title());
 
-        if (Post::isset("confirm")) {
+        if (Post::get("confirm") == "true") {
             if (empty($board_title) || $board_title == $board->get_title()) {
                 $this->redirect("board", "view", $board->get_id());
             }
@@ -89,8 +89,7 @@ class ControllerBoard extends ExtendedController {
         $board = $this->get_or_redirect_default();
         $this->authorized_or_redirect(Permissions::delete($board));
 
-        $columns = $board->get_columns();
-        if (Post::isset("confirm") || count($columns) == 0) {
+        if (Post::get("confirm") == "true" || $this->can_delete($board)) {
             BoardDao::delete($board);
             $this->redirect();
         }
@@ -145,6 +144,17 @@ class ControllerBoard extends ExtendedController {
         }
 
         echo count($errors) == 0 ? "true" : "false";
+    }
+
+    public function needs_delete_confirm_service() {
+        $board = $this->get_or_redirect_default();
+        $this->authorized_or_redirect(Permissions::delete($board));
+
+        echo  $this->can_delete($board) ? "false" : "true";
+    }
+
+    public function can_delete(Board $board): bool {
+        return count($board->get_columns()) == 0;
     }
 }
 

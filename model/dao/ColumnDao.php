@@ -27,7 +27,19 @@ class ColumnDao extends BaseDao {
             $sql->update()
             ->set([], ["Position" => "Position -1"])
             ->where(["`Board`" => $column->get_board_id(), "Position" => $column->get_position()])->sql();
-        self::execute($sql, $params);
+
+    }
+
+    // TODO: implémenter batch update
+    public static function update_columns_position(array $columns_id) {
+        foreach ($columns_id as $data) {
+            $sql = new SqlGenerator(self::tableName);
+            list($sql, $params) =
+                $sql->update()
+                ->set(["Position" => $data["column_position"]])
+                ->where(["ID" => $data["column_id"]])->sql();
+            self::execute($sql, $params);
+        }
     }
 
     public static function from_query($data) :Column {

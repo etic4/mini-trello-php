@@ -5,7 +5,7 @@
     <script src = "lib/js/validation.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
-            edit_column_validation();
+            setup_edit_column_validation();
         })
     </script>
 </head>

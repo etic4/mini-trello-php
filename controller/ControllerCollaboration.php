@@ -28,7 +28,7 @@ class ControllerCollaboration extends ExtendedController {
 
         $part_count = ParticipationDao::get_participations_count_in_board($collaborator, $board);
 
-        if (Post::isset("confirm") || !$part_count) {
+        if (Post::get("confirm") == "true" || !$part_count) {
             if ($part_count) {
                 ParticipationDao::remove_all($collaborator, $board);
             }

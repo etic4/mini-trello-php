@@ -60,6 +60,7 @@
                                 <td class="has-text-centered">
                                     <form action='user/delete' method='post'>
                                         <input type='text' name='id' value='<?= $member->get_id() ?>' hidden>
+                                        <input type='text' name='confirm' hidden>
                                         <button class="button align-baseline is-align-items-start p-1" type="submit">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>

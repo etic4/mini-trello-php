@@ -5,7 +5,7 @@
     <script src = "lib/js/validation.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
-            add_board_validation();
+            setup_add_board_validation();
         })
     </script>
 </head>
