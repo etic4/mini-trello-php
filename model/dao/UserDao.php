@@ -21,7 +21,7 @@ class UserDao extends BaseDao {
     }
 
     public static function get_all_users() {
-        $all_users = self::get_all();
+        $all_users = self::get_all(null, ["FullName" => "ASC"]);
         return array_filter($all_users, fn($user) => $user->get_id() != "6");
     }
 

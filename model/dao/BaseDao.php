@@ -16,12 +16,16 @@ abstract class BaseDao extends CachedGet {
         return self::get_by([static::PkName => $id]);
     }
 
-    public static function get_all(array $params=null) {
+    public static function get_all(array $params=null, $order_by=null) {
         $sql = new SqlGenerator(static::tableName);
 
         $sql = $sql->select();
         if (!is_null($params)) {
             $sql = $sql->where($params);
+        }
+
+        if (!is_null($order_by)) {
+            $sql->order_by($order_by);
         }
         list($sql, $params) = $sql->sql();
 

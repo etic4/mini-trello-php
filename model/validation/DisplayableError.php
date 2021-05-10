@@ -9,12 +9,12 @@ class DisplayableError {
     private array $messages = [];
 
     public function __construct($instance=null, string $action=null, string $id=null) {
-        $this->instance_name = is_null($instance) ? null : strtolower(get_class($instance));
+        $this->instance_name = $this->get_instance_name($instance);
         $this->action = $action;
 
         $this->id = $id;
         if ($id == null) {
-            $this->id = is_null($instance) ? null : $instance->get_id();
+            $this->id = $this->get_instance_id($instance);
         }
     }
 
@@ -52,6 +52,26 @@ class DisplayableError {
     /*La méthode chargée de leur affichage récupère les erreurs*/
     public function get_messages(): array {
         return $this->messages;
+    }
+
+    private function get_instance_name($instance): ?string {
+        $instance_name = null;
+
+        if (is_string($instance)) {
+            $instance_name = $instance;
+        } else if (!is_null($instance)) {
+            $instance_name = strtolower(get_class($instance));
+        }
+        return $instance_name;
+    }
+
+    private function get_instance_id($instance): ?int {
+        $id = null;
+
+        if (!is_null($instance) && !is_string($instance)) {
+            $id = $instance->get_id();
+        }
+        return $id;
     }
 
 }

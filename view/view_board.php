@@ -70,7 +70,7 @@
                             </div>
                         </div>
                     </form>
-                    <?php if ($errors->has_errors()): ?>
+                    <?php if ($errors->has_errors("column", "add")): ?>
                         <?php include('errors.php'); ?>
                     <?php endif; ?>
                 </aside>

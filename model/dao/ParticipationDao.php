@@ -35,7 +35,8 @@ class ParticipationDao extends BaseDao {
         list($sql, $params) =
             $sql->select(["u.*"])
             ->join([static::tableName . " p", "user u"])->on(["p.Participant" => "u.ID"])
-            ->where(["Card" => $card->get_id()])->sql();
+            ->where(["Card" => $card->get_id()])
+            ->order_by(["FullName" => "ASC"])->sql();
 
         return self::get_many($sql, $params, fn($data) => UserDao::from_query($data));
     }

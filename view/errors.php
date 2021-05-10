@@ -1,4 +1,4 @@
-<div class="notification is-danger is-light mb-4">
+<div class="notification is-danger is-light mt-1">
     <ul>
     <?php foreach ($errors->get_messages() as $message): ?>
         <li><?= $message; ?></li>

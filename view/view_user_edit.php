@@ -14,7 +14,7 @@
                     <h2 class="title">Edit a user</h2>
                     <form action="user/edit" method="post">
                         <input type="text" name="id" value="<?= $id ?>" hidden>
-                        <input type="text" name="confirm" hidden>
+                        <input type="text" name="confirm" value="true" hidden>
                         <div class="field">
                             <label class="label">Full Name</label>
                             <div class="control">

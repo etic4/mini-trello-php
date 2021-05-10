@@ -14,7 +14,7 @@
             <form action="collaboration/remove" method="post">
                 <input type="text" name="collab_id" value=<?= $collab_id ?> hidden>
                 <input type="text" name="board_id" value=<?= $board_id ?> hidden>
-                <input type="text" name="confirm" hidden>
+                <input type="text" name="confirm" value="true" hidden>
                 <input class="button is-danger ml-3" type='submit' value='Remove' name='remove'>
             </form>
         </div>

@@ -15,7 +15,7 @@ class ControllerColumn extends ExtendedController {
         if (!Post::empty("column_title")) {
             $column_title = Post::get("column_title");
 
-            $error = new DisplayableError();
+            $error = new DisplayableError("column", "add");
             $error->set_messages((new ColumnValidation())->validate_add($column_title, $board));
             Session::set_error($error);
 
