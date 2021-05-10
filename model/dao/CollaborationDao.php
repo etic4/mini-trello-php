@@ -47,7 +47,7 @@ class CollaborationDao extends BaseDao {
 
     public static function from_query($data, $class=null): Collaboration {
         return new Collaboration(
-            ColumnDao::get_by_id($data["Board"]),
+            BoardDao::get_by_id($data["Board"]),
             UserDao::get_by_id($data["Collaborator"])
         );
     }

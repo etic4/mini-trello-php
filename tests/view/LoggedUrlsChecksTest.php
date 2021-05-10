@@ -63,6 +63,18 @@ class LoggedUrlsChecksTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals("Error", $response["dom"]->first("h1")->text());
     }
 
+    public function testRemoveCollabTwice() {
+        $params = [
+            "collab_id" => "2",
+            "board_id" => "1"
+        ];
+
+        $response = self::$http->post("collaboration/add", $params);
+        $response = self::$http->post("collaboration/add", $params);
+
+        $this->assertEquals(200, $response["status"]);
+    }
+
     public function onNotSuccessfulTest(\Throwable $t): void {
         parent::onNotSuccessfulTest($t);
     }

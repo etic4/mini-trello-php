@@ -41,6 +41,15 @@ class ParticipationDao extends BaseDao {
         return self::get_many($sql, $params, fn($data) => UserDao::from_query($data));
     }
 
+    public static function get_participation(Card $card, User $participant) {
+        $sql = new SqlGenerator(static::tableName);
+        list($sql, $params) =
+            $sql->select()
+                ->where(["CArd" => $card->get_id(), "Participant" => $participant->get_id()])->sql();
+
+        return self::get_one($sql, $params);
+    }
+
     public static function remove(Card $card, User $participant) {
         $sql = new SqlGenerator(static::tableName);
         list($sql, $params) =
@@ -61,8 +70,8 @@ class ParticipationDao extends BaseDao {
         self::execute($sql, $params);
     }
 
-    public static function from_query($data): Collaboration {
-        return new Collaboration(
+    public static function from_query($data): Participation {
+        return new Participation(
             CardDao::get_by_id($data["Card"]),
             UserDao::get_by_id($data["Participant"])
         );

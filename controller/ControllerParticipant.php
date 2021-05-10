@@ -14,8 +14,12 @@ class ControllerParticipant extends ExtendedController {
 
         $participant = $this->get_or_redirect_post("User", "participant_id");
 
-        $participation = new Participation($card, $participant);
-        ParticipationDao::insert($participation);
+        $particip = ParticipationDao::get_participation($card, $participant);
+
+        if (is_null($particip)) {
+            $participation = new Participation($card, $participant);
+            ParticipationDao::insert($participation);
+        }
 
         $this->redirect("card", "edit", $card->get_id()."#participants");
     }

@@ -14,8 +14,12 @@ class ControllerCollaboration extends ExtendedController {
 
         $collaborator = $this->get_or_redirect_post("User", "collab_id");
 
-        $collaboration = new Collaboration($board, $collaborator);
-        CollaborationDao::insert($collaboration);
+        $collab = CollaborationDao::get_collaboration($board, $collaborator);
+
+        if (is_null($collab)) {
+            $collaboration = new Collaboration($board, $collaborator);
+            CollaborationDao::insert($collaboration);
+        }
 
         $this->redirect("board", "collaborators", $board->get_id());
     }
