@@ -23,6 +23,7 @@
                     <div class="columns">
                         <div class="column is-one-third">
                             <form id="column-edit" action='column/edit' method='post'>
+                                <input type='text' name='id' value='<?= $column_id ?>' hidden>
                                 <input id="column-id" type='text' name='column_id' value='<?= $column_id ?>' hidden>
                                 <input id="board-id" type='text' name='board_id' value='<?= $board_id ?>' hidden>
                                 <input type="text" name="confirm" hidden>

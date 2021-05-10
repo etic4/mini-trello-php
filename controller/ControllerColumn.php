@@ -44,7 +44,7 @@ class ControllerColumn extends ExtendedController {
                 $column->set_title($column_title);
                 $column->set_modifiedAt(new DateTime());
                 ColumnDao::update($column);
-                $this->redirect("board", "view", $column->get_board_id());
+                $this->redirect("board", "view", $column->get_id()());
             }
             $this->redirect("column", "edit", $column->get_id());
         }
