@@ -32,7 +32,7 @@
         </form>
 
         <?php if(!$card->is_last()): ?>
-        <form class="ml-1" action='card/down' method='post'>
+        <form class="move-arrow ml-1" action='card/down' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
             <button class="button align-baseline <?= $button_background ?> p-0" type="submit">
                 <i class="fas fa-arrow-circle-down"></i>
@@ -42,7 +42,7 @@
 
         <!-- pas de up pour la première carte de la colonne -->
         <?php if(!$card->is_first()): ?>
-        <form class="ml-1" action='card/up' method='post'>
+        <form class="move-arrow ml-1" action='card/up' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
             <button class="button align-baseline <?= $button_background ?> p-0" type="submit">
                 <i class="fas fa-arrow-circle-up"></i>
@@ -52,7 +52,7 @@
 
         <!-- pas de left pour les cartes de la première colonne -->
         <?php if(!$column->is_first()): ?>
-        <form class="ml-1" action='card/left' method='post'>
+        <form class="move-arrow ml-1" action='card/left' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
             <button class="button align-baseline <?= $button_background ?> p-0" type="submit">
                 <i class="fas fa-arrow-circle-left"></i>
@@ -62,7 +62,7 @@
 
         <!-- pas de right pour les cartes de la dernière colonne -->
         <?php if(!$column->is_last()): ?>
-        <form class="ml-1" action='card/right' method='post'>
+        <form class="move-arrow ml-1" action='card/right' method='post'>
             <input type='text' name='id' value='<?= $card->get_id() ?>' hidden>
             <button class="button align-baseline <?= $button_background ?> p-0" type="submit">
                 <i class="fas fa-arrow-circle-right"></i>

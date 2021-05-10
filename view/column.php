@@ -18,7 +18,7 @@
                 </form>
 
                 <?php if(!$column->is_first()): ?>
-                <form class="ml-1" action='column/left' method='post'>
+                <form class="move-arrow ml-1" action='column/left' method='post'>
                     <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                     <button class="button align-baseline has-background-grey-lighter is-align-items-start p-0" type="submit">
                         <i class="fa fa-arrow-circle-left"></i>
@@ -27,7 +27,7 @@
                 <?php endif; ?>
 
                 <?php if(!$column->is_last()): ?>
-                <form class="ml-1" action='column/right' method='post'>
+                <form class="move-arrow ml-1" action='column/right' method='post'>
                     <input type='text' name='id' value='<?= $column->get_id() ?>' hidden>
                     <button class="button align-baseline has-background-grey-lighter is-align-items-start p-0" type="submit">
                         <i class="fa fa-arrow-circle-right"></i>
