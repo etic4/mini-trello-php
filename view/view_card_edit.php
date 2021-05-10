@@ -29,7 +29,7 @@
                     <form id="card-edit" action="card/edit" method="post">
                         <input id="card-id" type="text" name="card_id" value=<?= $card->get_id() ?> hidden>
                         <input id="board-id" type="text" name="board_id" value='<?= $card->get_board_id() ?>' hidden>
-                        <input type="text" name="confirm" hidden>
+                        <input type="text" name="confirm" value="true" hidden>
                         <input type="text" name="redirect_url" value="<?= $redirect_url ?>" hidden>
 
                         <div class="field">

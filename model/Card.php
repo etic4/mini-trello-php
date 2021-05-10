@@ -292,7 +292,7 @@ class Card {
         $colList = $this->get_all_columns();
 
         if ($pos < sizeof($colList)-1) {
-            $target = $colList[$pos+1];
+            $target = $colList[(int)$pos+1];
 
             /*Faut décrémenter les suivantes avant de changer de colonne*/
             CardDao::decrement_following_cards_position($this);

@@ -207,7 +207,8 @@ class SqlGenerator {
     private function get_place_holder($value) {
         $ph = str_replace("`", "", $value);
         $ph = str_replace(".", "_", $ph);
-        return $ph;
+        $ph = str_replace("ph_", "", $ph);
+        return "ph_" . $ph;
     }
 
     // remplacer les "." par des "_" dans les paramètres pour l'interpolation (nécessaire en cas de join)

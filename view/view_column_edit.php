@@ -24,9 +24,9 @@
                         <div class="column is-one-third">
                             <form id="column-edit" action='column/edit' method='post'>
                                 <input type='text' name='id' value='<?= $column_id ?>' hidden>
+                                <input type="text" name="confirm" value="true" hidden>
                                 <input id="column-id" type='text' name='column_id' value='<?= $column_id ?>' hidden>
                                 <input id="board-id" type='text' name='board_id' value='<?= $board_id ?>' hidden>
-                                <input type="text" name="confirm" hidden>
                                 <div class="field has-addons">
                                     <div class="control is-expanded">
                                         <input id="column-title" class="input" type="text" name="column_title" value="<?= $column_title ?>">

@@ -58,10 +58,6 @@ class ControllerBoard extends ExtendedController {
         $board_title = Post::get("board_title", $board->get_title());
 
         if (Post::get("confirm") == "true") {
-            if (empty($board_title) || $board_title == $board->get_title()) {
-                $this->redirect("board", "view", $board->get_id());
-            }
-
             $error = new DisplayableError();
             $error->set_messages((new BoardValidation())->validate_edit($board_title, $board));
             Session::set_error($error);

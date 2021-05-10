@@ -41,7 +41,6 @@
             <?php include("card.php"); ?>
         <?php endforeach; ?>
     </div>
-    <div class="">
         <form class="card-add" action="card/add" method="post">
             <input id="board-id" type='text' name='board_id' value='<?= $board->get_id() ?>' hidden>
             <input id="column-id" type='text' name='column_id' value='<?= $column->get_id() ?>' hidden>
@@ -59,5 +58,4 @@
         <?php if ($errors->has_errors("card", "add", $column->get_id())): ?>
             <?php include('errors.php'); ?>
         <?php endif; ?>
-    </div>
 </div>
