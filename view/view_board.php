@@ -5,8 +5,10 @@
     <script src = "lib/js/validation.js" type="text/javascript"></script>
     <script src = "lib/js/delete-confirm.js" type="text/javascript"></script>
     <script src = "lib/js/drag-and-drop.js" type="text/javascript"></script>
+    <script src = "lib/js/common.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
+            add_calendar_menu();
             setup_add_column_validation();
             setup_add_card_validation();
             setup_delete_confirm();

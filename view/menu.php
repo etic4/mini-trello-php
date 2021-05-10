@@ -7,9 +7,10 @@
 
     <div id="navbar" class="navbar-menu">
         <div class="navbar-end">
+            <a class="navbar-item" href="board/index">Boards</a>
+            <div id="calendar-menu"></div>
             <?php if (isset($user) && $user != null): ?>
                 <?php if($user->is_admin()): ?>
-            <a class="navbar-item" href="board/index">Boards</a>
             <a class="navbar-item" href="user/manage">Admin</a>
             <div class="navbar-item">
                 <span class="icon-text">
@@ -21,7 +22,6 @@
 
             </div>
                 <?php else: ?>
-            <a class="navbar-item" href="board/index">Boards</a>
             <div class="navbar-item">
                 <span class="icon-text">
                     <span class="icon"><i class="fas fa-user no-pointer"></i></span>

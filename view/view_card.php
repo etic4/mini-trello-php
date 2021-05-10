@@ -2,8 +2,10 @@
 <html lang="fr">
 <head>
     <?php $title = "Card"; include('head.php'); ?>
+    <script src = "lib/js/common.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
+            add_calendar_menu();
             setup_card_delete_confirm();
         });
     </script>

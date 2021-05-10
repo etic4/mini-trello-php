@@ -3,8 +3,10 @@
 <head>
     <?php $title="Edit a column"; include('head.php'); ?>
     <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script src = "lib/js/common.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
+            add_calendar_menu();
             setup_edit_column_validation();
         })
     </script>

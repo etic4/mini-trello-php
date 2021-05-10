@@ -14,7 +14,7 @@ class ViewUtils {
         return "Never modified";
     }
 
-    public static function most_recent_interval($object) {
+    public static function most_recent_interval($object): string {
         $the_date = $object->get_modifiedAt() != null ? max($object->get_createdAt(), $object->get_modifiedAt()) : $object->get_createdAt();
         return DateUtils::intvl($the_date, new DateTime());
     }
@@ -42,7 +42,7 @@ class ViewUtils {
         return $posted == $role ? "selected" : "";
     }
 
-    public static function due_date_styling(Card $card) {
+    public static function due_date_styling(Card $card): array {
         $card_background = "";
         $button_background = "is-white";
         $text_color = "has-text-info-dark";

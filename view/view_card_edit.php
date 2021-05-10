@@ -3,8 +3,10 @@
 <head>
     <?php $title="Card edit"; include('head.php'); ?>
     <script src = "lib/js/validation.js" type="text/javascript"></script>
+    <script src = "lib/js/common.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
+            add_calendar_menu();
             setup_edit_card_validation();
         })
     </script>
