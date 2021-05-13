@@ -10,14 +10,14 @@ class ControllerCard extends ExtendedController {
 
     public function add() {
         $column = $this->get_or_redirect_post("Column", "column_id");
-        $user = $this->authorized_or_redirect(Permissions::view($column));
+        $user = $this->authorize_or_redirect(Permissions::view($column));
 
         if (!Post::empty("card_title")) {
             $column_id = Post::get("column_id");
             $title = Post::get("card_title");
             $card = Card::new($title, $user, $column_id);
 
-            $this->authorized_or_redirect(Permissions::add($card));
+            $this->authorize_or_redirect(Permissions::add($card));
 
             $error = new DisplayableError($card, "add", $column_id);
             $error->set_messages((new CardValidation())->validate_add($title, $column->get_board()));
@@ -32,7 +32,7 @@ class ControllerCard extends ExtendedController {
 
     public function view(){
         $card = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::view($card));
+        $user = $this->authorize_or_redirect(Permissions::view($card));
 
         $comments = $card->get_comments();
 
@@ -48,7 +48,7 @@ class ControllerCard extends ExtendedController {
 
     public function edit(){
         $card = $this->get_or_redirect("Card", "card_id", "param1");
-        $user = $this->authorized_or_redirect(Permissions::edit($card));
+        $user = $this->authorize_or_redirect(Permissions::edit($card));
 
         $card_title = Post::get("card_title",$card->get_title());
         $body = Post::get("body", $card->get_body());
@@ -93,7 +93,7 @@ class ControllerCard extends ExtendedController {
 
     public function delete() {
         $card = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::delete($card));
+        $this->authorize_or_redirect(Permissions::delete($card));
 
         if(Post::get("confirm") == "true") {
             CardDao::decrement_following_cards_position($card);
@@ -106,7 +106,7 @@ class ControllerCard extends ExtendedController {
 
     public function delete_confirm() {
         $card = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::delete($card));
+        $user = $this->authorize_or_redirect(Permissions::delete($card));
 
         (new View("delete_confirm"))->show(array(
             "user" =>$user,
@@ -120,7 +120,7 @@ class ControllerCard extends ExtendedController {
 
     public function left() {
         $card = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::view($card));
+        $this->authorize_or_redirect(Permissions::view($card));
 
         $card->move_left();
 
@@ -129,7 +129,7 @@ class ControllerCard extends ExtendedController {
 
     public function right() {
         $card = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::view($card));
+        $this->authorize_or_redirect(Permissions::view($card));
 
         $card->move_right();
 
@@ -139,7 +139,7 @@ class ControllerCard extends ExtendedController {
 
     public function up() {
         $card = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::view($card));
+        $this->authorize_or_redirect(Permissions::view($card));
 
         $card->move_up();
 
@@ -148,7 +148,7 @@ class ControllerCard extends ExtendedController {
 
     public function down() {
         $card = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::view($card));
+        $this->authorize_or_redirect(Permissions::view($card));
 
         $card->move_down();
 
@@ -168,12 +168,12 @@ class ControllerCard extends ExtendedController {
 
         if (!Post::empty("card_id")) {
             $card = $this->get_or_redirect_post("Card", "card_id");
-            $this->authorized_or_redirect(Permissions::edit($card));
+            $this->authorize_or_redirect(Permissions::edit($card));
 
             $errors = (new CardValidation())->validate_title_unicity($card_title, $card->get_board(), $card);
         } else {
             $board = $this->get_or_redirect_post("Board", "board_id");
-            $this->authorized_or_redirect(Permissions::view($board));
+            $this->authorize_or_redirect(Permissions::view($board));
 
             $errors = (new CardValidation())->validate_title_unicity($card_title, $board);
         }
@@ -183,7 +183,7 @@ class ControllerCard extends ExtendedController {
 
     public function update_cards_positions_service() {
         $board = $this->get_or_redirect("Board", "board_id", "");
-        $this->authorized_or_redirect(Permissions::view($board));
+        $this->authorize_or_redirect(Permissions::view($board));
 
         if (!Post::empty("cards_list")) {
             CardDao::update_cards_position(Post::get("cards_list"));
@@ -192,7 +192,7 @@ class ControllerCard extends ExtendedController {
 
     public function needs_delete_confirm_service() {
         $card = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::delete($card));
+        $this->authorize_or_redirect(Permissions::delete($card));
 
         echo  "true";
     }

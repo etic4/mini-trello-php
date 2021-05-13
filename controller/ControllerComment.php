@@ -11,7 +11,7 @@ class ControllerComment extends ExtendedController {
 
     public function add(){
         $card = $this->get_or_redirect_post("Card", "card_id");
-        $user = $this->authorized_or_redirect(Permissions::view($card));
+        $user = $this->authorize_or_redirect(Permissions::view($card));
 
         // si 'body' est vide, ne fait rien
         if(!Post::empty("body") && !Validation::str_contains_only_spaces(Post::get("body"))) {
@@ -25,7 +25,7 @@ class ControllerComment extends ExtendedController {
 
     public function edit() {
         $comment = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::edit($comment));
+        $user = $this->authorize_or_redirect(Permissions::edit($comment));
 
         if (Post::get("confirm") == "true") {
             $body = Post::get("body");
@@ -52,7 +52,7 @@ class ControllerComment extends ExtendedController {
 
     public function delete() {
         $comment = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::delete($comment));
+        $user = $this->authorize_or_redirect(Permissions::delete($comment));
 
         if ($user->can_delete_comment($comment)) {
             CommentDao::delete($comment);

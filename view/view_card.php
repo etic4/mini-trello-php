@@ -9,7 +9,6 @@
             setup_card_delete_confirm();
         });
     </script>
-
 </head>
     <body class="has-navbar-fixed-top m-4">
         <header>
@@ -63,7 +62,8 @@
                 </section>
 
                 <?php include("participants_section.php");
-                    $redirect_url = "card/view/".$card->get_id()."#comments"; include("comments_section.php") ?>
+                    $redirect_url = "card/view/".$card->get_id()."#comments"; include("comments_section.php")
+                ?>
 
             </article>
         </main>

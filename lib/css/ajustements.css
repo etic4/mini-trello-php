@@ -50,4 +50,6 @@ html {
     display: none;
 }
 
-
+.cal-label-red {
+    color: red;
+}

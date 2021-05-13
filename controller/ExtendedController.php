@@ -10,7 +10,7 @@ abstract class ExtendedController extends Controller {
     // lors duquel le fait que le user soit loggé est vérifié
     // ainsi que son droit à appeler {add|view|edit|delete} sur le contrôler
 
-    protected function authorized_or_redirect(bool $authorized, string $redirect_url="") {
+    protected function authorize_or_redirect(bool $authorized, string $redirect_url="") {
         if (!$authorized) {
             $this->redirect(...self::redirect_params($redirect_url));
         }

@@ -22,14 +22,6 @@
         </header>
         <main>
             <div id="boards_list" class="is-flex is-flex-direction-row p-2 mt-3 mb-3">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    board 1
-                </label>
-                <label class="checkbox pl-2">
-                    <input type="checkbox">
-                    Projet machin
-                </label>
             </div>
             <div id="calendar"></div>
         </main>

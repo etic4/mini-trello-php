@@ -8,12 +8,15 @@
         $(document).ready(function() {
             add_calendar_menu();
             setup_add_board_validation();
+            $.get("calendar/test_events", function(a, b) {
+                console.log(a);
+                console.log(b);
+            })
+
         })
     </script>
 </head>
     <body class="has-navbar-fixed-top m-4">
-<!--        <script src="lib/js/board-validation.js" type="text/javascript"></script>-->
-
         <header>
         <?php include('menu.php'); ?>
         </header>
@@ -63,7 +66,7 @@
 
             <?php if ($user->is_admin()):; ?>
             <article>
-                <h2  class="title is-4">Other's boards</h2>
+                <h2 class="title is-4">Other's boards</h2>
                     <div class="is-flex is-flex-direction-row is-align-items-start" >
                     <?php foreach($user->get_admin_visible_boards() as $board): ?>
                         <a href="board/view/<?= $board->get_id() ?>">

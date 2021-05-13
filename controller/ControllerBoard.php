@@ -4,6 +4,7 @@ require_once "autoload.php";
 
 
 class ControllerBoard extends ExtendedController {
+
     public function index() {
         if(Get::isset("param1")) {
             $this->redirect();
@@ -19,13 +20,12 @@ class ControllerBoard extends ExtendedController {
     }
 
     public function add() {
-        $user = $this->authorized_or_redirect(Permissions::add("Board"));
+        $user = $this->authorize_or_redirect(Permissions::add("Board"));
 
         if (!Post::empty("board_title")) {
             $title = Post::get("board_title");
 
             $error = new DisplayableError();
-
             $error->set_messages((new BoardValidation())->validate_add($title));
             Session::set_error($error);
 
@@ -40,7 +40,7 @@ class ControllerBoard extends ExtendedController {
 
     public function view() {
         $board = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::view($board));
+        $user = $this->authorize_or_redirect(Permissions::view($board));
 
         (new View("board"))->show(array(
                 "user" => $user,
@@ -53,7 +53,7 @@ class ControllerBoard extends ExtendedController {
 
     public function edit() {
         $board = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::edit($board));
+        $user = $this->authorize_or_redirect(Permissions::edit($board));
 
         $board_title = Post::get("board_title", $board->get_title());
 
@@ -83,7 +83,7 @@ class ControllerBoard extends ExtendedController {
 
     public function delete() {
         $board = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::delete($board));
+        $this->authorize_or_redirect(Permissions::delete($board));
 
         if (Post::get("confirm") == "true" || $this->can_delete($board)) {
             BoardDao::delete($board);
@@ -95,7 +95,7 @@ class ControllerBoard extends ExtendedController {
 
     public function delete_confirm() {
         $board = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::delete($board));
+        $user = $this->authorize_or_redirect(Permissions::delete($board));
 
         (new View("delete_confirm"))->show(array(
             "user" => $user,
@@ -108,7 +108,7 @@ class ControllerBoard extends ExtendedController {
 
     public function collaborators() {
         $board = $this->get_or_redirect_default();
-        $user = $this->authorized_or_redirect(Permissions::is_owner($board));
+        $user = $this->authorize_or_redirect(Permissions::is_owner($board));
 
         (new View("collaborators"))->show(
             array(
@@ -130,11 +130,11 @@ class ControllerBoard extends ExtendedController {
 
         if (!Post::empty("board_id")) {
             $board = $this->get_or_redirect_post("Board", "board_id");
-            $this->authorized_or_redirect(Permissions::edit($board));
+            $this->authorize_or_redirect(Permissions::edit($board));
 
             $errors = (new BoardValidation())->validate_edit($board_title, $board);
         } else {
-            $this->authorized_or_redirect(Permissions::add("Board"));
+            $this->authorize_or_redirect(Permissions::add("Board"));
 
             $errors = (new BoardValidation())->validate_add($board_title);
         }
@@ -144,7 +144,7 @@ class ControllerBoard extends ExtendedController {
 
     public function needs_delete_confirm_service() {
         $board = $this->get_or_redirect_default();
-        $this->authorized_or_redirect(Permissions::delete($board));
+        $this->authorize_or_redirect(Permissions::delete($board));
 
         echo  $this->can_delete($board) ? "false" : "true";
     }

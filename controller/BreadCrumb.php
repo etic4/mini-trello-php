@@ -55,7 +55,6 @@ class BreadCrumb {
                 $name = get_class($elem);
                 $title = $name . " \"" . $elem->get_title() . "\"";
                 $controller = strtolower($name);
-//                $method = $controller == "board" ? "board" : "view";
                 $method = "view";
                 $id = $elem->get_id();
 

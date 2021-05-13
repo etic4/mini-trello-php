@@ -51,7 +51,7 @@ class Validation {
     }
 
     // vrai si date avant aujourd'hui
-    public static function date_before(?Datetime $date, DateTime $dateNow) {
+    public static function date_before(?Datetime $date, DateTime $dateNow): bool {
         return !is_null($date) && $dateNow->diff($date)->format("%r%a") < 0;
     }
 
