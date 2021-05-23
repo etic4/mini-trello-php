@@ -102,6 +102,20 @@ les cartes qu'il a créé ainsi que ses commentaires
 à un utilisateur spécial "Anonyme" qui se trouve en base de donnée et ne peut pas se logger. Ce comportement me paraît réaliste.
 
 ## Notes de livraison itération 3
+Toutes les fonctionnalités pour les groupes de 2 ont été implémentées. Les problèmes de l'itération précédente ont été réglés.
+
+Concernant ta remarques sur l'accessibilité des classes DAO depuis les contrôleurs, je n'ai pas eu le temps de rectifier ça. Implémenter un facade n'aurait
+pas demandé beaucoup de temps, mais il m'est compté...
+
+Les fichier javascript se trouvent dans `lib/js`, un par fonctionnalité demandée.
+
+J'ai dans cette itération fait le service minimum, vite fait bien fait comme on dit, assez proprement quand-même, je crois, même si quelques trucs
+mériteraient d'être un peu factorisés, la validation par exemple, par quoi j'ai commencé ....
+
+J'espère que je réussirai quand-même ;)
+
+PS:
+Je n'ai pas eu l'occasion de tester sur Windows... je croise les doigts.
 
 ## Utilisateurs
 
