@@ -46,7 +46,6 @@ class ControllerColumn extends ExtendedController {
                 ColumnDao::update($column);
                 $this->redirect("board", "view", $column->get_board_id());
             }
-            $this->redirect("column", "edit", $column->get_id());
         }
 
         (new View("column_edit"))->show(array(

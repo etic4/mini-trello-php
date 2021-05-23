@@ -75,7 +75,6 @@ class ControllerCard extends ExtendedController {
                 $params = explode("/", Post::get("redirect_url"));
                 $this->redirect(...$params);
             }
-            $this->redirect("card", "edit", $card->get_id());
         }
 
         (new View("card_edit"))->show(array(

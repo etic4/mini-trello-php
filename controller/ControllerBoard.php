@@ -68,7 +68,6 @@ class ControllerBoard extends ExtendedController {
                 BoardDao::update($board);
                 $this->redirect("board", "view", $board->get_id());
             }
-            $this->redirect("board", "edit", $board->get_id());
         }
 
         (new View("board_edit"))->show(array(
