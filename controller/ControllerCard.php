@@ -182,7 +182,7 @@ class ControllerCard extends ExtendedController {
     }
 
     public function update_cards_positions_service() {
-        $board = $this->get_or_redirect("Board", "board_id", "");
+        $board = $this->get_or_redirect_post("Board", "board_id");
         $this->authorize_or_redirect(Permissions::view($board));
 
         if (!Post::empty("cards_list")) {
@@ -195,5 +195,35 @@ class ControllerCard extends ExtendedController {
         $this->authorize_or_redirect(Permissions::delete($card));
 
         echo  "true";
+    }
+
+    public function get_card_service() {
+        $card = $this->get_or_redirect_default();
+        $this->authorize_or_redirect(Permissions::view($card));
+
+        $response = [
+            "title" => $card->get_title(),
+            "author" => $card->get_author_fullName(),
+            "created_interval" => ViewUtils::created_intvl($card),
+            "modified_interval" => ViewUtils::modified_intvl($card),
+            "board_url" => "board/view/" . $card->get_board_id(),
+            "board_title" => $card->get_board_title(),
+            "column_title" => $card->get_column_title(),
+            "position" => $card->get_position(),
+            "body" => $card->get_body(),
+            "due_date" => ViewUtils::due_date_string($card->get_dueDate()),
+            "participants" => array_map(fn($participant) => [
+                "name" => $participant->get_fullName(),
+                "email" => $participant->get_email()
+                ],
+                $card->get_participants()),
+            "comments" => array_map(fn($comment) => [
+                "body" => $comment->get_body(),
+                "author" => $comment->get_author_fullName(),
+                "time_published" => ViewUtils::most_recent_interval($comment)
+                ],
+                $card->get_comments()),
+        ];
+        echo json_encode($response);
     }
 }

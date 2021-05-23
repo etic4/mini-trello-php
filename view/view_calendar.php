@@ -10,8 +10,6 @@
             $(document).ready(function() {
                 add_calendar_menu();
                 setup_calendar();
-
-                console.log("ok");
             });
         </script>
 
@@ -25,5 +23,7 @@
             </div>
             <div id="calendar"></div>
         </main>
+        <!--show card-->
+        <?php include("view_card_modal.php"); ?>
     </body>
 </html>
