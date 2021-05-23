@@ -19,7 +19,7 @@ class ViewUtils {
         return DateUtils::intvl($the_date, new DateTime());
     }
 
-    public static function due_date_string(DateTime $date): string {
+    public static function due_date_string(?DateTime $date): string {
         return $date != null ? $date->format('d/m/Y') : "";
     }
 
