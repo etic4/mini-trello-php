@@ -24,6 +24,6 @@
             <div id="calendar"></div>
         </main>
         <!--show card-->
-        <?php include("view_card_modal.php"); ?>
+        <?php include("card_modal.php"); ?>
     </body>
 </html>

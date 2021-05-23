@@ -128,6 +128,13 @@ class User {
         return CollaborationDao::get_collaborating_boards($this);
     }
 
+    public function get_accessibles_boards(): array {
+        if ($this->is_admin()) {
+            return BoardDao::get_all();
+        }
+        return array_merge($this->get_own_boards(), $this->get_collaborating_boards());
+    }
+
     public function __toString(): string {
         return $this->get_fullName() . " (" . $this->get_email() . ")";
     }

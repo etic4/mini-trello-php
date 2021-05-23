@@ -13,63 +13,44 @@ class ControllerCalendar extends ExtendedController {
         );
     }
 
+    public function get_events() {
+        $user = $this->get_user_or_redirect();
 
-    public function test_events() {
-        $board_1 = [
-             [
-                 "id" => "1",
-                 "title"  => 'board_1 event1',
-                 "start"  => '2021-05-03',
-                 "groupId" => "1",
-                 "card_id" => "1",
-                 "board_id" => "1",
-                 "board_title" => "Test Premier board"
-            ],
-            [
-                "id" => "2",
-                "title"  => 'board_1 event2',
-                "start"  => '2021-05-05',
-                "groupId" => "1",
-                "card_id" => "2",
-                "board_id" => "1",
-                "board_title" => "Test Premier board"
-            ],
-            [
-                "id" => "3",
-                "title"  => 'board_1 event3',
-                "start"  => '2021-05-09',
-                "groupId" => "1",
-                "card_id" => "3",
-                "board_id" => "1",
-                "board_title" => "Test Premier board"
-            ]
-        ];
+        $eventSources = [];
 
-        $board_2 = [
-            [
-                "id" => "4",
-                "title"  => 'board_2 event1',
-                "start"  => '2021-05-01',
-                "groupId" => "2",
-                "card_id" => "4",
-                "board_id" => "2",
-                "board_title" => "Deuxième board"
-            ],
-            [
-                "id" => "5",
-                "title"  => 'board_2 event3',
-                "start"  => '2021-05-09',
-                "groupId" => "2",
-                "card_id" => "5",
-                "board_id" => "2",
-                "board_title" => "Deuxième board"
-            ]
-        ];
+        foreach ($user->get_accessibles_boards() as $board) {
+            $cards_with_dueDate = array_filter($board->get_cards(), fn($card) => $card->get_dueDate() != null);
 
-        if (Post::get("board_id") == "1") {
-            echo json_encode($board_1);
-        } else {
-            echo json_encode($board_2);
+            if (count($cards_with_dueDate) > 0) {
+                $key = $this->get_key($board);
+
+                $eventSources[$key] = [
+                    "title" => $board->get_title(),
+                    "eventSource" => [
+                        "id" => $key,
+                        "events" => $this->get_events_array($cards_with_dueDate)
+                    ]
+                ];
+            }
         }
+        echo json_encode($eventSources);
+    }
+
+    private function get_events_array(array $cards): array {
+        $events = [];
+
+        foreach ($cards as $card) {
+            $events[] = [
+                "id" => $card->get_id(),
+                "title" => $card->get_title(),
+                "start" => $card->get_dueDate()->format('Y-m-d')
+            ];
+        }
+
+        return $events;
+    }
+
+    private function get_key(Board $board): string {
+        return "board_" . $board->get_id();
     }
 }
