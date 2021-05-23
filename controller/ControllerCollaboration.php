@@ -50,9 +50,23 @@ class ControllerCollaboration extends ExtendedController {
     }
 
     public function needs_delete_confirm_service() {
-        $board = $this->get_or_redirect("Board", "", "param1");
+        $board = $this->get_or_redirect_post("Board", "board_id");
         $this->authorize_or_redirect(Permissions::is_owner($board));
 
-        echo  "true";
+        $collaborator = $this->get_or_redirect_post("User", "collab_id");
+        $part_count = ParticipationDao::get_participations_count_in_board($collaborator, $board);
+
+        $result = [
+            "confirm" => false,
+            "part_count" => 0
+        ];
+
+        if ($part_count > 0) {
+            $result["confirm"] = true;
+            $result["part_count"] = $part_count;
+
+        }
+
+        echo  json_encode($result);
     }
 }
