@@ -8,6 +8,19 @@
         $(document).ready(function() {
             add_calendar_menu();
             setup_edit_card_validation();
+
+            // reset la date côté client
+            let reset_button = $('<button id="reset-dd" class="button">Reset due date</button>');
+
+            reset_button.click(function(event) {
+                event.preventDefault();
+                //fonctionne que sur la valeur par défaut si l'id est spécifique, dans ma versionde chrome en tout cas...
+                // cf. https://stackoverflow.com/questions/20885890/how-do-you-programmatically-clear-html5-date-fields
+                $("input[type=date]").val("");
+            });
+
+            $("#reset-date-check-box").replaceWith(reset_button);
+
         })
     </script>
 </head>
@@ -70,7 +83,7 @@
                                     </div>
                                 </div>
                                 <div class="field mt-4">
-                                    <label class="checkbox">
+                                    <label id="reset-date-check-box" class="checkbox">
                                         <input type="checkbox" name="reset_date">
                                         Reset due date
                                     </label>
