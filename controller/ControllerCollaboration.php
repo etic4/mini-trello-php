@@ -48,4 +48,11 @@ class ControllerCollaboration extends ExtendedController {
             "part_count" => $part_count,
             "cancel_url" => "board/collaborators/".$board->get_id()));
     }
+
+    public function needs_delete_confirm_service() {
+        $board = $this->get_or_redirect("Board", "", "param1");
+        $this->authorize_or_redirect(Permissions::is_owner($board));
+
+        echo  "true";
+    }
 }

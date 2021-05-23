@@ -15,7 +15,7 @@
                 <?php include('menu.php'); ?>
             </header>
             <main>
-                <?php include("remove_collab_confirm_modal.php"); ?>
+                <?php include("remove_collab_confirm.php"); ?>
             </main>
     </body>
 </html>

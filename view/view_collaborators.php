@@ -3,9 +3,11 @@
     <head>
         <?php $title="Edit a column"; include('head.php'); ?>
         <script src = "lib/js/common.js" type="text/javascript"></script>
+        <script src = "lib/js/delete-confirm.js" type="text/javascript"></script>
         <script>
             $(document).ready(function() {
                 add_calendar_menu();
+                setup_collab_delete_confirm();
             })
         </script>
     </head>
@@ -59,4 +61,6 @@
             <?php endif ?>
         </article>
     </main>
+    <!--delete-confirm-->
+    <?php include("delete_confirm_modal.php");?>
 </body>
